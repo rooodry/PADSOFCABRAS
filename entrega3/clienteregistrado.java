@@ -3,7 +3,7 @@ import java.util.List;
 
 public class ClienteRegistrado {
     private String nombreUsuario;
-    private List<Producto> cartera; // Sus productos de segunda mano
+    private List<Producto> cartera; 
 
     public ClienteRegistrado(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
