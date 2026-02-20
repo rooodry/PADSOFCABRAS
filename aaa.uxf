@@ -1,0 +1,109 @@
+classDiagram
+    %% Módulo de Usuarios
+    class Usuario {
+        <<abstract>>
+        #String idUsuario
+        #String contrasena
+        +iniciarSesion()
+    }
+    
+    class Gestor {
+        +configurarSistema()
+        +verEstadisticas()
+        +gestionarEmpleados()
+    }
+    
+    class Empleado {
+        -TipoPermiso permiso
+        +gestionarStock()
+        +gestionarPedidos()
+        +valorarIntercambios()
+    }
+    
+    class ClienteRegistrado {
+        -String dni
+        +comprar()
+        +lanzarOferta()
+        +subirProducto()
+    }
+
+    Usuario <|-- Gestor
+    Usuario <|-- Empleado
+    Usuario <|-- ClienteRegistrado
+
+    %% Módulo de Catálogo
+    class Producto {
+        -String codigoUnico
+        -String nombre
+        -String descripcion
+        -String imagen
+        -int stock
+        -double precio
+        -EstadoConservacion estado
+    }
+    
+    class ProductoSegundaMano {
+        -double valorEstimado
+        -boolean estaValorado
+        +solicitarValoracion()
+    }
+    
+    Producto <|-- ProductoSegundaMano
+
+    class Pack {
+        -double precioDescuento
+    }
+    
+    Pack o-- "*" Producto : contiene
+
+    class Categoria {
+        <<enumeration>>
+        JUEGOS
+        FIGURAS
+        COMICS
+    }
+    Producto --> "1..*" Categoria : pertenece
+
+    class TipoPermiso {
+        <<enumeration>>
+        PRODUCTOS
+        PEDIDOS
+        INTERCAMBIOS
+    }
+
+    %% Relaciones del Cliente
+    class Carrito {
+        -Date inicioBloqueo
+    }
+    
+    class Cartera {
+    }
+    
+    class Notificacion {
+        -String mensaje
+        -boolean leida
+    }
+
+    ClienteRegistrado "1" --> "1" Carrito : tiene
+    ClienteRegistrado "1" --> "1" Cartera : posee
+    ClienteRegistrado "1" --> "*" Notificacion : recibe
+    Carrito o-- "*" Producto : incluye
+    Cartera o-- "*" ProductoSegundaMano : aloja
+
+    %% Transacciones
+    class Pedido {
+        -String codigoRecogida
+        -EstadoPedido estado
+    }
+    
+    class Intercambio {
+        -Date fechaInicioBloqueo
+        -EstadoIntercambio estado
+    }
+
+    Pedido o-- "*" Producto : contiene
+    ClienteRegistrado "1" --> "*" Pedido : realiza
+    
+    Intercambio --> "1" ProductoSegundaMano : productoOfrecido
+    Intercambio --> "1" ProductoSegundaMano : productoRequerido
+    ClienteRegistrado "2" -- "*" Intercambio : participan
