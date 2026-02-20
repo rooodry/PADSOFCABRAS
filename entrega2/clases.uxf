@@ -1,0 +1,8 @@
+<<<<<<< HEAD
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>129</x><y>200</y><w>210</w><h>70</h></coordinates><panel_attributes>_object: Class_
+=======
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>550</x><y>270</y><w>210</w><h>70</h></coordinates><panel_attributes>_object: Class_
+>>>>>>> 1e61dff7ca68b47429c956e7a0279e5386d63d03
+--
+id: Long="36548"
+[waiting for message]</panel_attributes><additional_attributes></additional_attributes></element></diagram>
