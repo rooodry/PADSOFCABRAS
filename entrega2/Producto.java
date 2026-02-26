@@ -23,7 +23,7 @@ public class Producto {
     private int valoracion;
     private String foto;
     private int stock;
-    private String categoria;
+    private CategoriaProducto categoria;
     private int ordenLlegada;
     private EstadoProducto estado;
 

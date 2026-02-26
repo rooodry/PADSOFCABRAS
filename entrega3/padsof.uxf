@@ -1,0 +1,83 @@
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>630</x><y>290</y><w>210</w><h>110</h></coordinates><panel_attributes>/Usuario/
+--
+- nombreUsuario: String
+- contraseña: String
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>880</x><y>460</y><w>210</w><h>90</h></coordinates><panel_attributes>Gestor
+--
+
+--
++ modificarTiempos()
++ crearDescuento()
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>600</y><w>210</w><h>70</h></coordinates><panel_attributes>Permiso &lt;&lt;enum&gt;&gt;
+--
++ PRODUCTOS
++ PEDIDOS
++ INTERCAMBIOS</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>360</x><y>460</y><w>240</w><h>90</h></coordinates><panel_attributes>Cliente
+--
+- DNI: String
+- Bloqueado: boolean
+- cartera: List&lt;ProductoSegundaMano&gt;
+- historialCompras: List&lt;Pedido&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>460</y><w>210</w><h>70</h></coordinates><panel_attributes>Empleado
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>730</x><y>520</y><w>30</w><h>100</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>720</x><y>390</y><w>30</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;70</additional_attributes></element><element><id>Relation</id><coordinates><x>480</x><y>390</y><w>200</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>180;10;180;40;10;40;10;70</additional_attributes></element><element><id>Relation</id><coordinates><x>790</x><y>390</y><w>220</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;40;200;40;200;70</additional_attributes></element><element><id>UMLClass</id><coordinates><x>490</x><y>800</y><w>210</w><h>120</h></coordinates><panel_attributes>Producto
+--
+- nombre: String
+- descripcion: String
+- precio: double
+- valoracion: double
+- imagen: String
+- codigo: String</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>740</x><y>810</y><w>210</w><h>70</h></coordinates><panel_attributes>Categoria
+--
++ JUEGOS
++ FIGURAS
++ COMICS</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>690</x><y>840</y><w>70</w><h>30</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>50;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>490</x><y>990</y><w>210</w><h>70</h></coordinates><panel_attributes>ProductoTienda
+--
+- stock: int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>250</x><y>990</y><w>210</w><h>70</h></coordinates><panel_attributes>ProductoSegundaMano
+--
+- valor: double
+- estaDisponible: boolean</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>990</y><w>210</w><h>130</h></coordinates><panel_attributes>Estado &lt;&lt;enum&gt;&gt;
+--
++ PERFECTO
++ MUY BIEN
++ BIEN
++ USADO
++ MUY MAL
++ FATAL</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>200</x><y>1020</y><w>70</w><h>30</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>10;10;50;10</additional_attributes></element><element><id>Relation</id><coordinates><x>320</x><y>910</y><w>220</w><h>100</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>200;10;200;50;10;50;10;80</additional_attributes></element><element><id>Relation</id><coordinates><x>590</x><y>910</y><w>30</w><h>100</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>UMLClass</id><coordinates><x>740</x><y>990</y><w>210</w><h>70</h></coordinates><panel_attributes>Pack
+--
+- nombre: String
+- listaProductos: List&lt;Producto&gt;
+- precioDescuento: double</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>670</x><y>910</y><w>200</w><h>100</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50;180;50;180;80</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1350</x><y>370</y><w>210</w><h>70</h></coordinates><panel_attributes>Carrito
+--
+- productos: List&lt;productos&gt;
+- precioTotal: double
+- tiempoRestanteBloqueo: int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1350</x><y>540</y><w>210</w><h>70</h></coordinates><panel_attributes>Pedido
+--
+- id: String
+- codigoRecogida: String
+- fechaCompra: Date</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1610</x><y>540</y><w>210</w><h>70</h></coordinates><panel_attributes>Estado &lt;&lt;enum&gt;&gt;
+--
++ EN_PREPARACION
++ LISTO
++ ENTREGADO</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1550</x><y>570</y><w>80</w><h>30</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>60;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1390</x><y>870</y><w>280</w><h>110</h></coordinates><panel_attributes>OfertaIntercambio
+--
+- clienteOfertante: Cliente
+- clienteReceptor: Cliente
+- porductoOfrecido: ProductoSegundaMano
+- productoSolicitado: ProductoSegundaMano
+- fechaExpiracion: Date
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1720</x><y>870</y><w>210</w><h>70</h></coordinates><panel_attributes>Estado &lt;&lt;enum&gt;&gt;
+--
++ PENDIENTE
++ ACEPTADO
++ RECHAZADO
++ CADUCADO</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1660</x><y>900</y><w>80</w><h>30</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>60;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1370</x><y>1190</y><w>210</w><h>90</h></coordinates><panel_attributes>Descuento
+--
+- porcentaje: double
+- cantidadMinima: double
+- fechaInicio: Date
+- fechaFin: Date</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>990</x><y>0</y><w>210</w><h>100</h></coordinates><panel_attributes>SIstema
+--
+- tiempoBloqueoCesta: int
+- tiempoCaducidadIntercambio
+- precioValoracionEstandar: double
+--
+</panel_attributes><additional_attributes></additional_attributes></element></diagram>
