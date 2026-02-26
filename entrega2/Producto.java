@@ -40,8 +40,24 @@ public class Producto {
         this.ordenLlegada = ordenLlegada;
     }
 
+    @Override
+    public String toString() {
+        return "=== Detalle del Producto ===\n" +
+               "Código: " + codigo + "\n" +
+               "Nombre: " + nombre + "\n" +
+               "Categoría: " + categoria + "\n" +
+               "Precio: " + precio + "€\n" +
+               "Stock disponible: " + stock + "\n" +
+               "Estado: " + estado + "\n" +
+               "Valoración: " + valoracion + "/5\n" +
+               "Orden de llegada: " + ordenLlegada + "\n" +
+               "Descripción: " + descripcion + "\n" +
+               "Foto: " + foto + "\n" +
+               "============================";
+    }
 
 
+    
 
 
 

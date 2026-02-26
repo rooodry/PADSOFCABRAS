@@ -1,3 +1,1 @@
-ale: lanzar oferta
-bea: buscar producto
-rodri: consultar info producto
+getstock(producto, cantidad)
