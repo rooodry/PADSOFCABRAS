@@ -1,34 +1,56 @@
-<diagram program="umletino" version="15.1"><zoom_level>9</zoom_level><element><id>UMLState</id><coordinates><x>423</x><y>252</y><w>162</w><h>99</h></coordinates><panel_attributes>EnPreparación
+<diagram program="umletino" version="15.1"><zoom_level>4</zoom_level><element><id>UMLState</id><coordinates><x>324</x><y>136</y><w>72</w><h>44</h></coordinates><panel_attributes>EN_PREPARACION
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>729</x><y>252</y><w>162</w><h>99</h></coordinates><panel_attributes>ListoParaEntregar
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>500</x><y>136</y><w>72</w><h>44</h></coordinates><panel_attributes>LISTO
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>1044</x><y>252</y><w>162</w><h>99</h></coordinates><panel_attributes>Entregado
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>664</x><y>136</y><w>72</w><h>44</h></coordinates><panel_attributes>ENTREGADO
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>117</x><y>252</y><w>162</w><h>99</h></coordinates><panel_attributes>EnCarrito
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>152</x><y>136</y><w>60</w><h>44</h></coordinates><panel_attributes>EN_CARRITO
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>108</x><y>423</y><w>162</w><h>99</h></coordinates><panel_attributes>Cancelado
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>144</x><y>236</y><w>72</w><h>44</h></coordinates><panel_attributes>Cancelado
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1197</x><y>288</y><w>189</w><h>27</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;190;10</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>1368</x><y>288</y><w>18</w><h>18</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>882</x><y>288</y><w>180</w><h>27</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;180;10</additional_attributes></element><element><id>Relation</id><coordinates><x>576</x><y>288</y><w>171</w><h>27</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;170;10</additional_attributes></element><element><id>Relation</id><coordinates><x>270</x><y>288</y><w>171</w><h>27</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;170;10</additional_attributes></element><element><id>Relation</id><coordinates><x>180</x><y>342</y><w>27</w><h>99</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>189</x><y>603</y><w>18</w><h>18</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>189</x><y>513</y><w>27</w><h>108</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;100</additional_attributes></element><element><id>Relation</id><coordinates><x>9</x><y>279</y><w>126</w><h>54</h></coordinates><panel_attributes>lt=-&gt;
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>732</x><y>152</y><w>72</w><h>12</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;160;10</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>796</x><y>152</y><w>8</w><h>8</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>568</x><y>148</y><w>104</w><h>48</h></coordinates><panel_attributes>lt=-&gt;
+setEstadoPedido(p, ENTREGADO)
+
+notificarCliente(c, "Tu pedido ha 
+sido entregado")
+
+eliminarPedidoDeLista(p)
+</panel_attributes><additional_attributes>10;20;240;20</additional_attributes></element><element><id>Relation</id><coordinates><x>392</x><y>148</y><w>116</w><h>32</h></coordinates><panel_attributes>lt=-&gt;
+setEstadoPedido(p, LISTO)
+
+notificarCliente(c, "Tu pedido está
+listo para ser recogido")</panel_attributes><additional_attributes>10;20;270;20</additional_attributes></element><element><id>Relation</id><coordinates><x>208</x><y>148</y><w>124</w><h>44</h></coordinates><panel_attributes>lt=-&gt;
+setEstadoPedido(p, EN_PREPARACION)
+
+notificarCliente(c, "Tu pedido está 
+en preparación")
+
+eliminarProductoDeLista(p)</panel_attributes><additional_attributes>10;20;290;20</additional_attributes></element><element><id>Relation</id><coordinates><x>176</x><y>176</y><w>124</w><h>68</h></coordinates><panel_attributes>lt=-&gt;
+setEstadoPedido(p, CANCELADO)
+
+notificarCliente(c, "Tu pedido ha sido cancelado")
+
+eliminarPedidoDeLista(p)</panel_attributes><additional_attributes>10;10;10;150</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>176</x><y>332</y><w>8</w><h>8</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>176</x><y>276</y><w>12</w><h>64</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;140</additional_attributes></element><element><id>Relation</id><coordinates><x>68</x><y>148</y><w>92</w><h>24</h></coordinates><panel_attributes>lt=-&gt;
 
 
-añadirALaCesta()       </panel_attributes><additional_attributes>10;20;120;20</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>0</x><y>288</y><w>18</w><h>18</h></coordinates><panel_attributes>type=initial</panel_attributes><additional_attributes></additional_attributes></element></diagram>
+añadirALaCesta()       </panel_attributes><additional_attributes>10;20;210;20</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>64</x><y>152</y><w>8</w><h>8</h></coordinates><panel_attributes>type=initial</panel_attributes><additional_attributes></additional_attributes></element></diagram>
