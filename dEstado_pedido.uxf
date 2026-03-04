@@ -1,0 +1,34 @@
+<diagram program="umletino" version="15.1"><zoom_level>9</zoom_level><element><id>UMLState</id><coordinates><x>423</x><y>252</y><w>162</w><h>99</h></coordinates><panel_attributes>EnPreparación
+--
+
+
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>729</x><y>252</y><w>162</w><h>99</h></coordinates><panel_attributes>ListoParaEntregar
+--
+
+
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>1044</x><y>252</y><w>162</w><h>99</h></coordinates><panel_attributes>Entregado
+--
+
+
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>117</x><y>252</y><w>162</w><h>99</h></coordinates><panel_attributes>EnCarrito
+--
+
+
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>108</x><y>423</y><w>162</w><h>99</h></coordinates><panel_attributes>Cancelado
+--
+
+
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1197</x><y>288</y><w>189</w><h>27</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;190;10</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>1368</x><y>288</y><w>18</w><h>18</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>882</x><y>288</y><w>180</w><h>27</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;180;10</additional_attributes></element><element><id>Relation</id><coordinates><x>576</x><y>288</y><w>171</w><h>27</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;170;10</additional_attributes></element><element><id>Relation</id><coordinates><x>270</x><y>288</y><w>171</w><h>27</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;170;10</additional_attributes></element><element><id>Relation</id><coordinates><x>180</x><y>342</y><w>27</w><h>99</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>189</x><y>603</y><w>18</w><h>18</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>189</x><y>513</y><w>27</w><h>108</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;100</additional_attributes></element><element><id>Relation</id><coordinates><x>9</x><y>279</y><w>126</w><h>54</h></coordinates><panel_attributes>lt=-&gt;
+
+
+añadirALaCesta()       </panel_attributes><additional_attributes>10;20;120;20</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>0</x><y>288</y><w>18</w><h>18</h></coordinates><panel_attributes>type=initial</panel_attributes><additional_attributes></additional_attributes></element></diagram>
