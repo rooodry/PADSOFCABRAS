@@ -3,7 +3,8 @@
 --
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>636</x><y>216</y><w>126</w><h>24</h></coordinates><panel_attributes>PRODUCTO_TIENDA
 --</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>228</x><y>252</y><w>126</w><h>24</h></coordinates><panel_attributes>PRODUCTO_SEGUNDA_MANO
---</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>468</x><y>252</y><w>126</w><h>24</h></coordinates><panel_attributes>PACK
+--
+hola que lo que</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>468</x><y>252</y><w>126</w><h>24</h></coordinates><panel_attributes>PACK
 --</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>558</x><y>180</y><w>138</w><h>48</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;210;60</additional_attributes></element><element><id>Relation</id><coordinates><x>348</x><y>180</y><w>138</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>210;10;10;130</additional_attributes></element><element><id>Relation</id><coordinates><x>582</x><y>228</y><w>66</w><h>48</h></coordinates><panel_attributes>lt=-
 m1=productos*</panel_attributes><additional_attributes>90;10;20;60</additional_attributes></element><element><id>Relation</id><coordinates><x>348</x><y>258</y><w>132</w><h>24</h></coordinates><panel_attributes>lt=-
 m1=productos*</panel_attributes><additional_attributes>10;10;200;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1014</x><y>582</y><w>126</w><h>24</h></coordinates><panel_attributes>SISTEMA
