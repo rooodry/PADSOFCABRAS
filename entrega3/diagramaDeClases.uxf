@@ -1,14 +1,15 @@
 <diagram program="umletino" version="15.1"><zoom_level>6</zoom_level><help_text>PRODUCTO_TIENDA
 --</help_text><element><id>UMLClass</id><coordinates><x>462</x><y>198</y><w>126</w><h>30</h></coordinates><panel_attributes>/PRODUCTO/
 --
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>636</x><y>258</y><w>126</w><h>24</h></coordinates><panel_attributes>PRODUCTO_TIENDA
---</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>120</x><y>300</y><w>126</w><h>24</h></coordinates><panel_attributes>PRODUCTO_SEGUNDA_MANO
---</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>468</x><y>294</y><w>126</w><h>24</h></coordinates><panel_attributes>PACK
---</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>558</x><y>222</y><w>138</w><h>48</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;210;60</additional_attributes></element><element><id>Relation</id><coordinates><x>240</x><y>222</y><w>246</w><h>96</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>390;10;10;140</additional_attributes></element><element><id>Relation</id><coordinates><x>582</x><y>270</y><w>66</w><h>48</h></coordinates><panel_attributes>lt=-
-m1=productos*</panel_attributes><additional_attributes>90;10;20;60</additional_attributes></element><element><id>Relation</id><coordinates><x>240</x><y>300</y><w>240</w><h>30</h></coordinates><panel_attributes>lt=-
-m1=productos*</panel_attributes><additional_attributes>10;20;380;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1014</x><y>624</y><w>126</w><h>24</h></coordinates><panel_attributes>SISTEMA
---</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>894</x><y>822</y><w>126</w><h>30</h></coordinates><panel_attributes>/USUARIO/
---</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>438</x><y>744</y><w>126</w><h>24</h></coordinates><panel_attributes>/CLIENTE/
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>636</x><y>216</y><w>126</w><h>24</h></coordinates><panel_attributes>PRODUCTO_TIENDA
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>228</x><y>252</y><w>126</w><h>24</h></coordinates><panel_attributes>PRODUCTO_SEGUNDA_MANO
+--
+hola que lo que</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>468</x><y>252</y><w>126</w><h>24</h></coordinates><panel_attributes>PACK
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>558</x><y>180</y><w>138</w><h>48</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;210;60</additional_attributes></element><element><id>Relation</id><coordinates><x>348</x><y>180</y><w>138</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>210;10;10;130</additional_attributes></element><element><id>Relation</id><coordinates><x>582</x><y>228</y><w>66</w><h>48</h></coordinates><panel_attributes>lt=-
+m1=productos*</panel_attributes><additional_attributes>90;10;20;60</additional_attributes></element><element><id>Relation</id><coordinates><x>348</x><y>258</y><w>132</w><h>24</h></coordinates><panel_attributes>lt=-
+m1=productos*</panel_attributes><additional_attributes>10;10;200;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1014</x><y>582</y><w>126</w><h>24</h></coordinates><panel_attributes>SISTEMA
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>894</x><y>780</y><w>126</w><h>30</h></coordinates><panel_attributes>/USUARIO/
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>438</x><y>702</y><w>126</w><h>24</h></coordinates><panel_attributes>/CLIENTE/
 --
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>666</x><y>840</y><w>126</w><h>24</h></coordinates><panel_attributes>/EMPLEADO/
 --
