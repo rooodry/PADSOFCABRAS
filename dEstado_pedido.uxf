@@ -1,56 +1,56 @@
-<diagram program="umletino" version="15.1"><zoom_level>4</zoom_level><element><id>UMLState</id><coordinates><x>260</x><y>144</y><w>72</w><h>44</h></coordinates><panel_attributes>EN_PREPARACION
+<diagram program="umletino" version="15.1"><zoom_level>4</zoom_level><element><id>UMLState</id><coordinates><x>260</x><y>172</y><w>72</w><h>44</h></coordinates><panel_attributes>EN_PREPARACION
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>436</x><y>144</y><w>72</w><h>44</h></coordinates><panel_attributes>LISTO
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>436</x><y>172</y><w>72</w><h>44</h></coordinates><panel_attributes>LISTO
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>600</x><y>144</y><w>72</w><h>44</h></coordinates><panel_attributes>ENTREGADO
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>600</x><y>172</y><w>72</w><h>44</h></coordinates><panel_attributes>ENTREGADO
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>88</x><y>144</y><w>60</w><h>44</h></coordinates><panel_attributes>EN_CARRITO
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>88</x><y>172</y><w>60</w><h>44</h></coordinates><panel_attributes>EN_CARRITO
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>80</x><y>244</y><w>72</w><h>44</h></coordinates><panel_attributes>Cancelado
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>80</x><y>272</y><w>72</w><h>44</h></coordinates><panel_attributes>Cancelado
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>668</x><y>160</y><w>72</w><h>12</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;160;10</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>732</x><y>160</y><w>8</w><h>8</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>504</x><y>156</y><w>104</w><h>48</h></coordinates><panel_attributes>lt=-&gt;
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>668</x><y>188</y><w>72</w><h>12</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;160;10</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>732</x><y>188</y><w>8</w><h>8</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>504</x><y>184</y><w>104</w><h>48</h></coordinates><panel_attributes>lt=-&gt;
 setEstadoPedido(p, ENTREGADO)
 
 notificarCliente(c, "Tu pedido ha 
 sido entregado")
 
 eliminarPedidoDeLista(p)
-</panel_attributes><additional_attributes>10;20;240;20</additional_attributes></element><element><id>Relation</id><coordinates><x>328</x><y>156</y><w>116</w><h>32</h></coordinates><panel_attributes>lt=-&gt;
+</panel_attributes><additional_attributes>10;20;240;20</additional_attributes></element><element><id>Relation</id><coordinates><x>328</x><y>184</y><w>116</w><h>32</h></coordinates><panel_attributes>lt=-&gt;
 setEstadoPedido(p, LISTO)
 
 notificarCliente(c, "Tu pedido está
-listo para ser recogido")</panel_attributes><additional_attributes>10;20;270;20</additional_attributes></element><element><id>Relation</id><coordinates><x>144</x><y>156</y><w>124</w><h>44</h></coordinates><panel_attributes>lt=-&gt;
+listo para ser recogido")</panel_attributes><additional_attributes>10;20;270;20</additional_attributes></element><element><id>Relation</id><coordinates><x>144</x><y>184</y><w>124</w><h>44</h></coordinates><panel_attributes>lt=-&gt;
 setEstadoPedido(p, EN_PREPARACION)
 
 notificarCliente(c, "Tu pedido está 
 en preparación")
 
-eliminarProductoDeLista(p)</panel_attributes><additional_attributes>10;20;290;20</additional_attributes></element><element><id>Relation</id><coordinates><x>112</x><y>184</y><w>124</w><h>68</h></coordinates><panel_attributes>lt=-&gt;
+eliminarProductoDeLista(p)</panel_attributes><additional_attributes>10;20;290;20</additional_attributes></element><element><id>Relation</id><coordinates><x>112</x><y>212</y><w>124</w><h>68</h></coordinates><panel_attributes>lt=-&gt;
 setEstadoPedido(p, CANCELADO)
 
 notificarCliente(c, "Tu pedido ha sido cancelado")
 
-eliminarPedidoDeLista(p)</panel_attributes><additional_attributes>10;10;10;150</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>112</x><y>340</y><w>8</w><h>8</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>112</x><y>284</y><w>12</w><h>64</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;140</additional_attributes></element><element><id>Relation</id><coordinates><x>4</x><y>156</y><w>92</w><h>24</h></coordinates><panel_attributes>lt=-&gt;
+eliminarPedidoDeLista(p)</panel_attributes><additional_attributes>10;10;10;150</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>112</x><y>368</y><w>8</w><h>8</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>112</x><y>312</y><w>12</w><h>64</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;140</additional_attributes></element><element><id>Relation</id><coordinates><x>4</x><y>184</y><w>92</w><h>24</h></coordinates><panel_attributes>lt=-&gt;
 
 
-añadirALaCesta()       </panel_attributes><additional_attributes>10;20;210;20</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>0</x><y>160</y><w>8</w><h>8</h></coordinates><panel_attributes>type=initial</panel_attributes><additional_attributes></additional_attributes></element></diagram>
+añadirALaCesta()       </panel_attributes><additional_attributes>10;20;210;20</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>0</x><y>188</y><w>8</w><h>8</h></coordinates><panel_attributes>type=initial</panel_attributes><additional_attributes></additional_attributes></element></diagram>
