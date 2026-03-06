@@ -1,49 +1,70 @@
-<diagram program="umletino" version="15.1"><zoom_level>6</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLState</id><coordinates><x>258</x><y>240</y><w>108</w><h>66</h></coordinates><panel_attributes>Rechazada
+<diagram program="umletino" version="15.1"><zoom_level>8</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLState</id><coordinates><x>696</x><y>304</y><w>144</w><h>88</h></coordinates><panel_attributes>RECHAZADA
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>78</x><y>240</y><w>108</w><h>66</h></coordinates><panel_attributes>Aceptada
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>456</x><y>280</y><w>144</w><h>88</h></coordinates><panel_attributes>ACEPTADA
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>78</x><y>384</y><w>108</w><h>66</h></coordinates><panel_attributes>EnPreparación
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>456</x><y>480</y><w>144</w><h>88</h></coordinates><panel_attributes>EN_PREPARACION
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>78</x><y>516</y><w>108</w><h>66</h></coordinates><panel_attributes>ListoParaEntregar
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>456</x><y>648</y><w>144</w><h>88</h></coordinates><panel_attributes>LISTO
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>258</x><y>120</y><w>108</w><h>66</h></coordinates><panel_attributes>PENDIENTE
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>696</x><y>120</y><w>144</w><h>88</h></coordinates><panel_attributes>PENDIENTE
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>444</x><y>240</y><w>108</w><h>66</h></coordinates><panel_attributes>Caducada
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>944</x><y>280</y><w>144</w><h>88</h></coordinates><panel_attributes>CADUCADA
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>78</x><y>660</y><w>108</w><h>66</h></coordinates><panel_attributes>Entregado
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>456</x><y>840</y><w>144</w><h>88</h></coordinates><panel_attributes>ENTREGADO
 --
 
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>306</x><y>180</y><w>72</w><h>72</h></coordinates><panel_attributes>lt=-&gt;
-rechazarOferta()</panel_attributes><additional_attributes>10;10;10;100</additional_attributes></element><element><id>Relation</id><coordinates><x>336</x><y>180</y><w>174</w><h>72</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;40;270;40;270;100</additional_attributes></element><element><id>Relation</id><coordinates><x>126</x><y>180</y><w>168</w><h>72</h></coordinates><panel_attributes>lt=-&gt;
-aceptarOferta()
-</panel_attributes><additional_attributes>260;10;260;40;10;40;10;100</additional_attributes></element><element><id>Relation</id><coordinates><x>126</x><y>300</y><w>18</w><h>96</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;140</additional_attributes></element><element><id>Relation</id><coordinates><x>126</x><y>444</y><w>18</w><h>84</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;120</additional_attributes></element><element><id>Relation</id><coordinates><x>126</x><y>576</y><w>18</w><h>96</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;140</additional_attributes></element><element><id>Relation</id><coordinates><x>306</x><y>72</y><w>18</w><h>60</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>306</x><y>66</y><w>12</w><h>12</h></coordinates><panel_attributes>type=initial</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>126</x><y>720</y><w>18</w><h>72</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;100</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>126</x><y>780</y><w>12</w><h>12</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>306</x><y>300</y><w>18</w><h>84</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;120</additional_attributes></element><element><id>Relation</id><coordinates><x>492</x><y>300</y><w>18</w><h>84</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;120</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>306</x><y>372</y><w>12</w><h>12</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>492</x><y>372</y><w>12</w><h>12</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>36</x><y>30</y><w>558</w><h>306</h></coordinates><panel_attributes>OFERTA_LANZADA
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>760</x><y>200</y><w>168</w><h>120</h></coordinates><panel_attributes>lt=-&gt;
+
+
+rechazarOferta(o) /
+desbloquearProductoOfertante()
+</panel_attributes><additional_attributes>10;10;10;130</additional_attributes></element><element><id>Relation</id><coordinates><x>800</x><y>200</y><w>232</w><h>96</h></coordinates><panel_attributes>lt=-&gt;
+tm(7 dias) /
+desbloquearProductoOfertante()</panel_attributes><additional_attributes>10;10;10;40;270;40;270;100</additional_attributes></element><element><id>Relation</id><coordinates><x>520</x><y>200</y><w>224</w><h>96</h></coordinates><panel_attributes>lt=-&gt;
+aceptarOferta(o) / 
+bloquearProductoDeseado()
+
+</panel_attributes><additional_attributes>260;10;260;40;10;40;10;100</additional_attributes></element><element><id>Relation</id><coordinates><x>520</x><y>360</y><w>112</w><h>136</h></coordinates><panel_attributes>lt=-&gt;
+
+iniciarGestion() /
+asignarEmpleado()
+</panel_attributes><additional_attributes>10;10;10;150</additional_attributes></element><element><id>Relation</id><coordinates><x>520</x><y>560</y><w>104</w><h>104</h></coordinates><panel_attributes>lt=-&gt;
+marcarListo() /
+notificarClientes()</panel_attributes><additional_attributes>10;10;10;110</additional_attributes></element><element><id>Relation</id><coordinates><x>520</x><y>728</y><w>136</w><h>128</h></coordinates><panel_attributes>lt=-&gt;
+confirmarIntercambio(i) /
+transferirPropiedad()</panel_attributes><additional_attributes>10;10;10;140</additional_attributes></element><element><id>Relation</id><coordinates><x>760</x><y>56</y><w>152</w><h>80</h></coordinates><panel_attributes>lt=-&gt;
+realizarOferta() /
+bloquearProductoOfertante()
+</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>760</x><y>48</y><w>16</w><h>16</h></coordinates><panel_attributes>type=initial</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>520</x><y>920</y><w>264</w><h>96</h></coordinates><panel_attributes>lt=-&gt;
+notificarCliente(c, "El intercambio ha sido realizado")
+</panel_attributes><additional_attributes>10;10;10;100</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>520</x><y>1000</y><w>16</w><h>16</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>760</x><y>384</y><w>24</w><h>88</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>1008</x><y>360</y><w>24</w><h>112</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;120</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>760</x><y>456</y><w>16</w><h>16</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>1008</x><y>456</y><w>16</w><h>16</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>400</x><y>0</y><w>744</w><h>408</h></coordinates><panel_attributes>OFERTA_LANZADA
 --
 
 
@@ -75,4 +96,15 @@ aceptarOferta()
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element></diagram>
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLState</id><coordinates><x>120</x><y>488</y><w>144</w><h>80</h></coordinates><panel_attributes>
+CANCELADA_POR_FALLO
+--
+
+
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>256</x><y>512</y><w>216</w><h>48</h></coordinates><panel_attributes>lt=-&gt;
+reportarFallo() /
+desbloquearProductoDeseado() ,
+desbloquearProductoOfertante()</panel_attributes><additional_attributes>250;20;10;20</additional_attributes></element><element><id>Relation</id><coordinates><x>8</x><y>512</y><w>128</w><h>32</h></coordinates><panel_attributes>lt=-&gt;
+</panel_attributes><additional_attributes>140;20;10;20</additional_attributes></element><element><id>UMLSpecialState</id><coordinates><x>0</x><y>520</y><w>16</w><h>16</h></coordinates><panel_attributes>type=final</panel_attributes><additional_attributes></additional_attributes></element></diagram>
