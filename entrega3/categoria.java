@@ -1,6 +1,6 @@
 package entrega3;
 
-public abstract class Categoria {
+public abstract class categoria {
 
     
 }
