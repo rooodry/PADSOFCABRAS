@@ -260,8 +260,8 @@ m1=1 estadistica</panel_attributes><additional_attributes>130;10;130;90;10;90</a
 +ENTREGADO
 +CANCELADO</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2620</x><y>1180</y><w>110</w><h>70</h></coordinates><panel_attributes>lt=&lt;-
 m1= estadoPedido</panel_attributes><additional_attributes>10;50;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1950</x><y>550</y><w>130</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
-m2= 1 oferta</panel_attributes><additional_attributes>110;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1080</x><y>800</y><w>900</w><h>640</h></coordinates><panel_attributes>lt=&lt;-
-m1= 1..* productos</panel_attributes><additional_attributes>10;10;10;620;880;620;880;410;840;410</additional_attributes></element><element><id>Relation</id><coordinates><x>1480</x><y>660</y><w>100</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2= 1 oferta</panel_attributes><additional_attributes>110;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1600</x><y>950</y><w>380</w><h>280</h></coordinates><panel_attributes>lt=&lt;-
+m1= 1..* productos</panel_attributes><additional_attributes>10;10;10;40;360;40;360;260;320;260</additional_attributes></element><element><id>Relation</id><coordinates><x>1480</x><y>660</y><w>100</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m2=productos *</panel_attributes><additional_attributes>10;60;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2460</x><y>670</y><w>230</w><h>100</h></coordinates><panel_attributes>bg=red
 /CLIENTE/
 --
