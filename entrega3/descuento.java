@@ -8,5 +8,5 @@ public class descuento {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
     }
-    
+
 }
