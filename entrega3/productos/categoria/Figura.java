@@ -1,6 +1,5 @@
-package entrega3;
-
-public class figura extends categoria {
+package productos.categoria;
+public class Figura extends Categoria {
     private final double altura;
     private final double anchura;
     private final String marca;
