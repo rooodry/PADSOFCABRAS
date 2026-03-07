@@ -1,5 +1,4 @@
-package entrega3;
-
+package productos.categoria;
 public class Juego extends Categoria {
     private final int numJugadores;
     private final int edadMinima;

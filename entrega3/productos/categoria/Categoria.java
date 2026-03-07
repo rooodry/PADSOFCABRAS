@@ -1,5 +1,4 @@
-package entrega3;
-
+package productos.categoria;
 public abstract class Categoria {
 
     

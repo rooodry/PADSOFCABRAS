@@ -1,6 +1,5 @@
-package entrega3;
-
-public class comic extends categoria {
+package productos.categoria;
+public class Comic extends Categoria {
     private final int numPaginas;
     private final String autor;
     private final String editorial;
