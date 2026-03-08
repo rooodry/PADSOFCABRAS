@@ -11,12 +11,12 @@ public abstract class Producto {
     private String imagen;
     private Date fechaPublicacion;
 
-    public Producto(String nombre, String descripcion, double precio, int valoracion, String imagen, Date fechaPublicacion) {
+    public Producto(String nombre, String descripcion) {
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.precio = precio;
-        this.valoracion = valoracion;
-        this.imagen = imagen;
-        this.fechaPublicacion = fechaPublicacion;
+        this.precio = 0.0;
+        this.valoracion = 0;
+        this.imagen = "";
+        this.fechaPublicacion = new Date();
     }
 }
