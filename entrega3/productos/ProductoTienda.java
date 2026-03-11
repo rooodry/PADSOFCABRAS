@@ -1,5 +1,4 @@
 package productos;
-import java.util.Date;
 
 public class ProductoTienda extends Producto {
 
