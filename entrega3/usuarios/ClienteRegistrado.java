@@ -8,7 +8,7 @@ import compras.Cesta;
 import compras.Pedido;
 import intercambios.Oferta;
 import intercambios.Intercambio;
-import utilidades.status; // El enum de status { ERROR, OK }
+import utilidades.Status; // El enum de status { ERROR, OK }
 import notificaciones.Notificacion;
 
 /**
