@@ -13,6 +13,7 @@ public abstract class Producto {
     private final Date fechaPublicacion;
     private Categoria categoria;
 
+    //CONSTRUCTOR//
     public Producto(String nombre, String descripcion, String imagen) {
         this.id = UUID.randomUUID().toString();
         this.nombre = nombre;
