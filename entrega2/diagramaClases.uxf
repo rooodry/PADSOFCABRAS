@@ -3,6 +3,7 @@
 --
 -nombre: String
 -descripcion: String
+-precio: double
 -valoracion: int
 -imagen: String
 -fechaPublicacion: Date
