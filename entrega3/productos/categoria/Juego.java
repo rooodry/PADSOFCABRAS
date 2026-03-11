@@ -1,11 +1,12 @@
 package productos.categoria;
+
 public class Juego extends Categoria {
     private final int numJugadores;
     private final int edadMinima;
     private final TipoJuego tipoJuego; 
 
     public Juego(int numJugadores, int edadMinima, TipoJuego tipoJuego) {
-        super();
+        super("Juego");
         this.numJugadores = numJugadores;
         this.edadMinima = edadMinima;
         this.tipoJuego = tipoJuego;

@@ -5,7 +5,7 @@ public class Figura extends Categoria {
     private final String marca;
 
     public Figura(double altura, double anchura, String marca) {
-        super(); 
+        super("Figura"); 
         this.altura = altura;
         this.anchura = anchura;
         this.marca = marca;

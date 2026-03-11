@@ -58,7 +58,8 @@ STOCK
 m1=productos *</panel_attributes><additional_attributes>10;60;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1430</x><y>1190</y><w>210</w><h>50</h></coordinates><panel_attributes>bg=blue
 PACK
 --
--precio: double</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1530</x><y>950</y><w>110</w><h>110</h></coordinates><panel_attributes>lt=&lt;-
+-precio: double
+-nombre: String</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1530</x><y>950</y><w>110</w><h>110</h></coordinates><panel_attributes>lt=&lt;-
 m1=0..* descuentos</panel_attributes><additional_attributes>10;90;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1190</x><y>1180</y><w>260</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
 </panel_attributes><additional_attributes>240;20;10;20</additional_attributes></element><element><id>Relation</id><coordinates><x>1190</x><y>800</y><w>90</w><h>420</h></coordinates><panel_attributes>lt=&lt;-
 m1=* productos</panel_attributes><additional_attributes>10;10;10;400</additional_attributes></element><element><id>Relation</id><coordinates><x>1470</x><y>1100</y><w>110</w><h>110</h></coordinates><panel_attributes>lt=&lt;-
