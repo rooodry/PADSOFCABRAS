@@ -35,6 +35,10 @@ public class ProductoSegundaMano extends Producto {
         this.estaDisponible = false;
     }
 
+    public void setValoracionEmpleado(int valoracion) {
+        this.valoracionEmpleado = valoracion;
+    }
+
     public void setValoracion(int valoracion, double valorEstimado, EstadoConservacion estadoConservacion) {
         this.valoracionEmpleado = valoracion;
         this.valorEstimado = valorEstimado;

@@ -7,7 +7,7 @@ public class Intercambio {
 
     private final Date fechaOferta;
     private final Date fechaLimite;
-    private final Date fechaAceptada;
+    private Date fechaAceptada;
     private boolean intercambiado;
 
     public Intercambio(Date fechaOferta) {
@@ -20,7 +20,23 @@ public class Intercambio {
 
         
         this.fechaLimite = calendar.getTime();
+
+        this.fechaAceptada = null;
+
+        this.intercambiado = false;
+
+
     }
 
-}
+    //SETTERS//
+    public void setFechaAceptada(Date fecha) {this.fechaAceptada = new Date();}
+    public void setIntercambiado(boolean flag) {this.intercambiado = flag;}
 
+    //GETTERS//
+    public Date getFechaOferta() {return new Date(this.fechaOferta.getTime());}
+    public Date getFechaLimite() {return new Date(this.fechaLimite.getTime());}
+    public Date getFechaAceptada() {return new Date(this.fechaAceptada.getTime());}
+    public boolean getIntercambiado() {return this.intercambiado;}
+
+
+}

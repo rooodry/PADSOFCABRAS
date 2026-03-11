@@ -8,7 +8,11 @@ import compras.Cesta;
 import compras.Pedido;
 import intercambios.Oferta;
 import intercambios.Intercambio;
+<<<<<<< HEAD
 import utilidades.Status;
+=======
+import utilidades.Status; // El enum de status { ERROR, OK }
+>>>>>>> 78f577e50270e554a40d76ca9d1c11ff9db2081e
 import notificaciones.Notificacion;
 
 /**
