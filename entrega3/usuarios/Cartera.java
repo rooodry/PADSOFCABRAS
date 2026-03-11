@@ -8,7 +8,7 @@ public class Cartera {
     private int numProductos;
     private List<ProductoSegundaMano> productos;
 
-    public cartera() {
+    public Cartera() {
         this.productos = new ArrayList<>();
         this.numProductos = 0;
     }
