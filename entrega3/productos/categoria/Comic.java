@@ -1,4 +1,5 @@
 package productos.categoria;
+
 public class Comic extends Categoria {
     private final int numPaginas;
     private final String autor;
@@ -6,7 +7,7 @@ public class Comic extends Categoria {
     private final Genero genero;
 
     public Comic(int numPaginas, String autor, String editorial, Genero genero) {
-        super();
+        super("Comic");
         this.numPaginas = numPaginas;
         this.autor = autor;
         this.editorial = editorial;
