@@ -3,8 +3,13 @@ import java.util.Date;
 
 public class ProductoTienda extends Producto {
 
-        public ProductoTienda(String nombre, String descripcion, double precio, int valoracion, String imagen, Date fechaPublicacion) {
-            super(nombre, descripcion, precio, valoracion, imagen, fechaPublicacion);
+        private double precio;
+
+        public ProductoTienda(String nombre, String descripcion, String imagen) {
+            super(nombre, descripcion, imagen);
         }
+
+            public double getPrecio() {return precio;}
+            public void setPrecio(double precio) {this.precio = precio;}
 
 }

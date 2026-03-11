@@ -8,25 +8,19 @@ public abstract class Producto {
     private final String id; 
     private String nombre;
     private String descripcion;
-    private double precio;
     private int valoracion;
     private String imagen;
     private Date fechaPublicacion;
     private Categoria categoria;
 
-    public Producto(String nombre, String descripcion, double precio, String imagen) {
+    public Producto(String nombre, String descripcion, String imagen) {
         this.id = UUID.randomUUID().toString();
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.precio = precio;
         this.valoracion = 0;
         this.imagen = imagen;
         this.fechaPublicacion = new Date();
         this.categoria = null;
-    }
-
-    public Producto(String nombre, String descripcion) {
-        this(nombre, descripcion, 0.0, "");
     }
 
     public String getId() {
@@ -39,10 +33,6 @@ public abstract class Producto {
 
     public String getDescripcion() {
         return descripcion;
-    }
-
-    public double getPrecio() {
-        return precio;
     }
 
     public String getImagen() {
@@ -65,9 +55,6 @@ public abstract class Producto {
         this.descripcion = descripcion;
     }
 
-    public void setPrecio(double precio) {
-        this.precio = precio;
-    }
 
     public void setImagen(String imagen) {
         this.imagen = imagen;
