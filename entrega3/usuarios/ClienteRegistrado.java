@@ -8,34 +8,16 @@ import compras.Cesta;
 import compras.Pedido;
 import intercambios.Oferta;
 import intercambios.Intercambio;
-<<<<<<< HEAD
 import utilidades.Status;
-=======
-import utilidades.Status; // El enum de status { ERROR, OK }
->>>>>>> 78f577e50270e554a40d76ca9d1c11ff9db2081e
 import notificaciones.Notificacion;
 
-/**
- * CLIENTE_REGISTRADO
---
--DNI: String
--
-+ añadirALaCesta(p: Producto): void
-+ comprar(): status
-+ pagarPedido(p): status
-+ editarPerfil(): void
-+ leerNotificaicion(n: Notificacion): void
-+ borrarNotificacion(n: Notificacion): void
-+ subirProducto(Producto: p): status
-+ pagarValoracion(Producto: p): status
- */
 public class ClienteRegistrado {
     private String DNI;
     private Cartera cartera;
     private Cesta cesta;
     private List<Pedido> pedidos;
     private List<Notificacion> notificaciones;
-    private List<Oferta> ofertasHechas;
+    private List<Oferta> ofertasRealizadas;
     private List<Oferta> ofertasRecibidas;
     private List<Intercambio> intercambiosPendientes;
 
