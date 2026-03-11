@@ -1,7 +1,7 @@
 package usuarios;
 
+import intercambios.Intercambio;
 import productos.ProductoSegundaMano;
-import otros.Intercambio;
 
 public class EmpleadoIntercambio extends Empleado {
     
