@@ -9,8 +9,9 @@ public class Intercambio {
     private final Date fechaLimite;
     private Date fechaAceptada;
     private boolean intercambiado;
+    private final Oferta oferta;
 
-    public Intercambio(Date fechaOferta) {
+    public Intercambio(Date fechaOferta, Oferta oferta) {
 
         this.fechaOferta = new Date(fechaOferta.getTime());
 
@@ -25,7 +26,7 @@ public class Intercambio {
 
         this.intercambiado = false;
 
-
+        this.oferta = oferta;
     }
 
     //SETTERS//
@@ -37,6 +38,7 @@ public class Intercambio {
     public Date getFechaLimite() {return new Date(this.fechaLimite.getTime());}
     public Date getFechaAceptada() {return new Date(this.fechaAceptada.getTime());}
     public boolean getIntercambiado() {return this.intercambiado;}
+    public Oferta getOferta() {return this.oferta;}
 
 
 }

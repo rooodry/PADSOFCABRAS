@@ -1,4 +1,4 @@
-package intercambios;
+package compras;
 
 public class Pedido {
     private EstadoPedido estadoPedido;
