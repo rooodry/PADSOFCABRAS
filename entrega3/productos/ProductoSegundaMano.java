@@ -1,7 +1,6 @@
 package productos;
 import usuarios.ClienteRegistrado;
 
-
 public class ProductoSegundaMano extends Producto {
     private boolean estaDisponible;
     private ClienteRegistrado propietario;
