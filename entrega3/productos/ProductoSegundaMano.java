@@ -10,8 +10,8 @@ public class ProductoSegundaMano extends Producto {
     private EstadoConservacion estadoConservacion;
     private EstadoProducto estadoProducto;
 
-    public ProductoSegundaMano(String nombre, String descripcion, ClienteRegistrado propietario) {
-        super(nombre, descripcion);
+    public ProductoSegundaMano(String nombre, String descripcion, String imagen, ClienteRegistrado propietario) {
+        super(nombre, descripcion, imagen);
         this.propietario = propietario;
         this.estaDisponible = false;
         this.estaValorado = false;
