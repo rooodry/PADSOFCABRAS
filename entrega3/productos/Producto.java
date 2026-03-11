@@ -25,6 +25,10 @@ public abstract class Producto {
         this.categoria = null;
     }
 
+    public Producto(String nombre, String descripcion) {
+        this(nombre, descripcion, 0.0, "");
+    }
+
     public String getId() {
         return id;
     }
