@@ -8,7 +8,7 @@ import compras.Cesta;
 import compras.Pedido;
 import intercambios.Oferta;
 import intercambios.Intercambio;
-import utilidades.status; // El enum de status { ERROR, OK }
+import utilidades.Status;
 import notificaciones.Notificacion;
 
 /**
@@ -27,42 +27,94 @@ import notificaciones.Notificacion;
  */
 public class ClienteRegistrado {
     private String DNI;
+    private Cartera cartera;
+    private Cesta cesta;
+    private List<Pedido> pedidos;
+    private List<Notificacion> notificaciones;
+    private List<Oferta> ofertasHechas;
+    private List<Oferta> ofertasRecibidas;
+    private List<Intercambio> intercambiosPendientes;
 
-    public ClienteRegistrado(String DNI) {
+
+    public ClienteRegistrado(String nombreUsuario, String contraseña, String DNI) {
+        super(nombreUsuario, contraseña);
         this.DNI = DNI;
+        this.cartera = new Cartera();
+        this.cesta = new Cesta();
+        this.pedidos = new ArrayList<>();
+        this.notificaciones = new ArrayList<>();
+        this.ofertasHechas = new ArrayList<>();
+        this.ofertasRealizadas = new ArrayList<>();
+        this.intercambiosPendientes = new ArrayList<>();
+
     }
 
     public void añadirALaCesta(Producto producto) {
-        this.productos.add(producto);
+        this.cesta.comprobarStock(producto, 1) /*AKJSKLJAKLS */
     }
 
-    public status comprar() {
+    public Status comprar() {
+        if(this.cesta.estaVacio()) {
+            return Status.ERROR;
+        }
 
+        Pedido nuevoPedido = new Pedido(this.carrito);
+        this.pedidos.add(nuevoPedido);
+        this.cesta.limpiarCesta();
+
+        return Status.OK;
     }
 
-    public status pagarPedido(Pedido pedido) {
+    public Status pagarPedido(Pedido pedido) {
+        if(this.pedidos.contains(pedido)) {
+            pedido.setEstadoPedido(estadoPedido.EN_PREPARACION);
+            return Status.OK;
+        }
 
+        return Status.ERROR;
     }
 
-    public void editarPerfil() {
-
+    public void editarPerfil(String nuevoNombre, String nuevaContraseña) {
+        this.setNombreUsuario(nuevoNombre);
+        this.setContraseña(nuevaContraseña);
     }
 
     public void leerNotificaicion(Notificacion notificacion) {
-
+        if (this.notificaciones.contains(notificacion)) {
+            notificacion.marcarComoLeida();
+        }
     }
 
-    public void borrarNotificaicion(Notificacion notificacion) {
-
+    public void borrarNotificacion(Notificacion notificacion) {
+        this.notificaciones.remove(notificacion);
     }
 
-    public status subirProducto(Producto producto) {
-
+    public Status subirProducto(Producto p) {
+        if (p instanceof ProductoSegundaMano) {
+            ProductoSegundaMano p2m = (ProductoSegundaMano) p;
+            this.cartera.añadirProducto(p2m);
+            return Status.OK;
+        }
+        System.out.println("Solo se pueden subir productos de segunda mano a la cartera.");
+        return Status.ERROR;
     }
 
-    public status pagarValoracion(Producto producto) {
-
+    public Status pagarValoracion(Producto p) {
+        if (p instanceof ProductoSegundaMano) {
+            ProductoSegundaMano productoSegundaMano = (ProductoSegundaMano) p;
+            // Verifica que el producto esté en su cartera antes de pagar
+            if (this.cesta.getProductosSegundaMano().contains(productoSegundaMano)) {
+                productoSegundaMano.pedirValoracion();
+                return Status.OK;
+            }
+        }
+        return Status.ERROR;
     }
-
+    
+    public String getDNI() { return DNI; }
+    public Cartera getCartera() { return cartera; }
+    public Cesta getCarrito() { return cesta; }
+    public List<Pedido> getPedidos() { return pedidos; }
+    public List<Notificacion> getNotificaciones() { return notificaciones; }
 
 }
