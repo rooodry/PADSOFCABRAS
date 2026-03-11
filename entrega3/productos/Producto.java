@@ -10,7 +10,7 @@ public abstract class Producto {
     private String descripcion;
     private int valoracion;
     private String imagen;
-    private Date fechaPublicacion;
+    private final Date fechaPublicacion;
     private Categoria categoria;
 
     public Producto(String nombre, String descripcion, String imagen) {
@@ -23,44 +23,34 @@ public abstract class Producto {
         this.categoria = null;
     }
 
-    public String getId() {
-        return id;
-    }
+    //SETERS//
+    public void setNombre(String nombre) {this.nombre = nombre;}
 
-    public String getNombre() {
-        return nombre;
-    }
+    public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
 
-    public String getDescripcion() {
-        return descripcion;
-    }
+    public void setValoracion(int valoracion) {this.valoracion = valoracion;}
 
-    public String getImagen() {
-        return imagen;
-    }
+    public void setImagen(String imagen) {this.imagen = imagen;}
 
-    public Date getFechaPublicacion() {
-        return new Date(fechaPublicacion.getTime());
-    }
+    public void setCategoria(Categoria categoria) {this.categoria = categoria;}
 
-    public Categoria getCategoria() {
-        return categoria;
-    }
+    //GETTERS//
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public String getId() {return this.id;}
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
+    public String getNombre() {return this.nombre;}
 
+    public String getDescripcion() {return this.descripcion;}
 
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
-    }
+    public int getValoracion() {return this.valoracion;}
 
-    public void setCategoria(Categoria categoria) {
-    this.categoria = categoria;
-    }
+    public String getImagen() {return this.imagen;}
+
+    public Date getFechaPublicacion() {return new Date(fechaPublicacion.getTime());}
+
+    public Categoria getCategoria() {return categoria;}
+
+    
+
+  
 }
