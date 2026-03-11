@@ -21,5 +21,9 @@ public class Stock {
     public void reducirStock(ProductoTienda p) {
         productos.remove(p);
     }
+
+    public int getNumProductos() {
+        return this.productos.size();
+    }
     
 }

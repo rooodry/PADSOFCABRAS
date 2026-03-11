@@ -77,8 +77,8 @@ public class ClienteRegistrado {
 
     public Status subirProducto(Producto p) {
         if (p instanceof ProductoSegundaMano) {
-            ProductoSegundaMano p2m = (ProductoSegundaMano) p;
-            this.cartera.añadirProducto(p2m);
+            ProductoSegundaMano productoSegundaMano = (ProductoSegundaMano) p;
+            this.cartera.añadirProducto(productoSegundaMano);
             return Status.OK;
         }
         System.out.println("Solo se pueden subir productos de segunda mano a la cartera.");
