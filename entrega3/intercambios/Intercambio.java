@@ -2,6 +2,8 @@ package intercambios;
 import java.util.Calendar;
 import java.util.Date;
 
+import utilidades.EstadoOferta;
+
 
 public class Intercambio {
 
@@ -39,6 +41,15 @@ public class Intercambio {
     public Date getFechaAceptada() {return new Date(this.fechaAceptada.getTime());}
     public boolean getIntercambiado() {return this.intercambiado;}
     public Oferta getOferta() {return this.oferta;}
+
+
+    public void aceptarOferta() {
+        this.oferta.setEstadoOferta(EstadoOferta.ACEPTADA);
+    }
+
+    public void rechazarOferta() {
+        this.oferta.setEstadoOferta(EstadoOferta.RECHAZADA);
+    }
 
 
 }
