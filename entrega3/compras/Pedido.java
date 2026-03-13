@@ -1,6 +1,5 @@
 package compras;
 
-<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,10 +51,6 @@ public class Pedido {
             break;
     }
 
-    public void setFechaRecogida(Date fechaRecogida) {
-        this.fechaRecogida = new Date(fechaRecogida.getTime());
-    }
-
     public void cancelar() {
         this.estadoPedido = EstadoPedido.CANCELADO;
     }
@@ -70,7 +65,7 @@ public class Pedido {
 
     public Date getFechaPago() {
         return fechaPago != null ? new Date(fechaPago.getTime()) : null;
-    }  
+    }
 
     public Date getFechaPreparacion() {
         return fechaPreparacion != null ? new Date(fechaPreparacion.getTime()) : null;
@@ -78,14 +73,6 @@ public class Pedido {
 
     public Date getFechaRecogida() {
         return fechaRecogida != null ? new Date(fechaRecogida.getTime()) : null;
-=======
-import utilidades.EstadoPedido;
-
-public class Pedido {
-    private EstadoPedido estadoPedido;
-
-    public Pedido(Cesta cesta) {
->>>>>>> 20962e359201956ec278d62abb15a9514f8d3356
     }
 
     public EstadoPedido getEstadoPedido() {
@@ -94,7 +81,7 @@ public class Pedido {
 
     public ClienteRegistrado getCliente() {
         return cliente;
-    }       
+    }
 
     public List<ProductoTienda> getProductos() {
         return new ArrayList<>(productos);
