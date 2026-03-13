@@ -1,4 +1,4 @@
-package compras;
+package utilidades;
 
 public enum EstadoPedido {
     EN_CARRITO, 

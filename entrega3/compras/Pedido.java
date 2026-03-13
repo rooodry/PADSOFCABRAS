@@ -1,5 +1,6 @@
 package compras;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -77,6 +78,14 @@ public class Pedido {
 
     public Date getFechaRecogida() {
         return fechaRecogida != null ? new Date(fechaRecogida.getTime()) : null;
+=======
+import utilidades.EstadoPedido;
+
+public class Pedido {
+    private EstadoPedido estadoPedido;
+
+    public Pedido(Cesta cesta) {
+>>>>>>> 20962e359201956ec278d62abb15a9514f8d3356
     }
 
     public EstadoPedido getEstadoPedido() {

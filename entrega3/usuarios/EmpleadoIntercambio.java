@@ -2,6 +2,8 @@ package usuarios;
 
 import intercambios.Intercambio;
 import productos.ProductoSegundaMano;
+
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.InputMismatchException;
@@ -47,9 +49,13 @@ public class EmpleadoIntercambio extends Empleado {
         teclado.close();
     }
 
-    public void marcarIntercambioListo(Intercambio i) {}
+    public void marcarIntercambioListo(Intercambio i) {
 
-    public void transferirPropiedad(Intercambio i) {} 
+    }
+
+    public void transferirPropiedad(Intercambio i) {
+
+    } 
 
     public void reportarFallo(Intercambio i) {}
 }

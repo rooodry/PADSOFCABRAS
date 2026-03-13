@@ -1,7 +1,7 @@
 package usuarios;
 
 import compras.Pedido;
-import compras.EstadoPedido;
+import utilidades.EstadoPedido;
 
 public class EmpleadoPedido extends Empleado {
 

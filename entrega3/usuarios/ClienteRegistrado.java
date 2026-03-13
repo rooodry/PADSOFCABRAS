@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import productos.Producto;
 import productos.ProductoSegundaMano;
+import productos.ProductoTienda;
+import productos.Stock;
 import compras.Cesta;
 import compras.Pedido;
 import intercambios.Oferta;
@@ -11,7 +13,7 @@ import intercambios.Intercambio;
 import utilidades.Status;
 import notificaciones.Notificacion;
 
-public class ClienteRegistrado {
+public class ClienteRegistrado extends Cliente {
     private String DNI;
     private Cartera cartera;
     private Cesta cesta;
@@ -29,22 +31,25 @@ public class ClienteRegistrado {
         this.cesta = new Cesta();
         this.pedidos = new ArrayList<>();
         this.notificaciones = new ArrayList<>();
-        this.ofertasHechas = new ArrayList<>();
         this.ofertasRealizadas = new ArrayList<>();
+        this.ofertasRecibidas = new ArrayList<>();
         this.intercambiosPendientes = new ArrayList<>();
 
     }
 
-    public void añadirALaCesta(Producto producto) {
-        this.cesta.comprobarStock(producto, 1) /*AKJSKLJAKLS */
+    public void añadirALaCesta(ProductoTienda producto, Stock stock) {
+        if(stock.getNumProductos(producto) > 0) {
+            this.cesta.añadirProducto(producto, 1);
+            stock.reducirStock(producto, 1);
+        }
     }
 
     public Status comprar() {
-        if(this.cesta.estaVacio()) {
+        if(this.cesta.estaVacia()) {
             return Status.ERROR;
         }
 
-        Pedido nuevoPedido = new Pedido(this.carrito);
+        Pedido nuevoPedido = new Pedido(this.cesta);
         this.pedidos.add(nuevoPedido);
         this.cesta.limpiarCesta();
 
@@ -53,7 +58,7 @@ public class ClienteRegistrado {
 
     public Status pagarPedido(Pedido pedido) {
         if(this.pedidos.contains(pedido)) {
-            pedido.setEstadoPedido(estadoPedido.EN_PREPARACION);
+            pedido.setEstadoPedido(EstadoPedido.EN_PREPARACION);
             return Status.OK;
         }
 
@@ -67,7 +72,7 @@ public class ClienteRegistrado {
 
     public void leerNotificaicion(Notificacion notificacion) {
         if (this.notificaciones.contains(notificacion)) {
-            notificacion.marcarComoLeida();
+            notificacion.setLeida();
         }
     }
 
@@ -77,8 +82,8 @@ public class ClienteRegistrado {
 
     public Status subirProducto(Producto p) {
         if (p instanceof ProductoSegundaMano) {
-            ProductoSegundaMano p2m = (ProductoSegundaMano) p;
-            this.cartera.añadirProducto(p2m);
+            ProductoSegundaMano productoSegundaMano = (ProductoSegundaMano) p;
+            this.cartera.añadirProducto(productoSegundaMano);
             return Status.OK;
         }
         System.out.println("Solo se pueden subir productos de segunda mano a la cartera.");
@@ -88,8 +93,8 @@ public class ClienteRegistrado {
     public Status pagarValoracion(Producto p) {
         if (p instanceof ProductoSegundaMano) {
             ProductoSegundaMano productoSegundaMano = (ProductoSegundaMano) p;
-            // Verifica que el producto esté en su cartera antes de pagar
-            if (this.cesta.getProductosSegundaMano().contains(productoSegundaMano)) {
+            
+            if(this.cartera.getProductos().contains(productoSegundaMano)) {
                 productoSegundaMano.pedirValoracion();
                 return Status.OK;
             }
