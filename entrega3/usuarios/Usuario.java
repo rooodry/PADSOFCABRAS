@@ -1,7 +1,7 @@
 package usuarios;
 
 public class Usuario {
-    private final String nombreUsuario;
+    private String nombreUsuario;
     private String contraseña;
 
     public Usuario(String nombreUsuario, String contraseña) {
@@ -15,5 +15,13 @@ public class Usuario {
 
     public String getContraseña() {
         return contraseña;
+    }
+
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
     }
 }

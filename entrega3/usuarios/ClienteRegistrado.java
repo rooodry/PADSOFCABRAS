@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import productos.Producto;
 import productos.ProductoSegundaMano;
+import productos.ProductoTienda;
+import productos.Stock;
 import compras.Cesta;
 import compras.Pedido;
 import intercambios.Oferta;
@@ -11,7 +13,7 @@ import intercambios.Intercambio;
 import utilidades.Status;
 import notificaciones.Notificacion;
 
-public class ClienteRegistrado {
+public class ClienteRegistrado extends Cliente {
     private String DNI;
     private Cartera cartera;
     private Cesta cesta;
@@ -29,14 +31,21 @@ public class ClienteRegistrado {
         this.cesta = new Cesta();
         this.pedidos = new ArrayList<>();
         this.notificaciones = new ArrayList<>();
-        this.ofertasHechas = new ArrayList<>();
         this.ofertasRealizadas = new ArrayList<>();
+        this.ofertasRecibidas = new ArrayList<>();
         this.intercambiosPendientes = new ArrayList<>();
 
     }
 
-    public void añadirALaCesta(Producto producto) {
-        this.cesta.comprobarStock(producto, 1) /*AKJSKLJAKLS */
+    public void añadirALaCesta(ProductoTienda producto) {
+        if(stock.getNumProductos(producto) > 0) {
+            this.cesta.añadirProducto(producto, 1);
+        }
+        reducirStock(producto);
+
+        /**
+        this.cesta.comprobarStock(stock, 1);
+        */
     }
 
     public Status comprar() {

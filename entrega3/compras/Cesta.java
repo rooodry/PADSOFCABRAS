@@ -3,6 +3,7 @@ package compras;
 import java.util.ArrayList;
 import java.util.List;
 import productos.Producto;
+import productos.Stock;
 import productos.ProductoSegundaMano;
 import compras.Cesta;
 import compras.Pedido;
@@ -16,8 +17,8 @@ public class Cesta {
     private int numProductos;
 
 
-    public Status comprobarStock(Producto producto, int cantidad) {
-        if(producto.getStock() >= cantidad) {
+    public Status comprobarStock(Stock stock, int cantidad) {
+        if(stock.getNumProductos() >= cantidad) {
             return Status.OK;
         }
 
