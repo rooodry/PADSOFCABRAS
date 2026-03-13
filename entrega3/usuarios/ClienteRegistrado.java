@@ -37,23 +37,19 @@ public class ClienteRegistrado extends Cliente {
 
     }
 
-    public void añadirALaCesta(ProductoTienda producto) {
+    public void añadirALaCesta(ProductoTienda producto, Stock stock) {
         if(stock.getNumProductos(producto) > 0) {
             this.cesta.añadirProducto(producto, 1);
+            stock.reducirStock(producto, 1);
         }
-        reducirStock(producto);
-
-        /**
-        this.cesta.comprobarStock(stock, 1);
-        */
     }
 
     public Status comprar() {
-        if(this.cesta.estaVacio()) {
+        if(this.cesta.estaVacia()) {
             return Status.ERROR;
         }
 
-        Pedido nuevoPedido = new Pedido(this.carrito);
+        Pedido nuevoPedido = new Pedido(this.cesta);
         this.pedidos.add(nuevoPedido);
         this.cesta.limpiarCesta();
 
@@ -62,7 +58,7 @@ public class ClienteRegistrado extends Cliente {
 
     public Status pagarPedido(Pedido pedido) {
         if(this.pedidos.contains(pedido)) {
-            pedido.setEstadoPedido(estadoPedido.EN_PREPARACION);
+            pedido.setEstadoPedido(EstadoPedido.EN_PREPARACION);
             return Status.OK;
         }
 
@@ -97,8 +93,8 @@ public class ClienteRegistrado extends Cliente {
     public Status pagarValoracion(Producto p) {
         if (p instanceof ProductoSegundaMano) {
             ProductoSegundaMano productoSegundaMano = (ProductoSegundaMano) p;
-            // Verifica que el producto esté en su cartera antes de pagar
-            if (this.cesta.getProductosSegundaMano().contains(productoSegundaMano)) {
+            
+            if(this.cartera.getProductos().contains(productoSegundaMano)) {
                 productoSegundaMano.pedirValoracion();
                 return Status.OK;
             }
