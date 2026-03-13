@@ -18,7 +18,7 @@ public class Cartera {
         this.numProductos = this.productos.size();
     }
 
-    public List<ProductoSegundaMano> getProductosCartera() {
+    public List<ProductoSegundaMano> getProductos() {
         return this.productos;
     }
 
