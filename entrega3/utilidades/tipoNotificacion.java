@@ -1,0 +1,16 @@
+package utilidades;
+
+public enum tipoNotificacion {
+    PAGO_REALIZADO,
+    PEDIDO_LISTO,
+    PEDIDO_EXPIRADO,
+    NUEVA_OFERTA,
+    OFERTA_ACEPTADA,
+    OFERTA_RECHAZADA,
+    NUEVO_DESCUENTO,
+    INTERCAMBIO_REALIZADO,
+    VALORACION_REALIZADA;
+
+
+}
+
