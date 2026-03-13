@@ -20,6 +20,8 @@ public class Usuario {
         return contraseña;
     }
 
+    public String getNombre() { return this.nombreUsuario;}
+
     public void setContraseña(String contraseña) {
         this.contraseña = contraseña;
     }

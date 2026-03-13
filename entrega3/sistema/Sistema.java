@@ -68,32 +68,50 @@ public class Sistema {
         this.usuarios.remove(e);
     }
 
-    public void modificarPermiso(Usuario admin, Empleado e, tiposEmpleado tipo) {
+    public Empleado modificarPermiso(Usuario admin, Empleado e, tiposEmpleado tipo) {
         
         Empleado emp;
 
         if(!(admin instanceof Gestor)) {
             System.err.println("Usuario no es gestor");
-            return;
+            return null;
         }
 
         if(tipo == tiposEmpleado.EMPLEADOS_INTERCAMBIO) {
-            emp = new EmpleadoIntercambio(e.getNombreUsuario(), e.getContraseña());
+            emp = new EmpleadoIntercambio(e.getNombre(), e.getContraseña());
             this.usuarios.remove(e);
         } else if (tipo == tiposEmpleado.EMPLEADOS_PEDIDO) {
-            emp = new EmpleadoPedido(e.getNombreUsuario(), e.getContraseña());
+            emp = new EmpleadoPedido(e.getNombre(), e.getContraseña());
             this.usuarios.remove(e);
         } else {
-            
+            emp = new EmpleadoProducto(e.getNombre(), e.getContraseña(), this.stock);
+            this.usuarios.remove(e);
         }
+
+        this.usuarios.add(emp);
+
+        return emp;
     }
+
+    public Pack crearPack(Usuario admin, String nombre, double precio, List<Producto> productos) {
+        
+        Pack pack;
+        
+        if(!(admin instanceof Gestor)) {
+            System.err.println("Usuario no es gestor");
+            return null;
+        }
+
+        pack = new Pack(nombre, precio, productos);
+    }
+
 
 }
 
 
 
 
-+ modificarPermiso(admin:Usuario, e: Empleado, nuevoPermiso: tiposEmpleado): void
++
 + crearPack(admin:Usuario, nombre: String, precio: double, productos: List<Producto>): Pack
 + actualizarStock(admin: Usuario, p: Producto, cantidad: int): void
 + registrarPedido(Pedido: p): void
