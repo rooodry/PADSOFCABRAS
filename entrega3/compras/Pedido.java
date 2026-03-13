@@ -1,9 +1,11 @@
 package compras;
 
+import utilidades.EstadoPedido;
+
 public class Pedido {
     private EstadoPedido estadoPedido;
 
-    public Pedido() {
+    public Pedido(Cesta cesta) {
     }
 
     public EstadoPedido getEstadoPedido() {

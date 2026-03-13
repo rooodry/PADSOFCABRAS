@@ -1,24 +1,20 @@
 package compras;
 
-import java.util.ArrayList;
-import java.util.List;
-import productos.Producto;
+import java.util.HashMap;
+import java.util.Map;
+import productos.ProductoTienda;
 import productos.Stock;
-import productos.ProductoSegundaMano;
-import compras.Cesta;
-import compras.Pedido;
-import intercambios.Oferta;
-import intercambios.Intercambio;
 import utilidades.Status;
-import notificaciones.Notificacion;
 
 public class Cesta {
-    private List<Producto> productos;
-    private int numProductos;
+    private Map<ProductoTienda, Integer> productos;
 
+    public Cesta() {
+        this.productos = new HashMap<>();
+    }
 
-    public Status comprobarStock(Stock stock, int cantidad) {
-        if(stock.getNumProductos() >= cantidad) {
+    public Status comprobarStock(Stock stock, ProductoTienda producto, int cantidad) {
+        if(stock != null && stock.getNumProductos(producto) >= cantidad) {
             return Status.OK;
         }
 
@@ -26,23 +22,24 @@ public class Cesta {
     }
 
     public boolean estaVacia() {
-        if(numProductos <= 0) {
-            return true;
-        }
-
-        return false;
+        return this.productos.isEmpty();
     }
 
     public void limpiarCesta() {
+        this.productos.clear();
     }
 
-    public void añadirProducto(Producto producto, int cantidad) {
-        this.productos.add(producto);
-        /*TERMINARKDJAFJASDKLFJLKSADJFKLASJFÑKLJ */
+    public void añadirProducto(ProductoTienda producto, int cantidad) {
+        if(cantidad > 0) {
+            this.productos.put(producto, this.productos.getOrDefault(producto, 0) + cantidad);
+        }
     }
 
-    public void eliminarProducto(Producto producto) {
+    public void eliminarProducto(ProductoTienda producto) {
         this.productos.remove(producto);
     }
 
-}
+    public Map<ProductoTienda, Integer> getProductos() {
+        return this.productos;
+    }
+}Producto
