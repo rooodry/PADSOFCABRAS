@@ -42,4 +42,4 @@ public class Cesta {
     public Map<ProductoTienda, Integer> getProductos() {
         return this.productos;
     }
-}Producto
+}
