@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Usuario {
-    private final String nombreUsuario;
+    private String nombreUsuario;
     private String contraseña;
     private List<Notificacion> notificaciones;
 
@@ -16,12 +16,15 @@ public class Usuario {
     }
 
 
-    //SETTERS//
-    public void addNotificacion(Notificacion n) {this.notificaciones.add(n);}
+    public String getContraseña() {
+        return contraseña;
+    }
 
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
+    }
 
-    //GETTERS//
-    public String getNombreUsuario() {return nombreUsuario;}
-    public String getContraseña() {return contraseña;}
-    public List<Notificacion> getNotificaciones() {return this.notificaciones;}
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
 }
