@@ -85,7 +85,7 @@ SISTEMA
 --
 + darAltaEmpleado(admin:Usuario, nombreUsr: String, contrasena: String, tipo: tipoEmpleado): void
 + darBajaEmpleado(admin:Usuario, e: Empleado): void
-+ modificarPermiso(admin:Usuario, e: Empleado, nuevoPermiso: tiposEmpleado): void
++ modificarPermiso(admin:Usuario, e: Empleado, nuevoPermiso: tiposEmpleado): Empleado
 + crearPack(admin:Usuario, nombre: String, precio: double, productos: List&lt;Producto&gt;): Pack
 + actualizarStock(admin: Usuario, p: Producto, cantidad: int): void
 + registrarPedido(Pedido: p): void
