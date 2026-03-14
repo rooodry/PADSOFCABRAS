@@ -1,6 +1,6 @@
 package utilidades;
 
-public enum tipoNotificacion {
+public enum TipoNotificacion {
     PAGO_REALIZADO,
     PEDIDO_LISTO,
     PEDIDO_EXPIRADO,
