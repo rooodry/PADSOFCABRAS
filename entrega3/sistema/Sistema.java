@@ -102,7 +102,12 @@ public class Sistema {
             return null;
         }
 
-        pack = new Pack(nombre, precio, productos);
+        return pack = new Pack(nombre, precio, productos);
+
+    }
+
+    public Codigo generarCodigo(ClienteRegistrado c, Pedido p) {
+        
     }
 
 
@@ -111,8 +116,7 @@ public class Sistema {
 
 
 
-+
-+ crearPack(admin:Usuario, nombre: String, precio: double, productos: List<Producto>): Pack
+
 + actualizarStock(admin: Usuario, p: Producto, cantidad: int): void
 + registrarPedido(Pedido: p): void
 + generarCodigo(Cliente_Registrado: c, Pedido: p): Codigo
