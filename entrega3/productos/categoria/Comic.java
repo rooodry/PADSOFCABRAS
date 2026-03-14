@@ -6,8 +6,8 @@ public class Comic extends Categoria {
     private final String editorial;
     private final Genero genero;
 
-    public Comic(int numPaginas, String autor, String editorial, Genero genero) {
-        super("Comic");
+    public Comic(String comic, int numPaginas, String autor, String editorial, Genero genero) {
+        super("Comic:" + comic);
         this.numPaginas = numPaginas;
         this.autor = autor;
         this.editorial = editorial;
@@ -15,19 +15,13 @@ public class Comic extends Categoria {
     }
 
 
-    public int getNumPaginas() {
-        return numPaginas;
-    }
+    //GETTERS//
 
-    public String getAutor() {
-        return autor;
-    }
+    public int getNumPaginas() {return this.numPaginas;}
 
-    public String getEditorial() {
-        return editorial;
-    }
+    public String getAutor() {return this.autor;}
 
-    public Genero getGenero() {
-        return genero;
-    }
+    public String getEditorial() {return this.editorial;}
+
+    public Genero getGenero() {return this.genero;}
 }

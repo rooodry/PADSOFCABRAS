@@ -4,23 +4,19 @@ public class Figura extends Categoria {
     private final double anchura;
     private final String marca;
 
-    public Figura(double altura, double anchura, String marca) {
-        super("Figura"); 
+    public Figura(String nombre, double altura, double anchura, String marca) {
+        super("Figura:" + nombre); 
         this.altura = altura;
         this.anchura = anchura;
         this.marca = marca;
     }
 
-    public double getAltura() {
-        return altura;
-    }
 
-    public double getAnchura() {
-        return anchura;
-    }
+    //GETTERS//
+    public double getAltura() {return this.altura;}
 
-    public String getMarca() {
-        return marca;
-    }
+    public double getAnchura() {return this.anchura;}
+
+    public String getMarca() {return this.marca;}
     
 }

@@ -8,8 +8,8 @@ public class Codigo {
     public Codigo() {
         this.codigo = UUID.randomUUID().toString();
     }
- 
-    public String getCodigo() {
-        return codigo;
-    }
+    
+
+    //GETTER//
+    public String getCodigo() {return this.codigo;}
 }

@@ -2,6 +2,7 @@ package usuarios;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import productos.ProductoSegundaMano;
 
 public class Cartera {
@@ -13,16 +14,13 @@ public class Cartera {
         this.numProductos = 0;
     }
 
+    //SETTERS//
     public void añadirProducto(ProductoSegundaMano productoSegundaMano) {
         this.productos.add(productoSegundaMano);
-        this.numProductos = this.productos.size();
+        this.numProductos++;
     }
 
-    public List<ProductoSegundaMano> getProductos() {
-        return this.productos;
-    }
-
-    public int getNumProductos() {
-        return numProductos;
-    }
+    //GETTERS//
+    public List<ProductoSegundaMano> getProductos() {return this.productos;}
+    public int getNumProductos() {return this.numProductos;}
 }

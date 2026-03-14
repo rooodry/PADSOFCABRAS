@@ -17,31 +17,25 @@ public class Pack {
 
     }
 
-    public String getNombre() {
-        return nombre;
-    }
+    //SETTERS//
+    public void addSubpack(Pack subpack) {this.subpacks.add(subpack);}
+    public void setPrecio(double precio) {this.precio = precio;}
 
-    public double getPrecio() {
-        return precio;
-    }
 
-    public List<Producto> getProductos() {
-        return new ArrayList<>(productos);
-    }
+    //GETTERS//
+    public String getNombre() {return this.nombre;}
 
-    public List<Pack> getSubpacks() {
-        return new ArrayList<>(subpacks);
-    }
+    public double getPrecio() {return this.precio;}
 
-    public void addSubpack(Pack subpack) {
-        subpacks.add(subpack);
-    }
+    public List<Producto> getProductos() {return new ArrayList<>(this.productos);}
+
+    public List<Pack> getSubpacks() {return new ArrayList<>(this.subpacks);}
+
+
 
     public void removeSubpack(Pack subpack) {
         subpacks.remove(subpack);
     }
 
-    public void setPrecio(double precio) {
-        this.precio = precio;
-    }
+
 }

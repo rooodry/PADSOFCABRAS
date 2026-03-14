@@ -8,6 +8,9 @@ public class DescuentoPorcentaje extends Descuento {
     public DescuentoPorcentaje(Date fechaInicio, Date fechaFin, double porcentaje) {
         super(fechaInicio, fechaFin);
         this.porcentaje = porcentaje;
-    } 
+    }
+
+    //GETTER//
+    public double getPorcentaje() {return this.porcentaje;}
     
 }

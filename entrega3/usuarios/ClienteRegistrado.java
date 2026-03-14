@@ -10,11 +10,12 @@ import compras.Cesta;
 import compras.Pedido;
 import intercambios.Oferta;
 import intercambios.Intercambio;
+import utilidades.EstadoPedido;
 import utilidades.Status;
 import notificaciones.Notificacion;
 
 public class ClienteRegistrado extends Cliente {
-    private String DNI;
+    private final String DNI;
     private Cartera cartera;
     private Cesta cesta;
     private List<Pedido> pedidos;
@@ -34,9 +35,13 @@ public class ClienteRegistrado extends Cliente {
         this.ofertasRealizadas = new ArrayList<>();
         this.ofertasRecibidas = new ArrayList<>();
         this.intercambiosPendientes = new ArrayList<>();
-
     }
 
+    //SETTERS//
+    public void editarPerfil(String nuevoNombre, String nuevaContraseña) {
+        this.setNombreUsuario(nuevoNombre);
+        this.setContraseña(nuevaContraseña);
+    }
     public void añadirALaCesta(ProductoTienda producto, Stock stock) {
         if(stock.getNumProductos(producto) > 0) {
             this.cesta.añadirProducto(producto, 1);
@@ -44,12 +49,19 @@ public class ClienteRegistrado extends Cliente {
         }
     }
 
+    //GETTERS//
+    public String getDNI() {return this.DNI;}
+    public Cartera getCartera() {return this.cartera;}
+    public Cesta getCarrito() { return cesta; }
+    public List<Pedido> getPedidos() { return pedidos; }
+    public List<Notificacion> getNotificaciones() { return notificaciones; }
+
     public Status comprar() {
         if(this.cesta.estaVacia()) {
             return Status.ERROR;
         }
 
-        Pedido nuevoPedido = new Pedido(this.cesta);
+        Pedido nuevoPedido = new Pedido(this, this.cesta.getProductos()); //CONFLICTO EN CESTA PRODUCTOS ES MAP, EN PEDIDO PRODUCTOS ES LISTA//
         this.pedidos.add(nuevoPedido);
         this.cesta.limpiarCesta();
 
@@ -65,10 +77,6 @@ public class ClienteRegistrado extends Cliente {
         return Status.ERROR;
     }
 
-    public void editarPerfil(String nuevoNombre, String nuevaContraseña) {
-        this.setNombreUsuario(nuevoNombre);
-        this.setContraseña(nuevaContraseña);
-    }
 
     public void leerNotificaicion(Notificacion notificacion) {
         if (this.notificaciones.contains(notificacion)) {
@@ -80,32 +88,20 @@ public class ClienteRegistrado extends Cliente {
         this.notificaciones.remove(notificacion);
     }
 
-    public Status subirProducto(Producto p) {
-        if (p instanceof ProductoSegundaMano) {
-            ProductoSegundaMano productoSegundaMano = (ProductoSegundaMano) p;
-            this.cartera.añadirProducto(productoSegundaMano);
-            return Status.OK;
-        }
-        System.out.println("Solo se pueden subir productos de segunda mano a la cartera.");
-        return Status.ERROR;
+    public Status subirProducto(ProductoSegundaMano p) {
+        ProductoSegundaMano productoSegundaMano = (ProductoSegundaMano) p;
+        this.cartera.añadirProducto(productoSegundaMano);
+        return Status.OK;
     }
 
-    public Status pagarValoracion(Producto p) {
-        if (p instanceof ProductoSegundaMano) {
-            ProductoSegundaMano productoSegundaMano = (ProductoSegundaMano) p;
-            
-            if(this.cartera.getProductos().contains(productoSegundaMano)) {
-                productoSegundaMano.pedirValoracion();
-                return Status.OK;
-            }
+    public Status pagarValoracion(ProductoSegundaMano p) {
+        if(this.cartera.getProductos().contains(p)) {
+            p.pedirValoracion();
+            return Status.OK;
         }
         return Status.ERROR;
     }
     
-    public String getDNI() { return DNI; }
-    public Cartera getCartera() { return cartera; }
-    public Cesta getCarrito() { return cesta; }
-    public List<Pedido> getPedidos() { return pedidos; }
-    public List<Notificacion> getNotificaciones() { return notificaciones; }
+
 
 }

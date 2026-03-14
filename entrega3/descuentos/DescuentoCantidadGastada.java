@@ -3,8 +3,8 @@ import java.util.Date;
 
 public class DescuentoCantidadGastada extends Descuento { 
 
-    private double cantidadMinima;
-    private double porcentaje;
+    private final double cantidadMinima;
+    private final double porcentaje;
 
     public DescuentoCantidadGastada(Date fechaInicio, Date fechaFin, double cantidadMinima, double porcentaje) {
         super(fechaInicio, fechaFin);
@@ -12,4 +12,9 @@ public class DescuentoCantidadGastada extends Descuento {
         this.porcentaje = porcentaje;
     } 
     
+    //GETTERS//
+    public double getCantidadMinima() {return this.cantidadMinima;}
+    public double getPorcentaje() {return this.porcentaje;}
+
+
 }

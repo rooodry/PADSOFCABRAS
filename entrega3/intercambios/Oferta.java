@@ -1,11 +1,8 @@
 package intercambios;
 
 import productos.ProductoSegundaMano;
-import usuarios.Cliente;
-import usuarios.ClienteRegistrado;
 import usuarios.ClienteRegistrado;
 import utilidades.EstadoOferta;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Oferta {

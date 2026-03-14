@@ -38,7 +38,7 @@ public class Sistema {
     public void addPedido(Pedido p) {this.pedidos.add(p);}
 
 
-    public void darAltaEmpleado(Usuario admin, String nombreEmpleado, String contraseña, tiposEmpleado tipo) {
+    public void darAltaEmpleado(Usuario admin, String nombreEmpleado, String contraseña, TiposEmpleado tipo) {
         
         Empleado e = null;
 
@@ -47,9 +47,9 @@ public class Sistema {
             return;
         }
 
-        if(tipo == tiposEmpleado.EMPLEADOS_INTERCAMBIO) {
+        if(tipo == TiposEmpleado.EMPLEADOS_INTERCAMBIO) {
             e = new EmpleadoIntercambio(nombreEmpleado, contraseña);
-        } else if (tipo == tiposEmpleado.EMPLEADOS_PEDIDO) {
+        } else if (tipo == TiposEmpleado.EMPLEADOS_PEDIDO) {
             e = new EmpleadoPedido(nombreEmpleado, contraseña);
         } else {
             e = new EmpleadoProducto(nombreEmpleado, contraseña, this.stock);
@@ -68,7 +68,7 @@ public class Sistema {
         this.usuarios.remove(e);
     }
 
-    public Empleado modificarPermiso(Usuario admin, Empleado e, tiposEmpleado tipo) {
+    public Empleado modificarPermiso(Usuario admin, Empleado e, TiposEmpleado tipo) {
         
         Empleado emp;
 
@@ -77,10 +77,10 @@ public class Sistema {
             return null;
         }
 
-        if(tipo == tiposEmpleado.EMPLEADOS_INTERCAMBIO) {
+        if(tipo == TiposEmpleado.EMPLEADOS_INTERCAMBIO) {
             emp = new EmpleadoIntercambio(e.getNombre(), e.getContraseña());
             this.usuarios.remove(e);
-        } else if (tipo == tiposEmpleado.EMPLEADOS_PEDIDO) {
+        } else if (tipo == TiposEmpleado.EMPLEADOS_PEDIDO) {
             emp = new EmpleadoPedido(e.getNombre(), e.getContraseña());
             this.usuarios.remove(e);
         } else {

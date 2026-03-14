@@ -12,20 +12,20 @@ public abstract class Categoria {
         this.subcategorias = new ArrayList<>();
     }
 
-    public String getNombre() {
-        return nombre;
-    }
+    //SETTER//
+    public void addSubcategoria(Categoria subcategoria) {this.subcategorias.add(subcategoria);}
 
-    public List<Categoria> getSubcategorias() {
-        return new ArrayList<>(subcategorias);
-    }
+    //GETTERS//
+    public String getNombre() {return this.nombre;}
 
-    public void addSubcategoria(Categoria subcategoria) {
-        subcategorias.add(subcategoria);
-    }
+    public List<Categoria> getSubcategorias() {return new ArrayList<>(subcategorias);}
+
+
+
+
 
     public void removeSubcategoria(Categoria subcategoria) {
-        subcategorias.remove(subcategoria);
+        this.subcategorias.remove(subcategoria);
     }
     
 }

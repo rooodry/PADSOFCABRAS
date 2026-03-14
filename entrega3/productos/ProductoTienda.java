@@ -8,7 +8,11 @@ public class ProductoTienda extends Producto {
             super(nombre, descripcion, imagen);
         }
 
-        public double getPrecio() {return precio;}
+        //SETTER//
         public void setPrecio(double precio) {this.precio = precio;}
+
+        //GETTER//
+        public double getPrecio() {return this.precio;}
+
 
 }

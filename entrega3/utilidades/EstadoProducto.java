@@ -1,4 +1,4 @@
-package productos;
+package utilidades;
 
 public enum EstadoProducto {
     PENDIENTE_DE_VALORAR, 

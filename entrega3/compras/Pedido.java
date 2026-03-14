@@ -6,6 +6,7 @@ import java.util.List;
 
 import productos.ProductoTienda;
 import usuarios.ClienteRegistrado;
+import utilidades.EstadoPedido;
 
 public class Pedido {
     private final Codigo codigo;
@@ -22,21 +23,19 @@ public class Pedido {
         this.fechaRealizacion = new Date();
         this.cliente = cliente;
         this.productos = new ArrayList<>(productos);
+        this.fechaPago = null;
+        this.fechaPreparacion = null;
+        this.fechaRecogida = null;
         this.estadoPedido = EstadoPedido.EN_PREPARACION;
     }
 
-    public double calcularPrecioTotal() {
-        double total = 0.0;
-        for (ProductoTienda p : productos) {
-            total += p.getPrecio();
-        }
-        return total;
-    }
 
-    /* revisar esto bien */
+    //SETTER//
     public void setEstadoPedido(EstadoPedido estadoPedido) {
         this.estadoPedido = estadoPedido;
 
+        switch (estadoPedido) {
+        
         case EN_PREPARACION:
             this.fechaPago = new Date();
             break;
@@ -49,41 +48,41 @@ public class Pedido {
         case CANCELADO:
             /* falta */            
             break;
+        default:
+            break;
+        }
     }
+
+    //GETTERS//
+    public Codigo getCodigo() {return this.codigo;}
+
+    public Date getFechaRealizacion() {return new Date(this.fechaRealizacion.getTime());}
+
+    public Date getFechaPago() {return new Date(this.fechaPago.getTime());}
+
+    public Date getFechaPreparacion() {return new Date(this.fechaPreparacion.getTime());}
+
+    public Date getFechaRecogida() {return new Date(this.fechaRecogida.getTime());}
+
+    public EstadoPedido getEstadoPedido() {return this.estadoPedido;}
+
+    public ClienteRegistrado getCliente() {return this.cliente;}
+
+    public List<ProductoTienda> getProductos() {return new ArrayList<>(productos);}
+
 
     public void cancelar() {
         this.estadoPedido = EstadoPedido.CANCELADO;
     }
 
-    public Codigo getCodigo() {
-        return codigo;
+    public double calcularPrecioTotal() {
+        double total = 0.0;
+        for (ProductoTienda p : productos) {
+            total += p.getPrecio();
+        }
+        return total;
     }
 
-    public Date getFechaRealizacion() {
-        return new Date(fechaRealizacion.getTime());
-    }
 
-    public Date getFechaPago() {
-        return fechaPago != null ? new Date(fechaPago.getTime()) : null;
-    }
 
-    public Date getFechaPreparacion() {
-        return fechaPreparacion != null ? new Date(fechaPreparacion.getTime()) : null;
-    }
-
-    public Date getFechaRecogida() {
-        return fechaRecogida != null ? new Date(fechaRecogida.getTime()) : null;
-    }
-
-    public EstadoPedido getEstadoPedido() {
-        return estadoPedido;
-    }
-
-    public ClienteRegistrado getCliente() {
-        return cliente;
-    }
-
-    public List<ProductoTienda> getProductos() {
-        return new ArrayList<>(productos);
-    }
 }
