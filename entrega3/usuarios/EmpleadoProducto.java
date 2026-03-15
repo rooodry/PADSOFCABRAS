@@ -1,7 +1,6 @@
 package usuarios;
 
-import productos.Producto;
-import productos.ProductoTienda;
+import productos.*;
 import productos.Stock;
 import utilidades.Status;
 
@@ -26,7 +25,7 @@ public class EmpleadoProducto extends Empleado {
         stock.retirarProducto(p);
     }
 
-    public void editarProducto(Producto p, String nombre, String descripcion, String imagen, double precio) {
+    public void editarProducto(ProductoTienda p, String nombre, String descripcion, String imagen, double precio) {
         p.setNombre(nombre);
         p.setDescripcion(descripcion);
         p.setImagen(imagen);
