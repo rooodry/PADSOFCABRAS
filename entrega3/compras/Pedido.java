@@ -26,7 +26,7 @@ public class Pedido {
         this.fechaPago = null;
         this.fechaPreparacion = null;
         this.fechaRecogida = null;
-        this.estadoPedido = EstadoPedido.EN_PREPARACION;
+        this.estadoPedido = EstadoPedido.EN_CARRITO;
     }
 
 
