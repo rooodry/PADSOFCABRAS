@@ -6,7 +6,5 @@ public abstract class Empleado extends Usuario {
         super(nombreUsuario, contraseña);
     }
 
-    public String getNombre() {return this.getNombre();}
-    public String getContraseña() {return this.getContraseña();}
 
 }

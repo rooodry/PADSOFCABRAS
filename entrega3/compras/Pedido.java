@@ -46,7 +46,6 @@ public class Pedido {
             this.fechaRecogida = new Date();
             break;
         case CANCELADO:
-            /* falta */            
             break;
         default:
             break;
@@ -58,11 +57,19 @@ public class Pedido {
 
     public Date getFechaRealizacion() {return new Date(this.fechaRealizacion.getTime());}
 
-    public Date getFechaPago() {return new Date(this.fechaPago.getTime());}
+    /* DEVOLVEMOS LA FECHA DE PAGO O NULL SI EL PEDIDO AÚN NO SE HA PAGADO */
+    public Date getFechaPago() {
+        return this.fechaPago != null ? new Date(this.fechaPago.getTime()) : null;
+    }
 
-    public Date getFechaPreparacion() {return new Date(this.fechaPreparacion.getTime());}
+    /* HACEMOS LO MISMO CON FECHA PREPARACIÓN Y RECOGIDA */
+    public Date getFechaPreparacion() {
+        return this.fechaPreparacion != null ? new Date(this.fechaPreparacion.getTime()) : null;
+    }
 
-    public Date getFechaRecogida() {return new Date(this.fechaRecogida.getTime());}
+    public Date getFechaRecogida() {
+        return this.fechaRecogida != null ? new Date(this.fechaRecogida.getTime()) : null;
+    }
 
     public EstadoPedido getEstadoPedido() {return this.estadoPedido;}
 
