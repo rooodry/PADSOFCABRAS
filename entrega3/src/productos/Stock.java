@@ -10,15 +10,13 @@ public class Stock {
         this.productos = new HashMap<>();
     }
 
+    public Map<ProductoTienda, Integer> getProductos() {return new HashMap<ProductoTienda, Integer>(this.productos);}
+
     public void retirarProducto(ProductoTienda producto) {
         this.productos.remove(producto);
     }
 
-    public void añadirProducto(ProductoTienda producto, int cantidad) {
-        if(cantidad > 0) {
-            this.productos.put(producto, this.productos.getOrDefault(producto, 0));
-        }
-    }
+    public void añadirProducto(ProductoTienda producto, int cantidad) {this.productos.put(producto, this.productos.getOrDefault(producto, 0) + cantidad);}
 
     public void reducirStock(ProductoTienda producto, int cantidad) {
         int nuevaCantidad = 0;
@@ -35,5 +33,7 @@ public class Stock {
 
     public int getNumProductos(ProductoTienda producto) {
         return this.productos.getOrDefault(producto, 0);
-    }    
+    }
+    
+
 }

@@ -3,6 +3,7 @@ package sistema;
 import productos.*;
 import usuarios.*;
 import descuentos.*;
+import excepciones.*;
 import notificaciones.Notificacion;
 import compras.*;
 import utilidades.*;
@@ -39,13 +40,12 @@ public class Sistema {
     public void addPedido(Pedido p) {this.pedidos.add(p);}
 
 
-    public void darAltaEmpleado(Usuario admin, String nombreEmpleado, String contraseña, TiposEmpleado tipo) {
+    public void darAltaEmpleado(Usuario admin, String nombreEmpleado, String contraseña, TiposEmpleado tipo) throws ExcepcionUsuariosAdmin {
         
         Empleado e = null;
 
         if(!(admin instanceof Gestor)) {
-            System.err.println("Usuario no es gestor");
-            return;
+            throw new ExcepcionUsuariosAdmin(admin.getNombre());
         }
 
         if(tipo == TiposEmpleado.EMPLEADOS_INTERCAMBIO) {
@@ -60,22 +60,20 @@ public class Sistema {
 
     }
 
-    public void darBajaEmpleado(Usuario admin, Empleado e) {
+    public void darBajaEmpleado(Usuario admin, Empleado e) throws ExcepcionUsuariosAdmin {
         
         if(!(admin instanceof Gestor)) {
-            System.err.println("Usuario no es gestor");
-            return;
+            throw new ExcepcionUsuariosAdmin(admin.getNombre());
         }
         this.usuarios.remove(e);
     }
 
-    public Empleado modificarPermiso(Usuario admin, Empleado e, TiposEmpleado tipo) {
+    public Empleado modificarPermiso(Usuario admin, Empleado e, TiposEmpleado tipo) throws ExcepcionUsuariosAdmin {
         
         Empleado emp;
 
         if(!(admin instanceof Gestor)) {
-            System.err.println("Usuario no es gestor");
-            return null;
+            throw new ExcepcionUsuariosAdmin(admin.getNombre());
         }
 
         if(tipo == TiposEmpleado.EMPLEADOS_INTERCAMBIO) {
@@ -94,13 +92,12 @@ public class Sistema {
         return emp;
     }
 
-    public Pack crearPack(Usuario admin, String nombre, double precio, List<Producto> productos) {
+    public Pack crearPack(Usuario admin, String nombre, double precio, List<Producto> productos) throws ExcepcionUsuariosAdmin {
         
         Pack pack;
         
         if(!(admin instanceof Gestor)) {
-            System.err.println("Usuario no es gestor");
-            return null;
+            throw new ExcepcionUsuariosAdmin(admin.getNombre());
         }
 
         return pack = new Pack(nombre, precio, productos);
@@ -114,8 +111,32 @@ public class Sistema {
         return codigo = new Codigo();
     }
 
-    public void actualizarStock(Usuario)
+    public void actualizarStock(Usuario admin, ProductoTienda p, int cantidad) throws ExcepcionUsuariosAdmin {
 
+        if(!(admin instanceof Gestor)) {
+            throw new ExcepcionUsuariosAdmin(admin.getNombre());
+        }
+        
+        if(cantidad > 0) {
+            this.stock.añadirProducto(p, cantidad);
+        } else if (cantidad < 0) {
+            this.stock.reducirStock(p, cantidad);
+        } else {
+            this.stock.retirarProducto(p);
+        }
+        
+    }
+
+    public void registrarPedido(Pedido p) {
+        this.pedidos.add(p);
+    }
+
+    public void enviarCodigo(ClienteRegistrado c, Codigo cod) {
+
+        c.
+        
+
+    }
 
 
 }
@@ -124,9 +145,7 @@ public class Sistema {
 
 
 
-+ actualizarStock(admin: Usuario, p: Producto, cantidad: int): void
-+ registrarPedido(Pedido: p): void
-+ generarCodigo(Cliente_Registrado: c, Pedido: p): Codigo
+
 + enviarCodigo(Cliente_Registrado: c, Codigo cod): void
 + setEstadoPedido(Pedido: p, estadoPedido: e): void
 + notificarUsuario(Usuario: u, Notificacion: n): void
