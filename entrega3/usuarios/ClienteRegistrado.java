@@ -52,16 +52,16 @@ public class ClienteRegistrado extends Cliente {
     //GETTERS//
     public String getDNI() {return this.DNI;}
     public Cartera getCartera() {return this.cartera;}
-    public Cesta getCarrito() { return cesta; }
-    public List<Pedido> getPedidos() { return pedidos; }
-    public List<Notificacion> getNotificaciones() { return notificaciones; }
+    public Cesta getCarrito() {return cesta;}
+    public List<Pedido> getPedidos() {return pedidos;}
+    public List<Notificacion> getNotificaciones() {return notificaciones;}
 
     public Status comprar() {
         if(this.cesta.estaVacia()) {
             return Status.ERROR;
         }
 
-        Pedido nuevoPedido = new Pedido(this, this.cesta.getProductos()); //CONFLICTO EN CESTA PRODUCTOS ES MAP, EN PEDIDO PRODUCTOS ES LISTA//
+        Pedido nuevoPedido = new Pedido(this, this.cesta.getProductos()); 
         this.pedidos.add(nuevoPedido);
         this.cesta.limpiarCesta();
 

@@ -8,6 +8,7 @@ import compras.*;
 import utilidades.*;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.ArrayList;
 
 public class Sistema {
@@ -106,9 +107,15 @@ public class Sistema {
 
     }
 
-    public Codigo generarCodigo(ClienteRegistrado c, Pedido p) {
-        
+    public Codigo generarCodigo() {
+
+        Codigo codigo;
+
+        return codigo = new Codigo();
     }
+
+    public void actualizarStock(Usuario)
+
 
 
 }

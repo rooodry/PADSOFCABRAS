@@ -5,6 +5,7 @@ import productos.Stock;
 import utilidades.Status;
 
 public class EmpleadoProducto extends Empleado {
+    
     private final Stock stock;
 
     public EmpleadoProducto(String nombreUsuario, String contraseña, Stock stock) {

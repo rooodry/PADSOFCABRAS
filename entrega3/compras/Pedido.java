@@ -1,10 +1,8 @@
 package compras;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-import productos.ProductoTienda;
+import productos.*;
 import usuarios.ClienteRegistrado;
 import utilidades.EstadoPedido;
 
@@ -16,13 +14,13 @@ public class Pedido {
     private Date fechaRecogida;
     private EstadoPedido estadoPedido;
     private final ClienteRegistrado cliente;
-    private final List<ProductoTienda> productos;
+    private Map<ProductoTienda, Integer> productos;
 
-    public Pedido(ClienteRegistrado cliente, List<ProductoTienda> productos) {
+    public Pedido(ClienteRegistrado cliente, Map<ProductoTienda, Integer> productos) {
         this.codigo = new Codigo();
         this.fechaRealizacion = new Date();
         this.cliente = cliente;
-        this.productos = new ArrayList<>(productos);
+        this.productos = new HashMap<ProductoTienda, Integer>();
         this.fechaPago = null;
         this.fechaPreparacion = null;
         this.fechaRecogida = null;
@@ -75,7 +73,7 @@ public class Pedido {
 
     public ClienteRegistrado getCliente() {return this.cliente;}
 
-    public List<ProductoTienda> getProductos() {return new ArrayList<>(productos);}
+    public Map<ProductoTienda, Integer> getProductos() {return new HashMap<ProductoTienda, Integer>(productos);}
 
 
     public void cancelar() {
@@ -83,12 +81,18 @@ public class Pedido {
     }
 
     public double calcularPrecioTotal() {
-        double total = 0.0;
-        for (ProductoTienda p : productos) {
-            total += p.getPrecio();
+
+        double total = 0;
+    
+        for (Map.Entry<ProductoTienda, Integer> entry : productos.entrySet()) {
+            ProductoTienda producto = entry.getKey();
+            Integer cantidad = entry.getValue();
+            
+            total += producto.getPrecio() * cantidad;
         }
+        
         return total;
-    }
+}
 
 
 
