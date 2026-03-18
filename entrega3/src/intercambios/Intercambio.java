@@ -23,11 +23,8 @@ public class Intercambio {
 
         
         this.fechaLimite = calendar.getTime();
-
         this.fechaAceptada = null;
-
         this.intercambiado = false;
-
         this.oferta = oferta;
     }
 

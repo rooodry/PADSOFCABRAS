@@ -24,11 +24,12 @@ public class ClienteRegistrado extends Cliente {
         this.DNI = DNI;
         this.cartera = new Cartera();
         this.cesta = new Cesta();
-        this.pedidos = new ArrayList<>();
-        this.notificaciones = new ArrayList<>();
-        this.ofertasRealizadas = new ArrayList<>();
-        this.ofertasRecibidas = new ArrayList<>();
-        this.intercambiosPendientes = new ArrayList<>();
+        this.pedidos = new ArrayList<Pedido>();
+        this.notificaciones = new ArrayList<Notificacion>();
+        this.ofertasRealizadas = new ArrayList<Oferta>();
+        this.ofertasRecibidas = new ArrayList<Oferta>();
+        this.intercambiosPendientes = new ArrayList<Intercambio>();
+        this.codigos = new ArrayList<Codigo>();
     }
 
     //SETTERS//
@@ -42,13 +43,15 @@ public class ClienteRegistrado extends Cliente {
             stock.reducirStock(producto, 1);
         }
     }
+    public void addCodigo(Codigo c) {this.codigos.add(c);}
 
     //GETTERS//
     public String getDNI() {return this.DNI;}
     public Cartera getCartera() {return this.cartera;}
-    public Cesta getCarrito() {return cesta;}
-    public List<Pedido> getPedidos() {return pedidos;}
-    public List<Notificacion> getNotificaciones() {return notificaciones;}
+    public Cesta getCarrito() {return this.cesta;}
+    public List<Pedido> getPedidos() {return this.pedidos;}
+    public List<Notificacion> getNotificaciones() {return this.notificaciones;}
+    public List<Codigo> getCodigos() {return this.codigos;}
 
     public Status comprar() {
         if(this.cesta.estaVacia()) {
