@@ -7,6 +7,7 @@ import excepciones.*;
 import notificaciones.Notificacion;
 import compras.*;
 import utilidades.*;
+import intercambios.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -132,30 +133,45 @@ public class Sistema {
     }
 
     public void enviarCodigo(ClienteRegistrado c, Codigo cod) {
-
-        c.
-        
-
+        c.addCodigo(cod);
     }
 
+    public void setEstadoPedido(Pedido p, EstadoPedido e) {
+        p.setEstadoPedido(e);
+    }
 
+    public void notificarUsuario(Usuario u, Notificacion n) {
+        u.addNotificacion(n);
+    }
+
+    public void asignarValoracion(ProductoSegundaMano p, EmpleadoIntercambio e) {
+        e.addProductoParaValorar(p);
+    }
+
+    public void asignarIntercambio(Intercambio i, EmpleadoIntercambio e) {
+        e.addIntercambio(i);
+    }
+
+    public void añadirProductoCartera(ProductoSegundaMano p, ClienteRegistrado c) {
+        c.getCartera().añadirProducto(p);
+    }
+
+    public void bloquearProductoOfertante(ProductoSegundaMano p) {
+        p.setDisponibilidad(false);
+    }
+
+    
 }
 
 
 
 
 
-
-+ enviarCodigo(Cliente_Registrado: c, Codigo cod): void
-+ setEstadoPedido(Pedido: p, estadoPedido: e): void
-+ notificarUsuario(Usuario: u, Notificacion: n): void
-+ asignarValoracion(Producto: p, Empleado: e): void
-+ asignarEmpleado(i: Intercambio, e: EmpleadoIntercambio): void
-+ añadirProductoCartera(Producto: p, Cliente_Registrado: c): void
 + iniciarGestionIntercambio(i: Intercambio): void
-+ cancelarPedido(p: Pedido): void
+
 + eliminarPedidoDeLista(p: Pedido): void
-+ bloquearProductoOfertante(p: ProductoSegundaMano): void
 + bloquearProductoDeseado(p: ProductoSegundaMano): void
+
+
 + desbloquearProductoOfertante(p: ProductoSegundaMano): void
 + desbloquearProductoDeseado(p: ProductoSegundaMano): void

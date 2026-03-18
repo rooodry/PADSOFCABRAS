@@ -2,12 +2,11 @@ package usuarios;
 
 import notificaciones.Notificacion;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Usuario {
     private String nombreUsuario;
     private String contraseña;
-    private List<Notificacion> notificaciones;
+    private ArrayList<Notificacion> notificaciones;
 
     public Usuario(String nombreUsuario, String contraseña) {
         this.nombreUsuario = nombreUsuario;
@@ -15,18 +14,19 @@ public class Usuario {
         this.notificaciones = null;
     }
 
+    //SETTERS//
+    public void setNombreUsuario(String nombreUsuario) {this.nombreUsuario = nombreUsuario;}
+    public void setContraseña(String contraseña) {this.contraseña = contraseña;}
+    public void addNotificacion(Notificacion n) {this.notificaciones.add(n);}
 
-    public String getContraseña() {
-        return contraseña;
-    }
 
-    public String getNombre() { return this.nombreUsuario;}
+    //GETERRS//
+    public String getNombre() {return this.nombreUsuario;}
+    public String getContraseña() {return this.contraseña;}
+    public ArrayList<Notificacion> getNotificaciones() {return new ArrayList<Notificacion>(this.notificaciones);}
+    
 
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
-    }
+    
 
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
-    }
+    
 }
