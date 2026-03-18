@@ -1,17 +1,10 @@
 package usuarios;
 
-import java.util.ArrayList;
-import java.util.List;
-import productos.Producto;
-import productos.ProductoSegundaMano;
-import productos.ProductoTienda;
-import productos.Stock;
-import compras.Cesta;
-import compras.Pedido;
-import intercambios.Oferta;
-import intercambios.Intercambio;
-import utilidades.EstadoPedido;
-import utilidades.Status;
+import java.util.*;
+import productos.*;
+import compras.*;
+import intercambios.*;
+import utilidades.*;
 import notificaciones.Notificacion;
 
 public class ClienteRegistrado extends Cliente {
@@ -23,6 +16,7 @@ public class ClienteRegistrado extends Cliente {
     private List<Oferta> ofertasRealizadas;
     private List<Oferta> ofertasRecibidas;
     private List<Intercambio> intercambiosPendientes;
+    private List<Codigo> codigos;
 
 
     public ClienteRegistrado(String nombreUsuario, String contraseña, String DNI) {
