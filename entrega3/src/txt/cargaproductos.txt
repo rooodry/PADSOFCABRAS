@@ -1,0 +1,11 @@
+kkk
+
+    public Producto(String nombre, String descripcion, String imagen) {
+        this.id = UUID.randomUUID().toString();
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.valoracion = 0;
+        this.imagen = imagen;
+        this.fechaPublicacion = new Date();
+        this.categoria = null;
+    }
