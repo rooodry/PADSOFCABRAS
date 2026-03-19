@@ -2,8 +2,8 @@ package usuarios;
  
 import java.util.Date;
  
-import compras.Pedido;
-import compras.EstadoPedido;
+import compras.*;
+import utilidades.*;
  
 public class EmpleadoPedido extends Empleado {
  
