@@ -1,7 +1,7 @@
 package usuarios;
 
 import notificaciones.Notificacion;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Usuario {
     private String nombreUsuario;
@@ -23,7 +23,7 @@ public class Usuario {
     //GETERRS//
     public String getNombre() {return this.nombreUsuario;}
     public String getContraseña() {return this.contraseña;}
-    public ArrayList<Notificacion> getNotificaciones() {return new ArrayList<Notificacion>(this.notificaciones);}
+    public List<Notificacion> getNotificaciones() {return new ArrayList<Notificacion>(this.notificaciones);}
     
 
     
