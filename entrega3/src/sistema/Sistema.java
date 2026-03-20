@@ -10,6 +10,7 @@ import utilidades.*;
 import intercambios.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -143,11 +144,14 @@ public class Sistema {
     }
 
     public void cancelarPedido(Pedido p) {
-        p.cancelar();
-        for (ProductoTienda pt : p.getProductos()) {
-            this.stock.añadirProducto(pt);
+
+        for(Map.Entry<ProductoTienda, Integer> entry : p.getProductos().entrySet()) {
+            ProductoTienda producto = entry.getKey();
+            
+            this.stock.retirarProducto(producto);
         }
         this.pedidos.remove(p);
+        p.cancelar();
     }
 
     public void enviarCodigo(ClienteRegistrado c, Codigo cod) {
@@ -185,11 +189,3 @@ public class Sistema {
 
 
 
-+ iniciarGestionIntercambio(i: Intercambio): void
-
-+ eliminarPedidoDeLista(p: Pedido): void
-+ bloquearProductoDeseado(p: ProductoSegundaMano): void
-
-
-+ desbloquearProductoOfertante(p: ProductoSegundaMano): void
-+ desbloquearProductoDeseado(p: ProductoSegundaMano): void
