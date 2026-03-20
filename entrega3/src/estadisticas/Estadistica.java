@@ -2,7 +2,6 @@ package estadisticas;
 
 import java.io.*;
 import java.util.*;
-import java.time.*;
 
 
 import compras.*;
@@ -117,7 +116,6 @@ public class Estadistica {
             bw.newLine();
             bw.write("RECAUDACIÓN POR VALORACIONES: ");
             bw.write(String.valueOf(recaudacionValoraciones));
-            
 
         } catch (IOException e) {
             System.err.println("Error al escribir: " + e.getMessage());
@@ -130,7 +128,6 @@ public class Estadistica {
         ClienteRegistrado[] listaOrdenada = new ClienteRegistrado[clientes.size()];
 
         int i = 0, j = 0;
-
         for(i = 0; i < clientes.size(); i++) {
 
             ClienteRegistrado clienteActual = clientes.get(i);
@@ -165,20 +162,20 @@ public class Estadistica {
 
     }
 
-    public void estadisticasUsuariosMayorActividadIntercambios(List<Oferta> ofertas) {
+        public void estadisticasUsuariosMayorActividadIntercambios(List<ClienteRegistrado> clientes) {
 
-        ClienteRegistrado[] listaOrdenada = new ClienteRegistrado[ofertas.size()];
+        ClienteRegistrado[] listaOrdenada = new ClienteRegistrado[clientes.size()];
 
         int i = 0, j = 0;
 
-        for(i = 0; i < ofertas.size(); i++) {
+        for(i = 0; i < clientes.size(); i++) {
 
-            ClienteRegistrado clienteActual = ofertas.get(i).getUsuarioLanzador();
-            int numOfertas = clienteActual.getIntercambios().size();
+            ClienteRegistrado clienteActual = clientes.get(i);
+            int numIntercambios = clienteActual.getIntercambios().size();
 
             j = i - 1;
 
-            while(j >= 0 && listaOrdenada[j].getIntercambios().size() < numOfertas) {
+            while(j >= 0 && listaOrdenada[j].getIntercambios().size() < numIntercambios) {
                 listaOrdenada[j + 1] = listaOrdenada[j];
                 j--;
             }
@@ -190,13 +187,28 @@ public class Estadistica {
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.fichero))) {
 
-            bw.write("CLIENTES Y NÚMERO DE COMPRAS (MAYOR A MENOR)");
+            bw.write("CLIENTES Y NÚMERO DE INTERCAMBIOS (MAYOR A MENOR)");
             bw.newLine();
-            bw.write("NÚMERO DE COMPRAS | DNI");
+            bw.write("DNI | INTERCAMBIOS TOTALES | INTERCAMBIOS HECHOS | INTERCAMBIOS PENDIENTES");
             bw.newLine();
             
             for(ClienteRegistrado c : listaOrdenada) {
-                bw.write(c.getPedidos().size() + " | " + c.getDNI());
+
+                int contIntercambiosHechos = 0, contIntercambiosPendientes = 0;
+
+                for(Intercambio intercambio : c.getIntercambios()) {
+
+                    if(intercambio.getIntercambiado()) {
+                        contIntercambiosHechos ++;
+                    } else {
+                        contIntercambiosPendientes ++;
+                    }
+
+                }
+
+
+                bw.write( c.getDNI() + " | " + c.getIntercambios().size() + " | " + contIntercambiosHechos + " | " + contIntercambiosPendientes);
+                bw.newLine();
             }
 
         } catch (IOException e) {
@@ -204,5 +216,6 @@ public class Estadistica {
         }
 
     }
+
 
 }
