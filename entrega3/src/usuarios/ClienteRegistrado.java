@@ -15,7 +15,7 @@ public class ClienteRegistrado extends Cliente {
     private List<Notificacion> notificaciones;
     private List<Oferta> ofertasRealizadas;
     private List<Oferta> ofertasRecibidas;
-    private List<Intercambio> intercambiosPendientes;
+    private List<Intercambio> intercambios;
     private List<Codigo> codigos;
 
 
@@ -28,7 +28,7 @@ public class ClienteRegistrado extends Cliente {
         this.notificaciones = new ArrayList<Notificacion>();
         this.ofertasRealizadas = new ArrayList<Oferta>();
         this.ofertasRecibidas = new ArrayList<Oferta>();
-        this.intercambiosPendientes = new ArrayList<Intercambio>();
+        this.intercambios = new ArrayList<Intercambio>();
         this.codigos = new ArrayList<Codigo>();
     }
 
@@ -53,7 +53,7 @@ public class ClienteRegistrado extends Cliente {
     public List<Notificacion> getNotificaciones() {return this.notificaciones;}
     public List<Oferta> getOfertasRealizadas() {return this.ofertasRealizadas;}
     public List<Oferta> getOfertasRecibidas() {return this.ofertasRecibidas;}
-    public List<Intercambio> getIntercambiosPendientes() {return this.intercambiosPendientes;}
+    public List<Intercambio> getIntercambios() {return this.intercambios;}
     public List<Codigo> getCodigos() {return this.codigos;}
 
     public Status comprar() {
