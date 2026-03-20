@@ -2,7 +2,9 @@ package usuarios;
 
 import intercambios.Intercambio;
 import productos.ProductoSegundaMano;
-
+import productos.ProductoSegundaMano;
+import notificaciones.Notificacion;
+import utilidades.TipoNotificacion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,32 +35,45 @@ public class EmpleadoIntercambio extends Empleado {
         i.setIntercambiado(true);
     }
 
-    public void valorarProducto(ProductoSegundaMano p) {
-        
-        Scanner teclado = new Scanner(System.in);
-        int valoracionEmpleado = 0;
-
-        while(valoracionEmpleado == 0) {
-            try {
-                valoracionEmpleado = teclado.nextInt();
-                p.setValoracionEmpleado(valoracionEmpleado);
-            } catch (InputMismatchException e) {
-                System.err.println("Solo se admiten números");
-            }
-        }
-        teclado.close();
+    public void valorarProducto(ProductoSegundaMano p, int valoracion, double valorEstimado,
+            utilidades.EstadoConservacion estadoConservacion) {
+        p.setValoracion(valoracion, valorEstimado, estadoConservacion);
+        this.productosPorValorar.remove(p);
     }
 
     public void marcarIntercambioListo(Intercambio i) {
-
-
+        Notificacion n = new Notificacion(
+            TipoNotificacion.INTERCAMBIO_REALIZADO,
+            "El intercambio está listo para ser realizado"
+        );
+        cliente.addNotificacion(n);
     }
 
     public void transferirPropiedad(Intercambio i) {
-
+        Oferta oferta = i.getOferta();
+        ClienteRegistrado lanzador = oferta.getUsuarioLanzador();
+        ClienteRegistrado receptor = oferta.getUsuarioReceptor();
+ 
+        for (ProductoSegundaMano p : oferta.getProductos()) {
+            p.setPropietario(receptor);
+            receptor.getCartera().añadirProducto(p);
+            lanzador.getCartera().getProductos().remove(p);
+        }
+ 
+        i.setIntercambiado(true);
+        i.setFechaAceptada(new java.util.Date());
     } 
 
-    public void reportarFallo(Intercambio i) {}
+    public void reportarFallo(Intercambio i) {
+        Oferta oferta = i.getOferta();
+ 
+        for (ProductoSegundaMano p : oferta.getProductos()) {
+            p.setDisponibilidad(true);
+            p.setEstadoProducto(utilidades.EstadoProducto.VALORADO);
+        }
+ 
+        this.intercambiosPendientes.remove(i);
+    }
 }
 
 

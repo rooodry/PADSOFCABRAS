@@ -11,7 +11,7 @@ public class Usuario {
     public Usuario(String nombreUsuario, String contraseña) {
         this.nombreUsuario = nombreUsuario;
         this.contraseña = contraseña;
-        this.notificaciones = null;
+        this.notificaciones = new ArrayList<>();
     }
 
     //SETTERS//
