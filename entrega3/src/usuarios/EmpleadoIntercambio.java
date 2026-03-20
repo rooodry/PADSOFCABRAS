@@ -1,10 +1,10 @@
 package usuarios;
 
-import intercambios.Intercambio;
-import productos.ProductoSegundaMano;
-import productos.ProductoSegundaMano;
+import productos.*;
 import notificaciones.Notificacion;
 import utilidades.TipoNotificacion;
+import usuarios.*;
+import intercambios.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,8 @@ public class EmpleadoIntercambio extends Empleado {
             TipoNotificacion.INTERCAMBIO_REALIZADO,
             "El intercambio está listo para ser realizado"
         );
-        cliente.addNotificacion(n);
+        i.getOferta().getUsuarioLanzador().addNotificacion(n);
+        i.getOferta().getUsuarioReceptor().addNotificacion(n);
     }
 
     public void transferirPropiedad(Intercambio i) {

@@ -1,7 +1,10 @@
 package productos;
 
+import java.util.*;
+
 import usuarios.ClienteRegistrado;
 import utilidades.*;
+
 
 public class ProductoSegundaMano extends Producto {
     private boolean disponibilidad;
@@ -11,6 +14,7 @@ public class ProductoSegundaMano extends Producto {
     private boolean estaValorado;
     private EstadoConservacion estadoConservacion;
     private EstadoProducto estadoProducto;
+    private Date fechaValoracion;
 
     public ProductoSegundaMano(String nombre, String descripcion, String imagen, ClienteRegistrado propietario) {
         super(nombre, descripcion, imagen);
@@ -20,6 +24,7 @@ public class ProductoSegundaMano extends Producto {
         this.valoracionEmpleado = 0;
         this.valorEstimado = 0.0;
         this.estadoProducto = EstadoProducto.PENDIENTE_DE_VALORAR;
+        this.fechaValoracion = null;
     }
 
     //SETTERS//
@@ -36,6 +41,7 @@ public class ProductoSegundaMano extends Producto {
     public void setEstaValorado(boolean flag) {this.estaValorado = flag;}
     public void setEstadoConservacion(EstadoConservacion e) {this.estadoConservacion = e;}
     public void setEstadoProducto(EstadoProducto e) {this.estadoProducto = e;}
+    public void setFechaValoraciion(Date fecha) {this.fechaValoracion = fecha;}
 
 
     //GETTERS//
@@ -46,6 +52,7 @@ public class ProductoSegundaMano extends Producto {
     public boolean getEstaValorado() {return this.estaValorado;}
     public EstadoConservacion getEstadoConservacion() { return this.estadoConservacion;}
     public EstadoProducto getEstadoProducto() {return this.estadoProducto;}
+    public Date getFechaValoracion() {return this.fechaValoracion;}
 
 
 
