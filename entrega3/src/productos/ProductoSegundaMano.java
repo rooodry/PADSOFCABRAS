@@ -49,9 +49,6 @@ public class ProductoSegundaMano extends Producto {
 
 
 
-
-
-
     public void pedirValoracion() {
         this.estadoProducto = EstadoProducto.PENDIENTE_DE_VALORAR;
     }
