@@ -12,6 +12,9 @@ import intercambios.*;
 import java.util.List;
 import java.util.UUID;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Sistema {
     
@@ -21,6 +24,7 @@ public class Sistema {
     private List<Notificacion> notificaciones;
     private List<Pedido> pedidos;
     private Stock stock;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 
     public Sistema() {
@@ -130,6 +134,20 @@ public class Sistema {
 
     public void registrarPedido(Pedido p) {
         this.pedidos.add(p);
+        
+        scheduler.schedule(() -> {
+            if (p.getEstadoPedido() == EstadoPedido.EN_PREPARACION) {
+                cancelarPedido(p);
+            }
+        }, 15, TimeUnit.MINUTES);    
+    }
+
+    public void cancelarPedido(Pedido p) {
+        p.cancelar();
+        for (ProductoTienda pt : p.getProductos()) {
+            this.stock.añadirProducto(pt);
+        }
+        this.pedidos.remove(p);
     }
 
     public void enviarCodigo(ClienteRegistrado c, Codigo cod) {
