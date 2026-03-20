@@ -24,6 +24,7 @@ public class ProductoSegundaMano extends Producto {
 
     //SETTERS//
     public void setDisponibilidad(boolean flag) {this.disponibilidad = flag;}
+    public void setPropietario(ClienteRegistrado propietario) {this.propietario = propietario;}
     public void setValoracionEmpleado(int valoracion) {this.valoracionEmpleado = valoracion;}
     public void setValoracion(int valoracion, double valorEstimado, EstadoConservacion estadoConservacion) {
         this.valoracionEmpleado = valoracion;

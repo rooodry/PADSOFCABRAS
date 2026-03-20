@@ -48,9 +48,12 @@ public class ClienteRegistrado extends Cliente {
     //GETTERS//
     public String getDNI() {return this.DNI;}
     public Cartera getCartera() {return this.cartera;}
-    public Cesta getCarrito() {return this.cesta;}
+    public Cesta getCesta() {return this.cesta;}
     public List<Pedido> getPedidos() {return this.pedidos;}
     public List<Notificacion> getNotificaciones() {return this.notificaciones;}
+    public List<Oferta> getOfertasRealizadas() {return this.ofertasRealizadas;}
+    public List<Oferta> getOfertasRecibidas() {return this.ofertasRecibidas;}
+    public List<Intercambio> getIntercambiosPendientes() {return this.intercambiosPendientes;}
     public List<Codigo> getCodigos() {return this.codigos;}
 
     public Status comprar() {
