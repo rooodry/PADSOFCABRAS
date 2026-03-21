@@ -3,13 +3,10 @@ package usuarios;
 import productos.*;
 import notificaciones.Notificacion;
 import utilidades.TipoNotificacion;
-import usuarios.*;
 import intercambios.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class EmpleadoIntercambio extends Empleado {
 

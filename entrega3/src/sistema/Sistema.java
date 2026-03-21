@@ -44,6 +44,7 @@ public class Sistema {
     public void addUsuario(Usuario u) {this.usuarios.add(u);}
     public void addNotificacion(Notificacion n) {this.notificaciones.add(n);}
     public void addPedido(Pedido p) {this.pedidos.add(p);}
+    public void setStock(Stock s) {this.stock = s;}
 
 
     public void darAltaEmpleado(Usuario admin, String nombreEmpleado, String contraseña, TiposEmpleado tipo) throws ExcepcionUsuariosAdmin {
