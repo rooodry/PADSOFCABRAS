@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import productos.ProductoTienda;
 import productos.Stock;
 import utilidades.Status;
+import compras.Cesta;
 
 public class CestaTest {
 
@@ -32,7 +33,7 @@ public class CestaTest {
     @Test
     public void testCestaInicialmenteVacia() {
         // Comprobamos que al crear la cesta, está vacía
-        assertTrue(cesta.estaVacia(), "La cesta debería estar vacía al principio");
+        assertEquals(cesta.estaVacia(), true);
         assertEquals(0, cesta.getProductos().size());
     }
 
