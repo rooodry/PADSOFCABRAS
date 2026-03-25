@@ -29,7 +29,6 @@ public class ProductoSegundaMano extends Producto {
 
     //SETTERS//
     public void setDisponibilidad(boolean flag) {this.disponibilidad = flag;}
-    public void setPropietario(ClienteRegistrado propietario) {this.propietario = propietario;}
     public void setValoracionEmpleado(int valoracion) {this.valoracionEmpleado = valoracion;}
     public void setValoracion(int valoracion, double valorEstimado, EstadoConservacion estadoConservacion) {
         this.valoracionEmpleado = valoracion;
@@ -50,7 +49,7 @@ public class ProductoSegundaMano extends Producto {
     public int getValoracionEmpleado() {return this.valoracionEmpleado;}
     public double getValorEstimado() {return this.valorEstimado;}
     public boolean getEstaValorado() {return this.estaValorado;}
-    public EstadoConservacion getEstadoConservacion() { return this.estadoConservacion;}
+    public EstadoConservacion getEstadoConservacion() {return this.estadoConservacion;}
     public EstadoProducto getEstadoProducto() {return this.estadoProducto;}
     public Date getFechaValoracion() {return this.fechaValoracion;}
 

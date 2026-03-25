@@ -53,7 +53,6 @@ public class EmpleadoIntercambio extends Empleado {
         ClienteRegistrado receptor = oferta.getUsuarioReceptor();
  
         for (ProductoSegundaMano p : oferta.getProductos()) {
-            p.setPropietario(receptor);
             receptor.getCartera().añadirProducto(p);
             lanzador.getCartera().getProductos().remove(p);
         }
