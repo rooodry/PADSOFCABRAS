@@ -13,13 +13,13 @@ public class Cesta {
         this.productos = new HashMap<>();
     }
 
-    //SETTER//
-    public void añadirProducto(ProductoTienda producto, int cantidad) {if(cantidad > 0) this.productos.put(producto, this.productos.getOrDefault(producto, 0) + cantidad);}
+    public void añadirProducto(ProductoTienda producto, int cantidad) {
+        if(cantidad > 0) this.productos.put(producto, this.productos.getOrDefault(producto, 0) + cantidad);
+    }
 
-    //GETTER//
-    public Map<ProductoTienda, Integer> getProductos() {return this.productos;}
-
-
+    public Map<ProductoTienda, Integer> getProductos() {
+        return this.productos;
+    }
     
     public Status comprobarStock(Stock stock, ProductoTienda producto, int cantidad) {
         if(stock != null && stock.getNumProductos(producto) >= cantidad) {
