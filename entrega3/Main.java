@@ -27,7 +27,7 @@ public class Main {
  
         // 3. Cargar productos desde fichero y añadirlos al stock
         List<ProductoTienda> productosCargados = new java.util.ArrayList<>();
-        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader("cargaproductos.txt"))) {
+        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader("txt/cargaproductos.txt"))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 if (linea.isBlank()) continue;
