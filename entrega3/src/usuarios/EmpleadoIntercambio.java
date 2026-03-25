@@ -1,15 +1,12 @@
 package usuarios;
 
-import intercambios.Intercambio;
-import productos.ProductoSegundaMano;
-import productos.ProductoSegundaMano;
+import productos.*;
 import notificaciones.Notificacion;
 import utilidades.TipoNotificacion;
+import intercambios.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class EmpleadoIntercambio extends Empleado {
 
@@ -46,7 +43,8 @@ public class EmpleadoIntercambio extends Empleado {
             TipoNotificacion.INTERCAMBIO_REALIZADO,
             "El intercambio está listo para ser realizado"
         );
-        cliente.addNotificacion(n);
+        i.getOferta().getUsuarioLanzador().addNotificacion(n);
+        i.getOferta().getUsuarioReceptor().addNotificacion(n);
     }
 
     public void transferirPropiedad(Intercambio i) {
@@ -55,7 +53,6 @@ public class EmpleadoIntercambio extends Empleado {
         ClienteRegistrado receptor = oferta.getUsuarioReceptor();
  
         for (ProductoSegundaMano p : oferta.getProductos()) {
-            p.setPropietario(receptor);
             receptor.getCartera().añadirProducto(p);
             lanzador.getCartera().getProductos().remove(p);
         }

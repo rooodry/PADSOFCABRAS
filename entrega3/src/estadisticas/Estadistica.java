@@ -1,16 +1,16 @@
 package estadisticas;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
-import java.time.*;
+
 
 import compras.*;
 import excepciones.ExcepcionUsuariosAdmin;
+import productos.ProductoSegundaMano;
 import productos.ProductoTienda;
 import usuarios.*;
 import utilidades.EstadoPedido;
+import intercambios.*;
 
 public class Estadistica {
     
@@ -49,14 +49,15 @@ public class Estadistica {
         }
     }
 
-    public void estadisticaRecaudacionMes(Usuario admin, List<Pedido> pedidos) throws ExcepcionUsuariosAdmin{
+    public void estadisticaRecaudacionMes(Usuario admin, List<Pedido> pedidos, List<ProductoSegundaMano> productos) throws ExcepcionUsuariosAdmin{
         if(!(admin instanceof Gestor)) {
             throw new ExcepcionUsuariosAdmin(admin.getNombre());
         }
 
-        int[] cantidadMes = {0};
+        double[] cantidadMes = {0};
         int mesNumero;
         Calendar cal = Calendar.getInstance();
+        String[] meses = {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"};
     
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.fichero))) {
@@ -68,10 +69,17 @@ public class Estadistica {
 
                     cantidadMes[mesNumero] += p.calcularPrecioTotal();
                     }
-                }
+            }
             
-             for(int i = 0; i < 12; i++) {
-                bw.write("ENERO: " + cantidadMes[i]);
+            for(ProductoSegundaMano p : productos) {
+                cal.setTime(p.getFechaValoracion());
+                mesNumero = cal.get(Calendar.MONTH);
+                cantidadMes[mesNumero] += p.getValoracionEmpleado();
+            }
+            
+
+            for(int i = 0; i < 12; i++) {
+                bw.write(meses[i] + cantidadMes[i]);
                 bw.newLine();
             }
 
@@ -81,6 +89,135 @@ public class Estadistica {
 
     }
 
+    public void estadisticaRecaudacionTipo(Usuario admin, List<Pedido> pedidos, List<ProductoSegundaMano> productos) throws ExcepcionUsuariosAdmin{
+        
+        
+        if(!(admin instanceof Gestor)) {
+            throw new ExcepcionUsuariosAdmin(admin.getNombre());
+        }
+
+        double recaudacionVentas = 0, recaudacionValoraciones = 0;
+
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.fichero))) {
+
+            for(Pedido p : pedidos) {
+                if(p.getEstadoPedido() == EstadoPedido.ENTREGADO) {
+                    recaudacionVentas += p.calcularPrecioTotal();
+                }
+            }
+
+            for(ProductoSegundaMano p : productos) {
+                recaudacionValoraciones += p.getValoracionEmpleado();
+            }
+
+            bw.write("RECAUDACIÓN POR VENTAS: ");
+            bw.write(String.valueOf(recaudacionVentas));
+            bw.newLine();
+            bw.write("RECAUDACIÓN POR VALORACIONES: ");
+            bw.write(String.valueOf(recaudacionValoraciones));
+
+        } catch (IOException e) {
+            System.err.println("Error al escribir: " + e.getMessage());
+        }
+    }
+
+
+    public void estadisticasUsuariosMayorActividadCompras(List<ClienteRegistrado> clientes) {
+
+        ClienteRegistrado[] listaOrdenada = new ClienteRegistrado[clientes.size()];
+
+        int i = 0, j = 0;
+        for(i = 0; i < clientes.size(); i++) {
+
+            ClienteRegistrado clienteActual = clientes.get(i);
+            int numPedidos = clienteActual.getPedidos().size();
+
+            j = i - 1;
+
+            while(j >= 0 && listaOrdenada[j].getPedidos().size() < numPedidos) {
+                listaOrdenada[j + 1] = listaOrdenada[j];
+                j--;
+            }
+
+            listaOrdenada[j+1] = clienteActual;
+
+        }
+
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.fichero))) {
+
+            bw.write("CLIENTES Y NÚMERO DE COMPRAS (MAYOR A MENOR)");
+            bw.newLine();
+            bw.write("NÚMERO DE COMPRAS | DNI");
+            bw.newLine();
+            
+            for(ClienteRegistrado c : listaOrdenada) {
+                bw.write(c.getPedidos().size() + " | " + c.getDNI());
+            }
+
+        } catch (IOException e) {
+             System.err.println("Error al escribir: " + e.getMessage());
+        }
+
+    }
+
+        public void estadisticasUsuariosMayorActividadIntercambios(List<ClienteRegistrado> clientes) {
+
+        ClienteRegistrado[] listaOrdenada = new ClienteRegistrado[clientes.size()];
+
+        int i = 0, j = 0;
+
+        for(i = 0; i < clientes.size(); i++) {
+
+            ClienteRegistrado clienteActual = clientes.get(i);
+            int numIntercambios = clienteActual.getIntercambios().size();
+
+            j = i - 1;
+
+            while(j >= 0 && listaOrdenada[j].getIntercambios().size() < numIntercambios) {
+                listaOrdenada[j + 1] = listaOrdenada[j];
+                j--;
+            }
+
+            listaOrdenada[j+1] = clienteActual;
+
+        }
+
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.fichero))) {
+
+            bw.write("CLIENTES Y NÚMERO DE INTERCAMBIOS (MAYOR A MENOR)");
+            bw.newLine();
+            bw.write("DNI | INTERCAMBIOS TOTALES | INTERCAMBIOS HECHOS | INTERCAMBIOS PENDIENTES");
+            bw.newLine();
+            
+            for(ClienteRegistrado c : listaOrdenada) {
+
+                int contIntercambiosHechos = 0, contIntercambiosPendientes = 0;
+
+                for(Intercambio intercambio : c.getIntercambios()) {
+
+                    if(intercambio.getIntercambiado()) {
+                        contIntercambiosHechos ++;
+                    } else {
+                        contIntercambiosPendientes ++;
+                    }
+
+                }
+
+
+                bw.write( c.getDNI() + " | " + c.getIntercambios().size() + " | " + contIntercambiosHechos + " | " + contIntercambiosPendientes);
+                bw.newLine();
+            }
+
+        } catch (IOException e) {
+             System.err.println("Error al escribir: " + e.getMessage());
+        }
+
+    }
+
+    
 
 
 }
