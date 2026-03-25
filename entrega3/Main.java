@@ -1,13 +1,10 @@
 import sistema.Sistema;
 import usuarios.*;
 import productos.*;
-import productos.categoria.*;
 import compras.*;
 import utilidades.*;
-import descuentos.*;
 import excepciones.*;
 
-import java.util.List;
 
 public class Main {
 

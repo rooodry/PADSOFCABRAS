@@ -11,8 +11,8 @@ import intercambios.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -184,9 +184,43 @@ public class Sistema {
     }
 
     
+    public ArrayList<Producto> recomendadarPorProductos(ClienteRegistrado c) {
+
+        ArrayList<Producto> listaProductos = new ArrayList<Producto>();
+        Map<Producto, Integer> productos = new HashMap<Producto, Integer>();
+        Map<Categoria
+        double[] listaPesos = {0, 0.5, 1, 2, 4, 5};
+
+
+        for(Pedido p : c.getPedidos()) {
+            if(p.getEstadoPedido() == EstadoPedido.LISTO) {
+                productos.putAll(p.getProductos());
+            }
+        }
+
+        for(Intercambio i : c.getIntercambios()) {
+            if(i.getIntercambiado()) {
+                productos.putAll(i.getOferta().getProductos());
+            }
+        }
+
+        for(Map.Entry<Producto, Integer> entry : productos.entrySet()) {
+            Producto p = entry.getKey();
+            Integer cantidad = entry.getValue();
+            
+
+
+        }
+
+        
+
+        
+        
+
+
+        return listaProductos;
+    }
+
 }
-
-
-
 
 
