@@ -6,11 +6,13 @@ import java.util.*;
 
 import compras.*;
 import excepciones.ExcepcionUsuariosAdmin;
+import productos.Producto;
 import productos.ProductoSegundaMano;
 import productos.ProductoTienda;
 import usuarios.*;
 import utilidades.EstadoPedido;
 import intercambios.*;
+import productos.categoria.*;
 
 public class Estadistica {
     
@@ -19,6 +21,8 @@ public class Estadistica {
     public Estadistica(String fichero) {
         this.fichero = fichero;
     }
+
+    public String getFichero() {return this.fichero;}
 
     public void estadisticaPedidos(List<Pedido> pedidos) {
         
@@ -162,7 +166,7 @@ public class Estadistica {
 
     }
 
-        public void estadisticasUsuariosMayorActividadIntercambios(List<ClienteRegistrado> clientes) {
+    public void estadisticasUsuariosMayorActividadIntercambios(List<ClienteRegistrado> clientes) {
 
         ClienteRegistrado[] listaOrdenada = new ClienteRegistrado[clientes.size()];
 
@@ -207,7 +211,7 @@ public class Estadistica {
                 }
 
 
-                bw.write( c.getDNI() + " | " + c.getIntercambios().size() + " | " + contIntercambiosHechos + " | " + contIntercambiosPendientes);
+                bw.write(c.getDNI() + " | " + c.getIntercambios().size() + " | " + contIntercambiosHechos + " | " + contIntercambiosPendientes);
                 bw.newLine();
             }
 
@@ -217,6 +221,48 @@ public class Estadistica {
 
     }
 
+    public void estadisticaCompraUsuarioValoracion(List<Pedido> pedidos) {
+
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(this.fichero))) {
+
+            bw.write("NOMBRE PRODUCTO | DNI USUARIO | VALORACION");
+            bw.newLine();
+
+            for(Pedido p: pedidos) {
+                Map<ProductoTienda, Integer> valoraciones = p.getValoracionesProductos();
+                for(Map.Entry<ProductoTienda, Integer> entry : valoraciones.entrySet()) {
+                    ProductoTienda producto = entry.getKey();
+                    Integer valoracion = entry.getValue();
+                    
+                    bw.write(producto.getNombre() + " | " + p.getCliente().getNombre() + " | " + valoracion);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error al escribir: " + e.getMessage());
+        }
+
+    }
+
+    public void estadisticaCompraUsuarioValoracionPorUsuario(ClienteRegistrado c) {
+
+       try(BufferedWriter bw = new BufferedWriter(new FileWriter(this.fichero))) {
+
+            bw.write("NOMBRE PRODUCTO | DNI USUARIO | VALORACION | CATEGORÍA | SUBCATEGORÍAS");
+            bw.newLine();
+
+            for(Pedido p: c.getPedidos()) {
+                Map<ProductoTienda, Integer> valoraciones = p.getValoracionesProductos();
+                for(Map.Entry<ProductoTienda, Integer> entry : valoraciones.entrySet()) {
+                    ProductoTienda producto = entry.getKey();
+                    Integer valoracion = entry.getValue();
+                    bw.write(producto.getNombre() + " | " + c.getNombre() + " | " + valoracion + " | " + producto.getCategoria().getNombre() + " | " + producto.getCategoria().getSubcategorias());
+                    bw.newLine();
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error al escribir: " + e.getMessage());
+        }
+    }
     
 
 

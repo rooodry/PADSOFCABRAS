@@ -3,19 +3,27 @@ package sistema;
 import productos.*;
 import usuarios.*;
 import descuentos.*;
+import estadisticas.Estadistica;
 import excepciones.*;
 import notificaciones.Notificacion;
 import compras.*;
 import utilidades.*;
 import intercambios.*;
+import productos.categoria.*;
 
 import java.util.List;
 import java.util.Map;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import javax.annotation.processing.FilerException;
 
 public class Sistema {
     
@@ -184,42 +192,114 @@ public class Sistema {
     }
 
     
-    public ArrayList<Producto> recomendadarPorProductos(ClienteRegistrado c) {
+    public Map<String, Integer> recomendadarPorProductos(ClienteRegistrado c) {
 
-        ArrayList<Producto> listaProductos = new ArrayList<Producto>();
-        Map<Producto, Integer> productos = new HashMap<Producto, Integer>();
-        Map<Categoria
-        double[] listaPesos = {0, 0.5, 1, 2, 4, 5};
+        int cont = 0;
+        
+        double[] interesComic = {0}; //0: AVENTURA, 1: ROMANCE, 2: COMEDIA
+        double[] interesJuego = {0}; //0: JUEGOMESA 1: CARTAS 2:DADOS
+        double interesFigura = 0;
+        Map<String, Integer> categorias = new HashMap<String, Integer>();
+        Map<String, Integer> categoriasOrdenadas = new LinkedHashMap<>();
+
+        Estadistica e = new Estadistica("comprasCliente" + c.getNombre());
+
+        try(BufferedReader br = new BufferedReader(new FileReader(e.getFichero()))) {
+
+            String linea;
+            String[] elementos;
+            Integer valoracion;
+            String categoria;
+            String subcategoria;
 
 
-        for(Pedido p : c.getPedidos()) {
-            if(p.getEstadoPedido() == EstadoPedido.LISTO) {
-                productos.putAll(p.getProductos());
+            while((linea = br.readLine()) != null) {
+                elementos = linea.split("\\|");
+                valoracion = Integer.parseInt(elementos[2]);
+                categoria = elementos[3];
+                subcategoria = elementos[4];
+
+                switch (categoria) {
+                    case "COMIC":
+                        switch (subcategoria) {
+                            case "AVENTURA":
+                                interesComic[0] += valoracion;
+                                break;
+                            case "ROMANCE":
+                                interesComic[1] += valoracion;
+                                break;
+                            case "COMEDIA":
+                                interesComic[2] += valoracion;
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    
+                    case "FIGURA":
+                        interesFigura += valoracion;
+                        break;
+                    
+                    case "JUEGO":
+                        switch(subcategoria) {
+                            case "JUEGO_MESA":
+                                interesJuego[0] += valoracion;
+                                break;
+                            case "CARTAS":
+                                interesJuego[1] += valoracion;
+                                break;
+                            case "DADOS":
+                                interesJuego[2] += valoracion;
+                                break;
+                            default:
+                                break;
+                        }
+                    default:
+                        break;
+                    }
+                cont ++;
             }
-        }
 
-        for(Intercambio i : c.getIntercambios()) {
-            if(i.getIntercambiado()) {
-                productos.putAll(i.getOferta().getProductos());
+            for(int i = 0; i < 3; i++) {
+                interesComic[i] = (int) (interesComic[i] / cont);
+                interesJuego[i] = (int) (interesJuego[i] / cont);
             }
-        }
+            interesFigura = (int) (interesFigura / cont);
 
-        for(Map.Entry<Producto, Integer> entry : productos.entrySet()) {
-            Producto p = entry.getKey();
-            Integer cantidad = entry.getValue();
+            categorias.put("AVENTURA", (int) interesComic[0]);
+            categorias.put("ROMANCE", (int) interesComic[1]);
+            categorias.put("COMEDIA", (int) interesComic[2]);
+
+            categorias.put("JUEGO_MESA", (int) interesComic[0]);
+            categorias.put("CARTAS", (int) interesComic[1]);
+            categorias.put("DADOS", (int) interesComic[2]);
+
+            categorias.put("FIGURA", (int) interesFigura);
+
+
+            List<Map.Entry<String, Integer>> listaEntradas = new ArrayList<>(categorias.entrySet());
+
+
+            listaEntradas.sort((entrada1, entrada2) -> entrada2.getValue().compareTo(entrada1.getValue()));
+
+
             
 
-
-        }
-
+            for (Map.Entry<String, Integer> entrada : listaEntradas) {
+                categoriasOrdenadas.put(entrada.getKey(), entrada.getValue());
+            }
+            
+            } catch (IOException ex) {
+            System.err.println("Error abriendo archivo " + ex.getMessage());
+            }
         
-
-        
-        
-
-
-        return listaProductos;
+        return categoriasOrdenadas;
     }
+
+    
+
+
+
 
 }
 
