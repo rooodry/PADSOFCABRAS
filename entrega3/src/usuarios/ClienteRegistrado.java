@@ -101,6 +101,8 @@ public class ClienteRegistrado extends Cliente {
         }
         return Status.ERROR;
     }
+
+    public void añadirValoraciones(Pedido p, Map<ProductoTienda, Integer> lista) {p.setValoracionesProductos(lista);}
     
 
 

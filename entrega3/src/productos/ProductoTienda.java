@@ -32,9 +32,14 @@ public class ProductoTienda extends Producto {
 
         //SETTER//
         public void setPrecio(double precio) {this.precio = precio;}
+        public void setValoracion(int valoracion) {
+            
+        }
 
         //GETTER//
         public double getPrecio() {return this.precio;}
+
+
 
 
 }

@@ -15,6 +15,7 @@ public class Pedido {
     private EstadoPedido estadoPedido;
     private final ClienteRegistrado cliente;
     private Map<ProductoTienda, Integer> productos;
+    private Map<ProductoTienda, Integer> valoraciones;
 
     public Pedido(ClienteRegistrado cliente, Map<ProductoTienda, Integer> productos) {
         this.codigo = new Codigo();
@@ -25,6 +26,7 @@ public class Pedido {
         this.fechaPreparacion = null;
         this.fechaRecogida = null;
         this.estadoPedido = EstadoPedido.EN_CARRITO;
+        this.valoraciones = new HashMap<ProductoTienda, Integer>();
     }
 
 
@@ -50,7 +52,9 @@ public class Pedido {
         }
     }
 
+    //SETTERS//
     public void setFechaRecogida(Date fecha) {this.fechaRecogida = fecha;}
+    public void setValoracionesProductos(Map<ProductoTienda, Integer> lista) {this.valoraciones = new HashMap<ProductoTienda, Integer>(lista);}
 
     //GETTERS//
     public Codigo getCodigo() {return this.codigo;}
@@ -62,7 +66,9 @@ public class Pedido {
     public Date getFechaRecogida() {return this.fechaRecogida != null ? new Date(this.fechaRecogida.getTime()) : null;}
     public EstadoPedido getEstadoPedido() {return this.estadoPedido;}
     public ClienteRegistrado getCliente() {return this.cliente;}
-    public Map<ProductoTienda, Integer> getProductos() {return new HashMap<ProductoTienda, Integer>(productos);}
+    public Map<ProductoTienda, Integer> getProductos() {return new HashMap<ProductoTienda, Integer>(this.productos);}
+    public Map<ProductoTienda, Integer> getValoracionesProductos() {return new HashMap<ProductoTienda, Integer>(this.valoraciones);}
+
 
 
     public void cancelar() {
