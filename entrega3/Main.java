@@ -27,7 +27,30 @@ public class Main {
  
         // 3. Cargar productos desde fichero y añadirlos al stock
         List<ProductoTienda> productosCargados = new java.util.ArrayList<>();
-        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader("txt/cargaproductos.txt"))) {
+        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader("entrega3/txt/cargaproductos.txt"))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                if (linea.isBlank()) continue;
+                String[] partes = linea.split("\\|");
+                if (partes.length < 4) {
+                    System.err.println("✘ Línea mal formateada, se ignora: " + linea);
+                    continue;
+                }
+                ProductoTienda p = new ProductoTienda(partes[0].trim(), partes[1].trim(), partes[2].trim());
+                p.setPrecio(Double.parseDouble(partes[3].trim()));
+                stock.añadirProducto(p, 5); // cantidad inicial por defecto
+                productosCargados.add(p);
+                System.out.println("  + " + p.getNombre() + " (" + p.getPrecio() + "€)");
+            }
+            System.out.println("✔ " + productosCargados.size() + " productos cargados desde cargaproductos.txt");
+        } catch (java.io.FileNotFoundException e) {
+            System.err.println("✘ No se encontró cargaproductos.txt");
+            return;
+        } catch (java.io.IOException e) {
+            System.err.println("✘ Error leyendo cargaproductos.txt: " + e.getMessage());
+            return;
+        }
+        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader("entrega3/txt/cargaproductos.txt"))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 if (linea.isBlank()) continue;

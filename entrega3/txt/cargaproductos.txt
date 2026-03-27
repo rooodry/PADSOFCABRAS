@@ -1,4 +1,3 @@
-nombre|descripcion|imagen|precio
 Batman: El Largo Halloween|Clásico cómic del hombre murciélago enfrentándose a un asesino en serie a lo largo de un año|batman_halloween.jpg|24.95
 Figura Funko Pop Spider-Man|Figura de vinilo coleccionable de Spider-Man con su traje clásico rojo y azul|funko_spiderman.jpg|15.50
 Catán|El famoso juego de mesa de estrategia donde deberás construir pueblos y ciudades negociando recursos|catan_caja.jpg|45.00

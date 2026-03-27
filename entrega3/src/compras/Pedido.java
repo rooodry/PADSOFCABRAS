@@ -20,7 +20,7 @@ public class Pedido {
         this.codigo = new Codigo();
         this.fechaRealizacion = new Date();
         this.cliente = cliente;
-        this.productos = new HashMap<ProductoTienda, Integer>();
+        this.productos = new HashMap<ProductoTienda, Integer>(productos);
         this.fechaPago = null;
         this.fechaPreparacion = null;
         this.fechaRecogida = null;
@@ -81,7 +81,7 @@ public class Pedido {
         }
         
         return total;
-}
+    }
 
 
 
