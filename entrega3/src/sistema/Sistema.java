@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.FilerException;
 
@@ -157,7 +158,7 @@ public class Sistema {
         for(Map.Entry<ProductoTienda, Integer> entry : p.getProductos().entrySet()) {
             ProductoTienda producto = entry.getKey();
             
-            this.stock.retirarProducto(producto);
+            this.stock.añadirProducto(producto, entry.getValue());
         }
         this.pedidos.remove(p);
         p.cancelar();
@@ -270,9 +271,9 @@ public class Sistema {
             categorias.put("ROMANCE", (int) interesComic[1]);
             categorias.put("COMEDIA", (int) interesComic[2]);
 
-            categorias.put("JUEGO_MESA", (int) interesComic[0]);
-            categorias.put("CARTAS", (int) interesComic[1]);
-            categorias.put("DADOS", (int) interesComic[2]);
+            categorias.put("JUEGO_MESA", (int) interesJuego[0]);
+            categorias.put("CARTAS", (int) interesJuego[1]);
+            categorias.put("DADOS", (int) interesJuego[2]);
 
             categorias.put("FIGURA", (int) interesFigura);
 
@@ -296,54 +297,43 @@ public class Sistema {
         return categoriasOrdenadas;
     }
 
-    public List<ProductoTienda> recomendarProductos(Map<String, Integer> categorias, <List>ProductoTienda productos) {
+    public List<ProductoTienda> recomendarProductos(Map<String, Integer> categorias, List<ProductoTienda> productos){
 
-        Map<ProductoTienda, Integer> productosValor = new HashMap<>();
-        
+    Map<ProductoTienda, Integer> productosValor = new HashMap<>();
+    
 
-        for(ProductoTienda p : productos) {
-
-            switch (p.getCategoria().getSubcategoria()) {
-                case Genero.AVENTURA:
-                    productosValor.put(p, categorias.get("AVENTURA"));                    
-                    break;
-                case Genero.COMEDIA:
-                    productosValor.put(p, categorias.get("COMEDIA"));                    
-                    break;
-                case Genero.ROMANCE:
-                    productosValor.put(p, categorias.get("ROMANCE"));
-                    break;
-                case TipoJuego.CARTAS:
-                    productosValor.put(p, categorias.get("CARTAS"));
-                    break;
-                case TipoJuego.DADOS:
-                    productosValor.put(p, categorias.get("DADOS"));
-                    break;
-                case TipoJuego.JUEGO_MESA:
-                    productosValor.put(p, categorias.get("JUEGO_MESA"));
-                    break;
-                case p.getCategoria().getSubcategoria() instanceof Figura:
-                    productosValor.put(p, categorias.get("FIGURA"));
-                    break;
-                default:
-                    break;
+    for(ProductoTienda p : productos) {
+        Object subcategoria = p.getCategoria().getSubcategoria();
+            if (subcategoria == Genero.AVENTURA) {
+                productosValor.put(p, categorias.getOrDefault("AVENTURA", 0));
+            } else if (subcategoria == Genero.COMEDIA) {
+                productosValor.put(p, categorias.getOrDefault("COMEDIA", 0));
+            } else if (subcategoria == Genero.ROMANCE) {
+                productosValor.put(p, categorias.getOrDefault("ROMANCE", 0));
+            } else if (subcategoria == TipoJuego.CARTAS) {
+                productosValor.put(p, categorias.getOrDefault("CARTAS", 0));
+            } else if (subcategoria == TipoJuego.DADOS) {
+                productosValor.put(p, categorias.getOrDefault("DADOS", 0));
+            } else if (subcategoria == TipoJuego.JUEGO_MESA) {
+                productosValor.put(p, categorias.getOrDefault("JUEGO_MESA", 0));
+            } else if (subcategoria instanceof Figura) {
+                productosValor.put(p, categorias.getOrDefault("FIGURA", 0));
             }
+    }
 
-        }
+    List<ProductoTienda> productosOrdenados = productosValor.entrySet().stream().sorted(Map.Entry.<ProductoTienda, Integer>comparingByValue().reversed())
+    .map(Map.Entry::getKey)
+    .collect(Collectors.toList());
 
-        List<ProductoTienda> productosOrdenados = productosValor.entrySet().stream().sorted(Map.Entry.<ProductoTienda, Integer>comparingByValue().reversed())
-        .map(Map.Entry::getKey)
-        .collect(Collectors.toList());
-
-        return productosOrdenados;
+    return productosOrdenados;
         
     }
 
 //0: AVENTURA, 1: ROMANCE, 2: COMEDIA
         double[] interesJuego = {0}; //0: JUEGOMESA 1: CARTAS 2:DADOS
-
-
-
 }
+
+
+
 
 

@@ -115,6 +115,51 @@ public class Main {
         System.out.println("  Estado conservación: " + psm.getEstadoConservacion());
         System.out.println("  Valor estimado: " + psm.getValorEstimado() + "€");
 
-        System.out.println("\n=== FIN ===");
+        System.out.println("\n=== SEGUNA PARTE ===");
+
+        // =================================================================
+        // 🚀 NUEVA PARTE: PROBANDO EL SISTEMA DE TRUEQUES Y OFERTAS
+        // =================================================================
+
+        // 12. Crear un segundo cliente (María)
+        ClienteRegistrado cliente2 = new ClienteRegistrado("maria456", "pass", "87654321B");
+        sistema.addUsuario(cliente2);
+        System.out.println("\n- ClienteRegistrado 2 creado: " + cliente2.getNombre());
+
+        // 13. María sube un producto a su cartera para usarlo como moneda de cambio
+        ProductoSegundaMano psmMaria = new ProductoSegundaMano("Figura Goku", "Sin caja", "goku.jpg", cliente2);
+        cliente2.subirProducto(psmMaria);
+        empIntercambio.valorarProducto(psmMaria, 7, 20.0, EstadoConservacion.BUENO);
+        System.out.println("- " + cliente2.getNombre() + " sube a su cartera: " + psmMaria.getNombre() + " (" + psmMaria.getValorEstimado() + "€)");
+
+        // 14. María le hace una oferta a Juan (Le ofrece su Goku a cambio del Catán)
+        Oferta oferta = new Oferta(psmMaria, psm, cliente2, cliente);
+        cliente2.lanzarOferta(oferta); 
+        System.out.println("\n- OFERTA LANZADA: " + cliente2.getNombre() + " ofrece [" + psmMaria.getNombre() + "] a cambio de [" + psmJuan.getNombre() + "]");
+
+        // 15. Juan acepta la oferta
+        oferta.aceptarOferta(); 
+        System.out.println("- " + cliente.getNombre() + " ha ACEPTADO la oferta. Estado de la oferta: " + oferta.getEstadoOferta());
+
+        // 16. Se genera el Intercambio físico en la tienda
+        Intercambio intercambio = new Intercambio(oferta, empIntercambio); 
+        sistema.asignarIntercambio(intercambio, empIntercambio);
+        System.out.println("\n- INTERCAMBIO FÍSICO INICIADO. Empleado asignado: " + empIntercambio.getNombre());
+
+        // 17. El empleado gestiona el intercambio físico cuando los clientes van a la tienda
+        empIntercambio.empezarPreparacionIntercambio(intercambio);
+        System.out.println("  Estado intercambio: " + intercambio.getEstadoIntercambio());
+
+        empIntercambio.marcarListoParaEntregar(intercambio); 
+        System.out.println("  Estado intercambio: " + intercambio.getEstadoIntercambio());
+
+        empIntercambio.entregarIntercambio(intercambio); 
+        System.out.println("  Estado intercambio: " + intercambio.getEstadoIntercambio());
+
+        // 18. Comprobación final
+        System.out.println("\n=== RESULTADO FINAL ===");
+        System.out.println("El sistema ha completado un flujo de tienda y un flujo de trueque entre usuarios P2P.");
+
+        System.out.println("\n=== FIN DEL TEST ===");
     }
 }
