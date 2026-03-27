@@ -192,7 +192,7 @@ public class Sistema {
     }
 
     
-    public Map<String, Integer> recomendadarPorProductos(ClienteRegistrado c) {
+    public Map<String, Integer> obtenerCategoriasRecomendadas(ClienteRegistrado c) {
 
         int cont = 0;
         
@@ -296,8 +296,51 @@ public class Sistema {
         return categoriasOrdenadas;
     }
 
-    
+    public List<ProductoTienda> recomendarProductos(Map<String, Integer> categorias, <List>ProductoTienda productos) {
 
+        Map<ProductoTienda, Integer> productosValor = new HashMap<>();
+        
+
+        for(ProductoTienda p : productos) {
+
+            switch (p.getCategoria().getSubcategoria()) {
+                case Genero.AVENTURA:
+                    productosValor.put(p, categorias.get("AVENTURA"));                    
+                    break;
+                case Genero.COMEDIA:
+                    productosValor.put(p, categorias.get("COMEDIA"));                    
+                    break;
+                case Genero.ROMANCE:
+                    productosValor.put(p, categorias.get("ROMANCE"));
+                    break;
+                case TipoJuego.CARTAS:
+                    productosValor.put(p, categorias.get("CARTAS"));
+                    break;
+                case TipoJuego.DADOS:
+                    productosValor.put(p, categorias.get("DADOS"));
+                    break;
+                case TipoJuego.JUEGO_MESA:
+                    productosValor.put(p, categorias.get("JUEGO_MESA"));
+                    break;
+                case p.getCategoria().getSubcategoria() instanceof Figura:
+                    productosValor.put(p, categorias.get("FIGURA"));
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        List<ProductoTienda> productosOrdenados = productosValor.entrySet().stream().sorted(Map.Entry.<ProductoTienda, Integer>comparingByValue().reversed())
+        .map(Map.Entry::getKey)
+        .collect(Collectors.toList());
+
+        return productosOrdenados;
+        
+    }
+
+//0: AVENTURA, 1: ROMANCE, 2: COMEDIA
+        double[] interesJuego = {0}; //0: JUEGOMESA 1: CARTAS 2:DADOS
 
 
 

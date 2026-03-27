@@ -5,27 +5,21 @@ import java.util.List;
 
 public abstract class Categoria {
     private String nombre;
-    private List<Categoria> subcategorias;
+    private Categoria subCategoria;
 
     public Categoria(String nombre) {
         this.nombre = nombre;
-        this.subcategorias = new ArrayList<>();
+        this.subCategoria = null;
     }
 
     //SETTER//
-    public void addSubcategoria(Categoria subcategoria) {this.subcategorias.add(subcategoria);}
+    public void setSubCategoria(Categoria subcategoria) {this.subCategoria = subcategoria;}
 
     //GETTERS//
     public String getNombre() {return this.nombre;}
 
-    public List<Categoria> getSubcategorias() {return new ArrayList<>(subcategorias);}
+    public Categoria getSubcategoria() {return this.subCategoria;}
 
 
-
-
-
-    public void removeSubcategoria(Categoria subcategoria) {
-        this.subcategorias.remove(subcategoria);
-    }
     
 }
