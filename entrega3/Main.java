@@ -3,8 +3,10 @@ import usuarios.*;
 import productos.*;
 import compras.*;
 import utilidades.*;
+import intercambios.*; // ¡Importante para que reconozca Oferta e Intercambio!
 import excepciones.*;
 
+import java.util.Date;
 import java.util.List;
 
 public class Main {
@@ -65,7 +67,7 @@ public class Main {
             System.err.println("X Error dando de alta empleado: " + e.getMessage());
         }
 
-        // 5. Crear cliente registrado
+        // 5. Crear cliente registrado (Juan)
         ClienteRegistrado cliente = new ClienteRegistrado("juan123", "pass", "12345678A");
         sistema.addUsuario(cliente);
         System.out.println("- ClienteRegistrado creado: " + cliente.getNombre());
@@ -115,6 +117,53 @@ public class Main {
         System.out.println("  Estado conservación: " + psm.getEstadoConservacion());
         System.out.println("  Valor estimado: " + psm.getValorEstimado() + "€");
 
-        System.out.println("\n=== FIN ===");
+        System.out.println("\n=== SEGUNDA PARTE ===");
+
+        // =================================================================
+        // 🚀 PROBANDO EL SISTEMA DE TRUEQUES Y OFERTAS EXACTAMENTE CON TUS MÉTODOS
+        // =================================================================
+
+        // 12. Crear un segundo cliente (María)
+        ClienteRegistrado cliente2 = new ClienteRegistrado("maria456", "pass", "87654321B");
+        sistema.addUsuario(cliente2);
+        System.out.println("\n- ClienteRegistrado 2 creado: " + cliente2.getNombre());
+
+        // 13. María sube un producto a su cartera para usarlo como moneda de cambio
+        ProductoSegundaMano psmMaria = new ProductoSegundaMano("Figura Goku", "Sin caja", "goku.jpg", cliente2);
+        cliente2.subirProducto(psmMaria);
+        empIntercambio.valorarProducto(psmMaria, 7, 20.0, EstadoConservacion.MUY_BUENO);
+        System.out.println("- " + cliente2.getNombre() + " sube a su cartera: " + psmMaria.getNombre() + " (" + psmMaria.getValorEstimado() + "€)");
+
+        // 14. María le hace una oferta a Juan
+        Oferta oferta = new Oferta(psmMaria, psm, cliente2, cliente);
+        
+        // Registramos la oferta en las listas de los clientes directamente
+        cliente2.getOfertasRealizadas().add(oferta);
+        cliente.getOfertasRecibidas().add(oferta);
+        
+        System.out.println("\n- OFERTA CREADA: " + cliente2.getNombre() + " ofrece [" + psmMaria.getNombre() + "] a cambio de [" + psm.getNombre() + "]");
+
+        // 15. Se genera el Intercambio físico en la tienda con tu constructor: (Date fechaOferta, Oferta oferta)
+        Intercambio intercambio = new Intercambio(new Date(), oferta); 
+        
+        // 16. ¡OJO AQUÍ! En tu código, aceptarOferta() es un método de Intercambio, no de Oferta
+        intercambio.aceptarOferta();
+        System.out.println("- " + cliente.getNombre() + " ha ACEPTADO la oferta. Estado de la oferta: " + oferta.getEstadoOferta());
+
+        sistema.asignarIntercambio(intercambio, empIntercambio);
+        System.out.println("\n- INTERCAMBIO FÍSICO INICIADO. Empleado asignado: " + empIntercambio.getNombre());
+
+        // 17. El empleado gestiona el intercambio físico usando tus métodos exactos
+        empIntercambio.marcarIntercambioListo(intercambio); 
+        System.out.println("  Estado intercambio (Listo): ¡Notificaciones de aviso enviadas!");
+
+        empIntercambio.transferirPropiedad(intercambio); 
+        System.out.println("  Estado intercambio (Entregado): " + (intercambio.getIntercambiado() ? "SÍ" : "NO") + ". ¡Propiedad transferida!");
+
+        // 18. Comprobación final
+        System.out.println("\n=== RESULTADO FINAL ===");
+        System.out.println("El sistema ha completado un flujo de tienda y un flujo de trueque entre usuarios P2P.");
+
+        System.out.println("\n=== FIN DEL TEST ===");
     }
 }

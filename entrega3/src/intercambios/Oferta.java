@@ -8,12 +8,14 @@ import java.util.*;
 public class Oferta {
     
     private EstadoOferta estadoOferta;
-    private Map<ProductoSegundaMano, Integer> productos;
+    private final ProductoSegundaMano productoOfertado;  
+    private final ProductoSegundaMano productoDeseado;     
     private ClienteRegistrado usuarioReceptor;
     private ClienteRegistrado usuarioLanzador;
 
-    public Oferta(Map<ProductoSegundaMano, Integer> productos, ClienteRegistrado uRec, ClienteRegistrado uLanz) {
-        this.productos = new HashMap<ProductoSegundaMano, Integer>(productos);
+    public Oferta(ProductoSegundaMano productoOfertado, ProductoSegundaMano productoDeseado, ClienteRegistrado uRec, ClienteRegistrado uLanz) {
+        this.productoOfertado = productoOfertado;
+        this.productoDeseado  = productoDeseado;        
         this.estadoOferta = EstadoOferta.PENDIENTE;
         this.usuarioReceptor = uRec;
         this.usuarioLanzador = uLanz;
@@ -24,7 +26,8 @@ public class Oferta {
 
     //GETTERS//
     public EstadoOferta getEstadoOferta() {return this.estadoOferta;}
-    public Map<ProductoSegundaMano, Integer> getProductos() {return new HashMap<ProductoSegundaMano, Integer>(this.productos);}
+    public ProductoSegundaMano getProductoOfertado() {return this.productoOfertado;}
+    public ProductoSegundaMano getProductoDeseado() {return this.productoDeseado;}
     public ClienteRegistrado getUsuarioReceptor() {return this.usuarioReceptor;}
     public ClienteRegistrado getUsuarioLanzador() {return this.usuarioLanzador;}
 
