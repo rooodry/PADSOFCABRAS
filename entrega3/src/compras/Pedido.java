@@ -5,6 +5,7 @@ import java.util.*;
 import productos.*;
 import usuarios.ClienteRegistrado;
 import utilidades.EstadoPedido;
+import descuentos.*; 
 
 public class Pedido {
     private final Codigo codigo;
@@ -16,6 +17,7 @@ public class Pedido {
     private final ClienteRegistrado cliente;
     private Map<ProductoTienda, Integer> productos;
     private Map<ProductoTienda, Integer> valoraciones;
+    private Descuento descuento;
 
     public Pedido(ClienteRegistrado cliente, Map<ProductoTienda, Integer> productos) {
         this.codigo = new Codigo();
@@ -27,15 +29,15 @@ public class Pedido {
         this.fechaRecogida = null;
         this.estadoPedido = EstadoPedido.EN_CARRITO;
         this.valoraciones = new HashMap<ProductoTienda, Integer>();
+        this.descuento = null; 
     }
 
 
-    //SETTER//
+    //SETTERS//
     public void setEstadoPedido(EstadoPedido estadoPedido) {
         this.estadoPedido = estadoPedido;
 
         switch (estadoPedido) {
-        
         case EN_PREPARACION:
             this.fechaPago = new Date();
             break;
@@ -45,23 +47,20 @@ public class Pedido {
         case ENTREGADO:
             this.fechaRecogida = new Date();
             break;
-        case CANCELADO:
-            break;
         default:
             break;
         }
     }
+    
+    public void setFechaRecogida(Date fecha) {this.fechaRecogida = new Date(fecha.getTime());}
+    public void setValoracionesProductos(Map<ProductoTienda, Integer> valoraciones) {this.valoraciones = new HashMap<ProductoTienda, Integer>(valoraciones);}
+    public void setDescuento(Descuento d) {this.descuento = d;} // NUEVO SETTER
 
-    //SETTERS//
-    public void setFechaRecogida(Date fecha) {this.fechaRecogida = fecha;}
-    public void setValoracionesProductos(Map<ProductoTienda, Integer> lista) {this.valoraciones = new HashMap<ProductoTienda, Integer>(lista);}
 
     //GETTERS//
     public Codigo getCodigo() {return this.codigo;}
     public Date getFechaRealizacion() {return new Date(this.fechaRealizacion.getTime());}
-    /* DEVOLVEMOS LA FECHA DE PAGO O NULL SI EL PEDIDO AÚN NO SE HA PAGADO */
     public Date getFechaPago() {return this.fechaPago != null ? new Date(this.fechaPago.getTime()) : null;}
-    /* HACEMOS LO MISMO CON FECHA PREPARACIÓN Y RECOGIDA */
     public Date getFechaPreparacion() {return this.fechaPreparacion != null ? new Date(this.fechaPreparacion.getTime()) : null;}
     public Date getFechaRecogida() {return this.fechaRecogida != null ? new Date(this.fechaRecogida.getTime()) : null;}
     public EstadoPedido getEstadoPedido() {return this.estadoPedido;}
@@ -79,16 +78,39 @@ public class Pedido {
 
         double total = 0;
     
+        // precio base normal (sin descuentos))
         for (Map.Entry<ProductoTienda, Integer> entry : productos.entrySet()) {
             ProductoTienda producto = entry.getKey();
             Integer cantidad = entry.getValue();
-            
             total += producto.getPrecio() * cantidad;
         }
-        
+
+        // descuentos aplicados
+        if (this.descuento != null) {
+            
+            if (this.descuento instanceof DescuentoPorcentaje) {
+                DescuentoPorcentaje dp = (DescuentoPorcentaje) this.descuento;
+                total = total - (total * (dp.getPorcentaje() / 100.0));
+            } 
+            else if (this.descuento instanceof DescuentoCantidadGastada) {
+                DescuentoCantidadGastada dcg = (DescuentoCantidadGastada) this.descuento;
+                if (total >= dcg.getCantidadMinima()) {
+                    total = total - (total * (dcg.getPorcentaje() / 100.0));
+                }
+            }
+            else if (this.descuento instanceof DescuentoDosPorUno) {
+                // 2X1
+                double rebaja = 0;
+                for (Map.Entry<ProductoTienda, Integer> entry : productos.entrySet()) {
+                    ProductoTienda producto = entry.getKey();
+                    Integer cantidad = entry.getValue();
+                    int pares = cantidad / 2; 
+                    rebaja += pares * producto.getPrecio();
+                }
+                total -= rebaja;
+            }
+        }
+
         return total;
     }
-
-
-
 }
