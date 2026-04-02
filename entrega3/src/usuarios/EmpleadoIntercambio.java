@@ -52,10 +52,13 @@ public class EmpleadoIntercambio extends Empleado {
         ClienteRegistrado lanzador = oferta.getUsuarioLanzador();
         ClienteRegistrado receptor = oferta.getUsuarioReceptor();
  
-        for (ProductoSegundaMano p : oferta.getProductos()) {
-            receptor.getCartera().añadirProducto(p);
-            lanzador.getCartera().getProductos().remove(p);
-        }
+        // El lanzador da su productoOfertado al receptor
+        receptor.getCartera().añadirProducto(oferta.getProductoOfertado());
+        lanzador.getCartera().getProductos().remove(oferta.getProductoOfertado());
+
+        // El receptor da su productoDeseado al lanzador
+        lanzador.getCartera().añadirProducto(oferta.getProductoDeseado());
+        receptor.getCartera().getProductos().remove(oferta.getProductoDeseado());
  
         i.setIntercambiado(true);
         i.setFechaAceptada(new java.util.Date());
@@ -64,10 +67,14 @@ public class EmpleadoIntercambio extends Empleado {
     public void reportarFallo(Intercambio i) {
         Oferta oferta = i.getOferta();
  
-        for (ProductoSegundaMano p : oferta.getProductos()) {
-            p.setDisponibilidad(true);
-            p.setEstadoProducto(utilidades.EstadoProducto.VALORADO);
-        }
+        // Restaurar disponibilidad de ambos productos individuales
+        ProductoSegundaMano p1 = oferta.getProductoOfertado();
+        p1.setDisponibilidad(true);
+        p1.setEstadoProducto(utilidades.EstadoProducto.VALORADO);
+
+        ProductoSegundaMano p2 = oferta.getProductoDeseado();
+        p2.setDisponibilidad(true);
+        p2.setEstadoProducto(utilidades.EstadoProducto.VALORADO);
  
         this.intercambiosPendientes.remove(i);
     }

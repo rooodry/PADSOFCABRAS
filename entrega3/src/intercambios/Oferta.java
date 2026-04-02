@@ -3,17 +3,19 @@ package intercambios;
 import productos.ProductoSegundaMano;
 import usuarios.ClienteRegistrado;
 import utilidades.EstadoOferta;
-import java.util.List;
+import java.util.*;
 
 public class Oferta {
     
     private EstadoOferta estadoOferta;
-    private List<ProductoSegundaMano> productos;
+    private final ProductoSegundaMano productoOfertado;  
+    private final ProductoSegundaMano productoDeseado;     
     private ClienteRegistrado usuarioReceptor;
     private ClienteRegistrado usuarioLanzador;
 
-    public Oferta(List<ProductoSegundaMano> productos, ClienteRegistrado uRec, ClienteRegistrado uLanz) {
-        this.productos = productos;
+    public Oferta(ProductoSegundaMano productoOfertado, ProductoSegundaMano productoDeseado, ClienteRegistrado uRec, ClienteRegistrado uLanz) {
+        this.productoOfertado = productoOfertado;
+        this.productoDeseado  = productoDeseado;        
         this.estadoOferta = EstadoOferta.PENDIENTE;
         this.usuarioReceptor = uRec;
         this.usuarioLanzador = uLanz;
@@ -24,7 +26,8 @@ public class Oferta {
 
     //GETTERS//
     public EstadoOferta getEstadoOferta() {return this.estadoOferta;}
-    public List<ProductoSegundaMano> getProductos() {return this.productos;}
+    public ProductoSegundaMano getProductoOfertado() {return this.productoOfertado;}
+    public ProductoSegundaMano getProductoDeseado() {return this.productoDeseado;}
     public ClienteRegistrado getUsuarioReceptor() {return this.usuarioReceptor;}
     public ClienteRegistrado getUsuarioLanzador() {return this.usuarioLanzador;}
 
