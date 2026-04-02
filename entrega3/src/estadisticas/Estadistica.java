@@ -255,7 +255,7 @@ public class Estadistica {
                 for(Map.Entry<ProductoTienda, Integer> entry : valoraciones.entrySet()) {
                     ProductoTienda producto = entry.getKey();
                     Integer valoracion = entry.getValue();
-                    bw.write(producto.getNombre() + " | " + c.getNombre() + " | " + valoracion + " | " + producto.getCategoria().getNombre() + " | " + producto.getCategoria().getSubcategorias());
+                    bw.write(producto.getNombre() + " | " + c.getNombre() + " | " + valoracion + " | " + producto.getCategoria().getNombre() + " | " + producto.getCategoria().getSubcategoria());
                     bw.newLine();
                 }
             }

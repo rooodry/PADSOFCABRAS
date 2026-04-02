@@ -6,13 +6,14 @@ import utilidades.*;
 import intercambios.*;
 import excepciones.*;
 import estadisticas.Estadistica;
-import productos.categoria.*; // Para las categorías
+import productos.categoria.*;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// ⚠️ SI TU ARCHIVO SE LLAMA main2.java, CAMBIA LA PALABRA "Main" por "main2"
 public class Main {
 
     public static void main(String[] args) {
@@ -22,7 +23,7 @@ public class Main {
         System.out.println("=====================================================\n");
 
         // =================================================================
-        // FASE 1: INICIALIZACIÓN Y CARGA DE DATOS
+        // FASE 1: INICIALIZACIÓN Y CARGA DE DATOS DESDE CSV
         // =================================================================
         Sistema sistema = new Sistema();
         Stock stock = new Stock();
@@ -33,34 +34,54 @@ public class Main {
         System.out.println("✅ Sistema iniciado y Gestor (" + gestor.getNombre() + ") operativo.");
 
         List<ProductoTienda> productosCargados = new java.util.ArrayList<>();
-        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader("entrega3/txt/cargaproductos.txt"))) {
+        
+        // 🚀 NUEVO LECTOR DE CSV
+        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader("entrega3/txt/productos (2).csv"))) {
             String linea;
+            br.readLine(); // Saltamos la cabecera
+            
             while ((linea = br.readLine()) != null) {
                 if (linea.isBlank()) continue;
-                String[] partes = linea.split("\\|");
-                if (partes.length < 4) continue;
+                String[] partes = linea.split(";");
+                if (partes.length < 6) continue;
                 
-                ProductoTienda p = new ProductoTienda(partes[0].trim(), partes[1].trim(), partes[2].trim());
-                p.setPrecio(Double.parseDouble(partes[3].trim()));
-                stock.añadirProducto(p, 10); // Metemos 10 unidades de cada
+                String tipo = partes[0].trim();
+                String id = partes[1].trim();
+                String nombre = partes[2].trim();
+                String desc = partes[3].trim();
+                double precio = Double.parseDouble(partes[4].trim());
+                int unidadesEnStock = Integer.parseInt(partes[5].trim());
+                
+                ProductoTienda p = new ProductoTienda(nombre, desc, id + ".jpg");
+                p.setPrecio(precio);
+                
+                if(tipo.equals("C")) {
+                    p.setCategoria(new Comic("Superheroes", 100, "Desconocido", "Desconocido", Genero.AVENTURA));
+                } else if(tipo.equals("J")) {
+                    p.setCategoria(new Juego("Estrategia", 2, 4, TipoJuego.JUEGO_MESA));
+                } else if(tipo.equals("F")) {
+                    p.setCategoria(new Figura("Merchandising", 15.0)); 
+                }
+
+                stock.añadirProducto(p, unidadesEnStock); 
                 productosCargados.add(p);
             }
-            System.out.println("📦 Stock cargado: " + productosCargados.size() + " productos distintos en el almacén.");
+            System.out.println("📦 Stock cargado desde CSV: " + productosCargados.size() + " productos procesados.");
+            
         } catch (Exception e) {
-            System.err.println("X Error leyendo fichero: " + e.getMessage());
+            System.err.println("X Error leyendo fichero CSV: " + e.getMessage());
             return;
         }
 
-        // Rescatamos los productos principales para las pruebas
-        ProductoTienda batman = productosCargados.get(0);     // 24.95€
-        ProductoTienda spiderman = productosCargados.get(1);  // 15.50€
-        ProductoTienda catan = productosCargados.get(2);      // 45.00€
-        ProductoTienda vader = productosCargados.get(4);      // 149.99€
-
-        // Asignamos categorías para que las estadísticas y recomendaciones no den fallo
-        batman.setCategoria(new Comic("Superheroes", 120, "DC", "ECC", Genero.AVENTURA));
-        catan.setCategoria(new Juego("Estrategia", 4, 10, TipoJuego.JUEGO_MESA));
-
+        if (productosCargados.size() < 5) {
+            System.out.println("No hay suficientes productos en el CSV para la prueba");
+            return;
+        }
+        
+        ProductoTienda batman = productosCargados.get(0);    
+        ProductoTienda spiderman = productosCargados.get(2); 
+        ProductoTienda catan = productosCargados.get(3);     
+        ProductoTienda vader = productosCargados.get(4);     
 
         // =================================================================
         // FASE 2: EL GESTOR APLICA DESCUENTOS EN LA TIENDA
@@ -83,23 +104,22 @@ public class Main {
         ClienteRegistrado juan = new ClienteRegistrado("juan123", "pass", "12345678A");
         sistema.addUsuario(juan);
 
-        // Juan mete productos en la cesta
         juan.añadirALaCesta(batman, stock);
         juan.añadirALaCesta(batman, stock);
-        juan.añadirALaCesta(batman, stock); // Lleva 3 Batmans (Debería pagar 2 por el 2x1)
+        juan.añadirALaCesta(batman, stock); 
         juan.añadirALaCesta(spiderman, stock);
-        juan.añadirALaCesta(spiderman, stock); // Lleva 2 Spidermans (Con 20% dto)
-        juan.añadirALaCesta(catan, stock); // Lleva 1 Catan (-5€)
-        juan.añadirALaCesta(vader, stock); // Lleva 1 Vader (Precio normal)
+        juan.añadirALaCesta(spiderman, stock); 
+        juan.añadirALaCesta(catan, stock); 
+        juan.añadirALaCesta(vader, stock); 
 
         juan.comprar();
         Pedido pedidoJuan = juan.getPedidos().get(0);
         
         juan.pagarPedido(pedidoJuan);
-        sistema.registrarPedido(pedidoJuan); // Calcula precio total y asigna regalo
+        sistema.registrarPedido(pedidoJuan); 
 
         System.out.println("💰 Precio Total Calculado: " + String.format("%.2f", pedidoJuan.calcularPrecioTotal()) + "€");
-        System.out.println("   (Nota: El total sin descuentos era > 300€. Se han aplicado las rebajas individuales y luego un 15% extra por pasar de 150€)");
+        System.out.println("   (Nota: El total sin descuentos era > 300€. Se han aplicado rebajas individuales y 15% extra)");
         
         if(pedidoJuan.getRegalo() != null) {
             System.out.println("🎁 ¡REGALO AUTOMÁTICO AÑADIDO! Al pasar de 200€, Juan se lleva gratis: " + pedidoJuan.getRegalo().getNombre());
@@ -116,15 +136,14 @@ public class Main {
         // =================================================================
         System.out.println("\n--- VALORACIONES Y REPORTES ---");
         Map<ProductoTienda, Integer> reviews = new HashMap<>();
-        reviews.put(batman, 5); // Le da 5 estrellas a Batman
-        reviews.put(catan, 4);  // Le da 4 estrellas al Catan
+        reviews.put(batman, 5); 
+        reviews.put(catan, 4);  
         juan.añadirValoraciones(pedidoJuan, reviews);
         System.out.println("⭐ Juan ha valorado sus compras.");
 
-        // Generamos el archivo TXT de estadísticas de Juan
-        Estadistica statsJuan = new Estadistica("comprasClientejuan123"); // Mismo nombre que buscará el recomendador
+        Estadistica statsJuan = new Estadistica("comprasClientejuan123"); 
         statsJuan.estadisticaCompraUsuarioValoracionPorUsuario(juan);
-        System.out.println("📊 Archivo de estadísticas 'comprasClientejuan123.txt' generado con éxito.");
+        System.out.println("📊 Archivo de estadísticas generado con éxito.");
 
 
         // =================================================================
@@ -133,34 +152,29 @@ public class Main {
         System.out.println("\n--- PLATAFORMA DE TRUEQUE ---");
         EmpleadoIntercambio empIntercambio = new EmpleadoIntercambio("empIntercambio", "pass3");
 
-        // Juan sube un producto
         ProductoSegundaMano psmJuan = new ProductoSegundaMano("Catan Edición 1995", "Esquinas gastadas", "catan_viejo.jpg", juan);
         juan.subirProducto(psmJuan);
         empIntercambio.valorarProducto(psmJuan, 6, 20.0, EstadoConservacion.USO_EVIDENTE);
         
-        // María se registra y sube un producto
         ClienteRegistrado maria = new ClienteRegistrado("maria456", "pass", "87654321B");
         sistema.addUsuario(maria);
         ProductoSegundaMano psmMaria = new ProductoSegundaMano("Goku Super Saiyan", "Casi nueva", "goku.jpg", maria);
         maria.subirProducto(psmMaria);
         empIntercambio.valorarProducto(psmMaria, 9, 25.0, EstadoConservacion.MUY_BUENO);
 
-        // María ofrece su Goku por el Catan de Juan
         Oferta oferta = new Oferta(psmMaria, psmJuan, maria, juan);
         maria.getOfertasRealizadas().add(oferta);
         juan.getOfertasRecibidas().add(oferta);
         System.out.println("🤝 " + maria.getNombre() + " ha ofrecido [" + psmMaria.getNombre() + "] a cambio de [" + psmJuan.getNombre() + "]");
 
-        // Se procesa el intercambio
         Intercambio intercambio = new Intercambio(new Date(), oferta);
         intercambio.aceptarOferta();
         sistema.asignarIntercambio(intercambio, empIntercambio);
         
-        empIntercambio.marcarIntercambioListo(intercambio); // Dispara notificaciones
-        empIntercambio.transferirPropiedad(intercambio); // Cambia los dueños
+        empIntercambio.marcarIntercambioListo(intercambio); 
+        empIntercambio.transferirPropiedad(intercambio); 
         System.out.println("✅ Intercambio finalizado y propiedades transferidas en tienda.");
 
-        // Comprobamos notificaciones
         if(!juan.getNotificaciones().isEmpty()) {
             System.out.println("🔔 Juan tiene una nueva notificación: '" + juan.getNotificaciones().get(0).getMensaje() + "'");
         }
