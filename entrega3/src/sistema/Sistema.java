@@ -144,6 +144,16 @@ public class Sistema {
     }
 
     public void registrarPedido(Pedido p) {
+        double total = p.calcularPrecioTotal();
+    
+        // Regalo (> 200€)
+        if (total > 200) {
+            ProductoTienda productoRegalo = buscarProductoRegalo();
+            if (productoRegalo != null) {
+                p.setRegalo(productoRegalo); // Asegúrate de añadir este campo en Pedido.java
+                System.out.println("¡REGALO AÑADIDO!: " + productoRegalo.getNombre());
+            }
+        }
         this.pedidos.add(p);
         
         scheduler.schedule(() -> {
@@ -151,6 +161,10 @@ public class Sistema {
                 cancelarPedido(p);
             }
         }, 15, TimeUnit.MINUTES);    
+    }
+
+    private ProductoTienda buscarProductoRegalo() {
+        return this.stock.getProductos().keySet().stream().filter(prod -> prod.getPrecio() <= 15.0).findAny().orElse(null);
     }
 
     public void cancelarPedido(Pedido p) {
@@ -329,11 +343,11 @@ public class Sistema {
         
     }
 
-//0: AVENTURA, 1: ROMANCE, 2: COMEDIA
-        double[] interesJuego = {0}; //0: JUEGOMESA 1: CARTAS 2:DADOS
 }
 
 
+//0: AVENTURA, 1: ROMANCE, 2: COMEDIA
+        //double[] interesJuego = {0}; //0: JUEGOMESA 1: CARTAS 2:DADOS
 
 
 

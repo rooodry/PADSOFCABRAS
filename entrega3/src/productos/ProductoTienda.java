@@ -7,6 +7,9 @@ import java.io.IOException;
 public class ProductoTienda extends Producto {
 
         private double precio;
+        private boolean tiene2x1 = false;
+        private double rebajaPorcentaje = 0; 
+        private double rebajaFija = 0;
 
         public ProductoTienda(String nombre, String descripcion, String imagen) {
             super(nombre, descripcion, imagen);
@@ -29,16 +32,22 @@ public class ProductoTienda extends Producto {
             }
         }
 
+        public boolean isTiene2x1() { return tiene2x1; }
 
         //SETTER//
         public void setPrecio(double precio) {this.precio = precio;}
         public void setValoracion(int valoracion) {
-            
+            //FALTA
         }
+        public void setTiene2x1(boolean tiene2x1) { this.tiene2x1 = tiene2x1; }
+        public void setRebajaPorcentaje(double rebajaPorcentaje) { this.rebajaPorcentaje = rebajaPorcentaje; }
+        public void setRebajaFija(double rebajaFija) { this.rebajaFija = rebajaFija; }
+
 
         //GETTER//
         public double getPrecio() {return this.precio;}
-
+        public double getRebajaPorcentaje() { return rebajaPorcentaje; }
+        public double getRebajaFija() { return rebajaFija; }
 
 
 

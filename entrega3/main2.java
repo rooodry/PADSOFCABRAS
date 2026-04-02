@@ -88,9 +88,18 @@ public class Main {
         Pedido pedido = cliente.getPedidos().get(0);
         Status statusPago = cliente.pagarPedido(pedido);
         System.out.println("- pagarPedido() -> " + statusPago);
-        System.out.println("  Estado pedido: " + pedido.getEstadoPedido());
-        System.out.println("  Precio total: " + pedido.calcularPrecioTotal() + "€");
+        
+        // --- AQUÍ EMPIEZA LA PRUEBA DEL DESCUENTO ---
+        System.out.println("  Precio total SIN descuento: " + pedido.calcularPrecioTotal() + "€");
+        
+        // Creamos un descuento del 20%
+        descuentos.DescuentoPorcentaje desc20 = new descuentos.DescuentoPorcentaje(new java.util.Date(), new java.util.Date(), 20.0);
+        pedido.setDescuento(desc20);
+        
+        System.out.println("  Precio total CON descuento (20%): " + pedido.calcularPrecioTotal() + "€");
+        // --- FIN DE LA PRUEBA DEL DESCUENTO ---
 
+        System.out.println("  Estado pedido: " + pedido.getEstadoPedido());
         // 9. Sistema registra el pedido
         sistema.registrarPedido(pedido);
         System.out.println("- Pedido registrado en el sistema");
@@ -120,7 +129,7 @@ public class Main {
         System.out.println("\n=== SEGUNDA PARTE ===");
 
         // =================================================================
-        // 🚀 PROBANDO EL SISTEMA DE TRUEQUES Y OFERTAS EXACTAMENTE CON TUS MÉTODOS
+        // PROBANDO EL SISTEMA DE TRUEQUES Y OFERTAS EXACTAMENTE CON TUS MÉTODOS
         // =================================================================
 
         // 12. Crear un segundo cliente (María)

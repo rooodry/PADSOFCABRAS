@@ -18,6 +18,7 @@ public class Pedido {
     private Map<ProductoTienda, Integer> productos;
     private Map<ProductoTienda, Integer> valoraciones;
     private Descuento descuento;
+    private ProductoTienda regalo; 
 
     public Pedido(ClienteRegistrado cliente, Map<ProductoTienda, Integer> productos) {
         this.codigo = new Codigo();
@@ -55,7 +56,7 @@ public class Pedido {
     public void setFechaRecogida(Date fecha) {this.fechaRecogida = new Date(fecha.getTime());}
     public void setValoracionesProductos(Map<ProductoTienda, Integer> valoraciones) {this.valoraciones = new HashMap<ProductoTienda, Integer>(valoraciones);}
     public void setDescuento(Descuento d) {this.descuento = d;} // NUEVO SETTER
-
+    public void setRegalo(ProductoTienda regalo) { this.regalo = regalo; }
 
     //GETTERS//
     public Codigo getCodigo() {return this.codigo;}
@@ -67,7 +68,7 @@ public class Pedido {
     public ClienteRegistrado getCliente() {return this.cliente;}
     public Map<ProductoTienda, Integer> getProductos() {return new HashMap<ProductoTienda, Integer>(this.productos);}
     public Map<ProductoTienda, Integer> getValoracionesProductos() {return new HashMap<ProductoTienda, Integer>(this.valoraciones);}
-
+    public ProductoTienda getRegalo() { return this.regalo; }
 
 
     public void cancelar() {
@@ -75,42 +76,36 @@ public class Pedido {
     }
 
     public double calcularPrecioTotal() {
+        double subtotal = 0;
 
-        double total = 0;
-    
-        // precio base normal (sin descuentos))
         for (Map.Entry<ProductoTienda, Integer> entry : productos.entrySet()) {
-            ProductoTienda producto = entry.getKey();
-            Integer cantidad = entry.getValue();
-            total += producto.getPrecio() * cantidad;
-        }
-
-        // descuentos aplicados
-        if (this.descuento != null) {
+            ProductoTienda p = entry.getKey();
+            int cantidad = entry.getValue();
             
-            if (this.descuento instanceof DescuentoPorcentaje) {
-                DescuentoPorcentaje dp = (DescuentoPorcentaje) this.descuento;
-                total = total - (total * (dp.getPorcentaje() / 100.0));
-            } 
-            else if (this.descuento instanceof DescuentoCantidadGastada) {
-                DescuentoCantidadGastada dcg = (DescuentoCantidadGastada) this.descuento;
-                if (total >= dcg.getCantidadMinima()) {
-                    total = total - (total * (dcg.getPorcentaje() / 100.0));
-                }
+            // Rebaja de precio del producto (del Gestor)
+            double precioUnitario = p.getPrecio();
+            if (p.getRebajaPorcentaje() > 0) {
+                precioUnitario -= precioUnitario * p.getRebajaPorcentaje();
+            } else if (p.getRebajaFija() > 0) {
+                precioUnitario -= p.getRebajaFija();
             }
-            else if (this.descuento instanceof DescuentoDosPorUno) {
-                // 2X1
-                double rebaja = 0;
-                for (Map.Entry<ProductoTienda, Integer> entry : productos.entrySet()) {
-                    ProductoTienda producto = entry.getKey();
-                    Integer cantidad = entry.getValue();
-                    int pares = cantidad / 2; 
-                    rebaja += pares * producto.getPrecio();
-                }
-                total -= rebaja;
-            }
+            
+            // 2x1 si está activo (del Gestor)
+            // Si hay 3 productos en 2x1, solo pagas 2.
+            int unidadesAPagar = p.isTiene2x1() ? (cantidad - (cantidad / 2)) : cantidad;
+            
+            subtotal += unidadesAPagar * precioUnitario;
         }
 
-        return total;
+        // Descuentos Automáticos por Volumen de Gasto
+        if (subtotal >= 150) {
+            subtotal = subtotal * 0.85; // 15% de descuento
+        } else if (subtotal >= 100) {
+            subtotal = subtotal * 0.90; // 10% de descuento
+        } else if (subtotal >= 50) {
+            subtotal = subtotal * 0.95;  // 5% de descuento
+        }
+
+        return subtotal;
     }
 }
