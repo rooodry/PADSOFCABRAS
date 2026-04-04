@@ -58,7 +58,7 @@ public class Estadistica {
             throw new ExcepcionUsuariosAdmin(admin.getNombre());
         }
 
-        double[] cantidadMes = {0};
+        double[] cantidadMes = new double[12];
         int mesNumero;
         Calendar cal = Calendar.getInstance();
         String[] meses = {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"};

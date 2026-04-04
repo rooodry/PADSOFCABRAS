@@ -29,13 +29,13 @@ public class Intercambio {
     }
 
     //SETTERS//
-    public void setFechaAceptada(Date fecha) {this.fechaAceptada = new Date();}
+    public void setFechaAceptada(Date fecha) {this.fechaAceptada = new Date(fecha.getTime());}
     public void setIntercambiado(boolean flag) {this.intercambiado = flag;}
 
     //GETTERS//
     public Date getFechaOferta() {return new Date(this.fechaOferta.getTime());}
     public Date getFechaLimite() {return new Date(this.fechaLimite.getTime());}
-    public Date getFechaAceptada() {return new Date(this.fechaAceptada.getTime());}
+    public Date getFechaAceptada() {return this.fechaAceptada != null ? new Date(this.fechaAceptada.getTime()) : null;}
     public boolean getIntercambiado() {return this.intercambiado;}
     public Oferta getOferta() {return this.oferta;}
 
