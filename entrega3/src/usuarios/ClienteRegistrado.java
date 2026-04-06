@@ -49,12 +49,12 @@ public class ClienteRegistrado extends Cliente {
     public String getDNI() {return this.DNI;}
     public Cartera getCartera() {return this.cartera;}
     public Cesta getCesta() {return this.cesta;}
-    public List<Pedido> getPedidos() {return this.pedidos;}
-    public List<Notificacion> getNotificaciones() {return this.notificaciones;}
-    public List<Oferta> getOfertasRealizadas() {return this.ofertasRealizadas;}
-    public List<Oferta> getOfertasRecibidas() {return this.ofertasRecibidas;}
-    public List<Intercambio> getIntercambios() {return this.intercambios;}
-    public List<Codigo> getCodigos() {return this.codigos;}
+    public List<Pedido> getPedidos() {return new ArrayList<>(this.pedidos);}
+    public List<Notificacion> getNotificaciones() {return new ArrayList<>(this.notificaciones);}
+    public List<Oferta> getOfertasRealizadas() {return new ArrayList<>(this.ofertasRealizadas);}
+    public List<Oferta> getOfertasRecibidas() {return new ArrayList<>(this.ofertasRecibidas);}
+    public List<Intercambio> getIntercambios() {return new ArrayList<>(this.intercambios);}
+    public List<Codigo> getCodigos() {return new ArrayList<>(this.codigos);}
 
     public Status comprar() {
         if(this.cesta.estaVacia()) {
@@ -78,7 +78,7 @@ public class ClienteRegistrado extends Cliente {
     }
 
 
-    public void leerNotificaicion(Notificacion notificacion) {
+    public void leerNotificacion(Notificacion notificacion) {
         if (this.notificaciones.contains(notificacion)) {
             notificacion.setLeida();
         }
@@ -89,8 +89,7 @@ public class ClienteRegistrado extends Cliente {
     }
 
     public Status subirProducto(ProductoSegundaMano p) {
-        ProductoSegundaMano productoSegundaMano = (ProductoSegundaMano) p;
-        this.cartera.añadirProducto(productoSegundaMano);
+        this.cartera.añadirProducto(p);
         return Status.OK;
     }
 

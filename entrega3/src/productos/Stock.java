@@ -3,6 +3,8 @@ package productos;
 import java.util.HashMap;
 import java.util.Map;
 
+import utilidades.Status;
+
 public class Stock {
     private Map<ProductoTienda, Integer> productos;
     
@@ -31,9 +33,17 @@ public class Stock {
         }
     }
 
+
+    public Status comprobarStock(ProductoTienda producto, int cantidad) {
+        if(this.getNumProductos(producto) >= cantidad) {
+            return Status.OK;
+        }
+
+        return Status.ERROR;
+    }
+
     public int getNumProductos(ProductoTienda producto) {
         return this.productos.getOrDefault(producto, 0);
     }
-    
 
 }

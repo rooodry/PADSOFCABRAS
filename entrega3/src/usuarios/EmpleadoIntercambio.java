@@ -24,8 +24,8 @@ public class EmpleadoIntercambio extends Empleado {
     public void addIntercambio(Intercambio i) {this.intercambiosPendientes.add(i);}
 
     //GETTERS//
-    public List<ProductoSegundaMano> getProductosPorValorar() {return this.productosPorValorar;}
-    public List<Intercambio> getIntercambiosPendientes() {return this.intercambiosPendientes;}
+    public List<ProductoSegundaMano> getProductosPorValorar() {return new ArrayList<>(this.productosPorValorar);}
+    public List<Intercambio> getIntercambiosPendientes() {return new ArrayList<>(this.intercambiosPendientes);}
 
 
     public void confirmarIntercambio(Intercambio i) { 
@@ -54,14 +54,13 @@ public class EmpleadoIntercambio extends Empleado {
  
         // El lanzador da su productoOfertado al receptor
         receptor.getCartera().añadirProducto(oferta.getProductoOfertado());
-        lanzador.getCartera().getProductos().remove(oferta.getProductoOfertado());
+        lanzador.getCartera().retirarProducto(oferta.getProductoOfertado());
 
         // El receptor da su productoDeseado al lanzador
         lanzador.getCartera().añadirProducto(oferta.getProductoDeseado());
-        receptor.getCartera().getProductos().remove(oferta.getProductoDeseado());
+        receptor.getCartera().retirarProducto(oferta.getProductoDeseado());
  
         i.setIntercambiado(true);
-        i.setFechaAceptada(new java.util.Date());
     } 
 
     public void reportarFallo(Intercambio i) {

@@ -46,14 +46,20 @@ public class Pedido {
             this.fechaPreparacion = new Date();
             break;
         case ENTREGADO:
-            this.fechaRecogida = new Date();
+            if(this.fechaRecogida == null) {
+                this.fechaRecogida = new Date();
+            }
             break;
         default:
             break;
         }
     }
     
-    public void setFechaRecogida(Date fecha) {this.fechaRecogida = new Date(fecha.getTime());}
+    public void setFechaRecogida(Date fecha) {
+        if (fecha != null) {
+            this.fechaRecogida = new Date(fecha.getTime());
+        }
+    }
     public void setValoracionesProductos(Map<ProductoTienda, Integer> valoraciones) {this.valoraciones = new HashMap<ProductoTienda, Integer>(valoraciones);}
     public void setDescuento(Descuento d) {this.descuento = d;} // NUEVO SETTER
     public void setRegalo(ProductoTienda regalo) { this.regalo = regalo; }
