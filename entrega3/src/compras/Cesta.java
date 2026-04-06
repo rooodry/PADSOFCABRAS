@@ -18,15 +18,7 @@ public class Cesta {
     }
 
     public Map<ProductoTienda, Integer> getProductos() {
-        return this.productos;
-    }
-    
-    public Status comprobarStock(Stock stock, ProductoTienda producto, int cantidad) {
-        if(stock != null && stock.getNumProductos(producto) >= cantidad) {
-            return Status.OK;
-        }
-
-        return Status.ERROR;
+        return new HashMap<>(this.productos);
     }
 
     public boolean estaVacia() {

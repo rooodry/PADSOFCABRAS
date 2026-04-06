@@ -1,4 +1,5 @@
 package descuentos;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,11 +14,11 @@ public class DescuentoRegalo extends Descuento {
     public DescuentoRegalo(Date fechaInicio, Date fechaFin, double gastoMinimo, List<ProductoTienda> productos) {
         super(fechaInicio, fechaFin);
         this.gastoMinimo = gastoMinimo;
-        this.productos = productos;
+        this.productos = new ArrayList<>(productos);
     }
 
     //GETTER//
     public double getGastoMinimo() {return this.gastoMinimo;}
-    public List<ProductoTienda> getProductos() {return this.productos;}
+    public List<ProductoTienda> getProductos() {return new ArrayList<>(this.productos);}
     
 }

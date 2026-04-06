@@ -4,7 +4,10 @@ public class ExcepcionUsuarios extends Exception{
 
     private String nombre;
 
-    public ExcepcionUsuarios(String nombre) {this.nombre = nombre;};
+    public ExcepcionUsuarios(String nombre) {
+        super("Excepcion en Usuario " + nombre);
+        this.nombre = nombre;
+    }
 
     public String toString() {
         return "Excepcion en Usuario " + this.nombre + ": ";

@@ -42,6 +42,7 @@ public class Intercambio {
 
     public void aceptarOferta() {
         this.oferta.setEstadoOferta(EstadoOferta.ACEPTADA);
+        
     }
 
     public void rechazarOferta() {
