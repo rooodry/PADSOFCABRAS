@@ -78,6 +78,10 @@ public class ClienteRegistrado extends Cliente {
     }
 
 
+    public void addNotificacion(Notificacion notificacion) {
+        this.notificaciones.add(notificacion);
+    }
+
     public void leerNotificaicion(Notificacion notificacion) {
         if (this.notificaciones.contains(notificacion)) {
             notificacion.setLeida();

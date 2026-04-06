@@ -90,20 +90,41 @@ public class Pedido {
                 precioUnitario -= p.getRebajaFija();
             }
             
-            // 2x1 si está activo (del Gestor)
-            // Si hay 3 productos en 2x1, solo pagas 2.
-            int unidadesAPagar = p.isTiene2x1() ? (cantidad - (cantidad / 2)) : cantidad;
-            
-            subtotal += unidadesAPagar * precioUnitario;
+            subtotal += cantidad * precioUnitario;
         }
 
-        // Descuentos Automáticos por Volumen de Gasto
-        if (subtotal >= 150) {
-            subtotal = subtotal * 0.85; // 15% de descuento
-        } else if (subtotal >= 100) {
-            subtotal = subtotal * 0.90; // 10% de descuento
-        } else if (subtotal >= 50) {
-            subtotal = subtotal * 0.95;  // 5% de descuento
+        // Aplicar descuento explícito si está asignado
+        if (descuento != null) {
+            if (descuento instanceof DescuentoPorcentaje) {
+                double pct = ((DescuentoPorcentaje) descuento).getPorcentaje();
+                subtotal = subtotal * (1.0 - pct / 100.0);
+
+            } else if (descuento instanceof DescuentoCantidadGastada) {
+                DescuentoCantidadGastada dg = (DescuentoCantidadGastada) descuento;
+                if (subtotal >= dg.getCantidadMinima()) {
+                    subtotal = subtotal * (1.0 - dg.getPorcentaje() / 100.0);
+                }
+
+            } else if (descuento instanceof DescuentoDosPorUno) {
+                // 2x1: por cada 2 unidades del mismo producto, una es gratis.
+                // Se recalcula el subtotal aplicando la lógica 2x1 globalmente.
+                double subtotal2x1 = 0;
+                for (Map.Entry<ProductoTienda, Integer> entry : productos.entrySet()) {
+                    ProductoTienda p = entry.getKey();
+                    int cantidad = entry.getValue();
+                    double precioUnitario = p.getPrecio();
+                    if (p.getRebajaPorcentaje() > 0) {
+                        precioUnitario -= precioUnitario * p.getRebajaPorcentaje();
+                    } else if (p.getRebajaFija() > 0) {
+                        precioUnitario -= p.getRebajaFija();
+                    }
+                    int unidadesAPagar = cantidad - (cantidad / 2);
+                    subtotal2x1 += unidadesAPagar * precioUnitario;
+                }
+                subtotal = subtotal2x1;
+
+            }
+               // DescuentoRegalo: no modifica el precio total (el regalo lo gestiona el sistema)
         }
 
         return subtotal;
