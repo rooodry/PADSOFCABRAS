@@ -14,10 +14,14 @@ public class Gestor extends Usuario {
         this.estadistica = new ArrayList<>();
     }
 
-    public void addEstadistica(Estadistica e) {this.estadistica.add(e);}
-    public List<Estadistica> getEstadistica() {return new ArrayList<>(this.estadistica);}
-    public void configurarPermisos(Empleado emp, Set<TiposEmpleado> nuevosPermisos) {
-        for (TiposEmpleado t : TiposEmpleado.values()) emp.removePermiso(t);
-        for (TiposEmpleado t : nuevosPermisos) emp.addPermiso(t);
+    public void addEstadistica(Estadistica e) { this.estadistica.add(e); }
+    
+    public List<Estadistica> getEstadistica() { return new ArrayList<>(this.estadistica); }
+    
+    public void configurarPermisos(Empleado empleado, Set<TiposEmpleado> nuevosPermisos) {
+        empleado.clearPermisos();
+        for (TiposEmpleado t : nuevosPermisos) {
+            empleado.addPermiso(t);
+        }
     }
 }

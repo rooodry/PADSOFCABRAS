@@ -10,10 +10,11 @@ public abstract class Descuento {
         this.fechaFin = new Date(fechaFin.getTime());
     }
 
-    //GETTERS//
-    public Date getFechaInicio() {return this.fechaInicio;}
-    public Date getFechaFin() {return this.fechaFin;}
-
-
-
+    public Date getFechaInicio() {
+        return new Date(this.fechaInicio.getTime());
+    }
+    
+    public Date getFechaFin() {
+        return new Date(this.fechaFin.getTime());
+    }
 }

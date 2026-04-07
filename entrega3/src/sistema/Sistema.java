@@ -16,16 +16,14 @@ import java.util.Map;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.security.KeyStore.Entry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import javax.annotation.processing.FilerException;
 
 public class Sistema {
     
@@ -37,18 +35,15 @@ public class Sistema {
     private Stock stock;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-
     public Sistema() {
-        this.productos = new ArrayList<Producto>();
-        this.descuentos = new ArrayList<Descuento>();
-        this.usuarios = new ArrayList<Usuario>();
-        this.notificaciones = new ArrayList<Notificacion>();
-        this.pedidos = new ArrayList<Pedido>();
+        this.productos = new ArrayList<>();
+        this.descuentos = new ArrayList<>();
+        this.usuarios = new ArrayList<>();
+        this.notificaciones = new ArrayList<>();
+        this.pedidos = new ArrayList<>();
         this.stock = null;
     }
 
-
-    //SETTERS//
     public void addProducto(Producto p) {this.productos.add(p);}
     public void addDescuento(Descuento d) {this.descuentos.add(d);}
     public void addUsuario(Usuario u) {this.usuarios.add(u);}
@@ -56,80 +51,42 @@ public class Sistema {
     public void addPedido(Pedido p) {this.pedidos.add(p);}
     public void setStock(Stock s) {this.stock = s;}
 
-
     public void darAltaEmpleado(Usuario admin, String nombreEmpleado, String contraseña, TiposEmpleado tipo) throws ExcepcionUsuariosAdmin {
-        
-        Empleado e = null;
-
         if(!(admin instanceof Gestor)) {
             throw new ExcepcionUsuariosAdmin(admin.getNombre());
         }
 
-        if(tipo == TiposEmpleado.EMPLEADOS_INTERCAMBIO) {
-            e = new EmpleadoIntercambio(nombreEmpleado, contraseña);
-        } else if (tipo == TiposEmpleado.EMPLEADOS_PEDIDO) {
-            e = new EmpleadoPedido(nombreEmpleado, contraseña);
-        } else {
-            e = new EmpleadoProducto(nombreEmpleado, contraseña, this.stock);
-        }
-
+        Empleado e = new Empleado(nombreEmpleado, contraseña);
+        e.addPermiso(tipo);
         this.usuarios.add(e);
-
     }
 
     public void darBajaEmpleado(Usuario admin, Empleado e) throws ExcepcionUsuariosAdmin {
-        
         if(!(admin instanceof Gestor)) {
             throw new ExcepcionUsuariosAdmin(admin.getNombre());
         }
         this.usuarios.remove(e);
     }
 
-    public Empleado modificarPermiso(Usuario admin, Empleado e, TiposEmpleado tipo) throws ExcepcionUsuariosAdmin {
-        
-        Empleado emp;
-
+    public void modificarPermisos(Usuario admin, Empleado e, Set<TiposEmpleado> nuevosPermisos) throws ExcepcionUsuariosAdmin {
         if(!(admin instanceof Gestor)) {
             throw new ExcepcionUsuariosAdmin(admin.getNombre());
         }
-
-        if(tipo == TiposEmpleado.EMPLEADOS_INTERCAMBIO) {
-            emp = new EmpleadoIntercambio(e.getNombre(), e.getContraseña());
-            this.usuarios.remove(e);
-        } else if (tipo == TiposEmpleado.EMPLEADOS_PEDIDO) {
-            emp = new EmpleadoPedido(e.getNombre(), e.getContraseña());
-            this.usuarios.remove(e);
-        } else {
-            emp = new EmpleadoProducto(e.getNombre(), e.getContraseña(), this.stock);
-            this.usuarios.remove(e);
-        }
-
-        this.usuarios.add(emp);
-
-        return emp;
+        ((Gestor) admin).configurarPermisos(e, nuevosPermisos);
     }
 
     public Pack crearPack(Usuario admin, String nombre, double precio, List<Producto> productos) throws ExcepcionUsuariosAdmin {
-        
-        Pack pack;
-        
         if(!(admin instanceof Gestor)) {
             throw new ExcepcionUsuariosAdmin(admin.getNombre());
         }
-
-        return pack = new Pack(nombre, precio, productos);
-
+        return new Pack(nombre, precio, productos);
     }
 
     public Codigo generarCodigo() {
-
-        Codigo codigo;
-
-        return codigo = new Codigo();
+        return new Codigo();
     }
 
     public void actualizarStock(Usuario admin, ProductoTienda p, int cantidad) throws ExcepcionUsuariosAdmin {
-
         if(!(admin instanceof Gestor)) {
             throw new ExcepcionUsuariosAdmin(admin.getNombre());
         }
@@ -141,23 +98,39 @@ public class Sistema {
         } else {
             this.stock.retirarProducto(p);
         }
+    }
+
+    public double calcularPrecioFinalPedido(Pedido pedido) {
+        double precioBase = pedido.calcularPrecioTotal();
+        Descuento descuentoMasAntiguo = null;
+
+        for (Descuento descuento : this.descuentos) {
+            if (descuento.esAplicable(pedido)) {
+                if (descuentoMasAntiguo == null || descuento.getFechaInicio().before(descuentoMasAntiguo.getFechaInicio())) {
+                    descuentoMasAntiguo = descuento;
+                }
+            }
+        }
         
+        if (descuentoMasAntiguo != null) {
+            return descuentoMasAntiguo.aplicarDescuento(precioBase);
+        }
+        
+        return precioBase;
     }
 
     public void registrarPedido(Pedido p) {
-        double total = p.calcularPrecioTotal();
+        double total = calcularPrecioFinalPedido(p);
     
-        // Regalo (> 200€)
         if (total > 200) {
             ProductoTienda productoRegalo = buscarProductoRegalo();
             if (productoRegalo != null) {
-                p.setRegalo(productoRegalo); // Asegúrate de añadir este campo en Pedido.java
+                p.setRegalo(productoRegalo); 
                 System.out.println("¡REGALO AÑADIDO!: " + productoRegalo.getNombre());
             }
         }
         this.pedidos.add(p);
         
-        /** está puesto para que se caduque a los 3 segundos para que en el main se vea que funciona, y no tengan que esperar 15 minutos */
         scheduler.schedule(() -> {
             if (p.getEstadoPedido() == EstadoPedido.EN_CARRITO) {
                 cancelarPedido(p);
@@ -170,10 +143,8 @@ public class Sistema {
     }
 
     public void cancelarPedido(Pedido p) {
-
         for(Map.Entry<ProductoTienda, Integer> entry : p.getProductos().entrySet()) {
             ProductoTienda producto = entry.getKey();
-            
             this.stock.añadirProducto(producto, entry.getValue());
         }
         this.pedidos.remove(p);
@@ -192,12 +163,16 @@ public class Sistema {
         u.addNotificacion(n);
     }
 
-    public void asignarValoracion(ProductoSegundaMano p, EmpleadoIntercambio e) {
-        e.addProductoParaValorar(p);
+    public void asignarValoracion(ProductoSegundaMano p, Empleado e) {
+        if (e.tienePermiso(TiposEmpleado.EMPLEADOS_INTERCAMBIO)) {
+            e.addProductoParaValorar(p);
+        }
     }
 
-    public void asignarIntercambio(Intercambio i, EmpleadoIntercambio e) {
-        e.addIntercambio(i);
+    public void asignarIntercambio(Intercambio i, Empleado e) {
+        if (e.tienePermiso(TiposEmpleado.EMPLEADOS_INTERCAMBIO)) {
+            e.addIntercambio(i);
+        }
     }
 
     public void añadirProductoCartera(ProductoSegundaMano p, ClienteRegistrado c) {
@@ -208,27 +183,22 @@ public class Sistema {
         p.setDisponibilidad(false);
     }
 
-    
     public Map<String, Integer> obtenerCategoriasRecomendadas(ClienteRegistrado c) {
-
         int cont = 0;
-        
-        double[] interesComic = {0}; //0: AVENTURA, 1: ROMANCE, 2: COMEDIA
-        double[] interesJuego = {0}; //0: JUEGOMESA 1: CARTAS 2:DADOS
+        double[] interesComic = {0}; 
+        double[] interesJuego = {0}; 
         double interesFigura = 0;
-        Map<String, Integer> categorias = new HashMap<String, Integer>();
+        Map<String, Integer> categorias = new HashMap<>();
         Map<String, Integer> categoriasOrdenadas = new LinkedHashMap<>();
 
         Estadistica e = new Estadistica("comprasCliente" + c.getNombre());
 
         try(BufferedReader br = new BufferedReader(new FileReader(e.getFichero()))) {
-
             String linea;
             String[] elementos;
             Integer valoracion;
             String categoria;
             String subcategoria;
-
 
             while((linea = br.readLine()) != null) {
                 elementos = linea.split("\\|");
@@ -239,41 +209,22 @@ public class Sistema {
                 switch (categoria) {
                     case "COMIC":
                         switch (subcategoria) {
-                            case "AVENTURA":
-                                interesComic[0] += valoracion;
-                                break;
-                            case "ROMANCE":
-                                interesComic[1] += valoracion;
-                                break;
-                            case "COMEDIA":
-                                interesComic[2] += valoracion;
-                                break;
-                            default:
-                                break;
+                            case "AVENTURA": interesComic[0] += valoracion; break;
+                            case "ROMANCE": interesComic[1] += valoracion; break;
+                            case "COMEDIA": interesComic[2] += valoracion; break;
                         }
                         break;
-                    
                     case "FIGURA":
                         interesFigura += valoracion;
                         break;
-                    
                     case "JUEGO":
                         switch(subcategoria) {
-                            case "JUEGO_MESA":
-                                interesJuego[0] += valoracion;
-                                break;
-                            case "CARTAS":
-                                interesJuego[1] += valoracion;
-                                break;
-                            case "DADOS":
-                                interesJuego[2] += valoracion;
-                                break;
-                            default:
-                                break;
+                            case "JUEGO_MESA": interesJuego[0] += valoracion; break;
+                            case "CARTAS": interesJuego[1] += valoracion; break;
+                            case "DADOS": interesJuego[2] += valoracion; break;
                         }
-                    default:
                         break;
-                    }
+                }
                 cont ++;
             }
 
@@ -286,40 +237,30 @@ public class Sistema {
             categorias.put("AVENTURA", (int) interesComic[0]);
             categorias.put("ROMANCE", (int) interesComic[1]);
             categorias.put("COMEDIA", (int) interesComic[2]);
-
             categorias.put("JUEGO_MESA", (int) interesJuego[0]);
             categorias.put("CARTAS", (int) interesJuego[1]);
             categorias.put("DADOS", (int) interesJuego[2]);
-
             categorias.put("FIGURA", (int) interesFigura);
 
-
             List<Map.Entry<String, Integer>> listaEntradas = new ArrayList<>(categorias.entrySet());
-
-
             listaEntradas.sort((entrada1, entrada2) -> entrada2.getValue().compareTo(entrada1.getValue()));
-
-
-            
 
             for (Map.Entry<String, Integer> entrada : listaEntradas) {
                 categoriasOrdenadas.put(entrada.getKey(), entrada.getValue());
             }
             
-            } catch (IOException ex) {
+        } catch (IOException ex) {
             System.err.println("Error abriendo archivo " + ex.getMessage());
-            }
+        }
         
         return categoriasOrdenadas;
     }
 
     public List<ProductoTienda> recomendarProductos(Map<String, Integer> categorias, List<ProductoTienda> productos){
-
-    Map<ProductoTienda, Integer> productosValor = new HashMap<>();
-    
-
-    for(ProductoTienda p : productos) {
-        Object subcategoria = p.getCategoria().getSubcategoria();
+        Map<ProductoTienda, Integer> productosValor = new HashMap<>();
+        
+        for(ProductoTienda p : productos) {
+            Object subcategoria = p.getCategoria().getSubcategoria();
             if (subcategoria == Genero.AVENTURA) {
                 productosValor.put(p, categorias.getOrDefault("AVENTURA", 0));
             } else if (subcategoria == Genero.COMEDIA) {
@@ -335,29 +276,19 @@ public class Sistema {
             } else if (subcategoria instanceof Figura) {
                 productosValor.put(p, categorias.getOrDefault("FIGURA", 0));
             }
+        }
+
+        return productosValor.entrySet().stream()
+            .sorted(Map.Entry.<ProductoTienda, Integer>comparingByValue().reversed())
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList());
     }
-
-    List<ProductoTienda> productosOrdenados = productosValor.entrySet().stream().sorted(Map.Entry.<ProductoTienda, Integer>comparingByValue().reversed())
-    .map(Map.Entry::getKey)
-    .collect(Collectors.toList());
-
-    return productosOrdenados;
-        
-    }
-
-    //0: AVENTURA, 1: ROMANCE, 2: COMEDIA
-        //double[] interesJuego = {0}; //0: JUEGOMESA 1: CARTAS 2:DADOS
-
     
     public double[] obtenerVectores(ClienteRegistrado c) {
-
         int i = 0;
-
-        Map<String, Integer> categoriasRecomendadas = new HashMap<String, Integer>(obtenerCategoriasRecomendadas(c));
-
-        double[] vectorNormalizado = {0};
+        Map<String, Integer> categoriasRecomendadas = obtenerCategoriasRecomendadas(c);
+        double[] vectorNormalizado = new double[categoriasRecomendadas.size()];
         double normaCliente = 0;
-
 
         for(Map.Entry<String, Integer> entrada : categoriasRecomendadas.entrySet()) {
             vectorNormalizado[i] = entrada.getValue();
@@ -370,8 +301,6 @@ public class Sistema {
         }
         normaCliente = Math.sqrt(suma);
 
-        vectorNormalizado = new double[vectorNormalizado.length];   
-
         if (normaCliente != 0) {
             for (int j = 0; j < vectorNormalizado.length; j++) {
                 vectorNormalizado[j] = vectorNormalizado[j] / normaCliente;
@@ -382,111 +311,70 @@ public class Sistema {
     }
 
     public List<ProductoTienda> productosNoComprados(ClienteRegistrado cliente, List<ProductoTienda> productos) {
-        
-        //OBTENGO LOS PRODUCTOS NO COMPRADOS POR EL CLIENTE
-        List<ProductoTienda> productosNoComprados = new ArrayList<ProductoTienda>();
+        List<ProductoTienda> productosNoComprados = new ArrayList<>();
         for(Pedido p : cliente.getPedidos()) {
-
             for(ProductoTienda producto : productos) {
                 if(!p.getProductos().containsKey(producto)) {
                     productosNoComprados.add(producto);
                 } else {
-                    if(productosNoComprados.contains(producto)) {
-                        productosNoComprados.remove(producto);
-                    }
+                    productosNoComprados.remove(producto);
                 }
             }
         }
-
         return productosNoComprados;
     }
 
     public List<ProductoTienda> recomendarProductosPorUsuarios(ClienteRegistrado cliente, List<ClienteRegistrado> clientes, List<ProductoTienda> productos) {
-
-        Map<ClienteRegistrado, double[]> mapaClienteVector = new HashMap<ClienteRegistrado, double[]>();
-        Map<ClienteRegistrado, Double> mapaClienteSimilaridad = new HashMap<ClienteRegistrado, Double>();
+        Map<ClienteRegistrado, double[]> mapaClienteVector = new HashMap<>();
+        Map<ClienteRegistrado, Double> mapaClienteSimilaridad = new HashMap<>();
         double[] vectorCliente = obtenerVectores(cliente);
-        List<ProductoTienda> productosRecomendados = new ArrayList<ProductoTienda>();
 
-        //CONSIGO MAPA CON CLIENTE-VECTOR//
         for(ClienteRegistrado c : clientes) {
             if(c != cliente) {
                 mapaClienteVector.put(c, obtenerVectores(c));
             }
         }
 
-
-        //CONSIGO EL MAPA CON CLIENTE-SIMILARIDAD CON CLIENTE ORIGINAL//
         for(Map.Entry<ClienteRegistrado, double[]> entrada : mapaClienteVector.entrySet()) {
             double suma = 0;
             double[] vector = entrada.getValue();
-
             for(int i = 0; i < vector.length; i++) {
                 suma += vectorCliente[i] * vector[i];
             }
-
             mapaClienteSimilaridad.put(entrada.getKey(), suma);
         }
 
-
-        //ORDENO EL MAPA//
         List<Map.Entry<ClienteRegistrado, Double>> lista = new ArrayList<>(mapaClienteSimilaridad.entrySet());
         lista.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
-        Map<ClienteRegistrado, Double> mapaSimilaridadOrdenado = new LinkedHashMap<>();
-        for (Map.Entry<ClienteRegistrado, Double> entry : lista) {
-            mapaSimilaridadOrdenado.put(entry.getKey(), entry.getValue());
-        }
-        List<Map.Entry<ClienteRegistrado, Double>> listaClientes = new ArrayList<>(mapaSimilaridadOrdenado.entrySet());
+        
+        if(lista.size() < 3) return new ArrayList<>(); 
 
-
-
-
-        //OBTENGO LOS PRODUCTOS NO COMPRADOS POR EL CLIENTE PERO SI POR LOS 3 USUARIOS MÁS SIMILARES//
         List<ProductoTienda> productosParaRecomendar = new ArrayList<>();
-
         for(ProductoTienda p : productosNoComprados(cliente, productos)) {
-            if(!(productosNoComprados(listaClientes.get(0).getKey(), productos).contains(p)) || !(productosNoComprados(listaClientes.get(1).getKey(), productos).contains(p)) || !(productosNoComprados(listaClientes.get(2).getKey(), productos).contains(p))) {
+            if(!productosNoComprados(lista.get(0).getKey(), productos).contains(p) || 
+               !productosNoComprados(lista.get(1).getKey(), productos).contains(p) || 
+               !productosNoComprados(lista.get(2).getKey(), productos).contains(p)) {
                 productosParaRecomendar.add(p);
             }
         }
 
-        //OBTENGO LISTA ORDENADA POR CATEGORIAS DE LOS 3 USUARIOS MAS SIMILARES//
-        List<ProductoTienda> lista1 = recomendarProductos(obtenerCategoriasRecomendadas(listaClientes.get(0).getKey()), productosParaRecomendar);
-        List<ProductoTienda> lista2 = recomendarProductos(obtenerCategoriasRecomendadas(listaClientes.get(1).getKey()), productosParaRecomendar);
-        List<ProductoTienda> lista3 = recomendarProductos(obtenerCategoriasRecomendadas(listaClientes.get(2).getKey()), productosParaRecomendar);
+        List<ProductoTienda> lista1 = recomendarProductos(obtenerCategoriasRecomendadas(lista.get(0).getKey()), productosParaRecomendar);
+        List<ProductoTienda> lista2 = recomendarProductos(obtenerCategoriasRecomendadas(lista.get(1).getKey()), productosParaRecomendar);
+        List<ProductoTienda> lista3 = recomendarProductos(obtenerCategoriasRecomendadas(lista.get(2).getKey()), productosParaRecomendar);
 
-
-        //HAGO UN MAP CON PRODUCTO-VALOR DEPENDIENDO DE QUIEN LO HAYA COMPRADO//
         Map<ProductoTienda, Integer> mapaProductoValor = new HashMap<>();
         for(ProductoTienda p : productosParaRecomendar) {
             int suma = 0;
-            if(lista1.contains(p)) {
-                suma += 3;
-            }
-            if(lista2.contains(p)) {
-                suma += 2;
-            }
-            if(lista3.contains(p)) {
-                suma += 1;
-            }
+            if(lista1.contains(p)) suma += 3;
+            if(lista2.contains(p)) suma += 2;
+            if(lista3.contains(p)) suma += 1;
             mapaProductoValor.put(p, suma);
         }
 
-        //ORDENO EL MAPA Y DEVUELVO LA LISTA DE PRODUCTOS//
-        productosRecomendados = mapaProductoValor.entrySet()
-        .stream()
-        .sorted(Map.Entry.<ProductoTienda, Integer>comparingByValue().reversed())
-        .map(Map.Entry::getKey)
-        .toList();
-
-        return productosRecomendados;
-
+        return mapaProductoValor.entrySet()
+            .stream()
+            .sorted(Map.Entry.<ProductoTienda, Integer>comparingByValue().reversed())
+            .map(Map.Entry::getKey)
+            .toList();
     }
-
 }
-
-
-
-
-
-

@@ -12,9 +12,11 @@ public class DescuentoCantidadGastada extends Descuento {
         this.porcentaje = porcentaje;
     } 
     
-    //GETTERS//
-    public double getCantidadMinima() {return this.cantidadMinima;}
-    public double getPorcentaje() {return this.porcentaje;}
-
-
+    public double getCantidadMinima() {
+        return this.cantidadMinima;
+    }
+    
+    public double getPorcentaje() {
+        return this.porcentaje;
+    }
 }

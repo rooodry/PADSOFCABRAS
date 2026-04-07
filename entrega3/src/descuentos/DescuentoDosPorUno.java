@@ -6,5 +6,4 @@ public class DescuentoDosPorUno extends Descuento {
     public DescuentoDosPorUno(Date fechaInicio, Date fechaFin) {
         super(fechaInicio, fechaFin);
     } 
-    
 }

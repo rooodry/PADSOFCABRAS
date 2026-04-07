@@ -13,7 +13,12 @@ public class Empleado extends Usuario {
     }
 
     public void addPermiso(TiposEmpleado tipo) { permisos.add(tipo); }
+    
     public void removePermiso(TiposEmpleado tipo) { permisos.remove(tipo); }
+    
+    public void clearPermisos() { permisos.clear(); } 
+    
     public boolean tienePermiso(TiposEmpleado tipo) { return permisos.contains(tipo); }
+    
     public Set<TiposEmpleado> getPermisos() { return Collections.unmodifiableSet(permisos); }
 }
