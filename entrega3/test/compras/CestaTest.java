@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import productos.ProductoTienda;
 import productos.Stock;
-import utilidades.Status;
 
 public class CestaTest {
 
