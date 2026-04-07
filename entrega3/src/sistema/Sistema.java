@@ -16,6 +16,7 @@ import java.util.Map;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.KeyStore.Entry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -343,11 +344,148 @@ public class Sistema {
         
     }
 
+    //0: AVENTURA, 1: ROMANCE, 2: COMEDIA
+        //double[] interesJuego = {0}; //0: JUEGOMESA 1: CARTAS 2:DADOS
+
+    
+    public double[] obtenerVectores(ClienteRegistrado c) {
+
+        int i = 0;
+
+        Map<String, Integer> categoriasRecomendadas = new HashMap<String, Integer>(obtenerCategoriasRecomendadas(c));
+
+        double[] vectorNormalizado = {0};
+        double normaCliente = 0;
+
+
+        for(Map.Entry<String, Integer> entrada : categoriasRecomendadas.entrySet()) {
+            vectorNormalizado[i] = entrada.getValue();
+            i++;
+        }
+
+        double suma = 0.0;
+        for (double v : vectorNormalizado) {
+            suma += v * v;
+        }
+        normaCliente = Math.sqrt(suma);
+
+        vectorNormalizado = new double[vectorNormalizado.length];   
+
+        if (normaCliente != 0) {
+            for (int j = 0; j < vectorNormalizado.length; j++) {
+                vectorNormalizado[j] = vectorNormalizado[j] / normaCliente;
+            }
+        }
+
+        return vectorNormalizado;
+    }
+
+    public List<ProductoTienda> productosNoComprados(ClienteRegistrado cliente, List<ProductoTienda> productos) {
+        
+        //OBTENGO LOS PRODUCTOS NO COMPRADOS POR EL CLIENTE
+        List<ProductoTienda> productosNoComprados = new ArrayList<ProductoTienda>();
+        for(Pedido p : cliente.getPedidos()) {
+
+            for(ProductoTienda producto : productos) {
+                if(!p.getProductos().containsKey(producto)) {
+                    productosNoComprados.add(producto);
+                } else {
+                    if(productosNoComprados.contains(producto)) {
+                        productosNoComprados.remove(producto);
+                    }
+                }
+            }
+        }
+
+        return productosNoComprados;
+    }
+
+    public List<ProductoTienda> recomendarProductosPorUsuarios(ClienteRegistrado cliente, List<ClienteRegistrado> clientes, List<ProductoTienda> productos) {
+
+        Map<ClienteRegistrado, double[]> mapaClienteVector = new HashMap<ClienteRegistrado, double[]>();
+        Map<ClienteRegistrado, Double> mapaClienteSimilaridad = new HashMap<ClienteRegistrado, Double>();
+        double[] vectorCliente = obtenerVectores(cliente);
+        List<ProductoTienda> productosRecomendados = new ArrayList<ProductoTienda>();
+
+        //CONSIGO MAPA CON CLIENTE-VECTOR//
+        for(ClienteRegistrado c : clientes) {
+            if(c != cliente) {
+                mapaClienteVector.put(c, obtenerVectores(c));
+            }
+        }
+
+
+        //CONSIGO EL MAPA CON CLIENTE-SIMILARIDAD CON CLIENTE ORIGINAL//
+        for(Map.Entry<ClienteRegistrado, double[]> entrada : mapaClienteVector.entrySet()) {
+            double suma = 0;
+            double[] vector = entrada.getValue();
+
+            for(int i = 0; i < vector.length; i++) {
+                suma += vectorCliente[i] * vector[i];
+            }
+
+            mapaClienteSimilaridad.put(entrada.getKey(), suma);
+        }
+
+
+        //ORDENO EL MAPA//
+        List<Map.Entry<ClienteRegistrado, Double>> lista = new ArrayList<>(mapaClienteSimilaridad.entrySet());
+        lista.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+        Map<ClienteRegistrado, Double> mapaSimilaridadOrdenado = new LinkedHashMap<>();
+        for (Map.Entry<ClienteRegistrado, Double> entry : lista) {
+            mapaSimilaridadOrdenado.put(entry.getKey(), entry.getValue());
+        }
+        List<Map.Entry<ClienteRegistrado, Double>> listaClientes = new ArrayList<>(mapaSimilaridadOrdenado.entrySet());
+
+
+
+
+        //OBTENGO LOS PRODUCTOS NO COMPRADOS POR EL CLIENTE PERO SI POR LOS 3 USUARIOS MÁS SIMILARES//
+        List<ProductoTienda> productosParaRecomendar = new ArrayList<>();
+
+        for(ProductoTienda p : productosNoComprados(cliente, productos)) {
+            if(!(productosNoComprados(listaClientes.get(0).getKey(), productos).contains(p)) || !(productosNoComprados(listaClientes.get(1).getKey(), productos).contains(p)) || !(productosNoComprados(listaClientes.get(2).getKey(), productos).contains(p))) {
+                productosParaRecomendar.add(p);
+            }
+        }
+
+        //OBTENGO LISTA ORDENADA POR CATEGORIAS DE LOS 3 USUARIOS MAS SIMILARES//
+        List<ProductoTienda> lista1 = recomendarProductos(obtenerCategoriasRecomendadas(listaClientes.get(0).getKey()), productosParaRecomendar);
+        List<ProductoTienda> lista2 = recomendarProductos(obtenerCategoriasRecomendadas(listaClientes.get(1).getKey()), productosParaRecomendar);
+        List<ProductoTienda> lista3 = recomendarProductos(obtenerCategoriasRecomendadas(listaClientes.get(2).getKey()), productosParaRecomendar);
+
+
+        //HAGO UN MAP CON PRODUCTO-VALOR DEPENDIENDO DE QUIEN LO HAYA COMPRADO//
+        Map<ProductoTienda, Integer> mapaProductoValor = new HashMap<>();
+        for(ProductoTienda p : productosParaRecomendar) {
+            int suma = 0;
+            if(lista1.contains(p)) {
+                suma += 3;
+            }
+            if(lista2.contains(p)) {
+                suma += 2;
+            }
+            if(lista3.contains(p)) {
+                suma += 1;
+            }
+            mapaProductoValor.put(p, suma);
+        }
+
+        //ORDENO EL MAPA Y DEVUELVO LA LISTA DE PRODUCTOS//
+        productosRecomendados = mapaProductoValor.entrySet()
+        .stream()
+        .sorted(Map.Entry.<ProductoTienda, Integer>comparingByValue().reversed())
+        .map(Map.Entry::getKey)
+        .toList();
+
+        return productosRecomendados;
+
+    }
+
 }
 
 
-//0: AVENTURA, 1: ROMANCE, 2: COMEDIA
-        //double[] interesJuego = {0}; //0: JUEGOMESA 1: CARTAS 2:DADOS
+
 
 
 
