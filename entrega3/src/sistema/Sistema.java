@@ -10,6 +10,7 @@ import compras.*;
 import utilidades.*;
 import intercambios.*;
 import productos.categoria.*;
+import es.uam.eps.padsof.telecard.*;
 
 import java.util.List;
 import java.util.Map;
@@ -382,4 +383,16 @@ public class Sistema {
             .map(Map.Entry::getKey)
             .toList();
     }
+<<<<<<< HEAD
 }
+=======
+
+
+
+}
+
+
+
+
+
+>>>>>>> ff51d55872511c994bf2eb47358aede201e728b5

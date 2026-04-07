@@ -6,13 +6,12 @@ import java.util.*;
 
 import compras.*;
 import excepciones.ExcepcionUsuariosAdmin;
-import productos.Producto;
 import productos.ProductoSegundaMano;
 import productos.ProductoTienda;
 import usuarios.*;
 import utilidades.EstadoPedido;
 import intercambios.*;
-import productos.categoria.*;
+
 
 public class Estadistica {
     
