@@ -23,7 +23,7 @@ public class IntercambioTest {
 
         oferta = new Oferta(pOfertado, pDeseado, receptor, lanzador);
         
-        Intercambio intercambio = new Intercambio(new Date(), oferta);
+        intercambio = new Intercambio(new Date(), oferta);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class IntercambioTest {
 
     @Test
     public void testAceptarYRechazarOferta() {
-        intercambio.aceptarOferta(new Date());
+        intercambio.aceptarOferta();
         assertEquals(EstadoOferta.ACEPTADA, oferta.getEstadoOferta());
 
         intercambio.rechazarOferta();

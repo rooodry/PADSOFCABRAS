@@ -1,6 +1,8 @@
 package usuarios;
 
 import estadisticas.Estadistica;
+import utilidades.TiposEmpleado;
+
 import java.util.*;
 
 public class Gestor extends Usuario {
@@ -14,4 +16,8 @@ public class Gestor extends Usuario {
 
     public void addEstadistica(Estadistica e) {this.estadistica.add(e);}
     public List<Estadistica> getEstadistica() {return new ArrayList<>(this.estadistica);}
+    public void configurarPermisos(Empleado emp, Set<TiposEmpleado> nuevosPermisos) {
+        for (TiposEmpleado t : TiposEmpleado.values()) emp.removePermiso(t);
+        for (TiposEmpleado t : nuevosPermisos) emp.addPermiso(t);
+    }
 }

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import productos.ProductoTienda;
-import usuarios.ClienteRegistrado;
+import usuarios.ClienteRegistrado; 
 import utilidades.EstadoPedido;
 
 public class PedidoTest {
@@ -17,7 +17,7 @@ public class PedidoTest {
     private Pedido pedido;
     private ProductoTienda p1;
     private Map<ProductoTienda, Integer> productos;
-    private ClienteRegistrado cliente;
+    private ClienteRegistrado cliente; 
 
     @BeforeEach
     void setUp() {

@@ -36,7 +36,7 @@ public class EmpleadoIntercambioTest {
         oferta = new Oferta(prodLanzador, prodReceptor, receptor, lanzador);
         intercambio = new Intercambio(new Date(), oferta);
         
-        intercambio.aceptarOferta(new Date());
+        intercambio.aceptarOferta();
     }
 
     @Test
