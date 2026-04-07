@@ -3,6 +3,7 @@ package usuarios;
 import notificaciones.Notificacion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utilidades.TipoNotificacion;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,10 +18,10 @@ public class UsuarioTest {
 
     @Test
     public void testConstructorYGetters() {
-        assertEquals("PepeKite", usuario.getNombre(), "El nombre de usuario no coincide.");
-        assertEquals("password123", usuario.getContraseña(), "La contraseña no coincide.");
-        assertNotNull(usuario.getNotificaciones(), "La lista de notificaciones no debe ser null.");
-        assertTrue(usuario.getNotificaciones().isEmpty(), "La lista de notificaciones debe inicializarse vacía.");
+        assertEquals("PepeKite", usuario.getNombre());
+        assertEquals("password123", usuario.getContraseña());
+        assertNotNull(usuario.getNotificaciones());
+        assertTrue(usuario.getNotificaciones().isEmpty());
     }
 
     @Test
@@ -34,12 +35,11 @@ public class UsuarioTest {
 
     @Test
     public void testAddNotificacion() {
-        // Pasamos null como tipo porque no tengo tu Enum TipoNotificacion real
-        Notificacion notificacion = new Notificacion(null, "Mensaje de prueba");
+        Notificacion notificacion = new Notificacion(TipoNotificacion.PAGO_REALIZADO, "Mensaje de prueba");
         
         usuario.addNotificacion(notificacion);
 
-        assertEquals(1, usuario.getNotificaciones().size(), "Debería haber 1 notificación.");
-        assertTrue(usuario.getNotificaciones().contains(notificacion), "La lista no contiene la notificación añadida.");
+        assertEquals(1, usuario.getNotificaciones().size());
+        assertTrue(usuario.getNotificaciones().contains(notificacion));
     }
 }
