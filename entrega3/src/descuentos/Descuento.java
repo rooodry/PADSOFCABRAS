@@ -1,5 +1,6 @@
 package descuentos;
 import java.util.Date;
+import compras.Pedido;
 
 public abstract class Descuento {
     private final Date fechaInicio;
@@ -17,4 +18,8 @@ public abstract class Descuento {
     public Date getFechaFin() {
         return new Date(this.fechaFin.getTime());
     }
+
+    public abstract boolean esAplicable(Pedido pedido);
+    
+    public abstract double aplicarDescuento(double precioBase);
 }

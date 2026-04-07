@@ -1,5 +1,6 @@
 package descuentos;
 import java.util.Date;
+import compras.Pedido;
 
 public class DescuentoCantidadGastada extends Descuento { 
 
@@ -18,5 +19,15 @@ public class DescuentoCantidadGastada extends Descuento {
     
     public double getPorcentaje() {
         return this.porcentaje;
+    }
+
+    @Override
+    public boolean esAplicable(Pedido pedido) {
+        return pedido.calcularPrecioTotal() >= this.cantidadMinima;
+    }
+
+    @Override
+    public double aplicarDescuento(double precioBase) {
+        return precioBase - (precioBase * this.porcentaje);
     }
 }

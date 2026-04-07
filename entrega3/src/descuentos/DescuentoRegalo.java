@@ -2,7 +2,7 @@ package descuentos;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import compras.Pedido;
 import productos.ProductoTienda;
 
 public class DescuentoRegalo extends Descuento { 
@@ -22,5 +22,15 @@ public class DescuentoRegalo extends Descuento {
     
     public List<ProductoTienda> getProductos() {
         return new ArrayList<>(this.productos);
+    }
+
+    @Override
+    public boolean esAplicable(Pedido pedido) {
+        return pedido.calcularPrecioTotal() >= this.gastoMinimo;
+    }
+
+    @Override
+    public double aplicarDescuento(double precioBase) {
+        return precioBase; 
     }
 }
