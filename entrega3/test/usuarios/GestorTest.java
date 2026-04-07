@@ -1,5 +1,6 @@
 package usuarios;
 
+import estadisticas.Estadistica;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,14 +11,14 @@ public class GestorTest {
     public void testConstructorYAddEstadistica() {
         Gestor gestor = new Gestor("Jefe", "admin123");
         
-        // Verificamos herencia
         assertEquals("Jefe", gestor.getNombre());
         
-        // Testeamos añadir estadística (con null ya que no tengo la clase Estadistica)
-        // Ojo, en tu Gestor.java la lista se llama "Estadistica", no tiene getter todavía,
-        // pero la prueba asegura que el método no lance excepciones.
+        Estadistica estadistica = new Estadistica("test.txt");
+        
         assertDoesNotThrow(() -> {
-            gestor.addEstadistica(null);
+            gestor.addEstadistica(estadistica);
         });
+
+        assertEquals(1, gestor.getEstadisticas().size());
     }
 }

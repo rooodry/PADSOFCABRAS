@@ -26,28 +26,25 @@ public class EmpleadoProductoTest {
     public void testAñadirProductoExito() {
         Status resultado = empleado.añadirProducto(producto, 10);
         
-        // Verifica que devuelve OK y que el stock se actualizó de verdad
-        assertEquals(Status.OK, resultado, "Debería devolver OK al añadir una cantidad válida.");
-        assertEquals(10, stock.getNumProductos(producto), "El stock debería reflejar los productos añadidos.");
+        assertEquals(Status.OK, resultado);
+        assertEquals(10, stock.getNumProductos(producto));
     }
 
     @Test
     public void testAñadirProductoErrorCantidad() {
         Status resultado = empleado.añadirProducto(producto, -5);
         
-        // Verifica que falla en cantidades negativas/cero y que el stock no se tocó
-        assertEquals(Status.ERROR, resultado, "Debería devolver ERROR al añadir cantidad negativa.");
-        assertEquals(0, stock.getNumProductos(producto), "El stock no debería haberse modificado.");
+        assertEquals(Status.ERROR, resultado);
+        assertEquals(0, stock.getNumProductos(producto));
     }
 
     @Test
     public void testRetirarProducto() {
-        // Primero forzamos que haya stock
         stock.añadirProducto(producto, 5);
         
         empleado.retirarProducto(producto);
         
-        assertEquals(0, stock.getNumProductos(producto), "El producto debería haber sido retirado del stock.");
+        assertEquals(0, stock.getNumProductos(producto));
     }
 
     @Test
