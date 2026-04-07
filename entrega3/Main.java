@@ -1,585 +1,514 @@
 import compras.*;
 import descuentos.*;
 import intercambios.*;
-import notificaciones.Notificacion;
+import notificaciones.*;
 import productos.*;
 import productos.categoria.*;
 import sistema.Sistema;
 import usuarios.*;
 import utilidades.*;
  
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
  
 /**
- * Main de pruebas completo para la tienda de coleccionables.
- * Cubre: usuarios, stock, cesta, pedidos, descuentos (todos los tipos),
- * packs, segunda mano, intercambios y notificaciones.
+ * Clase de arranque para ejecutar pruebas manuales del sistema PADSOFCABRAS.
  */
 public class Main {
  
-    // ── Contadores globales de test ──────────────────────────────────────────
-    private static int ok   = 0;
-    private static int fail = 0;
+    // Sistema compartido por todas las pruebas
+    private static Sistema sistema      = new Sistema();
+    private static Stock stock          = new Stock();
+    private static Gestor gestor;
+    // Referencias locales a empleados (Sistema no expone getUsuarios())
+    private static EmpleadoProducto    empProducto;
+    private static EmpleadoPedido      empPedido;
+    private static EmpleadoIntercambio empIntercambio;
  
-    /** Comprueba una condición e imprime el resultado. */
-    private static void check(String nombre, boolean condicion) {
-        if (condicion) {
-            System.out.println("  [OK]   " + nombre);
-            ok++;
-        } else {
-            System.out.println("  [FAIL] " + nombre);
-            fail++;
-        }
+    private Main() {}
+ 
+    public static void main(String[] args) {
+        System.out.println("\n=== PRUEBAS DEL SISTEMA PADSOFCABRAS ===\n");
+ 
+        // Inicializar datos de prueba compartidos
+        inicializarDatos();
+ 
+        // Descomentar el bloque que quieras probar:
+ 
+        probarGestor();
+        probarEmpleadoProducto();
+        probarEmpleadoPedido();
+        probarEmpleadoIntercambio();
+        probarClienteRegistrado();
+ 
+        System.out.println("\n=== FIN DE PRUEBAS ===");
     }
  
-    /** Comparación de doubles con tolerancia. */
-    private static boolean aprox(double a, double b) {
-        return Math.abs(a - b) < 0.001;
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    public static void main(String[] args) throws Exception {
- 
-        System.out.println("============================================================");
-        System.out.println("  SUITE DE PRUEBAS - Tienda de Coleccionables PADSOFCABRAS");
-        System.out.println("============================================================\n");
- 
-        testUsuarios();
-        testStockYProductos();
-        testCestaYPedidoBasico();
-        testDescuentoPorcentaje();
-        testDescuentoCantidadGastada();
-        testDescuentoDosPorUno();
-        testDescuentoRegalo();
-        testDescuentoNoAplicaFueraDeFecha();
-        testSinDescuento();
-        testPacks();
-        testSegundaManoEIntercambios();
-        testNotificaciones();
-        testSistema();
- 
-        // ── Resumen final ───────────────────────────────────────────────────
-        System.out.println("\n============================================================");
-        System.out.printf("  RESULTADO: %d OK  |  %d FALLOS%n", ok, fail);
-        System.out.println("============================================================");
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // 1. USUARIOS
-    // ════════════════════════════════════════════════════════════════════════
-    private static void testUsuarios() {
-        System.out.println("\n── 1. Usuarios ─────────────────────────────────────────────");
- 
-        ClienteRegistrado c = new ClienteRegistrado("alice", "pass1", "12345678A");
-        check("ClienteRegistrado creado con nombre correcto",
-              "alice".equals(c.getNombre()));
-        check("ClienteRegistrado tiene DNI correcto",
-              "12345678A".equals(c.getDNI()));
- 
-        c.editarPerfil("alice2", "newpass");
-        check("editarPerfil cambia nombre",  "alice2".equals(c.getNombre()));
-        check("editarPerfil cambia contraseña", "newpass".equals(c.getContraseña()));
- 
-        ClienteNoRegistrado cnr = new ClienteNoRegistrado("visitante", "");
-        check("ClienteNoRegistrado se instancia sin excepción", cnr != null);
- 
-        Gestor g = new Gestor("admin", "adminpass");
-        check("Gestor creado", "admin".equals(g.getNombre()));
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // 2. STOCK Y PRODUCTOS
-    // ════════════════════════════════════════════════════════════════════════
-    private static void testStockYProductos() {
-        System.out.println("\n── 2. Stock y Productos ────────────────────────────────────");
- 
-        Stock stock = new Stock();
-        ProductoTienda p1 = new ProductoTienda("Cómic X", "Un cómic", "img.png");
-        p1.setPrecio(10.0);
-        ProductoTienda p2 = new ProductoTienda("Figura Y", "Una figura", "fig.png");
-        p2.setPrecio(25.0);
- 
-        stock.añadirProducto(p1, 5);
-        stock.añadirProducto(p2, 3);
-        check("Stock p1 = 5 tras añadir",  stock.getNumProductos(p1) == 5);
-        check("Stock p2 = 3 tras añadir",  stock.getNumProductos(p2) == 3);
- 
-        stock.reducirStock(p1, 2);
-        check("Stock p1 = 3 tras reducir", stock.getNumProductos(p1) == 3);
- 
-        stock.retirarProducto(p2);
-        check("Stock p2 = 0 tras retirar", stock.getNumProductos(p2) == 0);
- 
-        // Categorías
-        Comic cat = new Comic("Spiderman", 200, "Stan Lee", "Marvel", Genero.AVENTURA);
-        p1.setCategoria(cat);
-        check("Producto tiene categoría Comic", p1.getCategoria() instanceof Comic);
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // 3. CESTA Y PEDIDO BÁSICO (sin descuento)
-    // ════════════════════════════════════════════════════════════════════════
-    private static void testCestaYPedidoBasico() {
-        System.out.println("\n── 3. Cesta y Pedido básico ────────────────────────────────");
- 
-        Stock stock = new Stock();
-        ProductoTienda prod = new ProductoTienda("Juego Z", "desc", "z.png");
-        prod.setPrecio(15.0);
-        stock.añadirProducto(prod, 10);
- 
-        ClienteRegistrado cliente = new ClienteRegistrado("bob", "pass", "87654321B");
- 
-        // Añadir a cesta
-        cliente.añadirALaCesta(prod, stock);
-        check("Cesta no vacía tras añadir producto", !cliente.getCesta().estaVacia());
-        check("Stock decrementado al añadir a cesta", stock.getNumProductos(prod) == 9);
- 
-        // Comprar
-        Status s = cliente.comprar();
-        check("comprar() devuelve OK",         s == Status.OK);
-        check("Cesta vacía tras comprar",       cliente.getCesta().estaVacia());
-        check("Pedido registrado en la lista",  cliente.getPedidos().size() == 1);
- 
-        // Pagar
-        Pedido pedido = cliente.getPedidos().get(0);
-        check("Estado inicial EN_CARRITO",
-              pedido.getEstadoPedido() == EstadoPedido.EN_CARRITO);
- 
-        Status sp = cliente.pagarPedido(pedido);
-        check("pagarPedido() devuelve OK",
-              sp == Status.OK);
-        check("Estado pasa a EN_PREPARACION",
-              pedido.getEstadoPedido() == EstadoPedido.EN_PREPARACION);
- 
-        // Precio sin descuento = 15 €
-        check("Precio sin descuento = 15.0",
-              aprox(pedido.calcularPrecioTotal(), 15.0));
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // 4. DESCUENTO POR PORCENTAJE
-    // ════════════════════════════════════════════════════════════════════════
-    private static void testDescuentoPorcentaje() {
-        System.out.println("\n── 4. Descuento por porcentaje ─────────────────────────────");
- 
-        // Producto de 100 € con 20% de descuento → 80 €
-        ProductoTienda p = new ProductoTienda("Item A", "desc", "a.png");
-        p.setPrecio(100.0);
- 
-        ClienteRegistrado c = clienteConProductoEnCesta(p, 1);
-        Pedido pedido = c.getPedidos().get(0);
- 
-        Date ini = fechaHace(-1); // ayer
-        Date fin = fechaHace(+1); // mañana
-        DescuentoPorcentaje dp = new DescuentoPorcentaje(ini, fin, 20.0);
-        pedido.setDescuento(dp);
- 
-        check("DescuentoPorcentaje 20% sobre 100€ = 80€",
-              aprox(pedido.calcularPrecioTotal(), 80.0));
- 
-        // 10% sobre 50 €
-        ProductoTienda p2 = new ProductoTienda("Item B", "desc", "b.png");
-        p2.setPrecio(50.0);
-        ClienteRegistrado c2 = clienteConProductoEnCesta(p2, 1);
-        Pedido pedido2 = c2.getPedidos().get(0);
-        pedido2.setDescuento(new DescuentoPorcentaje(ini, fin, 10.0));
-        check("DescuentoPorcentaje 10% sobre 50€ = 45€",
-              aprox(pedido2.calcularPrecioTotal(), 45.0));
- 
-        // 0% → precio intacto
-        pedido2.setDescuento(new DescuentoPorcentaje(ini, fin, 0.0));
-        check("DescuentoPorcentaje 0% no modifica precio",
-              aprox(pedido2.calcularPrecioTotal(), 50.0));
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // 5. DESCUENTO POR CANTIDAD GASTADA
-    // ════════════════════════════════════════════════════════════════════════
-    private static void testDescuentoCantidadGastada() {
-        System.out.println("\n── 5. Descuento por cantidad gastada ───────────────────────");
- 
-        Date ini = fechaHace(-1);
-        Date fin = fechaHace(+1);
- 
-        // Total 120 €, mínimo 100 €, 15% → 102 €
-        ProductoTienda p = new ProductoTienda("Item C", "desc", "c.png");
-        p.setPrecio(120.0);
-        ClienteRegistrado c = clienteConProductoEnCesta(p, 1);
-        Pedido pedido = c.getPedidos().get(0);
-        pedido.setDescuento(new DescuentoCantidadGastada(ini, fin, 100.0, 15.0));
-        check("DCantGastada 15% sobre 120€ (min 100) = 102€",
-              aprox(pedido.calcularPrecioTotal(), 102.0));
- 
-        // Total 80 €, mínimo 100 € → NO aplica, precio = 80 €
-        ProductoTienda p2 = new ProductoTienda("Item D", "desc", "d.png");
-        p2.setPrecio(80.0);
-        ClienteRegistrado c2 = clienteConProductoEnCesta(p2, 1);
-        Pedido pedido2 = c2.getPedidos().get(0);
-        pedido2.setDescuento(new DescuentoCantidadGastada(ini, fin, 100.0, 15.0));
-        check("DCantGastada no aplica si total < mínimo",
-              aprox(pedido2.calcularPrecioTotal(), 80.0));
- 
-        // Exactamente en el límite: total = mínimo → sí aplica
-        ProductoTienda p3 = new ProductoTienda("Item E", "desc", "e.png");
-        p3.setPrecio(100.0);
-        ClienteRegistrado c3 = clienteConProductoEnCesta(p3, 1);
-        Pedido pedido3 = c3.getPedidos().get(0);
-        pedido3.setDescuento(new DescuentoCantidadGastada(ini, fin, 100.0, 10.0));
-        check("DCantGastada aplica cuando total == mínimo exacto → 90€",
-              aprox(pedido3.calcularPrecioTotal(), 90.0));
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // 6. DESCUENTO DOS POR UNO
-    // ════════════════════════════════════════════════════════════════════════
-    private static void testDescuentoDosPorUno() {
-        System.out.println("\n── 6. Descuento 2x1 ────────────────────────────────────────");
- 
-        Date ini = fechaHace(-1);
-        Date fin = fechaHace(+1);
-        DescuentoDosPorUno d2x1 = new DescuentoDosPorUno(ini, fin);
- 
-        // 2 unidades de 30 € → pagas 1 → 30 €
-        ProductoTienda p = new ProductoTienda("Item F", "desc", "f.png");
-        p.setPrecio(30.0);
-        ClienteRegistrado c = clienteConProductoEnCesta(p, 2);
-        Pedido pedido = c.getPedidos().get(0);
-        pedido.setDescuento(d2x1);
-        check("2x1 con 2 uds de 30€ = 30€",
-              aprox(pedido.calcularPrecioTotal(), 30.0));
- 
-        // 3 unidades de 10 € → 1 par → pagas 2 → 20 €
-        ProductoTienda p2 = new ProductoTienda("Item G", "desc", "g.png");
-        p2.setPrecio(10.0);
-        ClienteRegistrado c2 = clienteConProductoEnCesta(p2, 3);
-        Pedido pedido2 = c2.getPedidos().get(0);
-        pedido2.setDescuento(new DescuentoDosPorUno(ini, fin));
-        check("2x1 con 3 uds de 10€ = 20€",
-              aprox(pedido2.calcularPrecioTotal(), 20.0));
- 
-        // 4 unidades de 10 € → 2 pares → pagas 2 → 20 €
-        ClienteRegistrado c3 = clienteConProductoEnCesta(p2, 4);
-        Pedido pedido3 = c3.getPedidos().get(0);
-        pedido3.setDescuento(new DescuentoDosPorUno(ini, fin));
-        check("2x1 con 4 uds de 10€ = 20€",
-              aprox(pedido3.calcularPrecioTotal(), 20.0));
- 
-        // 1 unidad → no hay par → precio completo
-        ClienteRegistrado c4 = clienteConProductoEnCesta(p2, 1);
-        Pedido pedido4 = c4.getPedidos().get(0);
-        pedido4.setDescuento(new DescuentoDosPorUno(ini, fin));
-        check("2x1 con 1 ud → precio completo 10€",
-              aprox(pedido4.calcularPrecioTotal(), 10.0));
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // 7. DESCUENTO REGALO
-    // ════════════════════════════════════════════════════════════════════════
-    private static void testDescuentoRegalo() {
-        System.out.println("\n── 7. Descuento regalo ─────────────────────────────────────");
- 
-        Date ini = fechaHace(-1);
-        Date fin = fechaHace(+1);
- 
-        ProductoTienda regalo = new ProductoTienda("Regalo sorpresa", "gratis", "r.png");
-        regalo.setPrecio(0.0);
-        List<ProductoTienda> listaRegalo = new ArrayList<>();
-        listaRegalo.add(regalo);
- 
-        DescuentoRegalo dr = new DescuentoRegalo(ini, fin, 50.0, listaRegalo);
- 
-        // Comprobamos que los getters devuelven los valores correctos
-        check("DescuentoRegalo gastoMinimo = 50",
-              aprox(dr.getGastoMinimo(), 50.0));
-        check("DescuentoRegalo tiene 1 producto regalo",
-              dr.getProductos().size() == 1);
-        check("Producto regalo es el correcto",
-              dr.getProductos().get(0).getNombre().equals("Regalo sorpresa"));
- 
-        // El descuento regalo no modifica el precio total directamente
-        // (la lógica de añadir el regalo la gestiona el sistema/empleado)
-        ProductoTienda compra = new ProductoTienda("Compra grande", "desc", "x.png");
-        compra.setPrecio(80.0);
-        ClienteRegistrado c = clienteConProductoEnCesta(compra, 1);
-        Pedido pedido = c.getPedidos().get(0);
-        pedido.setDescuento(dr);
-        // calcularPrecioTotal no tiene rama para DescuentoRegalo → precio sin cambio
-        check("DescuentoRegalo no modifica precio total (el regalo es aparte)",
-              aprox(pedido.calcularPrecioTotal(), 80.0));
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // 8. DESCUENTO FUERA DE FECHA (no debería aplicarse desde el sistema)
-    // ════════════════════════════════════════════════════════════════════════
-    private static void testDescuentoNoAplicaFueraDeFecha() {
-        System.out.println("\n── 8. Fechas de descuento ──────────────────────────────────");
- 
-        // Descuento caducado (ambas fechas en el pasado)
-        Date ini = fechaHace(-10);
-        Date fin = fechaHace(-5);
-        DescuentoPorcentaje dp = new DescuentoPorcentaje(ini, fin, 50.0);
-        check("Descuento caducado: fechaFin antes de hoy",
-              dp.getFechaFin().before(new Date()));
- 
-        // Descuento futuro
-        Date ini2 = fechaHace(+5);
-        Date fin2 = fechaHace(+10);
-        DescuentoPorcentaje dp2 = new DescuentoPorcentaje(ini2, fin2, 50.0);
-        check("Descuento futuro: fechaInicio después de hoy",
-              dp2.getFechaInicio().after(new Date()));
- 
-        // Nota: calcularPrecioTotal aplica el descuento si está asignado al pedido,
-        // sin comprobar fechas; la responsabilidad de no asignarlo fuera de rango
-        // recae en el Sistema/Gestor. Lo verificamos conceptualmente:
-        check("Concepto: el pedido no debería recibir descuentos caducados (verificación manual)",
-              true); // marcamos como OK conceptual
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // 9. SIN DESCUENTO — precio exacto con varios productos
-    // ════════════════════════════════════════════════════════════════════════
-    private static void testSinDescuento() {
-        System.out.println("\n── 9. Sin descuento ─────────────────────────────────────────");
- 
-        // Pedido con 2 productos distintos, sin descuento
-        Stock stock = new Stock();
-        ProductoTienda pA = new ProductoTienda("A", "d", "a.png");
-        pA.setPrecio(20.0);
-        ProductoTienda pB = new ProductoTienda("B", "d", "b.png");
-        pB.setPrecio(35.0);
-        stock.añadirProducto(pA, 5);
-        stock.añadirProducto(pB, 5);
- 
-        ClienteRegistrado c = new ClienteRegistrado("carol", "x", "11111111C");
-        c.añadirALaCesta(pA, stock); // 20
-        c.añadirALaCesta(pB, stock); // 35
-        c.comprar();
- 
-        Pedido pedido = c.getPedidos().get(0);
-        // Sin descuento → 20 + 35 = 55
-        check("Sin descuento 20+35 = 55€",
-              aprox(pedido.calcularPrecioTotal(), 55.0));
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // 10. PACKS
-    // ════════════════════════════════════════════════════════════════════════
-    private static void testPacks() {
-        System.out.println("\n── 10. Packs ───────────────────────────────────────────────");
- 
-        ProductoTienda pA = new ProductoTienda("PA", "d", "a.png");
-        pA.setPrecio(10.0);
-        ProductoTienda pB = new ProductoTienda("PB", "d", "b.png");
-        pB.setPrecio(15.0);
- 
-        List<Producto> lista = new ArrayList<>();
-        lista.add(pA);
-        lista.add(pB);
- 
-        Pack pack = new Pack("Pack AB", 20.0, lista);
-        check("Pack nombre correcto",       "Pack AB".equals(pack.getNombre()));
-        check("Pack precio = 20",           aprox(pack.getPrecio(), 20.0));
-        check("Pack tiene 2 productos",     pack.getProductos().size() == 2);
-        check("Pack subpacks vacío",        pack.getSubpacks().isEmpty());
- 
-        // Pack recursivo
-        Pack subpack = new Pack("SubPack", 8.0, new ArrayList<>());
-        pack.addSubpack(subpack);
-        check("Subpack añadido correctamente", pack.getSubpacks().size() == 1);
-        check("Subpack nombre correcto",       "SubPack".equals(pack.getSubpacks().get(0).getNombre()));
- 
-        pack.removeSubpack(subpack);
-        check("Subpack eliminado correctamente", pack.getSubpacks().isEmpty());
- 
-        // Cambio de precio
-        pack.setPrecio(18.0);
-        check("Pack precio actualizado a 18", aprox(pack.getPrecio(), 18.0));
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // 11. SEGUNDA MANO E INTERCAMBIOS
-    // ════════════════════════════════════════════════════════════════════════
-    private static void testSegundaManoEIntercambios() {
-        System.out.println("\n── 11. Segunda mano e intercambios ─────────────────────────");
- 
-        ClienteRegistrado c1 = new ClienteRegistrado("dan",  "p1", "22222222D");
-        ClienteRegistrado c2 = new ClienteRegistrado("eve",  "p2", "33333333E");
- 
-        // c1 sube un producto
-        ProductoSegundaMano psm1 = new ProductoSegundaMano("Cómic usado", "desc", "c.png", c1);
-        c1.subirProducto(psm1);
-        check("Producto segunda mano en cartera de c1",
-              c1.getCartera().getProductos().contains(psm1));
-        check("Producto sin valorar inicialmente",
-              !psm1.getEstaValorado());
- 
-        // Empleado valorar
-        EmpleadoIntercambio emp = new EmpleadoIntercambio("empI", "pass");
-        emp.addProductoParaValorar(psm1);
-        emp.valorarProducto(psm1, 8, 15.0, EstadoConservacion.MUY_BUENO);
-        check("Producto valorado tras valorarProducto()",     psm1.getEstaValorado());
-        check("Valor estimado = 15.0",                        aprox(psm1.getValorEstimado(), 15.0));
-        check("Estado conservacion = MUY_BUENO",
-              psm1.getEstadoConservacion() == EstadoConservacion.MUY_BUENO);
-        check("Ya no está en lista pendiente del empleado",
-              emp.getProductosPorValorar().isEmpty());
- 
-        // c2 también sube un producto valorado
-        ProductoSegundaMano psm2 = new ProductoSegundaMano("Figura usada", "desc", "f.png", c2);
-        c2.subirProducto(psm2);
-        emp.addProductoParaValorar(psm2);
-        emp.valorarProducto(psm2, 7, 12.0, EstadoConservacion.USO_LIGERO);
-        psm1.subirProducto(); // hace disponible
-        psm2.subirProducto();
-        check("psm1 disponible tras subirProducto()", psm1.getDisponibilidad());
-        check("psm2 disponible tras subirProducto()", psm2.getDisponibilidad());
- 
-        // Crear oferta e intercambio
-        Oferta oferta = new Oferta(psm1, psm2, c2, c1);
-        check("Oferta estado inicial PENDIENTE",
-              oferta.getEstadoOferta() == EstadoOferta.PENDIENTE);
- 
-        Intercambio intercambio = new Intercambio(new Date(), oferta);
-        check("Intercambio no completado inicialmente",
-              !intercambio.getIntercambiado());
-        check("FechaLimite = fechaOferta + 7 días (mayor que ahora)",
-              intercambio.getFechaLimite().after(new Date()));
- 
-        // Aceptar oferta
-        intercambio.aceptarOferta();
-        check("Oferta aceptada",
-              oferta.getEstadoOferta() == EstadoOferta.ACEPTADA);
- 
-        // Transferir propiedad
-        emp.addIntercambio(intercambio);
-        emp.transferirPropiedad(intercambio);
-        check("Intercambio completado tras transferirPropiedad()",
-              intercambio.getIntercambiado());
-        check("c2 recibe psm1 en su cartera",
-              c2.getCartera().getProductos().contains(psm1));
-        check("c1 recibe psm2 en su cartera",
-              c1.getCartera().getProductos().contains(psm2));
- 
-        // Rechazar oferta en un intercambio nuevo
-        ProductoSegundaMano psm3 = new ProductoSegundaMano("Extra", "d", "x.png", c1);
-        ProductoSegundaMano psm4 = new ProductoSegundaMano("Extra2", "d", "y.png", c2);
-        Oferta oferta2 = new Oferta(psm3, psm4, c2, c1);
-        Intercambio intercambio2 = new Intercambio(new Date(), oferta2);
-        intercambio2.rechazarOferta();
-        check("Oferta rechazada correctamente",
-              oferta2.getEstadoOferta() == EstadoOferta.RECHAZADA);
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // 12. NOTIFICACIONES
-    // ════════════════════════════════════════════════════════════════════════
-    private static void testNotificaciones() {
-        System.out.println("\n── 12. Notificaciones ──────────────────────────────────────");
- 
-        ClienteRegistrado c = new ClienteRegistrado("fran", "p", "44444444F");
-        Notificacion n = new Notificacion(TipoNotificacion.PAGO_REALIZADO, "Tu pedido ha sido pagado");
- 
-        check("Notificación no leída inicialmente", !n.getLeida());
-        check("Notificación no borrada inicialmente", !n.getBorrada());
- 
-        c.addNotificacion(n);
-        check("Notificación añadida al usuario",
-              c.getNotificaciones().contains(n));
- 
-        c.leerNotificaicion(n);
-        check("Notificación marcada como leída", n.getLeida());
- 
-        c.borrarNotificacion(n);
-        check("Notificación borrada de la lista",
-              !c.getNotificaciones().contains(n));
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // 13. SISTEMA (alta/baja empleados, permisos, stock vía sistema)
-    // ════════════════════════════════════════════════════════════════════════
-    private static void testSistema() throws Exception {
-        System.out.println("\n── 13. Sistema ─────────────────────────────────────────────");
- 
-        Sistema sistema = new Sistema();
-        Stock stock = new Stock();
-        sistema.setStock(stock);
- 
-        Gestor gestor  = new Gestor("gestor", "gpass");
-        ClienteRegistrado cliente = new ClienteRegistrado("user1", "u1", "55555555G");
-        sistema.addUsuario(gestor);
-        sistema.addUsuario(cliente);
- 
-        // Alta de empleados
-        sistema.darAltaEmpleado(gestor, "emp1", "e1pass", TiposEmpleado.EMPLEADOS_PEDIDO);
-        sistema.darAltaEmpleado(gestor, "emp2", "e2pass", TiposEmpleado.EMPLEADOS_INTERCAMBIO);
-        sistema.darAltaEmpleado(gestor, "emp3", "e3pass", TiposEmpleado.EMPLEADOS_PRODUCTO);
-        check("3 empleados dados de alta sin lanzar excepción", true);
- 
-        // Alta con usuario no-gestor → excepción
-        boolean lanzaExcepcion = false;
-        try {
-            sistema.darAltaEmpleado(cliente, "hack", "h", TiposEmpleado.EMPLEADOS_PEDIDO);
-        } catch (Exception e) {
-            lanzaExcepcion = true;
-        }
-        check("darAltaEmpleado con no-gestor lanza excepción", lanzaExcepcion);
- 
-        // Stock vía sistema
-        ProductoTienda pt = new ProductoTienda("TestProd", "d", "t.png");
-        pt.setPrecio(5.0);
-        stock.añadirProducto(pt, 0); // forzamos que exista con 0
-        sistema.actualizarStock(gestor, pt, 10);
-        check("actualizarStock añade 10 unidades", stock.getNumProductos(pt) == 10);
- 
-        // Pack vía sistema
-        List<Producto> listaP = new ArrayList<>();
-        listaP.add(pt);
-        Pack pack = sistema.crearPack(gestor, "PackTest", 30.0, listaP);
-        check("crearPack devuelve Pack no nulo", pack != null);
-        check("Pack nombre = PackTest", "PackTest".equals(pack.getNombre()));
- 
-        // Código generado
-        Codigo cod = sistema.generarCodigo();
-        check("generarCodigo devuelve Codigo no nulo", cod != null);
- 
-        // Registrar y cancelar pedido
-        cliente.añadirALaCesta(pt, stock);
-        cliente.comprar();
-        Pedido pedido = cliente.getPedidos().get(0);
-        sistema.registrarPedido(pedido);
-        sistema.cancelarPedido(pedido);
-        check("Pedido cancelado → estado CANCELADO",
-              pedido.getEstadoPedido() == EstadoPedido.CANCELADO);
-        check("Stock repuesto tras cancelar pedido",
-              stock.getNumProductos(pt) >= 1);
-    }
- 
-    // ════════════════════════════════════════════════════════════════════════
-    // HELPERS
-    // ════════════════════════════════════════════════════════════════════════
+    // =========================================================================
+    // INICIALIZACIÓN DE DATOS COMUNES
+    // =========================================================================
  
     /**
-     * Crea un cliente con `cantidad` unidades de `prod` ya en el historial
-     * de pedidos (simula añadir a cesta + comprar) usando un Stock temporal.
+     * Crea los objetos base que necesitan todas las pruebas:
+     * stock, productos de tienda, gestor y empleados de los tres tipos.
      */
-    private static ClienteRegistrado clienteConProductoEnCesta(ProductoTienda prod, int cantidad) {
-        Stock stockTmp = new Stock();
-        stockTmp.añadirProducto(prod, cantidad);
+    private static void inicializarDatos() {
+        System.out.println("--- Inicializando datos de prueba ---");
  
-        ClienteRegistrado c = new ClienteRegistrado("testUser_" + prod.getNombre(), "p", "00000000Z");
+        // Stock
+        sistema.setStock(stock);
  
-        // Añadimos `cantidad` unidades una a una (añadirALaCesta descuenta 1 cada vez)
-        for (int i = 0; i < cantidad; i++) {
-            c.añadirALaCesta(prod, stockTmp);
-        }
-        c.comprar();
-        return c;
+        // Productos de tienda
+        ProductoTienda comic1 = new ProductoTienda("Watchmen", "Clásico de Alan Moore", "watchmen.png");
+        comic1.setPrecio(15.0);
+        ProductoTienda juego1 = new ProductoTienda("Catan", "Juego de estrategia", "catan.png");
+        juego1.setPrecio(40.0);
+        ProductoTienda figura1 = new ProductoTienda("Figura Spiderman", "Figura de colección", "spider.png");
+        figura1.setPrecio(25.0);
+ 
+        stock.añadirProducto(comic1, 10);
+        stock.añadirProducto(juego1, 5);
+        stock.añadirProducto(figura1, 3);
+ 
+        sistema.addProducto(comic1);
+        sistema.addProducto(juego1);
+        sistema.addProducto(figura1);
+ 
+        // Gestor
+        gestor = new Gestor("Admin", "admin123");
+        sistema.addUsuario(gestor);
+ 
+        // Empleados (referencias guardadas localmente para poder buscarlos después)
+        empProducto    = new EmpleadoProducto("Ana",  "pass1", stock);
+        empPedido      = new EmpleadoPedido("Luis",   "pass2");
+        empIntercambio = new EmpleadoIntercambio("Marta", "pass3");
+        sistema.addUsuario(empProducto);
+        sistema.addUsuario(empPedido);
+        sistema.addUsuario(empIntercambio);
+ 
+        System.out.println("Datos inicializados: " + sistema.getClass().getSimpleName()
+                + " | Stock con " + stock.getProductos().size() + " productos");
     }
  
-    /** Devuelve una Date desplazada `diasOffset` días respecto a hoy. */
-    private static Date fechaHace(int diasOffset) {
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_YEAR, diasOffset);
-        return cal.getTime();
+    // =========================================================================
+    // 1. PRUEBAS DEL GESTOR
+    // =========================================================================
+ 
+    private static void probarGestor() {
+        System.out.println("\n\n=== PRUEBAS DEL GESTOR ===");
+ 
+        System.out.println("\n--- 1. Dar de alta empleados ---");
+        try {
+            sistema.darAltaEmpleado(gestor, "Ana", "pass1", TiposEmpleado.EMPLEADOS_PRODUCTO);
+            sistema.darAltaEmpleado(gestor, "Luis", "pass2", TiposEmpleado.EMPLEADOS_PEDIDO);
+            sistema.darAltaEmpleado(gestor, "Marta", "pass3", TiposEmpleado.EMPLEADOS_INTERCAMBIO);
+            System.out.println("Empleados dados de alta correctamente");
+        } catch (excepciones.ExcepcionUsuariosAdmin e) {
+            System.out.println("Error (inesperado): " + e.getMessage());
+        }
+ 
+        System.out.println("\n--- 2. Intentar dar de alta con no-gestor (debe lanzar excepción) ---");
+        ClienteRegistrado clienteNoAdmin = new ClienteRegistrado("Intruso", "pwd", "99999999Z");
+        try {
+            sistema.darAltaEmpleado(clienteNoAdmin, "Fake", "fake", TiposEmpleado.EMPLEADOS_PEDIDO);
+            System.out.println("ERROR: debería haber lanzado excepción");
+        } catch (excepciones.ExcepcionUsuariosAdmin e) {
+            System.out.println("Excepción capturada correctamente: " + e.getMessage());
+        }
+ 
+        System.out.println("\n--- 3. Crear pack ---");
+        ProductoTienda p1 = new ProductoTienda("Pack Comic A", "desc", "img.png");
+        p1.setPrecio(10.0);
+        ProductoTienda p2 = new ProductoTienda("Pack Juego B", "desc", "img.png");
+        p2.setPrecio(20.0);
+        List<Producto> listaProductosPack = new ArrayList<>();
+        listaProductosPack.add(p1);
+        listaProductosPack.add(p2);
+        try {
+            Pack pack = sistema.crearPack(gestor, "Pack Oferta", 25.0, listaProductosPack);
+            System.out.println("Pack creado: " + pack.getNombre()
+                    + " | Precio: " + pack.getPrecio()
+                    + " | Nº productos: " + pack.getProductos().size());
+ 
+            // Subpack recursivo
+            List<Producto> listaSubpack = new ArrayList<>();
+            listaSubpack.add(p1);
+            Pack subpack = sistema.crearPack(gestor, "Subpack Básico", 8.0, listaSubpack);
+            pack.addSubpack(subpack);
+            System.out.println("Subpack añadido: " + subpack.getNombre()
+                    + " | Subpacks del pack: " + pack.getSubpacks().size());
+            pack.removeSubpack(subpack);
+            System.out.println("Subpack eliminado | Subpacks del pack: " + pack.getSubpacks().size());
+        } catch (excepciones.ExcepcionUsuariosAdmin e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+ 
+        System.out.println("\n--- 4. Actualizar stock ---");
+        ProductoTienda productoStock = stock.getProductos().keySet().iterator().next();
+        int stockAntes = stock.getNumProductos(productoStock);
+        try {
+            sistema.actualizarStock(gestor, productoStock, 10);
+            System.out.println("Stock de '" + productoStock.getNombre() + "': "
+                    + stockAntes + " → " + stock.getNumProductos(productoStock));
+        } catch (excepciones.ExcepcionUsuariosAdmin e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+ 
+        System.out.println("\n--- 5. Generar código de recogida ---");
+        Codigo codigo = sistema.generarCodigo();
+        System.out.println("Código generado (no nulo): " + (codigo != null));
+ 
+        System.out.println("\n--- 6. Configurar descuentos (sobre un producto) ---");
+        // Descuento por porcentaje
+        ProductoTienda prodDesc = stock.getProductos().keySet().iterator().next();
+        Date hoy   = new Date();
+        Date enUnMes = new Date(hoy.getTime() + 30L * 24 * 60 * 60 * 1000);
+        DescuentoPorcentaje dpct = new DescuentoPorcentaje(hoy, enUnMes, 20.0);
+        sistema.addDescuento(dpct);
+        System.out.println("Descuento 20% creado para: " + prodDesc.getNombre());
+ 
+        // Descuento 2x1
+        DescuentoDosPorUno d2x1 = new DescuentoDosPorUno(hoy, enUnMes);
+        sistema.addDescuento(d2x1);
+        System.out.println("Descuento 2x1 creado");
+ 
+        System.out.println("\n--- 7. Modificar permisos de un empleado ---");
+        // Buscar el EmpleadoProducto "Ana" y cambiarle a EmpleadoPedido
+        try {
+            Empleado empleadoAna = encontrarEmpleadoPorNombre("Ana");
+            if (empleadoAna != null) {
+                Empleado empleadoModificado = sistema.modificarPermiso(
+                        gestor, empleadoAna, TiposEmpleado.EMPLEADOS_PEDIDO);
+                System.out.println("Permiso de Ana cambiado a: "
+                        + empleadoModificado.getClass().getSimpleName());
+                // Restaurar
+                sistema.modificarPermiso(gestor, empleadoModificado, TiposEmpleado.EMPLEADOS_PRODUCTO);
+                System.out.println("Permiso restaurado a EmpleadoProducto");
+            }
+        } catch (excepciones.ExcepcionUsuariosAdmin e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+ 
+    // =========================================================================
+    // 2. PRUEBAS DEL EMPLEADO DE PRODUCTOS
+    // =========================================================================
+ 
+    private static void probarEmpleadoProducto() {
+        System.out.println("\n\n=== PRUEBAS DEL EMPLEADO DE PRODUCTOS ===");
+ 
+        EmpleadoProducto emp = empProducto; // reutilizar empleado creado en inicializarDatos()
+ 
+        System.out.println("\n--- 1. Añadir producto al stock ---");
+        ProductoTienda nuevo = new ProductoTienda("Astérix", "Edición especial", "asterix.png");
+        nuevo.setPrecio(12.0);
+        Status resultado = emp.añadirProducto(nuevo, 5);
+        System.out.println("Añadir 5 unidades de 'Astérix': " + resultado
+                + " | Stock: " + stock.getNumProductos(nuevo));
+ 
+        System.out.println("\n--- 2. Intentar añadir con cantidad inválida ---");
+        Status resultadoInvalido = emp.añadirProducto(nuevo, -1);
+        System.out.println("Añadir -1 unidades (debe ser ERROR): " + resultadoInvalido);
+ 
+        System.out.println("\n--- 3. Editar producto ---");
+        emp.editarProducto(nuevo, "Astérix Deluxe", "Edición coleccionista", "asterix_deluxe.png", 18.0);
+        System.out.println("Nombre actualizado: " + nuevo.getNombre()
+                + " | Precio actualizado: " + nuevo.getPrecio());
+ 
+        System.out.println("\n--- 4. Retirar producto del stock ---");
+        emp.retirarProducto(nuevo);
+        System.out.println("Stock de 'Astérix Deluxe' tras retiro: " + stock.getNumProductos(nuevo));
+ 
+        System.out.println("\n--- 5. Aplicar rebaja de precio fija a un producto ---");
+        ProductoTienda prodRebaja = stock.getProductos().keySet().iterator().next();
+        prodRebaja.setRebajaFija(5.0);
+        System.out.println("Rebaja fija de 5€ aplicada a: " + prodRebaja.getNombre()
+                + " | Precio base: " + prodRebaja.getPrecio()
+                + " | Rebaja fija: " + prodRebaja.getRebajaFija());
+        prodRebaja.setRebajaFija(0.0); // restaurar
+ 
+        System.out.println("\n--- 6. Aplicar rebaja por porcentaje a un producto ---");
+        prodRebaja.setRebajaPorcentaje(0.10); // 10%
+        System.out.println("Rebaja del 10% aplicada a: " + prodRebaja.getNombre()
+                + " | Rebaja porcentaje: " + prodRebaja.getRebajaPorcentaje());
+        prodRebaja.setRebajaPorcentaje(0.0); // restaurar
+ 
+        System.out.println("\n--- 7. Activar 2x1 en un producto ---");
+        prodRebaja.setTiene2x1(true);
+        System.out.println("2x1 activo en '" + prodRebaja.getNombre() + "': " + prodRebaja.isTiene2x1());
+        prodRebaja.setTiene2x1(false); // restaurar
+    }
+ 
+    // =========================================================================
+    // 3. PRUEBAS DEL EMPLEADO DE PEDIDOS
+    // =========================================================================
+ 
+    private static void probarEmpleadoPedido() {
+        System.out.println("\n\n=== PRUEBAS DEL EMPLEADO DE PEDIDOS ===");
+ 
+        EmpleadoPedido emp = empPedido;
+ 
+        // Crear un pedido de prueba
+        ClienteRegistrado clientePedido = new ClienteRegistrado("TestPedido", "pwd", "12345678T");
+        ProductoTienda prod = stock.getProductos().keySet().iterator().next();
+        stock.añadirProducto(prod, 5); // asegurar stock
+        clientePedido.añadirALaCesta(prod, stock);
+        clientePedido.comprar();
+        Pedido pedido = clientePedido.getPedidos().get(0);
+        sistema.addPedido(pedido);
+ 
+        System.out.println("\n--- 1. Estado inicial del pedido ---");
+        System.out.println("Estado: " + pedido.getEstadoPedido());
+        System.out.println("Código (no nulo): " + (pedido.getCodigo() != null));
+        System.out.println("Fecha de realización (no nula): " + (pedido.getFechaRealizacion() != null));
+        System.out.println("Nº productos: " + pedido.getProductos().size());
+ 
+        System.out.println("\n--- 2. Flujo completo de estados ---");
+        // Pagar → EN_PREPARACION
+        Status pagado = clientePedido.pagarPedido(pedido);
+        System.out.println("Pago del cliente: " + pagado + " | Estado: " + pedido.getEstadoPedido());
+ 
+        // Empleado marca como LISTO
+        emp.marcarComoListo(pedido);
+        System.out.println("Marcar como LISTO | Estado: " + pedido.getEstadoPedido());
+        System.out.println("Fecha preparación (no nula): " + (pedido.getFechaPreparacion() != null));
+ 
+        // Empleado entrega
+        emp.entregarPedido(pedido);
+        System.out.println("Entregar pedido | Estado: " + pedido.getEstadoPedido());
+        System.out.println("Fecha recogida (no nula): " + (pedido.getFechaRecogida() != null));
+ 
+        System.out.println("\n--- 3. Cancelar pedido (repone stock) ---");
+        // Crear otro pedido para cancelarlo
+        ClienteRegistrado clienteCancelacion = new ClienteRegistrado("TestCancel", "pwd", "87654321C");
+        ProductoTienda prodCancel = stock.getProductos().keySet().iterator().next();
+        int stockAntes = stock.getNumProductos(prodCancel);
+        stock.añadirProducto(prodCancel, 3);
+        clienteCancelacion.añadirALaCesta(prodCancel, stock);
+        clienteCancelacion.comprar();
+        Pedido pedidoCancel = clienteCancelacion.getPedidos().get(0);
+        sistema.cancelarPedido(pedidoCancel);
+        System.out.println("Pedido cancelado | Estado: " + pedidoCancel.getEstadoPedido());
+        System.out.println("Stock repuesto tras cancelación: "
+                + stock.getNumProductos(prodCancel) + " (antes: " + stockAntes + ")");
+ 
+        System.out.println("\n--- 4. Calcular precio total del pedido con descuento ---");
+        ClienteRegistrado clienteDesc = new ClienteRegistrado("TestDesc", "pwd", "11111111D");
+        ProductoTienda prodDesc = new ProductoTienda("Comic Desc", "desc", "img.png");
+        prodDesc.setPrecio(100.0);
+        stock.añadirProducto(prodDesc, 5);
+        clienteDesc.añadirALaCesta(prodDesc, stock);
+        clienteDesc.comprar();
+        Pedido pedidoDesc = clienteDesc.getPedidos().get(0);
+ 
+        Date ini = new Date();
+        Date fin = new Date(ini.getTime() + 7L * 24 * 60 * 60 * 1000);
+        pedidoDesc.setDescuento(new DescuentoPorcentaje(ini, fin, 20.0));
+        System.out.println("Precio sin descuento: 100.0");
+        System.out.println("Precio con 20% de descuento: " + pedidoDesc.calcularPrecioTotal());
+ 
+        System.out.println("\n--- 5. Editar fecha de recogida ---");
+        Date nuevaFecha = new Date(System.currentTimeMillis() + 2L * 24 * 60 * 60 * 1000);
+        emp.editarPedido(pedido, nuevaFecha);
+        System.out.println("Fecha de recogida editada (no nula): " + (pedido.getFechaRecogida() != null));
+    }
+ 
+    // =========================================================================
+    // 4. PRUEBAS DEL EMPLEADO DE INTERCAMBIOS
+    // =========================================================================
+ 
+    private static void probarEmpleadoIntercambio() {
+        System.out.println("\n\n=== PRUEBAS DEL EMPLEADO DE INTERCAMBIOS ===");
+ 
+        EmpleadoIntercambio emp = empIntercambio;
+ 
+        // Clientes y productos de segunda mano
+        ClienteRegistrado c1 = new ClienteRegistrado("Carlos", "pwd", "22222222C");
+        ClienteRegistrado c2 = new ClienteRegistrado("Sofía",  "pwd", "33333333S");
+ 
+        ProductoSegundaMano psm1 = new ProductoSegundaMano("Cómic usado", "Muy buen estado", null, c1);
+        ProductoSegundaMano psm2 = new ProductoSegundaMano("Figura usada", "Algo desgastada", null, c2);
+ 
+        c1.subirProducto(psm1);
+        c2.subirProducto(psm2);
+ 
+        System.out.println("\n--- 1. Estado inicial de los productos ---");
+        System.out.println("psm1 valorado: " + psm1.getEstaValorado());
+        System.out.println("psm1 disponible: " + psm1.getDisponibilidad());
+        System.out.println("psm1 estado: " + psm1.getEstadoProducto());
+ 
+        System.out.println("\n--- 2. Asignar productos para valorar ---");
+        sistema.asignarValoracion(psm1, emp);
+        sistema.asignarValoracion(psm2, emp);
+        System.out.println("Productos por valorar: " + emp.getProductosPorValorar().size());
+ 
+        System.out.println("\n--- 3. Valorar productos ---");
+        emp.valorarProducto(psm1, 8, 15.0, EstadoConservacion.MUY_BUENO);
+        emp.valorarProducto(psm2, 6, 10.0, EstadoConservacion.USO_LIGERO);
+        System.out.println("Tras valorar → pendientes: " + emp.getProductosPorValorar().size());
+        System.out.println("psm1 valorado: " + psm1.getEstaValorado()
+                + " | Valor estimado: " + psm1.getValorEstimado()
+                + " | Conservación: " + psm1.getEstadoConservacion());
+ 
+        System.out.println("\n--- 4. Subir productos al mercado ---");
+        psm1.subirProducto();
+        psm2.subirProducto();
+        System.out.println("psm1 disponible: " + psm1.getDisponibilidad());
+        System.out.println("psm2 disponible: " + psm2.getDisponibilidad());
+ 
+        System.out.println("\n--- 5. Crear oferta e intercambio ---");
+        Oferta oferta = new Oferta(psm1, psm2, c2, c1);
+        System.out.println("Estado inicial oferta: " + oferta.getEstadoOferta());
+ 
+        Intercambio intercambio = new Intercambio(new Date(), oferta);
+        sistema.asignarIntercambio(intercambio, emp);
+        System.out.println("Intercambios asignados al empleado: " + emp.getIntercambiosPendientes().size());
+        System.out.println("Intercambiado inicialmente: " + intercambio.getIntercambiado());
+        System.out.println("Fecha límite > ahora: " + intercambio.getFechaLimite().after(new Date()));
+ 
+        System.out.println("\n--- 6. Aceptar oferta y transferir propiedad ---");
+        intercambio.aceptarOferta();
+        System.out.println("Oferta aceptada: " + oferta.getEstadoOferta());
+ 
+        emp.transferirPropiedad(intercambio);
+        System.out.println("Intercambio completado: " + intercambio.getIntercambiado());
+        System.out.println("c2 recibe psm1: " + c2.getCartera().getProductos().contains(psm1));
+        System.out.println("c1 recibe psm2: " + c1.getCartera().getProductos().contains(psm2));
+ 
+        System.out.println("\n--- 7. Rechazar una oferta (flujo alternativo) ---");
+        ProductoSegundaMano psm3 = new ProductoSegundaMano("Juego usado", "Estado perfecto", null, c1);
+        ProductoSegundaMano psm4 = new ProductoSegundaMano("Póster enmarcado", "Vintage", null, c2);
+        c1.subirProducto(psm3);
+        c2.subirProducto(psm4);
+        emp.valorarProducto(psm3, 9, 20.0, EstadoConservacion.PERFECTO);
+        emp.valorarProducto(psm4, 7, 12.0, EstadoConservacion.USO_LIGERO);
+ 
+        Oferta ofertaRechazo = new Oferta(psm3, psm4, c2, c1);
+        Intercambio intercambioRechazo = new Intercambio(new Date(), ofertaRechazo);
+        intercambioRechazo.rechazarOferta();
+        System.out.println("Oferta rechazada: " + ofertaRechazo.getEstadoOferta());
+ 
+        System.out.println("\n--- 8. Notificar intercambio listo ---");
+        Notificacion notif = new Notificacion(TipoNotificacion.INTERCAMBIO_REALIZADO, "Tu intercambio está listo");
+        c1.addNotificacion(notif);
+        System.out.println("Notificaciones de c1: " + c1.getNotificaciones().size());
+ 
+        System.out.println("\n--- 9. Reportar fallo en intercambio ---");
+        ProductoSegundaMano psm5 = new ProductoSegundaMano("Extra A", "desc", null, c1);
+        ProductoSegundaMano psm6 = new ProductoSegundaMano("Extra B", "desc", null, c2);
+        psm5.setDisponibilidad(false);
+        psm6.setDisponibilidad(false);
+        Oferta ofertaFallo = new Oferta(psm5, psm6, c2, c1);
+        Intercambio intercambioFallo = new Intercambio(new Date(), ofertaFallo);
+        sistema.asignarIntercambio(intercambioFallo, emp);
+        emp.reportarFallo(intercambioFallo);
+        System.out.println("Productos desbloqueados tras fallo:");
+        System.out.println("  psm5 disponible: " + psm5.getDisponibilidad());
+        System.out.println("  psm6 disponible: " + psm6.getDisponibilidad());
+    }
+ 
+    // =========================================================================
+    // 5. PRUEBAS DEL CLIENTE REGISTRADO
+    // =========================================================================
+ 
+    private static void probarClienteRegistrado() {
+        System.out.println("\n\n=== PRUEBAS DEL CLIENTE REGISTRADO ===");
+ 
+        ClienteRegistrado cliente = new ClienteRegistrado("María", "maria123", "44444444M");
+        sistema.addUsuario(cliente);
+ 
+        System.out.println("\n--- 1. Datos básicos ---");
+        System.out.println("Nombre: " + cliente.getNombre());
+        System.out.println("DNI: " + cliente.getDNI());
+ 
+        System.out.println("\n--- 2. Editar perfil ---");
+        cliente.editarPerfil("María López", "nuevaPass456");
+        System.out.println("Nombre actualizado: " + cliente.getNombre());
+        cliente.editarPerfil("María", "maria123"); // restaurar
+ 
+        System.out.println("\n--- 3. Añadir al carrito y comprar ---");
+        // Asegurar stock
+        ProductoTienda prodCompra = stock.getProductos().keySet().iterator().next();
+        stock.añadirProducto(prodCompra, 5);
+ 
+        boolean add1 = (stock.getNumProductos(prodCompra) > 0);
+        cliente.añadirALaCesta(prodCompra, stock);
+        System.out.println("Producto añadido a cesta: " + add1);
+        System.out.println("Cesta vacía: " + cliente.getCesta().estaVacia());
+        System.out.println("Precio producto: " + prodCompra.getPrecio());
+ 
+        Status compra = cliente.comprar();
+        System.out.println("Comprar (cesta → pedido): " + compra);
+        System.out.println("Cesta vacía tras comprar: " + cliente.getCesta().estaVacia());
+        System.out.println("Pedidos en historial: " + cliente.getPedidos().size());
+ 
+        System.out.println("\n--- 4. Pagar pedido ---");
+        Pedido pedido = cliente.getPedidos().get(0);
+        System.out.println("Estado antes del pago: " + pedido.getEstadoPedido());
+        Status pago = cliente.pagarPedido(pedido);
+        System.out.println("Pago: " + pago + " | Estado: " + pedido.getEstadoPedido());
+        System.out.println("Total pedido: " + pedido.calcularPrecioTotal());
+ 
+        System.out.println("\n--- 5. Comprar con cesta vacía (debe fallar) ---");
+        Status cestaVacia = cliente.comprar();
+        System.out.println("Comprar con cesta vacía (ERROR esperado): " + cestaVacia);
+ 
+        System.out.println("\n--- 6. Pagar pedido ajeno (debe fallar) ---");
+        ClienteRegistrado otroCliente = new ClienteRegistrado("Otro", "pwd", "55555555O");
+        ProductoTienda prodAjeno = stock.getProductos().keySet().iterator().next();
+        stock.añadirProducto(prodAjeno, 2);
+        otroCliente.añadirALaCesta(prodAjeno, stock);
+        otroCliente.comprar();
+        Pedido pedidoAjeno = otroCliente.getPedidos().get(0);
+        Status pagoAjeno = cliente.pagarPedido(pedidoAjeno);
+        System.out.println("Pagar pedido ajeno (ERROR esperado): " + pagoAjeno);
+ 
+        System.out.println("\n--- 7. Subir producto de segunda mano ---");
+        ProductoSegundaMano psm = new ProductoSegundaMano("Cómic repetido", "Buen estado", null, cliente);
+        Status subida = cliente.subirProducto(psm);
+        System.out.println("Subir producto segunda mano: " + subida);
+        System.out.println("Productos en cartera: " + cliente.getCartera().getProductos().size());
+ 
+        System.out.println("\n--- 8. Pedir valoración ---");
+        Status pedirVal = cliente.pagarValoracion(psm);
+        System.out.println("Pedir valoración: " + pedirVal
+                + " | Estado: " + psm.getEstadoProducto());
+ 
+        System.out.println("\n--- 9. Notificaciones ---");
+        Notificacion n1 = new Notificacion(TipoNotificacion.PAGO_REALIZADO, "Tu pedido fue pagado con éxito");
+        Notificacion n2 = new Notificacion(TipoNotificacion.PEDIDO_LISTO, "Tu pedido está listo para recoger");
+ 
+        cliente.addNotificacion(n1);
+        cliente.addNotificacion(n2);
+        System.out.println("Notificaciones recibidas: " + cliente.getNotificaciones().size());
+        System.out.println("n1 leída inicialmente: " + n1.getLeida());
+ 
+        cliente.leerNotificacion(n1);
+        System.out.println("n1 leída tras leerNotificacion: " + n1.getLeida());
+ 
+        cliente.borrarNotificacion(n2);
+        System.out.println("Notificaciones tras borrar n2: " + cliente.getNotificaciones().size());
+ 
+        System.out.println("\n--- 10. Código de recogida ---");
+        Codigo codigo = sistema.generarCodigo();
+        sistema.enviarCodigo(cliente, codigo);
+        System.out.println("Códigos del cliente: " + cliente.getCodigos().size());
+        System.out.println("Código no nulo: " + (cliente.getCodigos().get(0) != null));
+    }
+ 
+    // =========================================================================
+    // UTILIDADES
+    // =========================================================================
+ 
+    /**
+     * Devuelve el empleado predefinido cuyo nombre coincida.
+     * Funciona con las referencias locales porque Sistema no expone getUsuarios().
+     */
+    private static Empleado encontrarEmpleadoPorNombre(String nombre) {
+        if (nombre.equals(empProducto.getNombre()))    return empProducto;
+        if (nombre.equals(empPedido.getNombre()))      return empPedido;
+        if (nombre.equals(empIntercambio.getNombre())) return empIntercambio;
+        return null;
     }
 }

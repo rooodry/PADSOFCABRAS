@@ -45,6 +45,10 @@ public class ClienteRegistrado extends Cliente {
     }
     public void addCodigo(Codigo c) {this.codigos.add(c);}
 
+    public void addNotificacion(Notificacion n) {
+        this.notificaciones.add(n);
+    }
+
     //GETTERS//
     public String getDNI() {return this.DNI;}
     public Cartera getCartera() {return this.cartera;}
