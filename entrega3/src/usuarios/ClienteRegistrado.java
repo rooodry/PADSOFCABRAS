@@ -6,6 +6,8 @@ import compras.*;
 import intercambios.*;
 import utilidades.*;
 import notificaciones.Notificacion;
+import es.uam.eps.padsof.telecard.FailedInternetConnectionException;
+
 
 public class ClienteRegistrado extends Cliente {
     private final String DNI;
@@ -77,6 +79,15 @@ public class ClienteRegistrado extends Cliente {
             pedido.setEstadoPedido(EstadoPedido.EN_PREPARACION);
             return Status.OK;
         }
+
+        if(!(isValidCardNumber("Tarjeta"))) {
+            return Status.ERROR;
+        }
+
+        charge("Tarjeta", pedido.calcularPrecioTotal());
+
+
+
 
         return Status.ERROR;
     }
