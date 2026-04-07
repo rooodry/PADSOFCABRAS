@@ -24,8 +24,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import es.uam.eps.padsof.telecard.TeleChargeAndPaySystem;
-
 
 
 public class Sistema {
