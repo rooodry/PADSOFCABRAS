@@ -158,7 +158,7 @@ public class Sistema {
         this.pedidos.add(p);
         
         scheduler.schedule(() -> {
-            if (p.getEstadoPedido() == EstadoPedido.EN_PREPARACION) {
+            if (p.getEstadoPedido() == EstadoPedido.EN_CARRITO) {
                 cancelarPedido(p);
             }
         }, 15, TimeUnit.MINUTES);    

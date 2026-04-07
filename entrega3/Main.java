@@ -11,6 +11,8 @@ import utilidades.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
  
 /**
  * Clase de arranque para ejecutar pruebas manuales del sistema PADSOFCABRAS.
@@ -495,6 +497,34 @@ public class Main {
         sistema.enviarCodigo(cliente, codigo);
         System.out.println("Códigos del cliente: " + cliente.getCodigos().size());
         System.out.println("Código no nulo: " + (cliente.getCodigos().get(0) != null));
+
+        System.out.println("\n--- 11. COMPROBANDO CADUCIDAD DE PEDIDO (15 MINUTOS) ---");
+        
+        // Creamos el carrito temporal AQUÍ para que Java no se queje
+        ProductoTienda prodTemp = new ProductoTienda("Producto Reloj", "Prueba de tiempo", "reloj.png");
+        prodTemp.setPrecio(10.0);
+        Map<ProductoTienda, Integer> carritoTemporal = new HashMap<>();
+        carritoTemporal.put(prodTemp, 1);
+        
+        // Creamos el pedido y NO lo pagamos
+        Pedido pedidoCaduca = new Pedido(cliente, carritoTemporal);
+        sistema.registrarPedido(pedidoCaduca);
+        System.out.println("Pedido registrado. Estado actual: " + pedidoCaduca.getEstadoPedido());
+
+        // Esperamos 4 segundos para simular los 15 minutos
+        try {
+            System.out.println("Simulando el paso del tiempo...");
+            Thread.sleep(4000); 
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Estado del pedido tras el tiempo límite: " + pedidoCaduca.getEstadoPedido());
+        if (pedidoCaduca.getEstadoPedido() == EstadoPedido.CANCELADO) {
+            System.out.println("✔️ ÉXITO: El pedido se ha cancelado automáticamente.");
+        } else {
+            System.out.println("❌ ERROR: El pedido sigue activo.");
+        }   
     }
  
     // =========================================================================
