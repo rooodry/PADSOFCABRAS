@@ -94,7 +94,7 @@ public class Sistema {
         if(cantidad > 0) {
             this.stock.añadirProducto(p, cantidad);
         } else if (cantidad < 0) {
-            this.stock.reducirStock(p, cantidad);
+            this.stock.reducirStock(p, -cantidad); //cambio porque al pasar un número negativo a reducirStock (que en su lógica hace una resta), terminaría sumando el stock matemático en lugar de restarlo
         } else {
             this.stock.retirarProducto(p);
         }
@@ -113,6 +113,7 @@ public class Sistema {
         }
         
         if (descuentoMasAntiguo != null) {
+            pedido.setDescuento(descuentoMasAntiguo); //cambio porque el descuento seleccionado debe asignarse al pedido explícitamente para que los cálculos futuros en la clase Pedido concuerden
             return descuentoMasAntiguo.aplicarDescuento(precioBase);
         }
         

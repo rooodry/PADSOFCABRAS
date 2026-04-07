@@ -3,7 +3,6 @@ package intercambios;
 import productos.ProductoSegundaMano;
 import usuarios.ClienteRegistrado;
 import utilidades.EstadoOferta;
-import java.util.*;
 
 public class Oferta {
     
@@ -21,15 +20,27 @@ public class Oferta {
         this.usuarioLanzador = uLanz;
     }
     
-    //SETTERS//
-    public void setEstadoOferta(EstadoOferta e) {this.estadoOferta = e;}
+    public void setEstadoOferta(EstadoOferta e) {
+        this.estadoOferta = e;
+    }
 
-    //GETTERS//
-    public EstadoOferta getEstadoOferta() {return this.estadoOferta;}
-    public ProductoSegundaMano getProductoOfertado() {return this.productoOfertado;}
-    public ProductoSegundaMano getProductoDeseado() {return this.productoDeseado;}
-    public ClienteRegistrado getUsuarioReceptor() {return this.usuarioReceptor;}
-    public ClienteRegistrado getUsuarioLanzador() {return this.usuarioLanzador;}
+    public EstadoOferta getEstadoOferta() {
+        return this.estadoOferta;
+    }
 
+    public ProductoSegundaMano getProductoOfertado() {
+        return this.productoOfertado;
+    }
 
+    public ProductoSegundaMano getProductoDeseado() {
+        return this.productoDeseado;
+    }
+
+    public ClienteRegistrado getUsuarioReceptor() {
+        return this.usuarioReceptor;
+    }
+
+    public ClienteRegistrado getUsuarioLanzador() {
+        return this.usuarioLanzador;
+    }
 }

@@ -7,16 +7,16 @@ import java.util.*;
 
 public class Gestor extends Usuario {
 
-    private List<Estadistica> estadistica;
-
+    private List<Estadistica> estadisticas;
+    
     public Gestor(String nombre, String contraseña) {
         super(nombre, contraseña);
-        this.estadistica = new ArrayList<>();
+        this.estadisticas = new ArrayList<>();
     }
 
-    public void addEstadistica(Estadistica e) { this.estadistica.add(e); }
+    public void addEstadistica(Estadistica e) { this.estadisticas.add(e); }
     
-    public List<Estadistica> getEstadistica() { return new ArrayList<>(this.estadistica); }
+    public List<Estadistica> getEstadisticas() { return new ArrayList<>(this.estadisticas); }
     
     public void configurarPermisos(Empleado empleado, Set<TiposEmpleado> nuevosPermisos) {
         empleado.clearPermisos();

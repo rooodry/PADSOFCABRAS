@@ -17,7 +17,6 @@ public class NotificacionTest {
         tipo = TipoNotificacion.PAGO_REALIZADO; 
         mensaje = "Su pedido ha sido enviado.";
         
-        // Instanciamos el objeto real a probar
         notificacion = new Notificacion(tipo, mensaje);
     }
 

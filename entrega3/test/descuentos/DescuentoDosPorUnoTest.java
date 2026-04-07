@@ -16,4 +16,11 @@ public class DescuentoDosPorUnoTest {
         assertEquals(fechaInicio, descuento.getFechaInicio());
         assertEquals(fechaFin, descuento.getFechaFin());
     }
+    
+    @Test
+    public void testAplicarDescuento() {
+        DescuentoDosPorUno descuento = new DescuentoDosPorUno(new Date(), new Date());
+        
+        assertEquals(100.0, descuento.aplicarDescuento(100.0), 0.001);
+    }
 }

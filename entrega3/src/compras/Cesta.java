@@ -3,8 +3,6 @@ package compras;
 import java.util.HashMap;
 import java.util.Map;
 import productos.ProductoTienda;
-import productos.Stock;
-import utilidades.Status;
 
 public class Cesta {
     private Map<ProductoTienda, Integer> productos;
