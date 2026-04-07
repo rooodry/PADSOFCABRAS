@@ -10,7 +10,6 @@ import compras.*;
 import utilidades.*;
 import intercambios.*;
 import productos.categoria.*;
-import es.uam.eps.padsof.telecard.*;
 
 import java.util.List;
 import java.util.Map;
@@ -25,12 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-<<<<<<< HEAD
-=======
 
-
-
->>>>>>> 52f10b53e9a028e039cffebe2b610184e3a85f13
 public class Sistema {
     
     private List<Producto> productos;
@@ -383,16 +377,4 @@ public class Sistema {
             .map(Map.Entry::getKey)
             .toList();
     }
-<<<<<<< HEAD
 }
-=======
-
-
-
-}
-
-
-
-
-
->>>>>>> 52f10b53e9a028e039cffebe2b610184e3a85f13
