@@ -26,11 +26,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> 3fad929bcde16db6a3141e31fbc46c4fc5352344
 public class Sistema {
     
     private List<Producto> productos;
@@ -383,9 +380,6 @@ public class Sistema {
             .map(Map.Entry::getKey)
             .toList();
     }
-<<<<<<< HEAD
-}
-=======
 
 
 
@@ -395,4 +389,3 @@ public class Sistema {
 
 
 
->>>>>>> ff51d55872511c994bf2eb47358aede201e728b5
