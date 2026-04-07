@@ -521,9 +521,9 @@ public class Main {
 
         System.out.println("Estado del pedido tras el tiempo límite: " + pedidoCaduca.getEstadoPedido());
         if (pedidoCaduca.getEstadoPedido() == EstadoPedido.CANCELADO) {
-            System.out.println("✔️ ÉXITO: El pedido se ha cancelado automáticamente.");
+            System.out.println("ÉXITO: El pedido se ha cancelado automáticamente.");
         } else {
-            System.out.println("❌ ERROR: El pedido sigue activo.");
+            System.out.println("ERROR: El pedido sigue activo.");
         }   
     }
  
