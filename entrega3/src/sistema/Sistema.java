@@ -25,6 +25,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 3fad929bcde16db6a3141e31fbc46c4fc5352344
 public class Sistema {
     
     private List<Producto> productos;
