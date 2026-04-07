@@ -157,11 +157,12 @@ public class Sistema {
         }
         this.pedidos.add(p);
         
+        /** está puesto para que se caduque a los 3 segundos para que en el main se vea que funciona, y no tengan que esperar 15 minutos */
         scheduler.schedule(() -> {
             if (p.getEstadoPedido() == EstadoPedido.EN_CARRITO) {
                 cancelarPedido(p);
             }
-        }, 15, TimeUnit.MINUTES);    
+        }, 3, TimeUnit.SECONDS);    
     }
 
     private ProductoTienda buscarProductoRegalo() {
