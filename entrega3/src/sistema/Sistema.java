@@ -836,7 +836,7 @@ public class Sistema {
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
             bw.write("TIPO(C/J/F);ID;NOMBRE;DESCRIPCION;PRECIO;UNIDADES;CATEGORIAS;PAGINAS;"
-                   + "AUTOR;EDITORIAL;AÑO;JUGADORES;EDAD;ESTILO(Cartas/Dados/Tablero/Miniatura);"
+                   + "AUTOR;EDITORIAL;AÑO;JUGADORES;EDAD;ESTILO(Cartas/Dados/JuegoDeMesa);"
                    + "MARCA;MATERIAL;DIMENSION");
             bw.newLine();
 
@@ -864,13 +864,15 @@ public class Sistema {
                     bw.write(c.getAutor() + ";");
                     bw.write(c.getEditorial() + ";");
                     bw.write(c.getAño());
+                    bw.newLine();
 
                 } else if (p.getCategoria() instanceof Figura) {
                     bw.write("F;");
                     Figura f = (Figura) p.getCategoria();
                     bw.write(f.getMarca() + ";");
                     bw.write(f.getMaterial() + ";");
-                    bw.write(f.getAltura() + "cm alto");
+                    bw.write(f.getAltura() + ";");
+                    bw.newLine();
 
                 } else {
                     bw.write("J;");
@@ -878,6 +880,7 @@ public class Sistema {
                     bw.write(j.getNumJugadores() + ";");
                     bw.write(j.getEdadMinima() + ";");
                     bw.write(j.getTipoJuego().toString());
+                    bw.newLine();
                 }
             }
 
@@ -896,9 +899,6 @@ public class Sistema {
      * <p>Categorías aceptadas: {@code "COMIC"}, {@code "FIGURA"} y
      * {@code "JUEGO"}.</p>
      *
-     * <p><b>Nota (bug conocido):</b> el caso {@code "JUEGO"} comprueba
-     * erróneamente {@code instanceof Comic} en lugar de
-     * {@code instanceof Juego}, por lo que no devuelve juegos correctamente.</p>
      *
      * @param productos lista de productos a filtrar
      * @param categoria cadena con la categoría deseada ({@code "COMIC"},
@@ -922,9 +922,8 @@ public class Sistema {
                 }
             }
         } else if (categoria.equals("JUEGO")) {
-            // BUG: debería ser instanceof Juego, no instanceof Comic
             for (Producto p : productos) {
-                if (p.getCategoria() instanceof Comic) {
+                if (p.getCategoria() instanceof Juego) {
                     productosFiltrados.add(p);
                 }
             }
