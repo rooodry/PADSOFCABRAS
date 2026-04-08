@@ -5,7 +5,7 @@ import java.util.UUID;
 import productos.categoria.Categoria;
 
 public abstract class Producto {
-    private final String id; 
+    protected String id; 
     private String nombre;
     private String descripcion;
     private int valoracion;
@@ -34,6 +34,8 @@ public abstract class Producto {
     public void setImagen(String imagen) {this.imagen = imagen;}
 
     public void setCategoria(Categoria categoria) {this.categoria = categoria;}
+
+    public void setId(String id) {this.id = id;}
 
     //GETTERS//
 
