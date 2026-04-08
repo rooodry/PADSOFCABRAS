@@ -10,8 +10,7 @@ public class DescuentoPorcentajeTest {
     public void testConstructorYGetters() {
         Date fechaInicio = new Date();
         Date fechaFin = new Date();
-        double porcentaje = 0.20;
-
+        double porcentaje = 20.0;
         DescuentoPorcentaje descuento = new DescuentoPorcentaje(fechaInicio, fechaFin, porcentaje);
 
         assertEquals(fechaInicio, descuento.getFechaInicio());
@@ -21,7 +20,7 @@ public class DescuentoPorcentajeTest {
     
     @Test
     public void testAplicarDescuento() {
-        DescuentoPorcentaje descuento = new DescuentoPorcentaje(new Date(), new Date(), 0.20);
+        DescuentoPorcentaje descuento = new DescuentoPorcentaje(new Date(), new Date(), 20.0); // CAMBIO: de 0.20 a 20.0
         assertEquals(80.0, descuento.aplicarDescuento(100.0), 0.001);
     }
 }
