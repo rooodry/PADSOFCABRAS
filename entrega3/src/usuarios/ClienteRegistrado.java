@@ -6,10 +6,8 @@ import compras.*;
 import intercambios.*;
 import utilidades.*;
 import notificaciones.Notificacion;
-import es.uam.eps.padsof.telecard.*;
-
 public class ClienteRegistrado extends Cliente {
-    private final String DNI;
+    private String DNI;
     private Cartera cartera;
     private Cesta cesta;
     private List<Pedido> pedidos;
@@ -20,7 +18,11 @@ public class ClienteRegistrado extends Cliente {
 
     public ClienteRegistrado(String nombreUsuario, String contraseña, String DNI) {
         super(nombreUsuario, contraseña);
-        this.DNI = DNI;
+        if(validarDNI(DNI)) {
+            this.DNI = DNI;
+        } else {
+            this.DNI = " ";
+        }
         this.cartera = new Cartera();
         this.cesta = new Cesta();
         this.pedidos = new ArrayList<>();
@@ -51,7 +53,8 @@ public class ClienteRegistrado extends Cliente {
     public List<Oferta> getOfertasRealizadas() { return new ArrayList<>(this.ofertasRealizadas); }
     public List<Oferta> getOfertasRecibidas() { return new ArrayList<>(this.ofertasRecibidas); }
     public List<Intercambio> getIntercambios() { return new ArrayList<>(this.intercambios); }
-    public List<Codigo> getCodigos() { return new ArrayList<>(this.codigos); }
+    public List<Codigo> getCodigos() { return new ArrayList<>(this.codigos);}
+
 
     public Status comprar() {
         if(this.cesta.estaVacia()) {
@@ -149,4 +152,13 @@ public class ClienteRegistrado extends Cliente {
     public void añadirValoraciones(Pedido p, Map<ProductoTienda, Integer> lista) {
         p.setValoracionesProductos(lista);
     }
+
+    public boolean validarDNI(String dni) {
+        if (dni.length() == 9) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
