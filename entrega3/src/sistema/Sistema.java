@@ -378,4 +378,73 @@ public class Sistema {
             .map(Map.Entry::getKey)
             .toList();
     }
+
+
+    public void subirProductosFichero(String archivo) {
+
+        String tipo, id, nombre, descripcion, autor, editorial, año, estilo, marca, material, dimension, imagen, categorias;
+        Double precio;
+        int unidades, paginas, numJugadores, edad;
+        
+
+
+        try(BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            String[] elementos;
+            while ((linea = br.readLine()) != null) {
+                imagen = "";
+                elementos = linea.split("\\;");
+                tipo = elementos[0];
+                id = elementos[1];
+                nombre = elementos[2];
+                descripcion = elementos[3];
+                precio  = Double.parseDouble(elementos[4]);
+                unidades  = Integer.parseInt(elementos[5]);
+                categorias = elementos[6];
+                paginas  = Integer.parseInt(elementos[7]);
+                autor  = elementos[8];
+                editorial  = elementos[9];
+                año  = elementos[10];
+                numJugadores = Integer.parseInt(elementos[11]);
+                edad = Integer.parseInt(elementos[12]);
+                estilo = elementos[13];
+                marca = elementos[14];
+                material = elementos[15];
+                dimension = elementos[16];
+
+                ProductoTienda p = new ProductoTienda(nombre, descripcion, imagen);
+
+                p.setId(id);
+                p.setPrecio(precio);
+                this.stock.añadirProducto(p, unidades);
+
+                if(tipo == "C") {
+                    Comic c = new Comic(nombre, paginas, autor, editorial, null);
+                    p.setCategoria(c);  
+                } else if (tipo == "J") {
+                    Juego j = new Juego(nombre, numJugadores, edad, null);
+                    p.setCategoria(j);
+                } else {
+                    Figura f = new Figura(nombre, 0, 0, marca);
+                    p.setCategoria(f);
+                }
+                
+
+
+
+
+            }
+
+
+
+        } catch (IOException e) {
+            System.err.println("Error abriendo archivo " + e.getMessage());
+        }
+
+
+    }
+
+
 }
+
+        
