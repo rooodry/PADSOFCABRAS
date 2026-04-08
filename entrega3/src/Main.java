@@ -4,7 +4,6 @@ import estadisticas.Estadistica;
 import intercambios.*;
 import notificaciones.*;
 import productos.*;
-import productos.categoria.*;
 import sistema.Sistema;
 import usuarios.*;
 import utilidades.*;
