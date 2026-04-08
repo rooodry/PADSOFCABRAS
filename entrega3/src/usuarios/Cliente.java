@@ -8,7 +8,9 @@ public abstract class Cliente extends Usuario{
         super(nombre, contraseña);
     }
 
-    public void filtrarProducto() {}
+    public void filtrarProducto() {
+        
+    }
 
     public void ordenarProducto() {}
 
