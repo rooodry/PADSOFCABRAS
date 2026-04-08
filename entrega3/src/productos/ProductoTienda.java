@@ -1,10 +1,5 @@
 package productos;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
-import productos.categoria.Comic;
 
 /**
  * Representa un producto que es vendido directamente por la tienda.

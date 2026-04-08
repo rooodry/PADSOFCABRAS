@@ -1,6 +1,5 @@
 package usuarios;
 
-import productos.Producto;
 
 /**
  * Clase abstracta que representa a un cliente del sistema.
