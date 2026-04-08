@@ -94,7 +94,7 @@ public class Sistema {
         if(cantidad > 0) {
             this.stock.añadirProducto(p, cantidad);
         } else if (cantidad < 0) {
-            this.stock.reducirStock(p, -cantidad); //cambio porque al pasar un número negativo a reducirStock (que en su lógica hace una resta), terminaría sumando el stock matemático en lugar de restarlo
+            this.stock.reducirStock(p, -cantidad); 
         } else {
             this.stock.retirarProducto(p);
         }
@@ -113,7 +113,7 @@ public class Sistema {
         }
         
         if (descuentoMasAntiguo != null) {
-            pedido.setDescuento(descuentoMasAntiguo); //cambio porque el descuento seleccionado debe asignarse al pedido explícitamente para que los cálculos futuros en la clase Pedido concuerden
+            pedido.setDescuento(descuentoMasAntiguo); 
             return descuentoMasAntiguo.aplicarDescuento(precioBase);
         }
         
@@ -386,8 +386,6 @@ public class Sistema {
         Double precio;
         int unidades, paginas, numJugadores, edad;
         
-
-
         try(BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea;
             String[] elementos;
@@ -418,33 +416,20 @@ public class Sistema {
                 p.setPrecio(precio);
                 this.stock.añadirProducto(p, unidades);
 
-                if(tipo == "C") {
-                    Comic c = new Comic(nombre, paginas, autor, editorial, null);
+                // CAMBIO porque en Java se usa .equals() para comparar cadenas, no ==
+                if(tipo.equals("C")) {
+                    Comic c = new Comic(nombre, paginas, autor, editorial, null); // Nota: Asumo que tu constructor de Comic acepta null para Enum, ajústalo si no es así
                     p.setCategoria(c);  
-                } else if (tipo == "J") {
+                } else if (tipo.equals("J")) {
                     Juego j = new Juego(nombre, numJugadores, edad, null);
                     p.setCategoria(j);
                 } else {
                     Figura f = new Figura(nombre, 0, 0, marca);
                     p.setCategoria(f);
                 }
-                
-
-
-
-
             }
-
-
-
         } catch (IOException e) {
             System.err.println("Error abriendo archivo " + e.getMessage());
         }
-
-
     }
-
-
 }
-
-        
