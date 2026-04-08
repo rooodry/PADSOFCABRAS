@@ -17,25 +17,62 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Clase de arranque para ejecutar pruebas manuales del sistema PADSOFCABRAS.
- *
- * NOTA: El sistema real tiene una sola clase Empleado con permisos (TiposEmpleado).
+ * Clase de arranque para ejecutar pruebas manuales integrales del sistema PADSOFCABRAS.
+ * <p>
+ * Esta clase actúa como un entorno de simulación (sandbox) que ejecuta secuencialmente
+ * diversos escenarios de prueba para validar el correcto funcionamiento de los módulos
+ * del dominio (usuarios, productos, pedidos, intercambios, descuentos y estadísticas).
+ * </p>
+ * <p>
+ * NOTA: El sistema real tiene una sola clase {@code Empleado} con permisos ({@code TiposEmpleado}).
  * No existen subclases EmpleadoProducto / EmpleadoPedido / EmpleadoIntercambio.
  * Las operaciones de dominio se realizan directamente sobre Empleado, Pedido,
  * ProductoSegundaMano, etc., y sobre el Sistema cuando hace falta coordinación.
+ * </p>
+ * * @author Equipo de Desarrollo PADSOFCABRAS
+ * @version 1.0
  */
 public class Main {
 
+<<<<<<< HEAD
+=======
+    /** Instancia global del sistema compartida por todos los bloques de prueba. */
+>>>>>>> c67ee046e32884d7eb404139b923d4abd6cf96b3
     private static final Sistema  sistema = new Sistema();
+    
+    /** Instancia global del stock compartida por todos los bloques de prueba. */
     private static final Stock    stock   = new Stock();
 
+    /** Administrador del sistema utilizado para pruebas de privilegios elevados. */
     private static Gestor    gestor;
+<<<<<<< HEAD
     private static Empleado  empProducto;
     private static Empleado  empPedido;
+=======
+    
+    /** Empleado de prueba con permisos de gestión de catálogo e inventario. */
+    private static Empleado  empProducto;
+    
+    /** Empleado de prueba con permisos de gestión y preparación de pedidos. */
+    private static Empleado  empPedido;
+    
+    /** Empleado de prueba con permisos de tasación y gestión del mercado de segunda mano. */
+>>>>>>> c67ee046e32884d7eb404139b923d4abd6cf96b3
     private static Empleado  empIntercambio;
 
+    /** Constructor privado para evitar la instanciación de la clase principal. */
     private Main() {}
 
+<<<<<<< HEAD
+=======
+    /**
+     * Punto de entrada principal para la ejecución de las pruebas del sistema.
+     * Invoca secuencialmente los métodos de inicialización y las baterías de prueba
+     * de cada módulo específico.
+     *
+     * @param args Argumentos de línea de comandos (no utilizados).
+     */
+>>>>>>> c67ee046e32884d7eb404139b923d4abd6cf96b3
     public static void main(String[] args) {
         System.out.println("\n=== PRUEBAS DEL SISTEMA PADSOFCABRAS ===\n");
 
@@ -52,6 +89,17 @@ public class Main {
         System.out.println("\n=== FIN DE PRUEBAS ===");
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Inicializa el estado base del sistema para las pruebas.
+     * <p>
+     * Este método configura el entorno inyectando el {@code Stock} en el {@code Sistema},
+     * creando un conjunto inicial de productos de tienda y registrando a los usuarios
+     * con roles de Gestor y Empleados (asignando sus permisos correspondientes).
+     * </p>
+     */
+>>>>>>> c67ee046e32884d7eb404139b923d4abd6cf96b3
     private static void inicializarDatos() {
         System.out.println("--- Inicializando datos de prueba ---");
 
@@ -88,12 +136,42 @@ public class Main {
         System.out.println("Datos inicializados | Stock con " + stock.getProductos().size() + " productos");
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Factoría auxiliar para la creación rápida de instancias de {@link ProductoTienda}.
+     * Reduce el código repetitivo (boilerplate) durante la generación de datos de prueba.
+     *
+     * @param nombre El nombre del producto.
+     * @param desc   La descripción del producto.
+     * @param img    La ruta o nombre del archivo de imagen del producto.
+     * @param precio El precio base del producto.
+     * @return Una nueva instancia configurada de {@code ProductoTienda}.
+     */
+>>>>>>> c67ee046e32884d7eb404139b923d4abd6cf96b3
     private static ProductoTienda crearProducto(String nombre, String desc, String img, double precio) {
         ProductoTienda p = new ProductoTienda(nombre, desc, img);
         p.setPrecio(precio);
         return p;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Ejecuta la batería de pruebas para el rol de Gestor (Administrador).
+     * <p>
+     * Escenarios probados:
+     * <ul>
+     * <li>Alta, baja y modificación de permisos de empleados (verificando control de acceso).</li>
+     * <li>Comprobación de excepciones de seguridad al intentar operar sin privilegios.</li>
+     * <li>Creación de packs y subpacks (patrón Composite).</li>
+     * <li>Gestión forzada del inventario (actualización de stock).</li>
+     * <li>Generación de códigos de recogida.</li>
+     * <li>Registro global de políticas de descuentos.</li>
+     * </ul>
+     * </p>
+     */
+>>>>>>> c67ee046e32884d7eb404139b923d4abd6cf96b3
     private static void probarGestor() {
         System.out.println("\n\n=== PRUEBAS DEL GESTOR ===");
 
@@ -202,6 +280,22 @@ public class Main {
         System.out.println("DescuentoRegalo añadido");
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Ejecuta la batería de pruebas para las operaciones de nivel de inventario
+     * (requiere permiso EMPLEADOS_PRODUCTO).
+     * <p>
+     * Escenarios probados:
+     * <ul>
+     * <li>Añadir, editar y retirar productos del stock.</li>
+     * <li>Protección frente a ingresos de stock inválidos (cantidades negativas o cero).</li>
+     * <li>Aplicación directa de rebajas sobre productos individuales (rebaja fija, porcentual y 2x1).</li>
+     * <li>Validación del estado del inventario para procesar peticiones.</li>
+     * </ul>
+     * </p>
+     */
+>>>>>>> c67ee046e32884d7eb404139b923d4abd6cf96b3
     private static void probarEmpleadoProducto() {
         System.out.println("\n\n=== PRUEBAS EMPLEADO DE PRODUCTOS (Ana) ===");
 
@@ -256,6 +350,23 @@ public class Main {
         System.out.println("Hay 1 unidad: " + stOK + " | Hay 99999 unidades: " + stERR);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Ejecuta la batería de pruebas sobre el ciclo de vida de las compras y pedidos
+     * (requiere permiso EMPLEADOS_PEDIDO).
+     * <p>
+     * Escenarios probados:
+     * <ul>
+     * <li>Progresión de estados del pedido (Inicial, Pagado, En preparación, Listo, Entregado).</li>
+     * <li>Cancelación de pedidos y reposición automática de stock retenido.</li>
+     * <li>Cálculo de precios finales aplicando distintos tipos de descuento al carrito completo.</li>
+     * <li>Inclusión automática de regalos por volumen de compra.</li>
+     * <li>Caducidad automática de reservas impagadas mediante simulación asíncrona de tiempo.</li>
+     * </ul>
+     * </p>
+     */
+>>>>>>> c67ee046e32884d7eb404139b923d4abd6cf96b3
     private static void probarEmpleadoPedido() {
         System.out.println("\n\n=== PRUEBAS EMPLEADO DE PEDIDOS (Luis) ===");
 
@@ -384,6 +495,23 @@ public class Main {
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Ejecuta la batería de pruebas sobre la lógica del mercado de segunda mano y el trueque
+     * (requiere permiso EMPLEADOS_INTERCAMBIO).
+     * <p>
+     * Escenarios probados:
+     * <ul>
+     * <li>Proceso de tasación oficial de productos subidos por usuarios.</li>
+     * <li>Creación de ofertas de intercambio entre clientes.</li>
+     * <li>Aceptación de ofertas, gestionando la transferencia segura de propiedad en las carteras.</li>
+     * <li>Rechazo de ofertas y liberación de los productos retenidos.</li>
+     * <li>Envío de notificaciones asociadas al éxito de la operación.</li>
+     * </ul>
+     * </p>
+     */
+>>>>>>> c67ee046e32884d7eb404139b923d4abd6cf96b3
     private static void probarEmpleadoIntercambio() {
         System.out.println("\n\n=== PRUEBAS EMPLEADO DE INTERCAMBIOS (Marta) ===");
 
@@ -484,6 +612,23 @@ public class Main {
         System.out.println("psm1 disponible tras borrar: " + psm1.getDisponibilidad());
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Ejecuta la batería de pruebas sobre las operaciones de un cliente en el sistema.
+     * <p>
+     * Escenarios probados:
+     * <ul>
+     * <li>Gestión de perfil y datos de cuenta.</li>
+     * <li>Añadir artículos al carrito y formalizar la compra.</li>
+     * <li>Validación contra comportamientos anómalos (intentar pagar un pedido ajeno, comprar con carrito vacío).</li>
+     * <li>Pago del servicio de tasación de la tienda.</li>
+     * <li>Recepción y gestión del buzón de notificaciones.</li>
+     * <li>Añadir valoraciones y puntuaciones a los artículos comprados.</li>
+     * </ul>
+     * </p>
+     */
+>>>>>>> c67ee046e32884d7eb404139b923d4abd6cf96b3
     private static void probarClienteRegistrado() {
         System.out.println("\n\n=== PRUEBAS DEL CLIENTE REGISTRADO ===");
 
@@ -577,6 +722,24 @@ public class Main {
         System.out.println("Categorías devueltas: " + cats.size() + " (0 si no hay fichero de estadísticas)");
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Ejecuta pruebas aisladas para comprobar el comportamiento polimórfico y
+     * la lógica de evaluación de las distintas políticas de descuento del sistema.
+     * <p>
+     * Se evalúan individualmente:
+     * <ul>
+     * <li>{@link DescuentoPorcentaje}</li>
+     * <li>{@link DescuentoDosPorUno}</li>
+     * <li>{@link DescuentoCantidadGastada}</li>
+     * <li>{@link DescuentoRegalo}</li>
+     * </ul>
+     * Verificando que cada descuento determina correctamente si es aplicable a un
+     * pedido en base a umbrales, fechas y reglas internas.
+     * </p>
+     */
+>>>>>>> c67ee046e32884d7eb404139b923d4abd6cf96b3
     private static void probarDescuentos() {
         System.out.println("\n\n=== PRUEBAS DE DESCUENTOS ===");
 
@@ -623,7 +786,25 @@ public class Main {
         System.out.println("FechaFin no nula: " + (dp.getFechaFin() != null));
         System.out.println("FechaFin > FechaInicio: " + dp.getFechaFin().after(dp.getFechaInicio()));
     }
+<<<<<<< HEAD
     
+=======
+
+    /**
+     * Ejecuta pruebas enfocadas a la analítica de datos y exportación de reportes.
+     * <p>
+     * Se genera un historial sintético de pedidos finalizados y se invoca la clase
+     * {@link Estadistica} para producir archivos de texto en {@code /tmp/} con reportes sobre:
+     * <ul>
+     * <li>Estadísticas de pedidos en general.</li>
+     * <li>Recaudación económica agrupadora (mensual y por categoría).</li>
+     * <li>Métricas de actividad (mejores clientes en compras e intercambios).</li>
+     * <li>Evaluación y puntuación media del catálogo.</li>
+     * </ul>
+     * Se valida también la denegación de acceso a la recaudación si quien la pide no es el Gestor.
+     * </p>
+     */
+>>>>>>> c67ee046e32884d7eb404139b923d4abd6cf96b3
     private static void probarEstadisticas() {
         System.out.println("\n\n=== PRUEBAS DE ESTADÍSTICAS ===");
 
