@@ -2,12 +2,9 @@ package intercambios;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import productos.ProductoSegundaMano;
 import usuarios.ClienteRegistrado;
-
 import static org.junit.jupiter.api.Assertions.*;
-
 import utilidades.EstadoOferta;
 
 public class OfertaTest {
@@ -29,8 +26,7 @@ public class OfertaTest {
         
     @Test
     public void testConstructorYGetters() {
-        assertEquals(EstadoOferta.PENDIENTE, oferta.getEstadoOferta(), "La oferta debe empezar como PENDIENTE");
-        
+        assertEquals(EstadoOferta.PENDIENTE, oferta.getEstadoOferta());
         assertEquals(pOfertado, oferta.getProductoOfertado());
         assertEquals(pDeseado, oferta.getProductoDeseado());
         assertEquals(receptor, oferta.getUsuarioReceptor());

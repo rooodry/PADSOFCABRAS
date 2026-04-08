@@ -13,7 +13,6 @@ public class ClienteRegistrado extends Cliente {
     private Cartera cartera;
     private Cesta cesta;
     private List<Pedido> pedidos;
-    private List<Notificacion> notificaciones;
     private List<Oferta> ofertasRealizadas;
     private List<Oferta> ofertasRecibidas;
     private List<Intercambio> intercambios;
@@ -25,7 +24,6 @@ public class ClienteRegistrado extends Cliente {
         this.cartera = new Cartera();
         this.cesta = new Cesta();
         this.pedidos = new ArrayList<>();
-        this.notificaciones = new ArrayList<>();
         this.ofertasRealizadas = new ArrayList<>();
         this.ofertasRecibidas = new ArrayList<>();
         this.intercambios = new ArrayList<>();
@@ -46,15 +44,10 @@ public class ClienteRegistrado extends Cliente {
 
     public void addCodigo(Codigo c) { this.codigos.add(c); }
 
-    public void addNotificacion(Notificacion n) {
-        this.notificaciones.add(n);
-    }
-
     public String getDNI() { return this.DNI; }
     public Cartera getCartera() { return this.cartera; }
     public Cesta getCesta() { return this.cesta; }
     public List<Pedido> getPedidos() { return new ArrayList<>(this.pedidos); }
-    public List<Notificacion> getNotificaciones() { return new ArrayList<>(this.notificaciones); }
     public List<Oferta> getOfertasRealizadas() { return new ArrayList<>(this.ofertasRealizadas); }
     public List<Oferta> getOfertasRecibidas() { return new ArrayList<>(this.ofertasRecibidas); }
     public List<Intercambio> getIntercambios() { return new ArrayList<>(this.intercambios); }
@@ -139,13 +132,13 @@ public class ClienteRegistrado extends Cliente {
     }
 
     public void leerNotificacion(Notificacion notificacion) {
-        if (this.notificaciones.contains(notificacion)) {
-            notificacion.setLeida();
+        if (this.getNotificaciones().contains(notificacion)) {
+        	notificacion.setLeida();
         }
     }
 
     public void borrarNotificacion(Notificacion notificacion) {
-        this.notificaciones.remove(notificacion);
+        this.removeNotificacion(notificacion);
     }
 
     public Status subirProducto(ProductoSegundaMano p) {

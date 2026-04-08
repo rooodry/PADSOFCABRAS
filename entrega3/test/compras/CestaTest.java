@@ -6,20 +6,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import productos.ProductoTienda;
-import productos.Stock;
 
 public class CestaTest {
 
     private Cesta cesta;
     private ProductoTienda productoTienda;
-    private Stock stock;
 
     @BeforeEach
     void setUp() {
         cesta = new Cesta();
         productoTienda = new ProductoTienda("Funko Iron Man", "Figura", "iron.jpg");
-        stock = new Stock();
-        stock.añadirProducto(productoTienda, 5);
     }
 
     @Test

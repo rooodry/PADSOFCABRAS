@@ -2,10 +2,8 @@ package intercambios;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-
 import productos.ProductoSegundaMano;
 import usuarios.ClienteRegistrado;
-
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.Date;
 import utilidades.EstadoOferta;
@@ -22,7 +20,6 @@ public class IntercambioTest {
         ProductoSegundaMano pDeseado = new ProductoSegundaMano("Figura", "Nueva", "img2.jpg", receptor);
 
         oferta = new Oferta(pOfertado, pDeseado, receptor, lanzador);
-        
         intercambio = new Intercambio(new Date(), oferta);
     }
 
@@ -30,18 +27,23 @@ public class IntercambioTest {
     public void testConstructorYFechas() {
         assertNotNull(intercambio.getFechaOferta());
         assertNotNull(intercambio.getFechaLimite());
-        assertNull(intercambio.getFechaAceptada(), "Aún no debería estar aceptada");
+        assertNull(intercambio.getFechaAceptada());
         assertFalse(intercambio.getIntercambiado());
         
-        assertTrue(intercambio.getFechaLimite().after(intercambio.getFechaOferta()), "La fecha límite debe ser posterior a la oferta.");
+        assertTrue(intercambio.getFechaLimite().after(intercambio.getFechaOferta()));
     }
 
     @Test
-    public void testAceptarYRechazarOferta() {
+    public void testAceptarOferta() {
         intercambio.aceptarOferta();
         assertEquals(EstadoOferta.ACEPTADA, oferta.getEstadoOferta());
+        assertNotNull(intercambio.getFechaAceptada());
+    }
 
+    @Test
+    public void testRechazarOferta() {
         intercambio.rechazarOferta();
         assertEquals(EstadoOferta.RECHAZADA, oferta.getEstadoOferta());
+        assertNull(intercambio.getFechaAceptada());
     }
 }

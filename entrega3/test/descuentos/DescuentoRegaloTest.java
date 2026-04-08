@@ -1,9 +1,6 @@
 package descuentos;
 
 import org.junit.jupiter.api.Test;
-
-import descuentos.DescuentoRegalo;
-
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.Date;
 import java.util.ArrayList;
@@ -28,6 +25,14 @@ public class DescuentoRegaloTest {
         assertEquals(fechaFin, descuento.getFechaFin());
         assertEquals(gastoMinimo, descuento.getGastoMinimo(), 0.001);
         
-        assertEquals(productos, descuento.getProductos(), "Debe devolver la misma referencia de la lista.");
+        assertEquals(productos, descuento.getProductos());
+    }
+    
+    @Test
+    public void testAplicarDescuento() {
+        List<ProductoTienda> productos = new ArrayList<>();
+        DescuentoRegalo descuento = new DescuentoRegalo(new Date(), new Date(), 100.0, productos);
+        
+        assertEquals(500.0, descuento.aplicarDescuento(500.0), 0.001);
     }
 }

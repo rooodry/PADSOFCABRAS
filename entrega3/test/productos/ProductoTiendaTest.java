@@ -11,7 +11,6 @@ public class ProductoTiendaTest {
 
     @BeforeEach
     public void setUp() {
-        // Inicializamos un producto tienda antes de cada test
         producto = new ProductoTienda("Figura Batman", "Figura de colección DC", "batman.png");
         producto.setPrecio(25.50);
     }
@@ -34,12 +33,10 @@ public class ProductoTiendaTest {
         assertEquals(0, producto.getRebajaFija());
         assertEquals(0, producto.getRebajaPorcentaje());
 
-        // Modificamos atributos
         producto.setTiene2x1(true);
         producto.setRebajaFija(5.0);
         producto.setRebajaPorcentaje(10.0);
 
-        // Comprobamos
         assertTrue(producto.isTiene2x1());
         assertEquals(5.0, producto.getRebajaFija());
         assertEquals(10.0, producto.getRebajaPorcentaje());

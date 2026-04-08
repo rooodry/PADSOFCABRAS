@@ -5,7 +5,6 @@ import java.util.*;
 import usuarios.ClienteRegistrado;
 import utilidades.*;
 
-
 public class ProductoSegundaMano extends Producto {
     private boolean disponibilidad;
     private final ClienteRegistrado propietario;
@@ -27,7 +26,6 @@ public class ProductoSegundaMano extends Producto {
         this.fechaValoracion = null;
     }
 
-    //SETTERS//
     public void setDisponibilidad(boolean flag) {this.disponibilidad = flag;}
     public void setValoracionEmpleado(int valoracion) {this.valoracionEmpleado = valoracion;}
     public void setValoracion(int valoracion, double valorEstimado, EstadoConservacion estadoConservacion) {
@@ -40,10 +38,8 @@ public class ProductoSegundaMano extends Producto {
     public void setEstaValorado(boolean flag) {this.estaValorado = flag;}
     public void setEstadoConservacion(EstadoConservacion e) {this.estadoConservacion = e;}
     public void setEstadoProducto(EstadoProducto e) {this.estadoProducto = e;}
-    public void setFechaValoraciion(Date fecha) {this.fechaValoracion = fecha;}
+    public void setFechaValoracion(Date fecha) {this.fechaValoracion = fecha != null ? new Date(fecha.getTime()) : null;}
 
-
-    //GETTERS//
     public boolean getDisponibilidad() {return this.disponibilidad;}
     public ClienteRegistrado getPropietario() {return this.propietario;}
     public int getValoracionEmpleado() {return this.valoracionEmpleado;}
@@ -51,9 +47,7 @@ public class ProductoSegundaMano extends Producto {
     public boolean getEstaValorado() {return this.estaValorado;}
     public EstadoConservacion getEstadoConservacion() {return this.estadoConservacion;}
     public EstadoProducto getEstadoProducto() {return this.estadoProducto;}
-    public Date getFechaValoracion() {return this.fechaValoracion;}
-
-
+    public Date getFechaValoracion() {return this.fechaValoracion != null ? new Date(this.fechaValoracion.getTime()) : null;}
 
     public void pedirValoracion() {
         this.estadoProducto = EstadoProducto.PENDIENTE_DE_VALORAR;
@@ -70,7 +64,4 @@ public class ProductoSegundaMano extends Producto {
         this.disponibilidad = false;
     }
 
-
-
-   
-} 
+}

@@ -17,8 +17,13 @@ public class DescuentoCantidadGastadaTest {
 
         assertEquals(fechaInicio, descuento.getFechaInicio());
         assertEquals(fechaFin, descuento.getFechaFin());
-        
         assertEquals(cantidadMinima, descuento.getCantidadMinima(), 0.001);
         assertEquals(porcentaje, descuento.getPorcentaje(), 0.001);
+    }
+    
+    @Test
+    public void testAplicarDescuento() {
+        DescuentoCantidadGastada descuento = new DescuentoCantidadGastada(new Date(), new Date(), 100.0, 0.15);
+        assertEquals(170.0, descuento.aplicarDescuento(200.0), 0.001);
     }
 }

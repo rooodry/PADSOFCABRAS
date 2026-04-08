@@ -3,7 +3,6 @@ package estadisticas;
 import java.io.*;
 import java.util.*;
 
-
 import compras.*;
 import excepciones.ExcepcionUsuariosAdmin;
 import productos.ProductoSegundaMano;
@@ -11,7 +10,6 @@ import productos.ProductoTienda;
 import usuarios.*;
 import utilidades.EstadoPedido;
 import intercambios.*;
-
 
 public class Estadistica {
     
@@ -21,7 +19,9 @@ public class Estadistica {
         this.fichero = fichero;
     }
 
-    public String getFichero() {return this.fichero;}
+    public String getFichero() {
+        return this.fichero;
+    }
 
     public void estadisticaPedidos(List<Pedido> pedidos) {
         
@@ -31,7 +31,6 @@ public class Estadistica {
 
             bw.write("DNI USUARIO | PRODUCTOS | PRECIO | FECHA PAGO | FECHA PREPARACION | FECHA RECOGIDA");
             bw.newLine();
-
 
             for (Pedido p : pedidos) {
 
@@ -46,13 +45,12 @@ public class Estadistica {
                 buffProductos = "";
             }
 
-
         } catch (IOException e) {
             System.err.println("Error al escribir: " + e.getMessage());
         }
     }
 
-    public void estadisticaRecaudacionMes(Usuario admin, List<Pedido> pedidos, List<ProductoSegundaMano> productos) throws ExcepcionUsuariosAdmin{
+    public void estadisticaRecaudacionMes(Usuario admin, List<Pedido> pedidos, List<ProductoSegundaMano> productos) throws ExcepcionUsuariosAdmin {
         if(!(admin instanceof Gestor)) {
             throw new ExcepcionUsuariosAdmin(admin.getNombre());
         }
@@ -62,45 +60,43 @@ public class Estadistica {
         Calendar cal = Calendar.getInstance();
         String[] meses = {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"};
     
-
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.fichero))) {
 
             for(Pedido p : pedidos) {
                 if(p.getEstadoPedido() == EstadoPedido.ENTREGADO) {
-                    cal.setTime(p.getFechaPago());
-                    mesNumero = cal.get(Calendar.MONTH);
-
-                    cantidadMes[mesNumero] += p.calcularPrecioTotal();
+                    if (p.getFechaPago() != null) {
+                        cal.setTime(p.getFechaPago());
+                        mesNumero = cal.get(Calendar.MONTH);
+                        cantidadMes[mesNumero] += p.calcularPrecioTotal();
                     }
+                }
             }
             
             for(ProductoSegundaMano p : productos) {
-                cal.setTime(p.getFechaValoracion());
-                mesNumero = cal.get(Calendar.MONTH);
-                cantidadMes[mesNumero] += p.getValoracionEmpleado();
+                if (p.getFechaValoracion() != null) {
+                    cal.setTime(p.getFechaValoracion());
+                    mesNumero = cal.get(Calendar.MONTH);
+                    cantidadMes[mesNumero] += p.getValoracionEmpleado();
+                }
             }
             
-
             for(int i = 0; i < 12; i++) {
-                bw.write(meses[i] + cantidadMes[i]);
+                bw.write(meses[i] + ": " + cantidadMes[i]);
                 bw.newLine();
             }
 
         } catch (IOException e) {
             System.err.println("Error al escribir: " + e.getMessage());
         }
-
     }
 
-    public void estadisticaRecaudacionTipo(Usuario admin, List<Pedido> pedidos, List<ProductoSegundaMano> productos) throws ExcepcionUsuariosAdmin{
-        
+    public void estadisticaRecaudacionTipo(Usuario admin, List<Pedido> pedidos, List<ProductoSegundaMano> productos) throws ExcepcionUsuariosAdmin {
         
         if(!(admin instanceof Gestor)) {
             throw new ExcepcionUsuariosAdmin(admin.getNombre());
         }
 
         double recaudacionVentas = 0, recaudacionValoraciones = 0;
-
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.fichero))) {
 
@@ -119,12 +115,12 @@ public class Estadistica {
             bw.newLine();
             bw.write("RECAUDACIÓN POR VALORACIONES: ");
             bw.write(String.valueOf(recaudacionValoraciones));
+            bw.newLine();
 
         } catch (IOException e) {
             System.err.println("Error al escribir: " + e.getMessage());
         }
     }
-
 
     public void estadisticasUsuariosMayorActividadCompras(List<ClienteRegistrado> clientes) {
 
@@ -147,7 +143,6 @@ public class Estadistica {
 
         }
 
-
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.fichero))) {
 
             bw.write("CLIENTES Y NÚMERO DE COMPRAS (MAYOR A MENOR)");
@@ -157,6 +152,7 @@ public class Estadistica {
             
             for(ClienteRegistrado c : listaOrdenada) {
                 bw.write(c.getPedidos().size() + " | " + c.getDNI());
+                bw.newLine();
             }
 
         } catch (IOException e) {
@@ -187,7 +183,6 @@ public class Estadistica {
 
         }
 
-
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.fichero))) {
 
             bw.write("CLIENTES Y NÚMERO DE INTERCAMBIOS (MAYOR A MENOR)");
@@ -208,7 +203,6 @@ public class Estadistica {
                     }
 
                 }
-
 
                 bw.write(c.getDNI() + " | " + c.getIntercambios().size() + " | " + contIntercambiosHechos + " | " + contIntercambiosPendientes);
                 bw.newLine();
@@ -234,6 +228,7 @@ public class Estadistica {
                     Integer valoracion = entry.getValue();
                     
                     bw.write(producto.getNombre() + " | " + p.getCliente().getNombre() + " | " + valoracion);
+                    bw.newLine();
                 }
             }
         } catch (IOException e) {
@@ -262,7 +257,4 @@ public class Estadistica {
             System.err.println("Error al escribir: " + e.getMessage());
         }
     }
-    
-
-
 }

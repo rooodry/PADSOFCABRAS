@@ -18,4 +18,10 @@ public class DescuentoPorcentajeTest {
         assertEquals(fechaFin, descuento.getFechaFin());
         assertEquals(porcentaje, descuento.getPorcentaje(), 0.001);
     }
+    
+    @Test
+    public void testAplicarDescuento() {
+        DescuentoPorcentaje descuento = new DescuentoPorcentaje(new Date(), new Date(), 0.20);
+        assertEquals(80.0, descuento.aplicarDescuento(100.0), 0.001);
+    }
 }
