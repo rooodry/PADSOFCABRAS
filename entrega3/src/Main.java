@@ -37,7 +37,7 @@ public class Main {
     private Main() {}
 
     public static void main(String[] args) {
-        System.out.println("\n PRUEBAS DEL SISTEMA PADSOFCABRAS \n");
+        System.out.println("\n=== PRUEBAS DEL SISTEMA PADSOFCABRAS ===\n");
 
         inicializarDatos();
 
@@ -49,7 +49,7 @@ public class Main {
         probarDescuentos();
         probarEstadisticas();
 
-        System.out.println("\n FIN DE PRUEBAS \n");
+        System.out.println("\n=== FIN DE PRUEBAS ===");
     }
 
     private static void inicializarDatos() {
