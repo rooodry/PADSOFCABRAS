@@ -17,43 +17,6 @@ public class ProductoTienda extends Producto {
             super(nombre, descripcion, imagen);
         }
 
-        public ProductoTienda(String archivo) {
-            super("", "", "");
-            try(BufferedReader br = new BufferedReader(new FileReader(archivo))){
-                String linea;
-                String[] elementos;
-                while ((linea = br.readLine()) != null) {
-                    elementos = linea.split("\\;");
-
-                    this.setId(elementos[1]);
-                    this.setNombre(elementos[2]);
-                    this.setDescripcion(elementos[3]);
-                    this.setPrecio(Double.parseDouble(elementos[4]));
-                    
-
-
-
-                    if(elementos[0] == "C") {
-                        this.setCategoria(new Comic(elementos[2], ));
-                    }   
-                    
-                    this.setDescripcion(linea);
-                    
-
-
-                    
-                    this.setNombre(elementos[0]);
-                    this.setDescripcion(elementos[1]);
-                    this.setImagen(elementos[2]);
-                    this.precio = Double.parseDouble(elementos[3]);
-
-                    
-                }
-            } catch (IOException e) {
-                System.err.println("Error abriendo archivo " + e.getMessage());
-            }
-        }
-
         public boolean isTiene2x1() { return tiene2x1; }
 
         public void setPrecio(double precio) {this.precio = precio;}
