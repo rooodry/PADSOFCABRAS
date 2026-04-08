@@ -9,13 +9,8 @@ public abstract class Cliente extends Usuario{
     }
 
     public void filtrarProducto() {
-        
+
     }
 
-    public void ordenarProducto() {}
-
-    public void login() {}
-
-    public void verProducto(Producto producto) {}
 
 }

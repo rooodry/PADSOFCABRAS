@@ -14,9 +14,12 @@ import productos.categoria.*;
 import java.util.List;
 import java.util.Map;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
@@ -416,15 +419,32 @@ public class Sistema {
                 p.setPrecio(precio);
                 this.stock.añadirProducto(p, unidades);
 
-                // CAMBIO porque en Java se usa .equals() para comparar cadenas, no ==
                 if(tipo.equals("C")) {
-                    Comic c = new Comic(nombre, paginas, autor, editorial, null); // Nota: Asumo que tu constructor de Comic acepta null para Enum, ajústalo si no es así
-                    p.setCategoria(c);  
+                    if(categorias.equals("Aventura")) {
+                        Comic c = new Comic(nombre, paginas, autor, editorial, Genero.AVENTURA, Integer.parseInt(año)); // Nota: Asumo que tu constructor de Comic acepta null para Enum, ajústalo si no es así
+                        p.setCategoria(c); 
+                    } else if (categorias.equals("Romance")) {
+                        Comic c = new Comic(nombre, paginas, autor, editorial, Genero.ROMANCE, Integer.parseInt(año)); // Nota: Asumo que tu constructor de Comic acepta null para Enum, ajústalo si no es así
+                        p.setCategoria(c); 
+                    } else {
+                        Comic c = new Comic(nombre, paginas, autor, editorial, Genero.COMEDIA, Integer.parseInt(año)); // Nota: Asumo que tu constructor de Comic acepta null para Enum, ajústalo si no es así
+                        p.setCategoria(c); 
+                    }
+                     
                 } else if (tipo.equals("J")) {
-                    Juego j = new Juego(nombre, numJugadores, edad, null);
-                    p.setCategoria(j);
+                    if(estilo.equals("Cartas")) {
+                        Juego j = new Juego(nombre, numJugadores, edad, TipoJuego.CARTAS);
+                        p.setCategoria(j);
+                    } else if(estilo.equals("Dados")) {
+                        Juego j = new Juego(nombre, numJugadores, edad, TipoJuego.DADOS);
+                        p.setCategoria(j);
+                    } else {
+                        Juego j = new Juego(nombre, numJugadores, edad, TipoJuego.JUEGO_MESA);
+                        p.setCategoria(j);
+                    } 
+                    
                 } else {
-                    Figura f = new Figura(nombre, 0, 0, marca);
+                    Figura f = new Figura(nombre, Double.parseDouble(dimension), marca, material);
                     p.setCategoria(f);
                 }
             }
@@ -432,4 +452,154 @@ public class Sistema {
             System.err.println("Error abriendo archivo " + e.getMessage());
         }
     }
+
+    public void descargarProductos(String archivo) {
+
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
+            bw.write("TIPO(C/J/F);ID;NOMBRE;DESCRIPCION;PRECIO;UNIDADES;CATEGORIAS;PAGINAS;AUTOR;EDITORIAL;AÑO;JUGADORES;EDAD;ESTILO(Cartas/Dados/Tablero/Miniatura);MARCA;MATERIAL;DIMENSION");
+            bw.newLine();
+
+            for(Producto p : this.productos) {
+                if(p.getCategoria() instanceof Comic) {
+                    bw.write("C;");
+                } else if (p.getCategoria() instanceof Figura) {
+                    bw.write("F;");
+                } else {
+                    bw.write("J;");
+                }
+
+                bw.write(p.getNombre() + ";");
+                bw.write(p.getDescripcion() + ";");
+                if(p instanceof ProductoTienda) {
+                    ProductoTienda pt = (ProductoTienda) p;
+                    bw.write(String.valueOf(pt.getPrecio()) + ";");
+                    bw.write(this.stock.getNumProductos(pt) + ";");
+                }
+
+                if(p.getCategoria() instanceof Comic) {
+                    bw.write(p.getCategoria().toString()  + ";");
+                    Comic c = (Comic) p.getCategoria();
+                    bw.write(c.getNumPaginas() + ";");
+                    bw.write(c.getAutor() + ";");
+                    bw.write(c.getEditorial() + ";");
+                    bw.write(c.getAño());
+                    
+                } else if (p.getCategoria() instanceof Figura) {
+                    bw.write("F;");
+                    Figura f = (Figura) p.getCategoria();
+                    bw.write(f.getMarca() + ";");
+                    bw.write(f.getMaterial()  + ";");
+                    bw.write(f.getAltura() + "cm alto");
+
+                } else {
+                    bw.write("J;");
+                    Juego j = (Juego) p.getCategoria();
+                    bw.write(j.getNumJugadores()  + ";");
+                    bw.write(j.getEdadMinima()  + ";");
+                    bw.write(j.getTipoJuego().toString());
+
+                }
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error abrienddo archivo " + e.getMessage());
+        }
+    }
+
+
+
+    public List<Producto> filtrarPorCategoria(List<Producto> productos, String categoria) {
+        List<Producto> productosFiltrados = new ArrayList<>();
+
+        if(categoria.equals("COMIC")) {
+            for(Producto p : productos) {
+                if(p.getCategoria() instanceof Comic) {
+                    productosFiltrados.add(p);
+                }
+            }
+        } else if (categoria.equals("FIGURA")) {
+            for(Producto p : productos) {
+                if(p.getCategoria() instanceof Figura) {
+                    productosFiltrados.add(p);
+                }
+            }
+        } else if (categoria.equals("JUEGO")) {
+            for(Producto p : productos) {
+                if(p.getCategoria() instanceof Comic) {
+                    productosFiltrados.add(p);
+                }
+            }
+        }
+        
+        return productosFiltrados;
+    }
+
+    public List<Producto> filtrarPorValoracion(List<Producto> productos, int valoracion) {
+        List<Producto> productosFiltrados = new ArrayList<>();
+
+        for(Producto p : productos) {
+            if(p.getValoracion() >= valoracion) {
+                productosFiltrados.add(p);
+            }
+        }
+
+        return productosFiltrados;
+    }
+
+    public List<ProductoTienda> filtrarPorPrecio(List<ProductoTienda> productos, double precio) {
+        List<ProductoTienda> productosFiltrados = new ArrayList<>();
+
+        for(ProductoTienda p : productos) {
+            if(p.getPrecio() >= precio) {
+                productosFiltrados.add(p);
+            }
+        }
+
+        return productosFiltrados;
+    }
+
+
+
+    //VALORACION
+
+
+    //Si flag es true, ascendente, si no, descendiente
+    public List<Producto> ordenarPorOrdenAlfabetico(List<Producto> productos, boolean flag) {
+        if(flag) {
+            productos.sort(Comparator.comparing(Producto::getNombre));
+        } else {
+            productos.sort(Comparator.comparing(Producto::getNombre).reversed());
+        }
+        return productos;
+    }
+
+
+    public List<Producto> ordenarPorFecha(List<Producto> productos, boolean flag) {
+        if(flag) {
+            productos.sort(Comparator.comparing(Producto::getFechaPublicacion));
+        } else {
+            productos.sort(Comparator.comparing(Producto::getFechaPublicacion).reversed());
+        }
+        return productos;
+    }
+
+
+    public List<ProductoTienda> ordenarPorPrecio(List<ProductoTienda> productos, boolean flag) {
+        if(flag) {
+            productos.sort(Comparator.comparing(ProductoTienda:: getPrecio));
+        } else {
+            productos.sort(Comparator.comparing(ProductoTienda::getPrecio).reversed());
+        }
+        return productos;
+    }
+
+    public List<Producto> ordenarPorValoracion(List<Producto> productos, boolean flag) {
+         if(flag) {
+            productos.sort(Comparator.comparing(Producto::getValoracion));
+        } else {
+            productos.sort(Comparator.comparing(Producto::getValoracion).reversed());
+        }
+        return productos;
+    }
+
 }
