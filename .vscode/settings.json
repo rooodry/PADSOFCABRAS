@@ -1,6 +1,0 @@
-{
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "entrega3/lib/TeleChargeAndPaySystem8.jar"
-    ]
-}
