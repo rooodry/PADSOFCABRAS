@@ -12,4 +12,6 @@ public enum TiposEmpleado {
     
     /** Empleado encargado de la preparación y seguimiento de las compras. */
     EMPLEADOS_PEDIDO;
+	
 }
+
