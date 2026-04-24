@@ -31,10 +31,6 @@ public class PanelProductos extends JPanel {
     /** Color del texto sobre fondo oscuro. */
     private static final Color COLOR_CLARO  = new Color(0xE8, 0xD5, 0xB0);
 
-    // ------------------------------------------------------------------ //
-    //  Constructor                                                       //
-    // ------------------------------------------------------------------ //
-
     /**
      * Crea el panel de catálogo con el título y la lista de productos indicados.
      *
@@ -49,10 +45,6 @@ public class PanelProductos extends JPanel {
         add(crearCabecera(titulo), BorderLayout.NORTH);
         add(crearGridProductos(productos), BorderLayout.CENTER);
     }
-
-    // ------------------------------------------------------------------ //
-    //  Cabecera                                                          //
-    // ------------------------------------------------------------------ //
 
     /**
      * Crea la barra superior con el logotipo "GOAT &amp; GET" y el título del

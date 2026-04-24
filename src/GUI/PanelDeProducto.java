@@ -40,11 +40,6 @@ import productos.ProductoTienda;
  * @see ProductoTienda
  */
 public class PanelDeProducto extends JPanel {
-
-    // ------------------------------------------------------------------ //
-    //  Constantes de diseño                                               //
-    // ------------------------------------------------------------------ //
-
     /** Color de fondo principal (beige arena). */
     private static final Color COLOR_FONDO       = new Color(0xC4, 0xA8, 0x82);
 
@@ -72,10 +67,6 @@ public class PanelDeProducto extends JPanel {
     /** Número de estrellas máximo. */
     private static final int MAX_ESTRELLAS = 5;
 
-    // ------------------------------------------------------------------ //
-    //  Atributos                                                         //
-    // ------------------------------------------------------------------ //
-
     /** Producto cuya información se muestra en este panel. */
     private final ProductoTienda producto;
 
@@ -84,10 +75,6 @@ public class PanelDeProducto extends JPanel {
      * el botón "Añadir a la cesta".
      */
     private final List<ActionListener> listenersCesta = new ArrayList<>();
-
-    // ------------------------------------------------------------------ //
-    //  Constructor                                                       //
-    // ------------------------------------------------------------------ //
 
     /**
      * Crea el panel de detalle de producto.
@@ -103,10 +90,6 @@ public class PanelDeProducto extends JPanel {
         construirUI();
     }
 
-    // ------------------------------------------------------------------ //
-    //  API pública                                                       //
-    // ------------------------------------------------------------------ //
-
     /**
      * Registra un {@link ActionListener} que recibirá el evento cuando el
      * usuario pulse "Añadir a la cesta".
@@ -116,10 +99,6 @@ public class PanelDeProducto extends JPanel {
     public void addListenerCesta(ActionListener listener) {
         listenersCesta.add(listener);
     }
-
-    // ------------------------------------------------------------------ //
-    //  Construcción de la UI                                             //
-    // ------------------------------------------------------------------ //
 
     /**
      * Ensambla todos los subpaneles y los añade al layout principal.
@@ -133,10 +112,6 @@ public class PanelDeProducto extends JPanel {
         add(crearCabecera(),  BorderLayout.NORTH);
         add(crearCuerpo(),    BorderLayout.CENTER);
     }
-
-    // ------------------------------------------------------------------ //
-    //  Cabecera                                                          //
-    // ------------------------------------------------------------------ //
 
     /**
      * Crea la barra superior con el logotipo "GOAT &amp; GET",
@@ -185,10 +160,6 @@ public class PanelDeProducto extends JPanel {
         return btn;
     }
 
-    // ------------------------------------------------------------------ //
-    //  Cuerpo principal                                                  //
-    // ------------------------------------------------------------------ //
-
     /**
      * Crea el cuerpo dividido en panel izquierdo (imagen + datos de compra)
      * y panel derecho (descripción + comentarios).
@@ -202,10 +173,6 @@ public class PanelDeProducto extends JPanel {
         cuerpo.add(crearPanelDerecho(),   BorderLayout.CENTER);
         return cuerpo;
     }
-
-    // ------------------------------------------------------------------ //
-    //  Panel izquierdo                                                   //
-    // ------------------------------------------------------------------ //
 
     /**
      * Construye el panel izquierdo con la imagen del producto, su nombre,
@@ -360,10 +327,6 @@ public class PanelDeProducto extends JPanel {
 
         return btn;
     }
-
-    // ------------------------------------------------------------------ //
-    //  Panel derecho                                                      //
-    // ------------------------------------------------------------------ //
 
     /**
      * Crea el panel derecho con la descripción del producto y los comentarios,
