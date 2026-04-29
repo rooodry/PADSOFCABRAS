@@ -26,14 +26,12 @@ public class LoginClientePanel extends JPanel {
         gbc.insets = new Insets(5, 0, 5, 0); 
         gbc.gridx = 0;
 
-        // Título: Log in:
         gbc.gridy = 0;
         JLabel titleLabel = new JLabel("Log in:", SwingConstants.CENTER);
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
         titleLabel.setForeground(Color.WHITE);
         formContainer.add(titleLabel, gbc);
 
-        // Identificación
         gbc.gridy = 1;
         JLabel idLabel = new JLabel("Identificación");
         idLabel.setForeground(Color.WHITE);
@@ -46,7 +44,6 @@ public class LoginClientePanel extends JPanel {
         idField.setPreferredSize(new Dimension(250, 30));
         formContainer.add(idField, gbc);
 
-        // Contraseña
         gbc.gridy = 3;
         JLabel passLabel = new JLabel("Contraseña");
         passLabel.setForeground(Color.WHITE);
@@ -59,7 +56,7 @@ public class LoginClientePanel extends JPanel {
         passField.setPreferredSize(new Dimension(250, 30));
         formContainer.add(passField, gbc);
 
-        // NUEVO: Botón "Continuar" (Hacer Login)
+        // BOTÓN: Continuar (Hacer Login con validación)
         gbc.gridy = 5;
         gbc.insets = new Insets(15, 0, 5, 0); 
         JButton loginButton = new JButton("Continuar");
@@ -70,9 +67,25 @@ public class LoginClientePanel extends JPanel {
         loginButton.setFocusPainted(false);
         loginButton.setPreferredSize(new Dimension(250, 35));
         
-        // ACCIÓN: Iniciar sesión y entrar a la Home
+        // --- LÓGICA DE VALIDACIÓN DE CONTRASEÑA ---
         loginButton.addActionListener(e -> {
-            mainFrame.cambiarPantalla("PANTALLA_HOME");
+            String usuario = idField.getText().trim();
+            String contrasena = new String(passField.getPassword());
+
+            if (usuario.isEmpty() || contrasena.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor, rellene todos los campos.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+            } else if (!usuario.equals("usuario")) { 
+                // Si el usuario no existe en la "base de datos"
+                JOptionPane.showMessageDialog(this, "Identificación incorrecta. Tienes que registrarte primero.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (!contrasena.equals("1234")) { 
+                // Si el usuario existe pero la contraseña está mal
+                JOptionPane.showMessageDialog(this, "Contraseña incorrecta.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                // Todo correcto, entra a la app
+                idField.setText(""); // Limpiar campos
+                passField.setText("");
+                mainFrame.cambiarPantalla("PANTALLA_HOME");
+            }
         });
         formContainer.add(loginButton, gbc);
 
@@ -95,9 +108,7 @@ public class LoginClientePanel extends JPanel {
         registerButton.setFocusPainted(false);
         registerButton.setPreferredSize(new Dimension(110, 30));
         
-        registerButton.addActionListener(e -> {
-            mainFrame.cambiarPantalla("PANTALLA_REGISTRO");
-        });
+        registerButton.addActionListener(e -> mainFrame.cambiarPantalla("PANTALLA_REGISTRO"));
 
         registerPanel.add(registerText);
         registerPanel.add(registerButton);
@@ -113,8 +124,8 @@ public class LoginClientePanel extends JPanel {
         continueWithoutButton.setFocusPainted(false);
         continueWithoutButton.setPreferredSize(new Dimension(250, 40));
         
-        // ACCIÓN: Entrar como invitado a la Home
         continueWithoutButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "Entrando como invitado...");
             mainFrame.cambiarPantalla("PANTALLA_HOME");
         });
         formContainer.add(continueWithoutButton, gbc);
@@ -138,14 +149,14 @@ public class LoginClientePanel extends JPanel {
         JRadioButton empleadoRadio = new JRadioButton("Empleado");
         empleadoRadio.setForeground(Color.WHITE);
         empleadoRadio.setOpaque(false);
+        // --- ACCIÓN AÑADIDA PARA EMPLEADO ---
+        empleadoRadio.addActionListener(e -> mainFrame.cambiarPantalla("PANTALLA_EMPLEADO"));
         
         JRadioButton gestorRadio = new JRadioButton("Gestor");
         gestorRadio.setForeground(Color.WHITE);
         gestorRadio.setOpaque(false);
-        
-        gestorRadio.addActionListener(e -> {
-            mainFrame.cambiarPantalla("PANTALLA_GESTOR");
-        });
+        // --- ACCIÓN AÑADIDA PARA GESTOR ---
+        gestorRadio.addActionListener(e -> mainFrame.cambiarPantalla("PANTALLA_GESTOR"));
 
         ButtonGroup group = new ButtonGroup();
         group.add(clienteRadio);
