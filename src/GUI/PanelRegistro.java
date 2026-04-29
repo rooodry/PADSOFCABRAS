@@ -3,7 +3,7 @@ package GUI;
 import javax.swing.*;
 import java.awt.*;
 
-public class LoginPanel extends JPanel {
+public class PanelRegistro extends JPanel {
     private JTextField txtIdentificacion;
     private JPasswordField txtContrasena;
     private JComboBox<String> cbRol;
@@ -11,7 +11,7 @@ public class LoginPanel extends JPanel {
     private JButton btnCrearCuenta;
     private JButton btnContinuarSinRegistro;
 
-    public LoginPanel() {
+    public PanelRegistro() {
         // Usamos GridBagLayout para centrar y alinear como en el PDF
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

@@ -6,7 +6,7 @@ import compras.*;
 import intercambios.*;
 import utilidades.*;
 import notificaciones.Notificacion;
-import es.uam.eps.padsof.telecard.*;
+/*import es.uam.eps.padsof.telecard.*;*/
 
 public class ClienteRegistrado extends Cliente {
     private final String DNI;
@@ -64,7 +64,7 @@ public class ClienteRegistrado extends Cliente {
 
         return Status.OK;
     }
-
+    /* 
     public Status pagarPedido(Pedido pedido, String numeroTarjeta) {
         if(!this.pedidos.contains(pedido)) {
             return Status.ERROR;
@@ -130,6 +130,8 @@ public class ClienteRegistrado extends Cliente {
             return Status.ERROR;
         }
     }
+
+    */
 
     public void leerNotificacion(Notificacion notificacion) {
         if (this.getNotificaciones().contains(notificacion)) {
