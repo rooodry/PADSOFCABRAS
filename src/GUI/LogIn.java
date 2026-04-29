@@ -38,9 +38,6 @@ public class LogIn {
         ventana.setVisible(true);
     }
 
-    // ==========================================================
-    // MÉTODO PARA CREAR LA PANTALLA DE LOGIN
-    // ==========================================================
     private JPanel crearPantallaLogin() {
         JPanel panelPrincipal = new JPanel(new BorderLayout());
         panelPrincipal.setBackground(Color.WHITE);
