@@ -20,6 +20,9 @@ public class Main extends JFrame {
         panelContenedor.add(new LoginClientePanel(this), "PANTALLA_CLIENTE");
         panelContenedor.add(new LoginGestorPanel(this), "PANTALLA_GESTOR");
         panelContenedor.add(new RegistroPanel(this), "PANTALLA_REGISTRO");
+        // Añadimos todas las pantallas a la "baraja"
+        panelContenedor.add(new LoginEmpleadoPanel(this), "PANTALLA_EMPLEADO");
+        panelContenedor.add(new HomePanel(this), "PANTALLA_HOME");
         
         // Añadimos la nueva pantalla HOME
         panelContenedor.add(new HomePanel(this), "PANTALLA_HOME");

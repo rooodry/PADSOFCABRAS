@@ -94,6 +94,7 @@ public class TarjetaSegundaMano extends JPanel {
             add(Box.createVerticalStrut(6));
             add(crearBoton(etiquetaBoton(producto.getEstadoProducto()), listener));
         }
+
     }
 
     // ------------------------------------------------------------------ //
