@@ -34,6 +34,10 @@ public class TarjetaProducto extends JPanel {
     /** Número máximo de estrellas. */
     private static final int MAX_ESTRELLAS = 5;
 
+    // ------------------------------------------------------------------ //
+    //  Constructor                                                       //
+    // ------------------------------------------------------------------ //
+
     /**
      * Crea la tarjeta visual para el producto indicado.
      *
@@ -56,6 +60,10 @@ public class TarjetaProducto extends JPanel {
         add(Box.createVerticalStrut(4));
         add(crearPrecio(producto.getPrecio()));
     }
+
+    // ------------------------------------------------------------------ //
+    //  Componentes internos                                              //
+    // ------------------------------------------------------------------ //
 
     /**
      * Crea la imagen de la tarjeta (100 × 120 px). Si la ruta es inválida
