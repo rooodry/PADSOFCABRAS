@@ -8,7 +8,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/6"/>
-	<classpathentry kind="lib" path="/home/beagll/Descargas/mockito-core-5.23.0.jar"/>
-	<classpathentry kind="lib" path="/home/beagll/Descargas/TeleChargeAndPaySystem8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
