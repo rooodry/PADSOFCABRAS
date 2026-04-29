@@ -1,27 +1,24 @@
 package GUI;
 
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
 
 public class LoginClientePanel extends JPanel {
 
-    private Main mainFrame; // Variable para guardar la ventana principal
+    private Main mainFrame;
 
-    // El constructor ahora recibe 'Main mainFrame' para poder cambiar de pantallas
     public LoginClientePanel(Main mainFrame) {
         this.mainFrame = mainFrame; 
         
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // Cabecera común (asegúrate de tener el archivo GoatGetHeader.java)
         add(new GoatGetHeader(), BorderLayout.NORTH);
 
-        // Contenedor del formulario marrón
         JPanel formContainer = new JPanel();
         formContainer.setLayout(new GridBagLayout());
-        formContainer.setBackground(new Color(139, 115, 85)); // Marrón
+        formContainer.setBackground(new Color(139, 115, 85));
         formContainer.setBorder(new EmptyBorder(30, 40, 30, 40)); 
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -36,37 +33,52 @@ public class LoginClientePanel extends JPanel {
         titleLabel.setForeground(Color.WHITE);
         formContainer.add(titleLabel, gbc);
 
-        // Etiqueta Identificación
+        // Identificación
         gbc.gridy = 1;
         JLabel idLabel = new JLabel("Identificación");
         idLabel.setForeground(Color.WHITE);
         idLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
         formContainer.add(idLabel, gbc);
 
-        // Campo de Identificación
         gbc.gridy = 2;
         JTextField idField = new JTextField();
         idField.setBorder(null);
         idField.setPreferredSize(new Dimension(250, 30));
         formContainer.add(idField, gbc);
 
-        // Etiqueta Contraseña
+        // Contraseña
         gbc.gridy = 3;
         JLabel passLabel = new JLabel("Contraseña");
         passLabel.setForeground(Color.WHITE);
         passLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
         formContainer.add(passLabel, gbc);
 
-        // Campo de Contraseña
         gbc.gridy = 4;
         JPasswordField passField = new JPasswordField();
         passField.setBorder(null);
         passField.setPreferredSize(new Dimension(250, 30));
         formContainer.add(passField, gbc);
 
-        // Panel de Registro
+        // NUEVO: Botón "Continuar" (Hacer Login)
         gbc.gridy = 5;
         gbc.insets = new Insets(15, 0, 5, 0); 
+        JButton loginButton = new JButton("Continuar");
+        loginButton.setBackground(new Color(75, 70, 65));
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFont(new Font("SansSerif", Font.BOLD, 14));
+        loginButton.setBorderPainted(false);
+        loginButton.setFocusPainted(false);
+        loginButton.setPreferredSize(new Dimension(250, 35));
+        
+        // ACCIÓN: Iniciar sesión y entrar a la Home
+        loginButton.addActionListener(e -> {
+            mainFrame.cambiarPantalla("PANTALLA_HOME");
+        });
+        formContainer.add(loginButton, gbc);
+
+        // Panel de Registro
+        gbc.gridy = 6;
+        gbc.insets = new Insets(10, 0, 5, 0); 
         JPanel registerPanel = new JPanel();
         registerPanel.setOpaque(false);
         registerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
@@ -76,14 +88,13 @@ public class LoginClientePanel extends JPanel {
         registerText.setFont(new Font("SansSerif", Font.PLAIN, 12));
 
         JButton registerButton = new JButton("Crear cuenta");
-        registerButton.setBackground(new Color(75, 70, 65)); // Gris oscuro
+        registerButton.setBackground(new Color(75, 70, 65));
         registerButton.setForeground(Color.WHITE);
         registerButton.setFont(new Font("SansSerif", Font.BOLD, 12));
         registerButton.setBorderPainted(false);
         registerButton.setFocusPainted(false);
         registerButton.setPreferredSize(new Dimension(110, 30));
         
-        // --- ACCIÓN: Botón Crear cuenta ---
         registerButton.addActionListener(e -> {
             mainFrame.cambiarPantalla("PANTALLA_REGISTRO");
         });
@@ -93,29 +104,28 @@ public class LoginClientePanel extends JPanel {
         formContainer.add(registerPanel, gbc);
 
         // Botón Continuar sin registrarse
-        gbc.gridy = 6;
+        gbc.gridy = 7;
         JButton continueWithoutButton = new JButton("Continuar sin registrarse");
-        continueWithoutButton.setBackground(new Color(75, 70, 65)); // Gris oscuro
+        continueWithoutButton.setBackground(new Color(75, 70, 65));
         continueWithoutButton.setForeground(Color.WHITE);
         continueWithoutButton.setFont(new Font("SansSerif", Font.BOLD, 14));
         continueWithoutButton.setBorderPainted(false);
         continueWithoutButton.setFocusPainted(false);
         continueWithoutButton.setPreferredSize(new Dimension(250, 40));
         
-        // --- ACCIÓN: Botón Continuar sin registrarse ---
+        // ACCIÓN: Entrar como invitado a la Home
         continueWithoutButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "¡Has entrado a la app como cliente invitado!");
+            mainFrame.cambiarPantalla("PANTALLA_HOME");
         });
-        
         formContainer.add(continueWithoutButton, gbc);
 
         // Espaciador
-        gbc.gridy = 7;
-        gbc.insets = new Insets(20, 0, 5, 0); 
+        gbc.gridy = 8;
+        gbc.insets = new Insets(10, 0, 0, 0); 
         formContainer.add(Box.createVerticalStrut(10), gbc);
 
         // Contenedor de Botones de Radio
-        gbc.gridy = 8;
+        gbc.gridy = 9;
         JPanel radioPanel = new JPanel();
         radioPanel.setOpaque(false);
         radioPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -123,7 +133,7 @@ public class LoginClientePanel extends JPanel {
         JRadioButton clienteRadio = new JRadioButton("Cliente");
         clienteRadio.setForeground(Color.WHITE);
         clienteRadio.setOpaque(false);
-        clienteRadio.setSelected(true); // Seleccionar Cliente por defecto
+        clienteRadio.setSelected(true); 
         
         JRadioButton empleadoRadio = new JRadioButton("Empleado");
         empleadoRadio.setForeground(Color.WHITE);
@@ -133,12 +143,10 @@ public class LoginClientePanel extends JPanel {
         gestorRadio.setForeground(Color.WHITE);
         gestorRadio.setOpaque(false);
         
-        // --- ACCIÓN: Botón de Radio "Gestor" ---
         gestorRadio.addActionListener(e -> {
             mainFrame.cambiarPantalla("PANTALLA_GESTOR");
         });
 
-        // Agrupar botones de radio para que solo se pueda seleccionar uno
         ButtonGroup group = new ButtonGroup();
         group.add(clienteRadio);
         group.add(empleadoRadio);

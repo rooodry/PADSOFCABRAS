@@ -1,7 +1,6 @@
 package GUI;
-
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class Main extends JFrame {
     private JPanel panelContenedor;
@@ -10,25 +9,24 @@ public class Main extends JFrame {
     public Main() {
         setTitle("GOAT & GET - App");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(450, 650);
+        // Hacemos la ventana más grande y panorámica para que la Home se vea bien
+        setSize(900, 600); 
         setLocationRelativeTo(null);
 
-        // 1. Inicializamos el CardLayout (la baraja) y el contenedor principal
         cardLayout = new CardLayout();
         panelContenedor = new JPanel(cardLayout);
 
-        // 2. Añadimos todas tus pantallas a la "baraja" y les ponemos una "Etiqueta" secreta
-        // IMPORTANTE: Le pasamos 'this' (esta ventana Main) para que los paneles puedan comunicarse con ella
+        // Añadimos todas las pantallas a la "baraja"
         panelContenedor.add(new LoginClientePanel(this), "PANTALLA_CLIENTE");
         panelContenedor.add(new LoginGestorPanel(this), "PANTALLA_GESTOR");
         panelContenedor.add(new RegistroPanel(this), "PANTALLA_REGISTRO");
-        // Cuando crees la de empleado, la añades así: panelContenedor.add(new LoginEmpleadoPanel(this), "PANTALLA_EMPLEADO");
+        
+        // Añadimos la nueva pantalla HOME
+        panelContenedor.add(new HomePanel(this), "PANTALLA_HOME");
 
-        // Añadimos el contenedor a la ventana
         add(panelContenedor);
     }
 
-    // 3. Este es el método mágico que las pantallas llamarán para cambiar la vista
     public void cambiarPantalla(String nombrePantalla) {
         cardLayout.show(panelContenedor, nombrePantalla);
     }
