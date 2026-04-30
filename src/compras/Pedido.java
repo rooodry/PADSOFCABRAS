@@ -188,7 +188,8 @@ public class Pedido {
                 precioUnitario -= p.getRebajaFija();
             }
             
-            subtotal += cantidad * precioUnitario;
+            int unidadesAPagar = p.isTiene2x1() ? cantidad - (cantidad / 2) : cantidad;
+            subtotal += unidadesAPagar * precioUnitario;
         }
 
         if (descuento != null) {

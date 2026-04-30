@@ -5,9 +5,13 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -17,9 +21,15 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import notificaciones.Notificacion;
+import productos.categoria.Comic;
+import productos.categoria.Figura;
+import productos.categoria.Juego;
 import productos.ProductoTienda;
 
 /**
@@ -34,6 +44,12 @@ public class HomePanel extends JPanel {
 
     private final Main mainFrame;
     private final JPanel gridProductos;
+    private final JPanel panelRecomendados;
+    private final JTextField campoBusqueda;
+    private final JTextField campoPrecioMaximo;
+    private final JComboBox<String> comboCategoria;
+    private final JComboBox<String> comboValoracion;
+    private final JComboBox<String> comboOrden;
 
     /**
      * Crea el panel de catalogo para el controlador indicado.
@@ -43,6 +59,13 @@ public class HomePanel extends JPanel {
     public HomePanel(Main mainFrame) {
         this.mainFrame = mainFrame;
         this.gridProductos = new JPanel();
+        this.panelRecomendados = new JPanel();
+        this.campoBusqueda = new JTextField();
+        this.campoPrecioMaximo = new JTextField();
+        this.comboCategoria = new JComboBox<>(new String[] {"Todas", "Comics", "Juegos", "Figuras"});
+        this.comboValoracion = new JComboBox<>(new String[] {"Cualquiera", "1+", "2+", "3+", "4+", "5"});
+        this.comboOrden = new JComboBox<>(new String[] {
+                "Nombre A-Z", "Nombre Z-A", "Precio menor", "Precio mayor", "Valoracion mayor", "Valoracion menor"});
 
         setLayout(new BorderLayout());
         setBackground(UiStyle.COLOR_FONDO);
@@ -55,7 +78,8 @@ public class HomePanel extends JPanel {
      * Reconstruye la cuadricula con los datos actuales de producto y stock.
      */
     public void refrescar() {
-        List<ProductoTienda> productos = mainFrame.getProductosTienda();
+        List<ProductoTienda> productos = filtrarYOrdenarProductos();
+        actualizarRecomendados();
         gridProductos.removeAll();
         gridProductos.setBackground(UiStyle.COLOR_FONDO);
         gridProductos.setBorder(new EmptyBorder(18, 24, 24, 24));
@@ -94,11 +118,17 @@ public class HomePanel extends JPanel {
         JPanel contenido = new JPanel(new BorderLayout());
         contenido.setBackground(UiStyle.COLOR_FONDO);
 
+        JPanel cabecera = new JPanel(new BorderLayout());
+        cabecera.setBackground(UiStyle.COLOR_FONDO);
+
         JLabel titulo = new JLabel("Catalogo", SwingConstants.CENTER);
         titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
         titulo.setForeground(UiStyle.COLOR_TEXTO);
         titulo.setBorder(new EmptyBorder(14, 0, 6, 0));
-        contenido.add(titulo, BorderLayout.NORTH);
+        cabecera.add(titulo, BorderLayout.NORTH);
+        cabecera.add(crearPanelFiltros(), BorderLayout.CENTER);
+        cabecera.add(panelRecomendados, BorderLayout.SOUTH);
+        contenido.add(cabecera, BorderLayout.NORTH);
 
         JScrollPane scroll = new JScrollPane(gridProductos,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -111,10 +141,190 @@ public class HomePanel extends JPanel {
         return contenido;
     }
 
+    private void actualizarRecomendados() {
+        panelRecomendados.removeAll();
+        panelRecomendados.setBackground(UiStyle.COLOR_FONDO);
+        panelRecomendados.setLayout(new BorderLayout());
+
+        List<ProductoTienda> recomendados = mainFrame.getProductosRecomendados();
+        if (recomendados.isEmpty()) {
+            panelRecomendados.revalidate();
+            panelRecomendados.repaint();
+            return;
+        }
+
+        JLabel titulo = new JLabel("Recomendados para ti", SwingConstants.CENTER);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 15));
+        titulo.setForeground(UiStyle.COLOR_TEXTO);
+        panelRecomendados.add(titulo, BorderLayout.NORTH);
+
+        JPanel fila = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 4));
+        fila.setBackground(UiStyle.COLOR_FONDO);
+        int maximo = Math.min(4, recomendados.size());
+        for (int i = 0; i < maximo; i++) {
+            ProductoTienda producto = recomendados.get(i);
+            JButton boton = new UiStyle.RoundedButton(producto.getNombre(), UiStyle.COLOR_CABECERA,
+                    UiStyle.COLOR_MARRON_MEDIO, 16);
+            boton.setPreferredSize(new Dimension(190, 30));
+            boton.setToolTipText("Abrir recomendacion");
+            boton.addActionListener(e -> abrirDetalle(producto));
+            fila.add(boton);
+        }
+        panelRecomendados.add(fila, BorderLayout.CENTER);
+        panelRecomendados.revalidate();
+        panelRecomendados.repaint();
+    }
+
+    private JPanel crearPanelFiltros() {
+        JPanel filtros = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 6));
+        filtros.setBackground(UiStyle.COLOR_FONDO);
+        filtros.setBorder(new EmptyBorder(0, 18, 8, 18));
+
+        campoBusqueda.setPreferredSize(new Dimension(220, 30));
+        campoBusqueda.setToolTipText("Buscar por nombre o descripcion");
+        campoPrecioMaximo.setPreferredSize(new Dimension(82, 30));
+        campoPrecioMaximo.setToolTipText("Precio maximo");
+
+        filtros.add(crearEtiquetaFiltro("Buscar"));
+        filtros.add(campoBusqueda);
+        filtros.add(crearEtiquetaFiltro("Tipo"));
+        filtros.add(comboCategoria);
+        filtros.add(crearEtiquetaFiltro("Min."));
+        filtros.add(comboValoracion);
+        filtros.add(crearEtiquetaFiltro("Max. EUR"));
+        filtros.add(campoPrecioMaximo);
+        filtros.add(crearEtiquetaFiltro("Orden"));
+        filtros.add(comboOrden);
+
+        DocumentListener listenerTexto = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                refrescar();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                refrescar();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                refrescar();
+            }
+        };
+        campoBusqueda.getDocument().addDocumentListener(listenerTexto);
+        campoPrecioMaximo.getDocument().addDocumentListener(listenerTexto);
+        comboCategoria.addActionListener(e -> refrescar());
+        comboValoracion.addActionListener(e -> refrescar());
+        comboOrden.addActionListener(e -> refrescar());
+
+        return filtros;
+    }
+
+    private JLabel crearEtiquetaFiltro(String texto) {
+        JLabel etiqueta = new JLabel(texto);
+        etiqueta.setFont(new Font("SansSerif", Font.BOLD, 12));
+        etiqueta.setForeground(UiStyle.COLOR_TEXTO);
+        return etiqueta;
+    }
+
+    private List<ProductoTienda> filtrarYOrdenarProductos() {
+        List<ProductoTienda> productos = new ArrayList<>();
+        String busqueda = normalizar(campoBusqueda.getText());
+        String categoria = (String) comboCategoria.getSelectedItem();
+        int valoracionMinima = extraerValoracionMinima();
+        double precioMaximo = extraerPrecioMaximo();
+
+        for (ProductoTienda producto : mainFrame.getProductosTienda()) {
+            if (!busqueda.isBlank()
+                    && !normalizar(producto.getNombre() + " " + producto.getDescripcion()).contains(busqueda)) {
+                continue;
+            }
+            if (!coincideCategoria(producto, categoria)) {
+                continue;
+            }
+            if (producto.getValoracion() < valoracionMinima) {
+                continue;
+            }
+            if (precioMaximo >= 0 && producto.getPrecio() > precioMaximo) {
+                continue;
+            }
+            productos.add(producto);
+        }
+
+        productos.sort(comparadorSeleccionado());
+        return productos;
+    }
+
+    private boolean coincideCategoria(ProductoTienda producto, String categoria) {
+        if ("Comics".equals(categoria)) {
+            return producto.getCategoria() instanceof Comic;
+        }
+        if ("Juegos".equals(categoria)) {
+            return producto.getCategoria() instanceof Juego;
+        }
+        if ("Figuras".equals(categoria)) {
+            return producto.getCategoria() instanceof Figura;
+        }
+        return true;
+    }
+
+    private int extraerValoracionMinima() {
+        String seleccion = (String) comboValoracion.getSelectedItem();
+        if (seleccion == null || "Cualquiera".equals(seleccion)) {
+            return 0;
+        }
+        return Character.getNumericValue(seleccion.charAt(0));
+    }
+
+    private double extraerPrecioMaximo() {
+        String texto = campoPrecioMaximo.getText().trim().replace(',', '.');
+        if (texto.isBlank()) {
+            return -1;
+        }
+        try {
+            return Double.parseDouble(texto);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    private Comparator<ProductoTienda> comparadorSeleccionado() {
+        String orden = (String) comboOrden.getSelectedItem();
+        if ("Nombre Z-A".equals(orden)) {
+            return Comparator.comparing(ProductoTienda::getNombre, String.CASE_INSENSITIVE_ORDER).reversed();
+        }
+        if ("Precio menor".equals(orden)) {
+            return Comparator.comparingDouble(ProductoTienda::getPrecio);
+        }
+        if ("Precio mayor".equals(orden)) {
+            return Comparator.comparingDouble(ProductoTienda::getPrecio).reversed();
+        }
+        if ("Valoracion mayor".equals(orden)) {
+            return Comparator.comparingInt(ProductoTienda::getValoracion).reversed();
+        }
+        if ("Valoracion menor".equals(orden)) {
+            return Comparator.comparingInt(ProductoTienda::getValoracion);
+        }
+        return Comparator.comparing(ProductoTienda::getNombre, String.CASE_INSENSITIVE_ORDER);
+    }
+
+    private String normalizar(String texto) {
+        if (texto == null) {
+            return "";
+        }
+        String sinAcentos = Normalizer.normalize(texto, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
+        return sinAcentos.toLowerCase().trim();
+    }
+
     private void abrirDetalle(ProductoTienda producto) {
         JDialog dialogo = new JDialog(SwingUtilities.getWindowAncestor(this), producto.getNombre(),
                 java.awt.Dialog.ModalityType.APPLICATION_MODAL);
-        PanelDeProducto detalle = new PanelDeProducto(producto);
+        PanelDeProducto detalle = new PanelDeProducto(producto, mainFrame);
+        if (!mainFrame.isSesionRegistrada()) {
+            detalle.configurarBotonCesta("Inicia sesion para comprar", true);
+        }
         detalle.addListenerCesta(e -> {
             mainFrame.anadirProductoACesta(producto);
             dialogo.dispose();
@@ -195,10 +405,12 @@ public class HomePanel extends JPanel {
             menu.add(crearItemMenu("HOME", "HOME", Main.PANTALLA_HOME, activo, mainFrame));
             menu.add(crearItemMenu("CARTERA", "MIS PRODUCTOS", Main.PANTALLA_MIS_PRODUCTOS, activo, mainFrame));
             menu.add(crearItemMenu("CESTA", "CESTA", Main.PANTALLA_CESTA, activo, mainFrame));
+            menu.add(crearItemMenu("PEDIDOS", "PEDIDOS", Main.PANTALLA_PEDIDOS, activo, mainFrame));
             menu.add(crearItemMenu("INTERCAMBIOS", "INTERCAMBIOS", Main.PANTALLA_INTERCAMBIOS, activo, mainFrame));
             menu.add(crearItemMenu("PACKS", "PACKS", Main.PANTALLA_PACKS, activo, mainFrame));
             menu.addSeparator();
             menu.add(crearItemMenu("PERFIL", "PERFIL", Main.PANTALLA_PERFIL, activo, mainFrame));
+            menu.add(crearItemMenu("GESTION", "GESTION", Main.PANTALLA_GESTION, activo, mainFrame));
 
             menu.show(origen, 0, origen.getHeight() + 6);
         }

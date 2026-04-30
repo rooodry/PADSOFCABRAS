@@ -51,6 +51,9 @@ public class TarjetaProducto extends JPanel {
         add(crearEstrellas(producto.getValoracion()));
         add(Box.createVerticalStrut(6));
         add(crearPrecio(producto.getPrecio()));
+        if (tienePromocion(producto)) {
+            add(crearPromocion(producto));
+        }
     }
 
     @Override
@@ -111,6 +114,22 @@ public class TarjetaProducto extends JPanel {
         JLabel label = new JLabel(String.format("%.2f EUR", precio), SwingConstants.CENTER);
         label.setFont(new Font("SansSerif", Font.BOLD, 18));
         label.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return label;
+    }
+
+    private boolean tienePromocion(ProductoTienda producto) {
+        return producto.getRebajaPorcentaje() > 0 || producto.getRebajaFija() > 0 || producto.isTiene2x1();
+    }
+
+    private JLabel crearPromocion(ProductoTienda producto) {
+        String texto = producto.isTiene2x1() ? "2x1"
+                : producto.getRebajaPorcentaje() > 0
+                ? String.format("-%.0f%%", producto.getRebajaPorcentaje())
+                : String.format("-%.2f EUR", producto.getRebajaFija());
+        JLabel label = new JLabel(texto, SwingConstants.CENTER);
+        label.setFont(new Font("SansSerif", Font.BOLD, 11));
+        label.setForeground(new Color(255, 245, 220));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         return label;
     }

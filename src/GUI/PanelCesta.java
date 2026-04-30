@@ -77,7 +77,7 @@ public class PanelCesta extends JPanel {
             for (Map.Entry<ProductoTienda, Integer> entrada : productos.entrySet()) {
                 ProductoTienda producto = entrada.getKey();
                 int cantidad = entrada.getValue();
-                total += producto.getPrecio() * cantidad;
+                total += precioUnitarioFinal(producto) * unidadesAPagar(producto, cantidad);
                 listaProductos.add(crearFila(producto, cantidad), gbc);
                 gbc.gridy++;
             }
@@ -122,8 +122,9 @@ public class PanelCesta extends JPanel {
         fila.setLayout(new BorderLayout(12, 0));
         fila.setBorder(new EmptyBorder(12, 14, 12, 14));
 
-        JLabel datos = new JLabel(String.format("%s  x%d  -  %.2f EUR",
-                producto.getNombre(), cantidad, producto.getPrecio() * cantidad));
+        JLabel datos = new JLabel(String.format("%s  x%d  -  %.2f EUR%s",
+                producto.getNombre(), cantidad, precioUnitarioFinal(producto) * unidadesAPagar(producto, cantidad),
+                textoPromocion(producto)));
         datos.setFont(new Font("SansSerif", Font.BOLD, 14));
         datos.setForeground(UiStyle.COLOR_TEXTO);
         fila.add(datos, BorderLayout.CENTER);
@@ -136,5 +137,32 @@ public class PanelCesta extends JPanel {
         fila.add(retirar, BorderLayout.EAST);
 
         return fila;
+    }
+
+    private double precioUnitarioFinal(ProductoTienda producto) {
+        double precio = producto.getPrecio();
+        if (producto.getRebajaPorcentaje() > 0) {
+            precio -= precio * (producto.getRebajaPorcentaje() / 100.0);
+        } else if (producto.getRebajaFija() > 0) {
+            precio -= producto.getRebajaFija();
+        }
+        return Math.max(0, precio);
+    }
+
+    private String textoPromocion(ProductoTienda producto) {
+        if (producto.getRebajaPorcentaje() > 0) {
+            return String.format("  (-%.0f%%)", producto.getRebajaPorcentaje());
+        }
+        if (producto.getRebajaFija() > 0) {
+            return String.format("  (-%.2f EUR)", producto.getRebajaFija());
+        }
+        if (producto.isTiene2x1()) {
+            return "  (2x1)";
+        }
+        return "";
+    }
+
+    private int unidadesAPagar(ProductoTienda producto, int cantidad) {
+        return producto.isTiene2x1() ? cantidad - (cantidad / 2) : cantidad;
     }
 }

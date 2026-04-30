@@ -24,8 +24,10 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -50,7 +52,9 @@ public class PanelDeProducto extends JPanel {
     private static final Color COLOR_COMENTARIO = new Color(145, 124, 101);
 
     private final ProductoTienda producto;
+    private final Main mainFrame;
     private final List<ActionListener> listenersCesta = new ArrayList<>();
+    private JButton botonCesta;
 
     /**
      * Creates a detail panel for the given shop product.
@@ -58,10 +62,21 @@ public class PanelDeProducto extends JPanel {
      * @param producto product to show
      */
     public PanelDeProducto(ProductoTienda producto) {
+        this(producto, null);
+    }
+
+    /**
+     * Creates a detail panel connected to the main frame.
+     *
+     * @param producto product to show
+     * @param mainFrame optional main GUI controller
+     */
+    public PanelDeProducto(ProductoTienda producto, Main mainFrame) {
         if (producto == null) {
             throw new IllegalArgumentException("El producto no puede ser null.");
         }
         this.producto = producto;
+        this.mainFrame = mainFrame;
         construirUI();
     }
 
@@ -72,6 +87,19 @@ public class PanelDeProducto extends JPanel {
      */
     public void addListenerCesta(ActionListener listener) {
         listenersCesta.add(listener);
+    }
+
+    /**
+     * Changes the add-to-basket button text and enabled state.
+     *
+     * @param texto button text
+     * @param activo true if the button can be pressed
+     */
+    public void configurarBotonCesta(String texto, boolean activo) {
+        if (botonCesta != null) {
+            botonCesta.setText(texto);
+            botonCesta.setEnabled(activo);
+        }
     }
 
     private void construirUI() {
@@ -171,6 +199,7 @@ public class PanelDeProducto extends JPanel {
         boton.setAlignmentX(Component.CENTER_ALIGNMENT);
         boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         boton.addActionListener(e -> listenersCesta.forEach(listener -> listener.actionPerformed(e)));
+        botonCesta = boton;
         return boton;
     }
 
@@ -234,11 +263,60 @@ public class PanelDeProducto extends JPanel {
             }
         }
 
+        if (mainFrame != null && mainFrame.isSesionRegistrada()
+                && mainFrame.clienteHaCompradoProducto(producto)) {
+            panel.add(Box.createVerticalStrut(8));
+            panel.add(crearFormularioResena());
+        }
+
         JScrollPane scroll = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(null);
         scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
         return scroll;
+    }
+
+    private JPanel crearFormularioResena() {
+        JPanel formulario = new UiStyle.RoundedPanel(new Color(231, 219, 203), 12);
+        formulario.setLayout(new BorderLayout(6, 6));
+        formulario.setBorder(new EmptyBorder(8, 8, 8, 8));
+        formulario.setAlignmentX(Component.LEFT_ALIGNMENT);
+        formulario.setMaximumSize(new Dimension(Integer.MAX_VALUE, 114));
+
+        JPanel superior = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        superior.setOpaque(false);
+        JLabel label = new JLabel("Tu valoracion");
+        label.setFont(new Font("SansSerif", Font.BOLD, 12));
+        label.setForeground(UiStyle.COLOR_TEXTO);
+        JComboBox<Integer> valoracion = new JComboBox<>(new Integer[] {1, 2, 3, 4, 5});
+        valoracion.setSelectedItem(5);
+        superior.add(label);
+        superior.add(valoracion);
+
+        JTextArea texto = new JTextArea();
+        texto.setLineWrap(true);
+        texto.setWrapStyleWord(true);
+        texto.setRows(2);
+        texto.setFont(new Font("SansSerif", Font.PLAIN, 12));
+
+        JButton publicar = new UiStyle.RoundedButton("Publicar resena", UiStyle.COLOR_TEXTO,
+                UiStyle.COLOR_MARRON_MEDIO, 12);
+        publicar.setPreferredSize(new Dimension(136, 30));
+        publicar.addActionListener(e -> {
+            String comentario = texto.getText().trim();
+            if (comentario.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Escribe un comentario para publicarlo.",
+                        "Resena", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            mainFrame.comentarYValorarProducto(producto, (Integer) valoracion.getSelectedItem(), comentario);
+            texto.setText("");
+        });
+
+        formulario.add(superior, BorderLayout.NORTH);
+        formulario.add(texto, BorderLayout.CENTER);
+        formulario.add(publicar, BorderLayout.EAST);
+        return formulario;
     }
 
     private JLabel crearTitulo(String texto) {

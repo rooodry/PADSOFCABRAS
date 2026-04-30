@@ -9,6 +9,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JButton;
+import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -62,8 +63,24 @@ public class LoginClientePanel extends JPanel {
         gbc.gridy = 4;
         formContainer.add(passField, gbc);
 
+        JRadioButton clienteRadio = new JRadioButton("Cliente", true);
+        JRadioButton empleadoRadio = new JRadioButton("Empleado");
+        JRadioButton gestorRadio = new JRadioButton("Gestor");
+        ButtonGroup grupoRoles = new ButtonGroup();
+        grupoRoles.add(clienteRadio);
+        grupoRoles.add(empleadoRadio);
+        grupoRoles.add(gestorRadio);
+
         JButton loginButton = crearBoton("Continuar");
-        loginButton.addActionListener(e -> mainFrame.iniciarSesionCliente(idField.getText()));
+        loginButton.addActionListener(e -> {
+            if (empleadoRadio.isSelected()) {
+                mainFrame.iniciarSesionGestion("Empleado");
+            } else if (gestorRadio.isSelected()) {
+                mainFrame.iniciarSesionGestion("Gestor");
+            } else {
+                mainFrame.iniciarSesionCliente(idField.getText());
+            }
+        });
         gbc.gridy = 5;
         gbc.insets = new Insets(16, 0, 5, 0);
         formContainer.add(loginButton, gbc);
@@ -78,15 +95,12 @@ public class LoginClientePanel extends JPanel {
         formContainer.add(registerPanel, gbc);
 
         JButton invitado = crearBoton("Continuar sin registrarse");
-        invitado.addActionListener(e -> mainFrame.cambiarPantalla(Main.PANTALLA_HOME));
+        invitado.addActionListener(e -> mainFrame.iniciarSesionInvitado());
         gbc.gridy = 7;
         formContainer.add(invitado, gbc);
 
         JPanel radioPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         radioPanel.setOpaque(false);
-        JRadioButton clienteRadio = new JRadioButton("Cliente", true);
-        JRadioButton empleadoRadio = new JRadioButton("Empleado");
-        JRadioButton gestorRadio = new JRadioButton("Gestor");
         clienteRadio.setOpaque(false);
         empleadoRadio.setOpaque(false);
         gestorRadio.setOpaque(false);
