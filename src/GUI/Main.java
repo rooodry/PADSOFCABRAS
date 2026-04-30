@@ -7,7 +7,9 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -471,25 +473,164 @@ public class Main extends JFrame {
     }
 
     private void cargarCatalogoDesdeCsv() {
-        sistema.cargarProductosDesdeCsv("productos.csv");
         productosTienda.clear();
 
-        int indice = 0;
-        for (Producto producto : sistema.getProductos()) {
-            if (producto instanceof ProductoTienda) {
-                ProductoTienda productoTienda = (ProductoTienda) producto;
-                productoTienda.setImagen(crearPortadaParaProducto(productoTienda));
-                productoTienda.setValoracion(3 + (indice % 3));
-                productoTienda.addComentario("juan15",
-                        "Un producto muy interesante para ampliar la coleccion y probar la vista de detalle.");
-                productoTienda.addComentario("laura67",
-                        "La descripcion ayuda bastante a decidir si encaja con lo que buscas.");
-                productoTienda.addComentario("alex",
-                        "Buena relacion entre precio, presentacion y disponibilidad en tienda.");
-                productosTienda.add(productoTienda);
-                indice++;
+        File archivo = new File("productos.csv");
+        if (!archivo.exists()) {
+            archivo = new File("..", "productos.csv");
+        }
+
+        try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            int indice = 0;
+            boolean esCabecera = true;
+
+            while ((linea = lector.readLine()) != null) {
+                if (linea.isBlank()) {
+                    continue;
+                }
+                if (esCabecera) {
+                    esCabecera = false;
+                    continue;
+                }
+
+                ProductoTienda productoTienda = crearProductoDesdeLineaCsv(linea, indice);
+                if (productoTienda != null) {
+                    int unidades = parseIntCsv(campo(linea.split(";", -1), 5), 1);
+                    registrarProductoTienda(productoTienda, unidades);
+                    indice++;
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this,
+                    "No se ha podido cargar productos.csv. Revisa que el archivo este en la raiz del proyecto.",
+                    "Catalogo", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private ProductoTienda crearProductoDesdeLineaCsv(String linea, int indice) {
+        String[] datos = linea.split(";", -1);
+        if (datos.length < 6) {
+            return null;
+        }
+
+        String tipo = campo(datos, 0).toUpperCase();
+        String id = campo(datos, 1);
+        String nombre = campo(datos, 2);
+        String descripcion = campo(datos, 3);
+        double precio = parseDoubleCsv(campo(datos, 4), 0.0);
+
+        if (nombre.isBlank()) {
+            return null;
+        }
+
+        ProductoTienda producto = new ProductoTienda(nombre, descripcion, "");
+        producto.setId(id.isBlank() ? producto.getId() : id);
+        producto.setPrecio(precio);
+        producto.setValoracion(3 + (indice % 3));
+
+        if ("C".equals(tipo)) {
+            producto.setCategoria(new Comic(nombre, parseIntCsv(campo(datos, 7), 120),
+                    campoConDefecto(datos, 8, "Autor desconocido"),
+                    campoConDefecto(datos, 9, "Editorial desconocida"),
+                    resolverGeneroCsv(campo(datos, 6)),
+                    parseIntCsv(campo(datos, 10), 2024)));
+        } else if ("J".equals(tipo)) {
+            producto.setCategoria(new Juego(nombre,
+                    parseIntCsv(campo(datos, 11), 4),
+                    parseIntCsv(campo(datos, 12), 8),
+                    resolverTipoJuegoCsv(campo(datos, 13))));
+        } else if ("F".equals(tipo)) {
+            producto.setCategoria(new Figura(nombre,
+                    parseDoubleCsv(campo(datos, 16), 10.0),
+                    campoConDefecto(datos, 14, "GOAT"),
+                    campoConDefecto(datos, 15, "PVC")));
+        }
+
+        producto.setImagen(crearPortadaParaProducto(producto));
+        producto.addComentario("juan15",
+                "Un producto muy interesante para ampliar la coleccion y revisar con calma en la ficha.");
+        producto.addComentario("laura67",
+                "La descripcion es completa y ayuda bastante a decidir si encaja con lo que buscas.");
+        producto.addComentario("alex",
+                "Buena relacion entre precio, presentacion y disponibilidad en tienda.");
+        return producto;
+    }
+
+    private String campo(String[] datos, int indice) {
+        return indice >= 0 && indice < datos.length && datos[indice] != null ? datos[indice].trim() : "";
+    }
+
+    private String campoConDefecto(String[] datos, int indice, String defecto) {
+        String valor = campo(datos, indice);
+        return valor.isBlank() ? defecto : valor;
+    }
+
+    private int parseIntCsv(String valor, int defecto) {
+        if (valor == null || valor.isBlank()) {
+            return defecto;
+        }
+
+        StringBuilder digitos = new StringBuilder();
+        boolean leyendoNumero = false;
+        for (int i = 0; i < valor.length(); i++) {
+            char caracter = valor.charAt(i);
+            if (Character.isDigit(caracter)) {
+                digitos.append(caracter);
+                leyendoNumero = true;
+            } else if (leyendoNumero) {
+                break;
             }
         }
+
+        if (digitos.length() == 0) {
+            return defecto;
+        }
+
+        try {
+            return Integer.parseInt(digitos.toString());
+        } catch (NumberFormatException e) {
+            return defecto;
+        }
+    }
+
+    private double parseDoubleCsv(String valor, double defecto) {
+        if (valor == null || valor.isBlank()) {
+            return defecto;
+        }
+
+        String normalizado = valor.replace(',', '.').replaceAll("[^0-9.]", "");
+        if (normalizado.isBlank()) {
+            return defecto;
+        }
+
+        try {
+            return Double.parseDouble(normalizado);
+        } catch (NumberFormatException e) {
+            return defecto;
+        }
+    }
+
+    private Genero resolverGeneroCsv(String categorias) {
+        String normalizado = categorias == null ? "" : categorias.toLowerCase();
+        if (normalizado.contains("romance")) {
+            return Genero.ROMANCE;
+        }
+        if (normalizado.contains("comedia") || normalizado.contains("humor")) {
+            return Genero.COMEDIA;
+        }
+        return Genero.AVENTURA;
+    }
+
+    private TipoJuego resolverTipoJuegoCsv(String estilo) {
+        String normalizado = estilo == null ? "" : estilo.toLowerCase();
+        if (normalizado.contains("carta")) {
+            return TipoJuego.CARTAS;
+        }
+        if (normalizado.contains("dado")) {
+            return TipoJuego.DADOS;
+        }
+        return TipoJuego.JUEGO_MESA;
     }
 
     private void crearPacksDesdeCatalogo() {
