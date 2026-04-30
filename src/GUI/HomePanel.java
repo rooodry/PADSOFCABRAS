@@ -1,24 +1,27 @@
 package GUI;
 
 import java.awt.BorderLayout;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import notificaciones.Notificacion;
 import productos.ProductoTienda;
 
 /**
@@ -136,36 +139,130 @@ public class HomePanel extends JPanel {
             setLayout(new BorderLayout());
             setBackground(UiStyle.COLOR_CABECERA);
             setPreferredSize(new Dimension(0, 76));
-            setBorder(new EmptyBorder(8, 16, 8, 16));
+            setBorder(new EmptyBorder(10, 14, 10, 14));
 
-            JLabel marca = new JLabel("GOAT & GET");
-            marca.setFont(new Font("SansSerif", Font.BOLD, 24));
+            JPanel izquierda = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+            izquierda.setOpaque(false);
+            UiStyle.RoundedButton menu = crearBotonIcono("\u2630", "Abrir menu");
+            menu.addActionListener(e -> mostrarMenu(menu, mainFrame, activo));
+            izquierda.add(menu);
+            add(izquierda, BorderLayout.WEST);
+
+            JLabel marca = new JLabel("GOAT & GET", SwingConstants.CENTER);
+            marca.setFont(new Font("SansSerif", Font.BOLD, 28));
             marca.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-            add(marca, BorderLayout.WEST);
+            add(marca, BorderLayout.CENTER);
 
-            JPanel centro = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 6));
-            centro.setOpaque(false);
-            centro.add(crearBoton(mainFrame, "HOME", Main.PANTALLA_HOME, activo));
-            centro.add(crearBoton(mainFrame, "CESTA", Main.PANTALLA_CESTA, activo));
-            centro.add(crearBoton(mainFrame, "MIS PRODUCTOS", Main.PANTALLA_MIS_PRODUCTOS, activo));
-            centro.add(crearBoton(mainFrame, "PERFIL", Main.PANTALLA_PERFIL, activo));
-            add(centro, BorderLayout.CENTER);
-
-            JLabel usuario = new JLabel(mainFrame.getClienteActual().getNombre());
-            usuario.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-            usuario.setFont(new Font("SansSerif", Font.BOLD, 14));
-            add(usuario, BorderLayout.EAST);
+            JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+            derecha.setOpaque(false);
+            UiStyle.RoundedButton campana = crearBotonIcono("\uD83D\uDD14" + contarNoLeidas(mainFrame),
+                    "Notificaciones");
+            campana.addActionListener(e -> mostrarNotificaciones(campana, mainFrame));
+            UiStyle.RoundedButton perfil = crearBotonIcono("\uD83D\uDC10", "Perfil");
+            perfil.addActionListener(e -> mainFrame.cambiarPantalla(Main.PANTALLA_PERFIL));
+            derecha.add(campana);
+            derecha.add(perfil);
+            add(derecha, BorderLayout.EAST);
         }
 
-        private JButton crearBoton(Main mainFrame, String texto, String pantalla, String activo) {
-            JButton boton = new JButton(texto);
-            boton.setFocusPainted(false);
-            boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            boton.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
-            boton.setBackground(texto.equals(activo) ? UiStyle.COLOR_TEXTO : UiStyle.COLOR_CABECERA);
-            boton.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-            boton.addActionListener(e -> mainFrame.cambiarPantalla(pantalla));
+        private UiStyle.RoundedButton crearBotonIcono(String texto, String tooltip) {
+            UiStyle.RoundedButton boton = new UiStyle.RoundedButton(texto,
+                    UiStyle.COLOR_CABECERA, UiStyle.COLOR_MARRON_MEDIO, 26);
+            boton.setFont(new Font("Dialog", Font.BOLD, 22));
+            boton.setToolTipText(tooltip);
+            boton.setPreferredSize(new Dimension(54, 42));
             return boton;
+        }
+
+        private String contarNoLeidas(Main mainFrame) {
+            int contador = 0;
+            for (Notificacion notificacion : mainFrame.getClienteActual().getNotificaciones()) {
+                if (!notificacion.getLeida() && !notificacion.getBorrada()) {
+                    contador++;
+                }
+            }
+            return contador > 0 ? String.valueOf(contador) : "";
+        }
+
+        private void mostrarMenu(JButton origen, Main mainFrame, String activo) {
+            JPopupMenu menu = new JPopupMenu();
+            menu.setBackground(UiStyle.COLOR_CABECERA);
+            menu.setBorder(new EmptyBorder(8, 8, 8, 8));
+
+            menu.add(crearItemMenu("HOME", "HOME", Main.PANTALLA_HOME, activo, mainFrame));
+            menu.add(crearItemMenu("CARTERA", "MIS PRODUCTOS", Main.PANTALLA_MIS_PRODUCTOS, activo, mainFrame));
+            menu.add(crearItemMenu("CESTA", "CESTA", Main.PANTALLA_CESTA, activo, mainFrame));
+            menu.add(crearItemMensaje("INTERCAMBIOS", "Pantalla de intercambios pendiente de conectar."));
+            menu.add(crearItemMensaje("PACKS", "Pantalla de packs pendiente de conectar."));
+            menu.addSeparator();
+            menu.add(crearItemMenu("PERFIL", "PERFIL", Main.PANTALLA_PERFIL, activo, mainFrame));
+
+            menu.show(origen, 0, origen.getHeight() + 6);
+        }
+
+        private JMenuItem crearItemMenu(String texto, String claveActiva, String pantalla, String activo, Main mainFrame) {
+            JMenuItem item = new JMenuItem(texto);
+            item.setOpaque(true);
+            item.setBackground(claveActiva.equals(activo) ? UiStyle.COLOR_TEXTO : UiStyle.COLOR_CABECERA);
+            item.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+            item.setFont(new Font("SansSerif", Font.BOLD, 14));
+            item.setBorder(new EmptyBorder(8, 16, 8, 46));
+            item.addActionListener(e -> mainFrame.cambiarPantalla(pantalla));
+            return item;
+        }
+
+        private JMenuItem crearItemMensaje(String texto, String mensaje) {
+            JMenuItem item = new JMenuItem(texto);
+            item.setOpaque(true);
+            item.setBackground(UiStyle.COLOR_CABECERA);
+            item.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+            item.setFont(new Font("SansSerif", Font.BOLD, 14));
+            item.setBorder(new EmptyBorder(8, 16, 8, 46));
+            item.addActionListener(e -> JOptionPane.showMessageDialog(this, mensaje));
+            return item;
+        }
+
+        private void mostrarNotificaciones(JButton origen, Main mainFrame) {
+            JPopupMenu popup = new JPopupMenu();
+            popup.setBackground(UiStyle.COLOR_CABECERA);
+            popup.setBorder(new EmptyBorder(8, 8, 8, 8));
+
+            List<Notificacion> visibles = new ArrayList<>();
+            for (Notificacion notificacion : mainFrame.getClienteActual().getNotificaciones()) {
+                if (!notificacion.getBorrada()) {
+                    visibles.add(notificacion);
+                }
+            }
+
+            if (visibles.isEmpty()) {
+                JMenuItem vacio = crearItemMensaje("Sin notificaciones", "No tienes notificaciones nuevas.");
+                popup.add(vacio);
+            } else {
+                for (Notificacion notificacion : visibles) {
+                    String prefijo = notificacion.getLeida() ? "" : "* ";
+                    JMenuItem item = new JMenuItem(prefijo + notificacion.getMensaje());
+                    item.setOpaque(true);
+                    item.setBackground(notificacion.getLeida() ? UiStyle.COLOR_CABECERA : UiStyle.COLOR_TEXTO);
+                    item.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+                    item.setFont(new Font("SansSerif", Font.PLAIN, 13));
+                    item.setBorder(new EmptyBorder(8, 14, 8, 14));
+                    item.addActionListener(e -> {
+                        notificacion.setLeida();
+                        JOptionPane.showMessageDialog(this, notificacion.getMensaje(), "Notificacion",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    });
+                    popup.add(item);
+                }
+            }
+
+            popup.show(origen, -220, origen.getHeight() + 6);
+        }
+
+        @SuppressWarnings("unused")
+        private JPanel crearBotoneraAntigua(Main mainFrame, String activo) {
+            JPanel centro = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 6));
+            centro.setOpaque(false);
+            return centro;
         }
     }
 }

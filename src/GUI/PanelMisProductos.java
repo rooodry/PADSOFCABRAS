@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -157,7 +158,8 @@ public class PanelMisProductos extends JPanel {
         String[] etiquetas = {"Subidos", "Valorados", "Publicados"};
         for (int i = 0; i < etiquetas.length; i++) {
             final int indice = i;
-            JButton boton = new JButton(etiquetas[i]);
+            JButton boton = new UiStyle.RoundedButton(etiquetas[i], UiStyle.COLOR_FONDO,
+                    UiStyle.COLOR_TARJETA, 22);
             boton.setPreferredSize(new Dimension(150, 34));
             boton.setFocusPainted(false);
             boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -176,9 +178,15 @@ public class PanelMisProductos extends JPanel {
     private void actualizarTabs() {
         for (int i = 0; i < botonesTab.length; i++) {
             JButton boton = botonesTab[i];
-            boton.setBackground(i == tabActivo ? UiStyle.COLOR_CABECERA : UiStyle.COLOR_FONDO);
             boton.setForeground(i == tabActivo ? UiStyle.COLOR_TEXTO_CLARO : UiStyle.COLOR_TEXTO);
-            boton.setBorder(BorderFactory.createLineBorder(UiStyle.COLOR_CABECERA));
+            if (boton instanceof UiStyle.RoundedButton) {
+                Color normal = i == tabActivo ? UiStyle.COLOR_CABECERA : UiStyle.COLOR_FONDO;
+                Color hover = i == tabActivo ? UiStyle.COLOR_MARRON_MEDIO : UiStyle.COLOR_TARJETA;
+                ((UiStyle.RoundedButton) boton).setButtonColors(normal, hover);
+            } else {
+                boton.setBackground(i == tabActivo ? UiStyle.COLOR_CABECERA : UiStyle.COLOR_FONDO);
+                boton.setBorder(BorderFactory.createLineBorder(UiStyle.COLOR_CABECERA));
+            }
         }
     }
 

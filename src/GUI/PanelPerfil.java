@@ -2,12 +2,12 @@ package GUI;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -58,11 +58,9 @@ public class PanelPerfil extends JPanel {
         JPanel envoltura = new JPanel(new GridBagLayout());
         envoltura.setBackground(UiStyle.COLOR_FONDO);
 
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(UiStyle.COLOR_TARJETA);
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UiStyle.COLOR_CABECERA),
-                new EmptyBorder(24, 32, 24, 32)));
+        JPanel panel = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 28);
+        panel.setLayout(new GridBagLayout());
+        panel.setBorder(new EmptyBorder(24, 32, 24, 32));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -114,9 +112,9 @@ public class PanelPerfil extends JPanel {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(16, 0, 0, 0);
-        JButton guardar = new JButton("Guardar cambios");
-        guardar.setBackground(UiStyle.COLOR_TEXTO);
-        guardar.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        JButton guardar = new UiStyle.RoundedButton("Guardar cambios", UiStyle.COLOR_TEXTO,
+                UiStyle.COLOR_MARRON_MEDIO, 20);
+        guardar.setPreferredSize(new Dimension(180, 36));
         guardar.setFocusPainted(false);
         guardar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         guardar.addActionListener(e -> mainFrame.cambiarNombreCliente(txtNuevoNombre.getText()));

@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import notificaciones.Notificacion;
 import productos.ProductoSegundaMano;
 import productos.ProductoTienda;
 import productos.Stock;
@@ -20,6 +21,7 @@ import productos.categoria.TipoJuego;
 import sistema.Sistema;
 import usuarios.ClienteRegistrado;
 import utilidades.EstadoConservacion;
+import utilidades.TipoNotificacion;
 
 /**
  * Main Swing window for the registered-customer flow.
@@ -143,6 +145,8 @@ public class Main extends JFrame {
     public void registrarCliente(String nombre, String contrasena, String dni) {
         clienteActual = new ClienteRegistrado(nombre, contrasena, dni);
         sistema.addUsuario(clienteActual);
+        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.NUEVO_DESCUENTO,
+                "Bienvenido a GOAT & GET. Ya puedes revisar el catalogo."));
         if (panelMisProductos != null) {
             panelMisProductos.setCliente(clienteActual);
         }
@@ -187,6 +191,8 @@ public class Main extends JFrame {
      */
     public void finalizarCompra() {
         if (clienteActual.comprar().name().equals("OK")) {
+            clienteActual.addNotificacion(new Notificacion(TipoNotificacion.PAGO_REALIZADO,
+                    "Tu pedido se ha creado correctamente."));
             JOptionPane.showMessageDialog(this, "Pedido creado correctamente.");
             refrescarPantallasConDatos();
             cambiarPantalla(PANTALLA_HOME);
@@ -205,6 +211,8 @@ public class Main extends JFrame {
     public void anadirProductoALaCartera(String nombre, String descripcion, String imagen) {
         ProductoSegundaMano nuevo = new ProductoSegundaMano(nombre, descripcion, imagen, clienteActual);
         clienteActual.subirProducto(nuevo);
+        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.VALORACION_REALIZADA,
+                "Producto subido. Puedes solicitar su valoracion desde cartera."));
         panelMisProductos.refrescar();
     }
 
@@ -297,6 +305,10 @@ public class Main extends JFrame {
         clienteActual = new ClienteRegistrado("cliente", "1234", "00000000T");
         sistema.addUsuario(clienteActual);
         sistema.setStock(stock);
+        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.PEDIDO_LISTO,
+                "Tu ultimo pedido esta listo para recoger."));
+        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.NUEVO_DESCUENTO,
+                "Hay nuevos descuentos disponibles en comics y figuras."));
 
         ProductoSegundaMano valorado = new ProductoSegundaMano("Comic Avengers 1963",
                 "Ejemplar conservado en funda desde la compra.", null, clienteActual);

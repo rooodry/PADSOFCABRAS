@@ -52,9 +52,8 @@ public class PanelSubirProducto extends JPanel {
         JPanel centrado = new JPanel(new GridBagLayout());
         centrado.setBackground(UiStyle.COLOR_FONDO);
 
-        JPanel formulario = new JPanel();
+        JPanel formulario = new UiStyle.RoundedPanel(UiStyle.COLOR_CABECERA, 30);
         formulario.setLayout(new BoxLayout(formulario, BoxLayout.Y_AXIS));
-        formulario.setBackground(UiStyle.COLOR_CABECERA);
         formulario.setBorder(new EmptyBorder(28, 36, 28, 36));
 
         JLabel titulo = new JLabel("Nuevo producto", SwingConstants.CENTER);
@@ -134,9 +133,8 @@ public class PanelSubirProducto extends JPanel {
     }
 
     private JButton crearBoton(String texto) {
-        JButton boton = new JButton(texto);
-        boton.setBackground(UiStyle.COLOR_TEXTO);
-        boton.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        JButton boton = new UiStyle.RoundedButton(texto, UiStyle.COLOR_TEXTO, UiStyle.COLOR_MARRON_MEDIO, 18);
+        boton.setPreferredSize(new Dimension(110, 34));
         boton.setFocusPainted(false);
         boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return boton;

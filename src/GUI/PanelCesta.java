@@ -6,9 +6,9 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Dimension;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -104,11 +104,13 @@ public class PanelCesta extends JPanel {
         lblTotal.setForeground(UiStyle.COLOR_TEXTO);
         resumen.add(lblTotal, BorderLayout.WEST);
 
-        JButton finalizar = new JButton("Finalizar compra");
+        JButton finalizar = new UiStyle.RoundedButton("Finalizar compra", UiStyle.COLOR_TEXTO,
+                UiStyle.COLOR_MARRON_MEDIO, 20);
         finalizar.setBackground(UiStyle.COLOR_TEXTO);
         finalizar.setForeground(UiStyle.COLOR_TEXTO_CLARO);
         finalizar.setFocusPainted(false);
         finalizar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        finalizar.setPreferredSize(new Dimension(170, 38));
         finalizar.addActionListener(e -> mainFrame.finalizarCompra());
         resumen.add(finalizar, BorderLayout.EAST);
 
@@ -116,11 +118,9 @@ public class PanelCesta extends JPanel {
     }
 
     private JPanel crearFila(ProductoTienda producto, int cantidad) {
-        JPanel fila = new JPanel(new BorderLayout(12, 0));
-        fila.setBackground(UiStyle.COLOR_TARJETA);
-        fila.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UiStyle.COLOR_CABECERA),
-                new EmptyBorder(12, 14, 12, 14)));
+        JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 22);
+        fila.setLayout(new BorderLayout(12, 0));
+        fila.setBorder(new EmptyBorder(12, 14, 12, 14));
 
         JLabel datos = new JLabel(String.format("%s  x%d  -  %.2f EUR",
                 producto.getNombre(), cantidad, producto.getPrecio() * cantidad));
@@ -128,8 +128,10 @@ public class PanelCesta extends JPanel {
         datos.setForeground(UiStyle.COLOR_TEXTO);
         fila.add(datos, BorderLayout.CENTER);
 
-        JButton retirar = new JButton("Retirar");
+        JButton retirar = new UiStyle.RoundedButton("Retirar", UiStyle.COLOR_TEXTO,
+                UiStyle.COLOR_MARRON_MEDIO, 18);
         retirar.setFocusPainted(false);
+        retirar.setPreferredSize(new Dimension(92, 32));
         retirar.addActionListener(e -> mainFrame.retirarProductoDeCesta(producto));
         fila.add(retirar, BorderLayout.EAST);
 

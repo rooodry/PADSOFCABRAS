@@ -34,8 +34,8 @@ public class LoginClientePanel extends JPanel {
         setBackground(UiStyle.COLOR_FONDO);
         add(new GoatGetHeader(), BorderLayout.NORTH);
 
-        JPanel formContainer = new JPanel(new GridBagLayout());
-        formContainer.setBackground(UiStyle.COLOR_CABECERA);
+        JPanel formContainer = new UiStyle.RoundedPanel(UiStyle.COLOR_CABECERA, 30);
+        formContainer.setLayout(new GridBagLayout());
         formContainer.setBorder(new EmptyBorder(30, 40, 30, 40));
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -112,9 +112,7 @@ public class LoginClientePanel extends JPanel {
     }
 
     private JButton crearBoton(String texto) {
-        JButton boton = new JButton(texto);
-        boton.setBackground(UiStyle.COLOR_TEXTO);
-        boton.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        JButton boton = new UiStyle.RoundedButton(texto, UiStyle.COLOR_TEXTO, UiStyle.COLOR_MARRON_MEDIO, 18);
         boton.setFocusPainted(false);
         boton.setPreferredSize(new Dimension(250, 34));
         return boton;
