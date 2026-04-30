@@ -75,11 +75,27 @@ public class Main extends JFrame {
         setSize(1100, 760);
         setLocationRelativeTo(null);
 
+<<<<<<< HEAD
         this.sistema = new Sistema();
         this.stock = new Stock();
         this.productosTienda = new ArrayList<>();
         this.cardLayout = new CardLayout();
         this.panelContenedor = new JPanel(cardLayout);
+=======
+        cardLayout = new CardLayout();
+        panelContenedor = new JPanel(cardLayout);
+
+        // Añadimos todas las pantallas a la "baraja"
+        panelContenedor.add(new LoginClientePanel(this), "PANTALLA_CLIENTE");
+        panelContenedor.add(new LoginGestorPanel(this), "PANTALLA_GESTOR");
+        panelContenedor.add(new RegistroPanel(this), "PANTALLA_REGISTRO");
+        // Añadimos todas las pantallas a la "baraja"
+        panelContenedor.add(new LoginEmpleadoPanel(this), "PANTALLA_EMPLEADO");
+        panelContenedor.add(new HomePanel(this), "PANTALLA_HOME");
+        
+        // Añadimos la nueva pantalla HOME
+        panelContenedor.add(new HomePanel(this), "PANTALLA_HOME");
+>>>>>>> 334c8ba93cb956f4c93ad768b9567505ab7036e9
 
         inicializarDatos();
         construirPantallas();
