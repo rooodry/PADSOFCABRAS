@@ -77,41 +77,8 @@ public class PanelDeProducto extends JPanel {
     private void construirUI() {
         setLayout(new BorderLayout());
         setBackground(UiStyle.COLOR_FONDO);
-        setPreferredSize(new Dimension(752, 420));
-        add(crearCabecera(), BorderLayout.NORTH);
+        setPreferredSize(new Dimension(752, 374));
         add(crearCuerpo(), BorderLayout.CENTER);
-    }
-
-    private JPanel crearCabecera() {
-        JPanel cabecera = new JPanel(new BorderLayout());
-        cabecera.setBackground(UiStyle.COLOR_CABECERA);
-        cabecera.setPreferredSize(new Dimension(752, 46));
-        cabecera.setBorder(new EmptyBorder(4, 14, 4, 12));
-
-        JLabel menu = new JLabel("\u2630");
-        menu.setFont(new Font("Dialog", Font.BOLD, 30));
-        menu.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        cabecera.add(menu, BorderLayout.WEST);
-
-        JLabel titulo = new JLabel("GOAT & GET", SwingConstants.CENTER);
-        titulo.setFont(new Font("SansSerif", Font.BOLD, 26));
-        titulo.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        cabecera.add(titulo, BorderLayout.CENTER);
-
-        JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 16, 2));
-        derecha.setOpaque(false);
-        derecha.add(crearIcono("\uD83D\uDD14", 24));
-        derecha.add(crearIcono("\uD83D\uDC10", 26));
-        cabecera.add(derecha, BorderLayout.EAST);
-
-        return cabecera;
-    }
-
-    private JLabel crearIcono(String texto, int size) {
-        JLabel label = new JLabel(texto);
-        label.setFont(new Font("Dialog", Font.PLAIN, size));
-        label.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        return label;
     }
 
     private JPanel crearCuerpo() {

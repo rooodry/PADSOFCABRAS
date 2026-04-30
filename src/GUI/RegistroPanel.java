@@ -32,7 +32,7 @@ public class RegistroPanel extends JPanel {
     public RegistroPanel(Main mainFrame) {
         setLayout(new BorderLayout());
         setBackground(UiStyle.COLOR_FONDO);
-        add(new GoatGetHeader(), BorderLayout.NORTH);
+        add(new HomePanel.PanelNavegacionCliente(mainFrame, ""), BorderLayout.NORTH);
 
         JPanel formContainer = new UiStyle.RoundedPanel(UiStyle.COLOR_CABECERA, 30);
         formContainer.setLayout(new GridBagLayout());

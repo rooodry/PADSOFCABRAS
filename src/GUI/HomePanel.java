@@ -138,39 +138,44 @@ public class HomePanel extends JPanel {
         PanelNavegacionCliente(Main mainFrame, String activo) {
             setLayout(new BorderLayout());
             setBackground(UiStyle.COLOR_CABECERA);
-            setPreferredSize(new Dimension(0, 76));
-            setBorder(new EmptyBorder(10, 14, 10, 14));
+            setPreferredSize(new Dimension(0, 46));
+            setBorder(new EmptyBorder(3, 14, 3, 12));
 
-            JPanel izquierda = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+            JPanel izquierda = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
             izquierda.setOpaque(false);
-            UiStyle.RoundedButton menu = crearBotonIcono("\u2630", "Abrir menu");
+            JButton menu = crearBotonIcono("\u2630", "Abrir menu", 32, 48);
             menu.addActionListener(e -> mostrarMenu(menu, mainFrame, activo));
             izquierda.add(menu);
             add(izquierda, BorderLayout.WEST);
 
             JLabel marca = new JLabel("GOAT & GET", SwingConstants.CENTER);
-            marca.setFont(new Font("SansSerif", Font.BOLD, 28));
+            marca.setFont(new Font("SansSerif", Font.BOLD, 26));
             marca.setForeground(UiStyle.COLOR_TEXTO_CLARO);
             add(marca, BorderLayout.CENTER);
 
-            JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+            JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
             derecha.setOpaque(false);
-            UiStyle.RoundedButton campana = crearBotonIcono("\uD83D\uDD14" + contarNoLeidas(mainFrame),
-                    "Notificaciones");
+            JButton campana = crearBotonIcono("\uD83D\uDD14" + contarNoLeidas(mainFrame), "Notificaciones", 25, 42);
             campana.addActionListener(e -> mostrarNotificaciones(campana, mainFrame));
-            UiStyle.RoundedButton perfil = crearBotonIcono("\uD83D\uDC10", "Perfil");
+            JButton perfil = crearBotonIcono("\uD83D\uDC10", "Perfil", 27, 42);
             perfil.addActionListener(e -> mainFrame.cambiarPantalla(Main.PANTALLA_PERFIL));
             derecha.add(campana);
             derecha.add(perfil);
             add(derecha, BorderLayout.EAST);
         }
 
-        private UiStyle.RoundedButton crearBotonIcono(String texto, String tooltip) {
-            UiStyle.RoundedButton boton = new UiStyle.RoundedButton(texto,
-                    UiStyle.COLOR_CABECERA, UiStyle.COLOR_MARRON_MEDIO, 26);
-            boton.setFont(new Font("Dialog", Font.BOLD, 22));
+        private JButton crearBotonIcono(String texto, String tooltip, int fontSize, int ancho) {
+            JButton boton = new JButton(texto);
+            boton.setFont(new Font("Dialog", Font.BOLD, fontSize));
+            boton.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+            boton.setBackground(UiStyle.COLOR_CABECERA);
+            boton.setBorderPainted(false);
+            boton.setContentAreaFilled(false);
+            boton.setFocusPainted(false);
+            boton.setOpaque(false);
             boton.setToolTipText(tooltip);
-            boton.setPreferredSize(new Dimension(54, 42));
+            boton.setPreferredSize(new Dimension(ancho, 40));
+            boton.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
             return boton;
         }
 
