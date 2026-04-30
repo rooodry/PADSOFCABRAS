@@ -5,14 +5,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -156,7 +154,7 @@ public class HomePanel extends JPanel {
             JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
             derecha.setOpaque(false);
             JButton campana = crearBotonIcono("\uD83D\uDD14" + contarNoLeidas(mainFrame), "Notificaciones", 25, 42);
-            campana.addActionListener(e -> mostrarNotificaciones(campana, mainFrame));
+            campana.addActionListener(e -> mainFrame.cambiarPantalla(Main.PANTALLA_NOTIFICACIONES));
             JButton perfil = crearBotonIcono("\uD83D\uDC10", "Perfil", 27, 42);
             perfil.addActionListener(e -> mainFrame.cambiarPantalla(Main.PANTALLA_PERFIL));
             derecha.add(campana);
@@ -214,53 +212,6 @@ public class HomePanel extends JPanel {
             item.setBorder(new EmptyBorder(8, 16, 8, 46));
             item.addActionListener(e -> mainFrame.cambiarPantalla(pantalla));
             return item;
-        }
-
-        private JMenuItem crearItemMensaje(String texto, String mensaje) {
-            JMenuItem item = new JMenuItem(texto);
-            item.setOpaque(true);
-            item.setBackground(UiStyle.COLOR_CABECERA);
-            item.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-            item.setFont(new Font("SansSerif", Font.BOLD, 14));
-            item.setBorder(new EmptyBorder(8, 16, 8, 46));
-            item.addActionListener(e -> JOptionPane.showMessageDialog(this, mensaje));
-            return item;
-        }
-
-        private void mostrarNotificaciones(JButton origen, Main mainFrame) {
-            JPopupMenu popup = new JPopupMenu();
-            popup.setBackground(UiStyle.COLOR_CABECERA);
-            popup.setBorder(new EmptyBorder(8, 8, 8, 8));
-
-            List<Notificacion> visibles = new ArrayList<>();
-            for (Notificacion notificacion : mainFrame.getClienteActual().getNotificaciones()) {
-                if (!notificacion.getBorrada()) {
-                    visibles.add(notificacion);
-                }
-            }
-
-            if (visibles.isEmpty()) {
-                JMenuItem vacio = crearItemMensaje("Sin notificaciones", "No tienes notificaciones nuevas.");
-                popup.add(vacio);
-            } else {
-                for (Notificacion notificacion : visibles) {
-                    String prefijo = notificacion.getLeida() ? "" : "* ";
-                    JMenuItem item = new JMenuItem(prefijo + notificacion.getMensaje());
-                    item.setOpaque(true);
-                    item.setBackground(notificacion.getLeida() ? UiStyle.COLOR_CABECERA : UiStyle.COLOR_TEXTO);
-                    item.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-                    item.setFont(new Font("SansSerif", Font.PLAIN, 13));
-                    item.setBorder(new EmptyBorder(8, 14, 8, 14));
-                    item.addActionListener(e -> {
-                        notificacion.setLeida();
-                        JOptionPane.showMessageDialog(this, notificacion.getMensaje(), "Notificacion",
-                                JOptionPane.INFORMATION_MESSAGE);
-                    });
-                    popup.add(item);
-                }
-            }
-
-            popup.show(origen, -220, origen.getHeight() + 6);
         }
 
         @SuppressWarnings("unused")

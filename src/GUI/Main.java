@@ -65,6 +65,9 @@ public class Main extends JFrame {
     /** Exchange screen. */
     public static final String PANTALLA_INTERCAMBIOS = "PANTALLA_INTERCAMBIOS";
 
+    /** Notification inbox screen. */
+    public static final String PANTALLA_NOTIFICACIONES = "PANTALLA_NOTIFICACIONES";
+
     private final Sistema sistema;
     private final Stock stock;
     private final List<ProductoTienda> productosTienda;
@@ -80,6 +83,7 @@ public class Main extends JFrame {
     private PanelPerfil panelPerfil;
     private PanelPacks panelPacks;
     private PanelIntercambios panelIntercambios;
+    private PanelNotificaciones panelNotificaciones;
 
     /**
      * Builds the window, seed data and the registered-customer screens.
@@ -280,6 +284,30 @@ public class Main extends JFrame {
     }
 
     /**
+     * Marks a notification as read and refreshes the inbox.
+     *
+     * @param notificacion notification to mark
+     */
+    public void marcarNotificacionLeida(Notificacion notificacion) {
+        if (notificacion != null) {
+            notificacion.setLeida();
+            refrescarPantallasConDatos();
+        }
+    }
+
+    /**
+     * Hides a notification from the active customer's inbox.
+     *
+     * @param notificacion notification to delete
+     */
+    public void borrarNotificacion(Notificacion notificacion) {
+        if (notificacion != null) {
+            notificacion.setBorrada();
+            refrescarPantallasConDatos();
+        }
+    }
+
+    /**
      * Creates a second-hand product and stores it in the customer's wallet.
      *
      * @param nombre product name
@@ -344,6 +372,7 @@ public class Main extends JFrame {
         PanelSubirProducto panelSubir = new PanelSubirProducto(this);
         panelPacks = new PanelPacks(this);
         panelIntercambios = new PanelIntercambios(this);
+        panelNotificaciones = new PanelNotificaciones(this);
 
         panelMisProductos.addListenerSubirProducto(e -> cambiarPantalla(PANTALLA_SUBIR));
         panelMisProductos.addListenerPedirValoracion(e -> {
@@ -366,6 +395,7 @@ public class Main extends JFrame {
         panelContenedor.add(panelPerfil, PANTALLA_PERFIL);
         panelContenedor.add(panelPacks, PANTALLA_PACKS);
         panelContenedor.add(panelIntercambios, PANTALLA_INTERCAMBIOS);
+        panelContenedor.add(panelNotificaciones, PANTALLA_NOTIFICACIONES);
     }
 
     private void refrescarPantallasConDatos() {
@@ -387,6 +417,9 @@ public class Main extends JFrame {
         if (panelIntercambios != null) {
             panelIntercambios.refrescar();
         }
+        if (panelNotificaciones != null) {
+            panelNotificaciones.refrescar();
+        }
     }
 
     private void inicializarDatos() {
@@ -397,6 +430,16 @@ public class Main extends JFrame {
                 "Tu ultimo pedido esta listo para recoger."));
         clienteActual.addNotificacion(new Notificacion(TipoNotificacion.NUEVO_DESCUENTO,
                 "Hay nuevos descuentos disponibles en comics y figuras."));
+        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.PAGO_REALIZADO,
+                "El pedido de EAN-1467 ha sido entregado."));
+        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.NUEVA_OFERTA,
+                "@luciaga16 te ha propuesto un intercambio."));
+        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.OFERTA_ACEPTADA,
+                "@luciaga16 ha aceptado el intercambio."));
+        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.OFERTA_RECHAZADA,
+                "@luciaga16 ha rechazado el intercambio."));
+        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.INTERCAMBIO_REALIZADO,
+                "El intercambio con @luciaga16 se ha realizado."));
 
         ProductoSegundaMano valorado = new ProductoSegundaMano("Comic Avengers 1963",
                 "Ejemplar conservado en funda desde la compra.", null, clienteActual);
