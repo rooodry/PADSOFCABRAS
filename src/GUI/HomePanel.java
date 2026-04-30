@@ -1,128 +1,171 @@
 package GUI;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+
+import productos.ProductoTienda;
+
+/**
+ * Pantalla principal del cliente registrado con catalogo de productos de tienda.
+ *
+ * <p>Obtiene siempre los productos desde {@link Main}, por lo que las acciones
+ * de detalle y cesta operan sobre el modelo real de la aplicacion.</p>
+ */
 public class HomePanel extends JPanel {
 
-    private Main mainFrame;
-    private Color colorMarron = new Color(153, 133, 112); // Color principal de la imagen
+    private static final long serialVersionUID = 1L;
 
+    private final Main mainFrame;
+    private final JPanel gridProductos;
+
+    /**
+     * Crea el panel de catalogo para el controlador indicado.
+     *
+     * @param mainFrame ventana principal de la aplicacion
+     */
     public HomePanel(Main mainFrame) {
         this.mainFrame = mainFrame;
+        this.gridProductos = new JPanel();
+
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
-
-        // 1. CABECERA (Top Bar)
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setBackground(colorMarron);
-        headerPanel.setPreferredSize(new Dimension(0, 50));
-        headerPanel.setBorder(new EmptyBorder(5, 15, 5, 15));
-
-        JLabel menuIcon = new JLabel("☰"); // Icono hamburguesa
-        menuIcon.setFont(new Font("SansSerif", Font.BOLD, 30));
-        menuIcon.setForeground(Color.WHITE);
-        
-        JLabel titleLabel = new JLabel("GOAT & GET", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
-        titleLabel.setForeground(Color.WHITE);
-
-        JLabel iconsRight = new JLabel("🔔 🐐"); // Iconos derecha
-        iconsRight.setFont(new Font("SansSerif", Font.PLAIN, 24));
-        iconsRight.setForeground(Color.WHITE);
-
-        headerPanel.add(menuIcon, BorderLayout.WEST);
-        headerPanel.add(titleLabel, BorderLayout.CENTER);
-        headerPanel.add(iconsRight, BorderLayout.EAST);
-
-        add(headerPanel, BorderLayout.NORTH);
-
-        // 2. MENÚ LATERAL (Sidebar)
-        JPanel sidebarPanel = new JPanel();
-        sidebarPanel.setLayout(new GridLayout(6, 1, 0, 2)); // 6 filas, 1 columna, separación vertical
-        sidebarPanel.setBackground(Color.WHITE);
-        sidebarPanel.setPreferredSize(new Dimension(200, 0));
-
-        String[] menuItems = {"HOME", "CARTERA", "CESTA", "INTERCAMBIOS", "PACKS"};
-        for (String item : menuItems) {
-            JButton menuBtn = new JButton(item);
-            menuBtn.setBackground(colorMarron);
-            menuBtn.setForeground(Color.WHITE);
-            menuBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
-            menuBtn.setFocusPainted(false);
-            menuBtn.setBorder(new LineBorder(Color.WHITE, 1));
-            sidebarPanel.add(menuBtn);
-        }
-        // Espacio vacío al final del menú
-        JPanel emptySidebarSpace = new JPanel();
-        emptySidebarSpace.setBackground(colorMarron);
-        sidebarPanel.add(emptySidebarSpace);
-
-        add(sidebarPanel, BorderLayout.WEST);
-
-        // 3. CONTENIDO CENTRAL (Grid de Cómics)
-        JPanel contentPanel = new JPanel(new BorderLayout());
-        contentPanel.setBackground(Color.WHITE);
-        
-        JLabel homeTitle = new JLabel("HOME", SwingConstants.CENTER);
-        homeTitle.setFont(new Font("SansSerif", Font.BOLD, 18));
-        homeTitle.setForeground(new Color(100, 80, 60));
-        homeTitle.setBorder(new EmptyBorder(10, 0, 10, 0));
-        contentPanel.add(homeTitle, BorderLayout.NORTH);
-
-        // Cuadrícula para los productos
-        JPanel gridPanel = new JPanel(new GridLayout(0, 3, 20, 20)); // 3 columnas, espacio entre ellas
-        gridPanel.setBackground(Color.WHITE);
-        gridPanel.setBorder(new EmptyBorder(10, 20, 20, 20));
-
-        // Añadir productos de ejemplo
-        gridPanel.add(crearTarjetaProducto("Comic Avengers 1963", "19.99€", Color.YELLOW));
-        gridPanel.add(crearTarjetaProducto("Action Comics Deluxe", "35.79€", Color.BLUE));
-        gridPanel.add(crearTarjetaProducto("X-Men", "23.99€", Color.RED));
-        gridPanel.add(crearTarjetaProducto("Super Man Comic", "42.89€", Color.CYAN));
-        gridPanel.add(crearTarjetaProducto("Comic Avengers 1965", "15.99€", Color.ORANGE));
-        gridPanel.add(crearTarjetaProducto("Spiderman", "21.39€", Color.MAGENTA));
-
-        // Añadir Scroll
-        JScrollPane scrollPane = new JScrollPane(gridPanel);
-        scrollPane.setBorder(null);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        contentPanel.add(scrollPane, BorderLayout.CENTER);
-
-        add(contentPanel, BorderLayout.CENTER);
+        setBackground(UiStyle.COLOR_FONDO);
+        add(new PanelNavegacionCliente(mainFrame, "HOME"), BorderLayout.NORTH);
+        add(crearContenido(), BorderLayout.CENTER);
+        refrescar();
     }
 
-    // Método auxiliar para crear cada cuadradito de cómic
-    private JPanel crearTarjetaProducto(String titulo, String precio, Color colorPortada) {
-        JPanel card = new JPanel();
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBackground(colorMarron);
-        card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    /**
+     * Reconstruye la cuadricula con los datos actuales de producto y stock.
+     */
+    public void refrescar() {
+        List<ProductoTienda> productos = mainFrame.getProductosTienda();
+        gridProductos.removeAll();
+        gridProductos.setBackground(UiStyle.COLOR_FONDO);
+        gridProductos.setBorder(new EmptyBorder(18, 24, 24, 24));
 
-        // Simulador de imagen de portada
-        JPanel imagePlaceholder = new JPanel();
-        imagePlaceholder.setBackground(colorPortada);
-        imagePlaceholder.setPreferredSize(new Dimension(120, 160));
-        imagePlaceholder.setMaximumSize(new Dimension(120, 160));
-        imagePlaceholder.setAlignmentX(Component.CENTER_ALIGNMENT);
+        int columnas = 3;
+        int filas = Math.max(1, (int) Math.ceil(productos.size() / (double) columnas));
+        gridProductos.setLayout(new GridLayout(filas, columnas, 18, 18));
 
-        JLabel titleLabel = new JLabel(titulo);
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        for (ProductoTienda producto : productos) {
+            JPanel envoltura = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+            envoltura.setBackground(UiStyle.COLOR_FONDO);
+            TarjetaProducto tarjeta = new TarjetaProducto(producto);
+            tarjeta.setToolTipText("Ver detalle");
+            tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    abrirDetalle(producto);
+                }
+            });
+            envoltura.add(tarjeta);
+            gridProductos.add(envoltura);
+        }
 
-        JLabel priceLabel = new JLabel(precio);
-        priceLabel.setForeground(Color.WHITE);
-        priceLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
-        priceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        int restantes = filas * columnas - productos.size();
+        for (int i = 0; i < restantes; i++) {
+            JPanel vacio = new JPanel();
+            vacio.setBackground(UiStyle.COLOR_FONDO);
+            gridProductos.add(vacio);
+        }
 
-        card.add(imagePlaceholder);
-        card.add(Box.createVerticalStrut(10));
-        card.add(titleLabel);
-        card.add(priceLabel);
+        gridProductos.revalidate();
+        gridProductos.repaint();
+    }
 
-        return card;
+    private JPanel crearContenido() {
+        JPanel contenido = new JPanel(new BorderLayout());
+        contenido.setBackground(UiStyle.COLOR_FONDO);
+
+        JLabel titulo = new JLabel("Catalogo", SwingConstants.CENTER);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
+        titulo.setForeground(UiStyle.COLOR_TEXTO);
+        titulo.setBorder(new EmptyBorder(14, 0, 6, 0));
+        contenido.add(titulo, BorderLayout.NORTH);
+
+        JScrollPane scroll = new JScrollPane(gridProductos,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setBorder(null);
+        scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        contenido.add(scroll, BorderLayout.CENTER);
+
+        return contenido;
+    }
+
+    private void abrirDetalle(ProductoTienda producto) {
+        JDialog dialogo = new JDialog(SwingUtilities.getWindowAncestor(this), producto.getNombre(),
+                java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        PanelDeProducto detalle = new PanelDeProducto(producto);
+        detalle.addListenerCesta(e -> {
+            mainFrame.anadirProductoACesta(producto);
+            dialogo.dispose();
+        });
+
+        dialogo.add(detalle);
+        dialogo.pack();
+        dialogo.setLocationRelativeTo(this);
+        dialogo.setVisible(true);
+    }
+
+    /**
+     * Barra superior de navegacion comun para las pantallas de cliente.
+     */
+    static class PanelNavegacionCliente extends JPanel {
+
+        private static final long serialVersionUID = 1L;
+
+        PanelNavegacionCliente(Main mainFrame, String activo) {
+            setLayout(new BorderLayout());
+            setBackground(UiStyle.COLOR_CABECERA);
+            setPreferredSize(new Dimension(0, 76));
+            setBorder(new EmptyBorder(8, 16, 8, 16));
+
+            JLabel marca = new JLabel("GOAT & GET");
+            marca.setFont(new Font("SansSerif", Font.BOLD, 24));
+            marca.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+            add(marca, BorderLayout.WEST);
+
+            JPanel centro = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 6));
+            centro.setOpaque(false);
+            centro.add(crearBoton(mainFrame, "HOME", Main.PANTALLA_HOME, activo));
+            centro.add(crearBoton(mainFrame, "CESTA", Main.PANTALLA_CESTA, activo));
+            centro.add(crearBoton(mainFrame, "MIS PRODUCTOS", Main.PANTALLA_MIS_PRODUCTOS, activo));
+            centro.add(crearBoton(mainFrame, "PERFIL", Main.PANTALLA_PERFIL, activo));
+            add(centro, BorderLayout.CENTER);
+
+            JLabel usuario = new JLabel(mainFrame.getClienteActual().getNombre());
+            usuario.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+            usuario.setFont(new Font("SansSerif", Font.BOLD, 14));
+            add(usuario, BorderLayout.EAST);
+        }
+
+        private JButton crearBoton(Main mainFrame, String texto, String pantalla, String activo) {
+            JButton boton = new JButton(texto);
+            boton.setFocusPainted(false);
+            boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            boton.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+            boton.setBackground(texto.equals(activo) ? UiStyle.COLOR_TEXTO : UiStyle.COLOR_CABECERA);
+            boton.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+            boton.addActionListener(e -> mainFrame.cambiarPantalla(pantalla));
+            return boton;
+        }
     }
 }
