@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,6 +19,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -30,7 +30,7 @@ import notificaciones.Notificacion;
 import utilidades.TipoNotificacion;
 
 /**
- * Full notification inbox screen.
+ * Pantalla completa de notificaciones del cliente registrado.
  */
 public class PanelNotificaciones extends JPanel {
 
@@ -50,9 +50,9 @@ public class PanelNotificaciones extends JPanel {
     private Filtro filtroActivo = Filtro.TODAS;
 
     /**
-     * Builds the notification screen.
+     * Construye la pantalla de notificaciones.
      *
-     * @param mainFrame main GUI controller
+     * @param mainFrame controlador principal
      */
     public PanelNotificaciones(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -67,7 +67,7 @@ public class PanelNotificaciones extends JPanel {
     }
 
     /**
-     * Refreshes the visible rows.
+     * Reconstruye la lista segun el filtro activo.
      */
     public void refrescar() {
         lista.removeAll();
@@ -80,12 +80,12 @@ public class PanelNotificaciones extends JPanel {
             vacio.setFont(new Font("SansSerif", Font.BOLD, 16));
             vacio.setForeground(UiStyle.COLOR_TEXTO);
             vacio.setAlignmentX(Component.CENTER_ALIGNMENT);
-            lista.add(Box.createVerticalStrut(30));
+            lista.add(Box.createVerticalStrut(34));
             lista.add(vacio);
         } else {
             for (Notificacion notificacion : visibles) {
                 lista.add(crearFila(notificacion));
-                lista.add(Box.createVerticalStrut(1));
+                lista.add(Box.createVerticalStrut(2));
             }
         }
 
@@ -97,7 +97,7 @@ public class PanelNotificaciones extends JPanel {
     private JPanel crearCuerpo() {
         JPanel cuerpo = new JPanel(new BorderLayout());
         cuerpo.setBackground(UiStyle.COLOR_FONDO);
-        cuerpo.setBorder(new EmptyBorder(8, 42, 8, 42));
+        cuerpo.setBorder(new EmptyBorder(8, 42, 8, 24));
 
         cuerpo.add(crearLateral(), BorderLayout.WEST);
 
@@ -106,7 +106,7 @@ public class PanelNotificaciones extends JPanel {
         scroll.setBorder(null);
         scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
         scroll.getVerticalScrollBar().setUnitIncrement(18);
-        scroll.setPreferredSize(new Dimension(560, 0));
+        scroll.setPreferredSize(new Dimension(680, 0));
         cuerpo.add(scroll, BorderLayout.CENTER);
 
         return cuerpo;
@@ -116,8 +116,8 @@ public class PanelNotificaciones extends JPanel {
         JPanel lateral = new JPanel();
         lateral.setLayout(new BoxLayout(lateral, BoxLayout.Y_AXIS));
         lateral.setBackground(UiStyle.COLOR_FONDO);
-        lateral.setPreferredSize(new Dimension(150, 0));
-        lateral.setBorder(new EmptyBorder(38, 0, 0, 30));
+        lateral.setPreferredSize(new Dimension(156, 0));
+        lateral.setBorder(new EmptyBorder(38, 0, 0, 28));
 
         lateral.add(crearAvatarGrande());
         lateral.add(Box.createVerticalStrut(8));
@@ -198,15 +198,16 @@ public class PanelNotificaciones extends JPanel {
     private JPanel crearFila(Notificacion notificacion) {
         JPanel fila = new UiStyle.RoundedPanel(COLOR_FILA, 7);
         fila.setLayout(new GridBagLayout());
-        fila.setBorder(new EmptyBorder(5, 10, 5, 10));
-        fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
-        fila.setMinimumSize(new Dimension(510, 45));
+        fila.setBorder(new EmptyBorder(5, 12, 5, 10));
+        fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 46));
+        fila.setMinimumSize(new Dimension(620, 46));
+        fila.setPreferredSize(new Dimension(620, 46));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridheight = 2;
-        gbc.insets = new Insets(0, 0, 0, 14);
+        gbc.insets = new Insets(0, 0, 0, 12);
         gbc.anchor = GridBagConstraints.CENTER;
         fila.add(crearIconoTipo(notificacion.getTipoNotificacion()), gbc);
 
@@ -214,14 +215,14 @@ public class PanelNotificaciones extends JPanel {
         gbc.gridheight = 1;
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(0, 0, 0, 8);
+        gbc.insets = new Insets(0, 0, 0, 6);
         JLabel titulo = new JLabel(tituloNotificacion(notificacion.getTipoNotificacion()), SwingConstants.CENTER);
         titulo.setForeground(UiStyle.COLOR_TEXTO_CLARO);
         titulo.setFont(new Font("SansSerif", Font.BOLD, 16));
         fila.add(titulo, gbc);
 
         gbc.gridy = 1;
-        JLabel mensaje = new JLabel(notificacion.getMensaje(), SwingConstants.CENTER);
+        JLabel mensaje = new JLabel(acortar(notificacion.getMensaje(), 72), SwingConstants.CENTER);
         mensaje.setForeground(UiStyle.COLOR_TEXTO_CLARO);
         mensaje.setFont(new Font("SansSerif", Font.BOLD, 13));
         fila.add(mensaje, gbc);
@@ -231,7 +232,7 @@ public class PanelNotificaciones extends JPanel {
         gbc.gridheight = 2;
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.insets = new Insets(0, 2, 0, 6);
+        gbc.insets = new Insets(0, 2, 0, 4);
         JButton visto = crearBotonIcono("\u2713", new Color(84, 69, 51));
         visto.setToolTipText("Marcar como vista");
         visto.addActionListener(e -> mainFrame.marcarNotificacionLeida(notificacion));
@@ -311,56 +312,22 @@ public class PanelNotificaciones extends JPanel {
     }
 
     private void mostrarConfirmacionBorrado(Notificacion notificacion) {
-        JPanel overlay = new JPanel(new GridBagLayout());
-        overlay.setOpaque(false);
+        int opcion = JOptionPane.showConfirmDialog(
+                this,
+                "Vas a eliminar una notificacion.\n¿Seguro que quieres borrarla?",
+                "Eliminar notificacion",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
 
-        JPanel caja = new UiStyle.RoundedPanel(COLOR_FILA, 10);
-        caja.setLayout(new BoxLayout(caja, BoxLayout.Y_AXIS));
-        caja.setBorder(new EmptyBorder(32, 28, 18, 28));
-        caja.setPreferredSize(new Dimension(310, 158));
-
-        JLabel titulo = new JLabel("<html><center>VAS A ELIMINAR UNA<br>NOTIFICACION</center></html>",
-                SwingConstants.CENTER);
-        titulo.setFont(new Font("SansSerif", Font.BOLD, 16));
-        titulo.setForeground(Color.BLACK);
-        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JLabel pregunta = new JLabel("¿Seguro que quieres borrarla?", SwingConstants.CENTER);
-        pregunta.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        pregunta.setForeground(Color.BLACK);
-        pregunta.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JPanel botones = new JPanel(new FlowLayout(FlowLayout.CENTER, 28, 0));
-        botones.setOpaque(false);
-        JButton cancelar = new UiStyle.RoundedButton("Cancelar", new Color(202, 82, 65),
-                new Color(184, 71, 56), 14);
-        cancelar.setPreferredSize(new Dimension(112, 28));
-        JButton continuar = new UiStyle.RoundedButton("Continuar", COLOR_BOTON, UiStyle.COLOR_TEXTO, 14);
-        continuar.setPreferredSize(new Dimension(112, 28));
-
-        botones.add(cancelar);
-        botones.add(continuar);
-
-        caja.add(titulo);
-        caja.add(Box.createVerticalStrut(22));
-        caja.add(pregunta);
-        caja.add(Box.createVerticalStrut(10));
-        caja.add(botones);
-        overlay.add(caja);
-
-        javax.swing.JDialog dialogo = new javax.swing.JDialog(mainFrame, true);
-        dialogo.setUndecorated(true);
-        dialogo.setBackground(new Color(0, 0, 0, 0));
-        dialogo.add(overlay);
-        dialogo.setSize(mainFrame.getSize());
-        dialogo.setLocationRelativeTo(mainFrame);
-
-        cancelar.addActionListener(e -> dialogo.dispose());
-        continuar.addActionListener(e -> {
+        if (opcion == JOptionPane.YES_OPTION) {
             mainFrame.borrarNotificacion(notificacion);
-            dialogo.dispose();
-        });
+        }
+    }
 
-        dialogo.setVisible(true);
+    private String acortar(String texto, int maximo) {
+        if (texto == null || texto.length() <= maximo) {
+            return texto;
+        }
+        return texto.substring(0, maximo - 3) + "...";
     }
 }
