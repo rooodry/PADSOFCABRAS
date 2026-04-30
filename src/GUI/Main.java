@@ -22,36 +22,34 @@ import usuarios.ClienteRegistrado;
 import utilidades.EstadoConservacion;
 
 /**
- * Ventana principal de la aplicacion Swing para el flujo de cliente registrado.
+ * Main Swing window for the registered-customer flow.
  *
- * <p>Actua como controlador sencillo de la interfaz: mantiene la sesion del
- * cliente, el sistema, el stock de tienda y las pantallas principales. Los
- * paneles delegan aqui las operaciones que modifican el modelo para que la GUI
- * no trabaje con datos duplicados.</p>
+ * <p>This class works as a small GUI controller. It owns the active customer,
+ * the system, the shop stock and the screens shown in the card layout.</p>
  */
 public class Main extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    /** Pantalla de login de cliente. */
+    /** Customer login screen. */
     public static final String PANTALLA_CLIENTE = "PANTALLA_CLIENTE";
 
-    /** Pantalla de registro. */
+    /** Customer registration screen. */
     public static final String PANTALLA_REGISTRO = "PANTALLA_REGISTRO";
 
-    /** Catalogo de productos de tienda. */
+    /** Shop catalogue screen. */
     public static final String PANTALLA_HOME = "PANTALLA_HOME";
 
-    /** Cesta del cliente. */
+    /** Customer basket screen. */
     public static final String PANTALLA_CESTA = "PANTALLA_CESTA";
 
-    /** Cartera de productos de segunda mano. */
+    /** Second-hand product wallet screen. */
     public static final String PANTALLA_MIS_PRODUCTOS = "PANTALLA_MIS_PRODUCTOS";
 
-    /** Formulario de subida de producto de segunda mano. */
+    /** Second-hand product upload form. */
     public static final String PANTALLA_SUBIR = "PANTALLA_SUBIR";
 
-    /** Perfil y ajustes basicos del cliente. */
+    /** Customer profile screen. */
     public static final String PANTALLA_PERFIL = "PANTALLA_PERFIL";
 
     private final Sistema sistema;
@@ -67,7 +65,7 @@ public class Main extends JFrame {
     private PanelPerfil panelPerfil;
 
     /**
-     * Crea la ventana, los datos iniciales de demostracion y las pantallas.
+     * Builds the window, seed data and the registered-customer screens.
      */
     public Main() {
         setTitle("GOAT & GET");
@@ -75,27 +73,11 @@ public class Main extends JFrame {
         setSize(1100, 760);
         setLocationRelativeTo(null);
 
-<<<<<<< HEAD
         this.sistema = new Sistema();
         this.stock = new Stock();
         this.productosTienda = new ArrayList<>();
         this.cardLayout = new CardLayout();
         this.panelContenedor = new JPanel(cardLayout);
-=======
-        cardLayout = new CardLayout();
-        panelContenedor = new JPanel(cardLayout);
-
-        // Añadimos todas las pantallas a la "baraja"
-        panelContenedor.add(new LoginClientePanel(this), "PANTALLA_CLIENTE");
-        panelContenedor.add(new LoginGestorPanel(this), "PANTALLA_GESTOR");
-        panelContenedor.add(new RegistroPanel(this), "PANTALLA_REGISTRO");
-        // Añadimos todas las pantallas a la "baraja"
-        panelContenedor.add(new LoginEmpleadoPanel(this), "PANTALLA_EMPLEADO");
-        panelContenedor.add(new HomePanel(this), "PANTALLA_HOME");
-        
-        // Añadimos la nueva pantalla HOME
-        panelContenedor.add(new HomePanel(this), "PANTALLA_HOME");
->>>>>>> 334c8ba93cb956f4c93ad768b9567505ab7036e9
 
         inicializarDatos();
         construirPantallas();
@@ -103,9 +85,9 @@ public class Main extends JFrame {
     }
 
     /**
-     * Cambia la pantalla visible del {@link CardLayout}.
+     * Shows one screen from the card layout.
      *
-     * @param nombrePantalla clave de la pantalla que se desea mostrar
+     * @param nombrePantalla card name to show
      */
     public void cambiarPantalla(String nombrePantalla) {
         refrescarPantallasConDatos();
@@ -113,51 +95,50 @@ public class Main extends JFrame {
     }
 
     /**
-     * Devuelve el cliente actualmente autenticado.
+     * Returns the active registered customer.
      *
-     * @return cliente registrado de la sesion
+     * @return active customer
      */
     public ClienteRegistrado getClienteActual() {
         return clienteActual;
     }
 
     /**
-     * Devuelve los productos de tienda mostrados en el catalogo.
+     * Returns a copy of the products shown in the shop catalogue.
      *
-     * @return copia de la lista de productos disponibles
+     * @return shop products
      */
     public List<ProductoTienda> getProductosTienda() {
         return new ArrayList<>(productosTienda);
     }
 
     /**
-     * Devuelve el stock real usado por la aplicacion.
+     * Returns the shared shop stock.
      *
-     * @return stock de tienda
+     * @return shop stock
      */
     public Stock getStock() {
         return stock;
     }
 
     /**
-     * Inicia sesion como cliente registrado.
+     * Starts a customer session.
      *
-     * @param identificacion nombre introducido en el formulario; si esta vacio se
-     *                       mantiene el cliente de prueba
+     * @param identificacion user name entered in the form
      */
     public void iniciarSesionCliente(String identificacion) {
         if (identificacion != null && !identificacion.isBlank()) {
-            clienteActual.editarPerfil(identificacion.trim(), clienteActual.getContraseña());
+            clienteActual.editarPerfil(identificacion.trim(), clienteActual.getContrase\u00f1a());
         }
         cambiarPantalla(PANTALLA_HOME);
     }
 
     /**
-     * Registra un nuevo cliente y lo deja como sesion activa.
+     * Registers a new customer and makes it the active session.
      *
-     * @param nombre      nombre de usuario
-     * @param contrasena  contrasena de acceso
-     * @param dni         documento de identidad
+     * @param nombre user name
+     * @param contrasena password
+     * @param dni identity document
      */
     public void registrarCliente(String nombre, String contrasena, String dni) {
         clienteActual = new ClienteRegistrado(nombre, contrasena, dni);
@@ -170,9 +151,9 @@ public class Main extends JFrame {
     }
 
     /**
-     * Anade un producto de tienda a la cesta del cliente y descuenta stock.
+     * Adds one shop product unit to the customer's basket and reduces stock.
      *
-     * @param producto producto que se desea comprar
+     * @param producto selected shop product
      */
     public void anadirProductoACesta(ProductoTienda producto) {
         if (stock.getNumProductos(producto) <= 0) {
@@ -181,28 +162,28 @@ public class Main extends JFrame {
             return;
         }
 
-        clienteActual.añadirALaCesta(producto, stock);
+        clienteActual.a\u00f1adirALaCesta(producto, stock);
         panelCesta.refrescar();
         homePanel.refrescar();
         JOptionPane.showMessageDialog(this, "Producto anadido a la cesta.");
     }
 
     /**
-     * Retira completamente un producto de la cesta y devuelve sus unidades al stock.
+     * Removes one product line from the basket and restores its units to stock.
      *
-     * @param producto producto que se retira de la cesta
+     * @param producto product to remove
      */
     public void retirarProductoDeCesta(ProductoTienda producto) {
         int cantidad = clienteActual.getCesta().getProductos().getOrDefault(producto, 0);
         if (cantidad > 0) {
             clienteActual.getCesta().eliminarProducto(producto);
-            stock.añadirProducto(producto, cantidad);
+            stock.a\u00f1adirProducto(producto, cantidad);
             refrescarPantallasConDatos();
         }
     }
 
     /**
-     * Formaliza la compra de los productos de la cesta.
+     * Creates an order from the current basket.
      */
     public void finalizarCompra() {
         if (clienteActual.comprar().name().equals("OK")) {
@@ -215,11 +196,11 @@ public class Main extends JFrame {
     }
 
     /**
-     * Crea y guarda un producto de segunda mano en la cartera del cliente.
+     * Creates a second-hand product and stores it in the customer's wallet.
      *
-     * @param nombre      nombre del producto
-     * @param descripcion descripcion introducida por el cliente
-     * @param imagen      ruta de imagen opcional
+     * @param nombre product name
+     * @param descripcion product description
+     * @param imagen optional image path
      */
     public void anadirProductoALaCartera(String nombre, String descripcion, String imagen) {
         ProductoSegundaMano nuevo = new ProductoSegundaMano(nombre, descripcion, imagen, clienteActual);
@@ -228,9 +209,9 @@ public class Main extends JFrame {
     }
 
     /**
-     * Solicita la valoracion de un producto de segunda mano.
+     * Requests valuation for a second-hand product.
      *
-     * @param producto producto del cliente
+     * @param producto product to value
      */
     public void solicitarValoracion(ProductoSegundaMano producto) {
         producto.pedirValoracion();
@@ -239,9 +220,9 @@ public class Main extends JFrame {
     }
 
     /**
-     * Publica un producto ya valorado en el mercado de segunda mano.
+     * Publishes a valued second-hand product.
      *
-     * @param producto producto a publicar
+     * @param producto product to publish
      */
     public void publicarProducto(ProductoSegundaMano producto) {
         producto.subirProducto();
@@ -255,13 +236,13 @@ public class Main extends JFrame {
     }
 
     /**
-     * Actualiza el nombre visible del cliente.
+     * Changes the active customer's visible name.
      *
-     * @param nuevoNombre nuevo nombre de usuario
+     * @param nuevoNombre new user name
      */
     public void cambiarNombreCliente(String nuevoNombre) {
         if (nuevoNombre != null && !nuevoNombre.isBlank()) {
-            clienteActual.editarPerfil(nuevoNombre.trim(), clienteActual.getContraseña());
+            clienteActual.editarPerfil(nuevoNombre.trim(), clienteActual.getContrase\u00f1a());
             refrescarPantallasConDatos();
         }
     }
@@ -320,11 +301,11 @@ public class Main extends JFrame {
         ProductoSegundaMano valorado = new ProductoSegundaMano("Comic Avengers 1963",
                 "Ejemplar conservado en funda desde la compra.", null, clienteActual);
         valorado.setValoracion(4, 18.50, EstadoConservacion.MUY_BUENO);
-        clienteActual.getCartera().añadirProducto(valorado);
+        clienteActual.getCartera().a\u00f1adirProducto(valorado);
 
         ProductoSegundaMano pendiente = new ProductoSegundaMano("Figura coleccionista",
                 "Figura sin caja original, con pequenos signos de uso.", null, clienteActual);
-        clienteActual.getCartera().añadirProducto(pendiente);
+        clienteActual.getCartera().a\u00f1adirProducto(pendiente);
 
         registrarProductoTienda(crearComic("Dragon Ball, Vol. 1",
                 "Aventuras de Goku en el inicio de una de las sagas mas conocidas del manga.",
@@ -349,7 +330,7 @@ public class Main extends JFrame {
     private void registrarProductoTienda(ProductoTienda producto, int unidades) {
         productosTienda.add(producto);
         sistema.addProducto(producto);
-        stock.añadirProducto(producto, unidades);
+        stock.a\u00f1adirProducto(producto, unidades);
     }
 
     private ProductoTienda crearComic(String nombre, String descripcion, double precio, int valoracion, Genero genero) {
@@ -380,9 +361,9 @@ public class Main extends JFrame {
     }
 
     /**
-     * Punto de entrada de la aplicacion grafica.
+     * Application entry point.
      *
-     * @param args argumentos de linea de comandos no utilizados
+     * @param args unused command-line arguments
      */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Main().setVisible(true));
