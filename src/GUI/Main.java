@@ -459,128 +459,8 @@ public class Main extends JFrame {
                 "Figura sin caja original, con pequenos signos de uso.", null, clienteActual);
         clienteActual.getCartera().a\u00f1adirProducto(pendiente);
 
-        ProductoTienda dragonBall = crearComic("Dragon Ball, Vol. 1",
-                "Aventuras de Goku en el inicio de una de las sagas mas conocidas del manga. Esta edicion recupera "
-                        + "los primeros capitulos con una lectura muy dinamica, humor constante y escenas de accion "
-                        + "que muestran como el protagonista descubre un mundo lleno de rivales, maestros y objetos "
-                        + "misteriosos. Es una buena puerta de entrada para nuevos lectores y una pieza reconocible "
-                        + "para coleccionistas que quieran completar una estanteria dedicada al manga clasico.",
-                13.00, 5, Genero.AVENTURA);
-        registrarProductoTienda(dragonBall, 12);
-        ProductoTienda risk = crearJuego("Risk",
-                "Juego de conquista y estrategia para competir por el control global. Cada jugador debe mover sus "
-                        + "ejercitos, decidir cuando atacar y cuando reforzar fronteras, leer las intenciones de sus "
-                        + "rivales y asumir riesgos calculados para dominar continentes completos. Funciona muy bien "
-                        + "en grupos que disfrutan de partidas largas, negociaciones tensas y giros inesperados.",
-                44.80, 4, TipoJuego.JUEGO_MESA);
-        registrarProductoTienda(risk, 8);
-        ProductoTienda funko = crearFigura("Funko Star Wars Pop! Maul",
-                "Figura coleccionable de Darth Maul con sable laser de doble hoja. Su silueta compacta, los tonos "
-                        + "rojos y negros y la pose de combate la convierten en una pieza facil de reconocer incluso "
-                        + "a distancia. Es ideal para vitrinas pequenas, escritorios o colecciones centradas en la era "
-                        + "de la Republica y los villanos mas iconicos de la saga.",
-                13.00, 3);
-        registrarProductoTienda(funko, 20);
-        ProductoTienda monopoly = crearJuego("Monopoly",
-                "Clasico juego de mesa de compra de propiedades y gestion economica. La partida gira alrededor de "
-                        + "comprar calles, negociar con otros jugadores, construir casas y hoteles y mantener liquidez "
-                        + "suficiente para sobrevivir a las rondas mas caras. Es familiar, competitivo y perfecto para "
-                        + "probar estrategias de presion economica con reglas sencillas.",
-                33.50, 4, TipoJuego.JUEGO_MESA);
-        registrarProductoTienda(monopoly, 10);
-        ProductoTienda mazinger = crearFigura("Mazinger Z",
-                "Figura articulada del legendario robot Mazinger Z. Incluye un acabado de aspecto metalico, piezas "
-                        + "bien definidas y una presencia muy llamativa para coleccionistas de anime clasico. Por su "
-                        + "tamano y articulaciones permite varias poses de exposicion sin perder estabilidad.",
-                128.40, 5);
-        registrarProductoTienda(mazinger, 2);
-        ProductoTienda oishinbo = crearComic("Oishinbo: Cocina japonesa",
-                "Manga gastronomico centrado en la cultura culinaria japonesa. Combina pequenos conflictos humanos "
-                        + "con explicaciones sobre ingredientes, tecnicas y rituales de la cocina tradicional. Es una "
-                        + "lectura tranquila, curiosa y muy recomendable para quien quiera descubrir manga costumbrista "
-                        + "con una mirada cultural detallada.",
-                12.00, 4, Genero.COMEDIA);
-        registrarProductoTienda(oishinbo, 5);
-
-        ProductoTienda avengers = crearComic("The Avengers comic 1965-1967",
-                "Kang el Conquistador transporta a los Vengadores al siglo XL para demostrar su poderio militar y "
-                        + "conquistar el reino de la princesa Ravonna. El equipo, formado por el Capitan America, "
-                        + "Hawkeye, Scarlet Witch y Quicksilver, se ve superado por la tecnologia del villano. Mientras "
-                        + "Kang intenta forzar a Ravonna a casarse con el, los heroes deben liderar una rebelion "
-                        + "desesperada contra sus fuerzas armadas. La historia destaca por el conflicto emocional de "
-                        + "Kang, dividido entre su ambicion de conquista y un inesperado amor por la princesa.",
-                15.99, 5, Genero.AVENTURA);
-        registrarProductoTienda(avengers, 18);
-        ProductoTienda catan = crearJuego("Catan",
-                "Juego de colonizacion, comercio y gestion de recursos en el que cada decision cambia el equilibrio "
-                        + "de la isla. Los jugadores construyen caminos, pueblos y ciudades mientras negocian madera, "
-                        + "arcilla, trigo, ovejas y minerales. La posicion inicial, los dados y la diplomacia hacen que "
-                        + "cada partida tenga un ritmo distinto y muchas oportunidades de remontada.",
-                39.95, 5, TipoJuego.JUEGO_MESA);
-        registrarProductoTienda(catan, 14);
-        ProductoTienda dixit = crearJuego("Dixit Odyssey",
-                "Juego narrativo y visual en el que las pistas ambiguas son mas importantes que las respuestas "
-                        + "exactas. Cada carta funciona como una pequena ilustracion onirica que invita a contar "
-                        + "historias, lanzar referencias y leer la mente del grupo. Es accesible, creativo y funciona "
-                        + "especialmente bien con familias o reuniones grandes.",
-                31.90, 4, TipoJuego.CARTAS);
-        registrarProductoTienda(dixit, 11);
-        ProductoTienda berserk = crearComic("Berserk Deluxe Vol. 1",
-                "Edicion de gran formato que presenta el oscuro viaje de Guts, un guerrero marcado por la violencia, "
-                        + "la supervivencia y una voluntad casi inquebrantable. La obra mezcla fantasia medieval, "
-                        + "terror, tragedia y escenas de accion muy intensas. Su dibujo detallado y su tono maduro la "
-                        + "convierten en una pieza destacada para lectores que buscan una historia profunda y exigente.",
-                49.95, 5, Genero.AVENTURA);
-        registrarProductoTienda(berserk, 6);
-        ProductoTienda sailorMoon = crearFigura("Sailor Moon Figuarts",
-                "Figura articulada inspirada en Sailor Moon con accesorios de exposicion y expresiones alternativas. "
-                        + "El acabado busca capturar el aspecto luminoso y elegante del personaje, con colores suaves "
-                        + "y detalles reconocibles del traje. Es una opcion muy vistosa para colecciones de magical "
-                        + "girls, anime noventero o vitrinas tematicas.",
-                59.90, 4);
-        registrarProductoTienda(sailorMoon, 7);
-        ProductoTienda watchmen = crearComic("Watchmen Edicion Integral",
-                "Edicion completa de una de las novelas graficas mas influyentes del comic moderno. La historia "
-                        + "desmonta la figura del superheroe clasico a traves de personajes ambiguos, tensiones "
-                        + "politicas, simbolismo visual y una estructura narrativa muy cuidada. Ideal para leer con "
-                        + "calma y volver sobre detalles que ganan peso en una segunda lectura.",
-                35.50, 5, Genero.AVENTURA);
-        registrarProductoTienda(watchmen, 9);
-        ProductoTienda uno = crearJuego("UNO Edicion Retro",
-                "Juego de cartas rapido y muy reconocible, pensado para partidas cortas con mucho ritmo. Las reglas "
-                        + "son sencillas, pero las cartas especiales generan cambios de direccion, robos inesperados y "
-                        + "momentos de rivalidad inmediata. Esta edicion retro apuesta por un aspecto visual clasico "
-                        + "que encaja bien tanto para jugar como para regalar.",
-                9.95, 4, TipoJuego.CARTAS);
-        registrarProductoTienda(uno, 30);
-        ProductoTienda zelda = crearFigura("Link Breath of the Wild",
-                "Figura de Link con estetica inspirada en Breath of the Wild, pensada para lucir junto a consolas, "
-                        + "libros de arte o colecciones de videojuegos. La pose transmite exploracion y aventura, con "
-                        + "detalles de equipamiento que recuerdan al mundo abierto de Hyrule y a su tono de viaje "
-                        + "silencioso.",
-                42.75, 5);
-        registrarProductoTienda(zelda, 8);
-        ProductoTienda azul = crearJuego("Azul",
-                "Juego abstracto de colocacion de losetas en el que la belleza visual esconde decisiones tacticas "
-                        + "muy precisas. Cada ronda obliga a elegir patrones, bloquear opciones y calcular puntos a "
-                        + "medio plazo. Es facil de explicar, elegante en mesa y suficientemente profundo para jugar "
-                        + "muchas partidas sin que se sienta repetitivo.",
-                36.00, 5, TipoJuego.JUEGO_MESA);
-        registrarProductoTienda(azul, 12);
-        ProductoTienda saga = crearComic("Saga Vol. 1",
-                "Space opera contemporanea sobre una familia que intenta sobrevivir en medio de una guerra enorme. "
-                        + "Combina humor, romance, critica social y mundos extranos con personajes muy expresivos. Es "
-                        + "una lectura agil, emocional y sorprendente, ideal para quienes quieren ciencia ficcion con "
-                        + "voz propia y mucho caracter.",
-                18.95, 4, Genero.ROMANCE);
-        registrarProductoTienda(saga, 15);
-
-        packs.add(new Pack("Pack estrategia", 69.90, listaProductos(risk, monopoly)));
-        packs.add(new Pack("Pack coleccionista", 139.90, listaProductos(funko, mazinger)));
-        packs.add(new Pack("Pack manga inicial", 22.50, listaProductos(dragonBall, oishinbo)));
-        packs.add(new Pack("Pack mesa familiar", 74.90, listaProductos(catan, dixit, uno)));
-        packs.add(new Pack("Pack comics premium", 89.90, listaProductos(berserk, watchmen, saga)));
-        packs.add(new Pack("Pack figuras aventura", 96.90, listaProductos(zelda, sailorMoon)));
+        cargarCatalogoDesdeCsv();
+        crearPacksDesdeCatalogo();
 
         ClienteRegistrado otroCliente = new ClienteRegistrado("laura67", "1234", "11111111H");
         ProductoSegundaMano deseado = new ProductoSegundaMano("Comic X-Men 1992",
@@ -588,6 +468,61 @@ public class Main extends JFrame {
         deseado.setValoracion(4, 21.00, EstadoConservacion.MUY_BUENO);
         Oferta oferta = new Oferta(deseado, pendiente, clienteActual, otroCliente);
         intercambios.add(new Intercambio(new Date(), oferta));
+    }
+
+    private void cargarCatalogoDesdeCsv() {
+        sistema.cargarProductosDesdeCsv("productos.csv");
+        productosTienda.clear();
+
+        int indice = 0;
+        for (Producto producto : sistema.getProductos()) {
+            if (producto instanceof ProductoTienda) {
+                ProductoTienda productoTienda = (ProductoTienda) producto;
+                productoTienda.setImagen(crearPortadaParaProducto(productoTienda));
+                productoTienda.setValoracion(3 + (indice % 3));
+                productoTienda.addComentario("juan15",
+                        "Un producto muy interesante para ampliar la coleccion y probar la vista de detalle.");
+                productoTienda.addComentario("laura67",
+                        "La descripcion ayuda bastante a decidir si encaja con lo que buscas.");
+                productoTienda.addComentario("alex",
+                        "Buena relacion entre precio, presentacion y disponibilidad en tienda.");
+                productosTienda.add(productoTienda);
+                indice++;
+            }
+        }
+    }
+
+    private void crearPacksDesdeCatalogo() {
+        packs.clear();
+        if (productosTienda.size() >= 2) {
+            packs.add(new Pack("Pack seleccion inicial", 24.90,
+                    listaProductos(productosTienda.get(0), productosTienda.get(1))));
+        }
+        if (productosTienda.size() >= 4) {
+            packs.add(new Pack("Pack mesa y vitrina", 59.90,
+                    listaProductos(productosTienda.get(1), productosTienda.get(2), productosTienda.get(3))));
+        }
+        if (productosTienda.size() >= 6) {
+            packs.add(new Pack("Pack coleccion GOAT", 89.90,
+                    listaProductos(productosTienda.get(0), productosTienda.get(4), productosTienda.get(5))));
+        }
+        if (productosTienda.size() >= 9) {
+            packs.add(new Pack("Pack familiar ampliado", 99.90,
+                    listaProductos(productosTienda.get(6), productosTienda.get(7), productosTienda.get(8))));
+        }
+    }
+
+    private String crearPortadaParaProducto(ProductoTienda producto) {
+        if (producto.getCategoria() instanceof Comic) {
+            return crearPortada(producto.getNombre(), new Color(191, 55, 42), new Color(34, 64, 116));
+        }
+        if (producto.getCategoria() instanceof Juego) {
+            return crearPortada(producto.getNombre(), new Color(49, 92, 80), new Color(222, 156, 62));
+        }
+        if (producto.getCategoria() instanceof Figura) {
+            return crearPortada(producto.getNombre(), new Color(112, 88, 140), new Color(44, 42, 54));
+        }
+        return crearPortada(producto.getNombre(), UiStyle.COLOR_CABECERA, UiStyle.COLOR_TEXTO);
     }
 
     private void registrarProductoTienda(ProductoTienda producto, int unidades) {
