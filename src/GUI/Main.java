@@ -2,6 +2,7 @@ package GUI;
 
 import java.awt.CardLayout;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -9,7 +10,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import intercambios.Intercambio;
+import intercambios.Oferta;
 import notificaciones.Notificacion;
+import productos.Pack;
+import productos.Producto;
 import productos.ProductoSegundaMano;
 import productos.ProductoTienda;
 import productos.Stock;
@@ -54,9 +59,17 @@ public class Main extends JFrame {
     /** Customer profile screen. */
     public static final String PANTALLA_PERFIL = "PANTALLA_PERFIL";
 
+    /** Product pack screen. */
+    public static final String PANTALLA_PACKS = "PANTALLA_PACKS";
+
+    /** Exchange screen. */
+    public static final String PANTALLA_INTERCAMBIOS = "PANTALLA_INTERCAMBIOS";
+
     private final Sistema sistema;
     private final Stock stock;
     private final List<ProductoTienda> productosTienda;
+    private final List<Pack> packs;
+    private final List<Intercambio> intercambios;
     private final CardLayout cardLayout;
     private final JPanel panelContenedor;
 
@@ -65,6 +78,8 @@ public class Main extends JFrame {
     private PanelCesta panelCesta;
     private PanelMisProductos panelMisProductos;
     private PanelPerfil panelPerfil;
+    private PanelPacks panelPacks;
+    private PanelIntercambios panelIntercambios;
 
     /**
      * Builds the window, seed data and the registered-customer screens.
@@ -78,6 +93,8 @@ public class Main extends JFrame {
         this.sistema = new Sistema();
         this.stock = new Stock();
         this.productosTienda = new ArrayList<>();
+        this.packs = new ArrayList<>();
+        this.intercambios = new ArrayList<>();
         this.cardLayout = new CardLayout();
         this.panelContenedor = new JPanel(cardLayout);
 
@@ -121,6 +138,24 @@ public class Main extends JFrame {
      */
     public Stock getStock() {
         return stock;
+    }
+
+    /**
+     * Returns the configured packs.
+     *
+     * @return copy of pack list
+     */
+    public List<Pack> getPacks() {
+        return new ArrayList<>(packs);
+    }
+
+    /**
+     * Returns exchange proposals shown in the GUI.
+     *
+     * @return copy of exchange list
+     */
+    public List<Intercambio> getIntercambios() {
+        return new ArrayList<>(intercambios);
     }
 
     /**
@@ -202,6 +237,49 @@ public class Main extends JFrame {
     }
 
     /**
+     * Adds the products contained in a pack to the active basket.
+     *
+     * @param pack selected pack
+     */
+    public void anadirPackACesta(Pack pack) {
+        for (Producto producto : pack.getProductos()) {
+            if (producto instanceof ProductoTienda) {
+                ProductoTienda tienda = (ProductoTienda) producto;
+                if (stock.getNumProductos(tienda) > 0) {
+                    clienteActual.a\u00f1adirALaCesta(tienda, stock);
+                }
+            }
+        }
+        panelCesta.refrescar();
+        homePanel.refrescar();
+        JOptionPane.showMessageDialog(this, "Pack anadido a la cesta.");
+    }
+
+    /**
+     * Accepts an exchange proposal.
+     *
+     * @param intercambio exchange to accept
+     */
+    public void aceptarIntercambio(Intercambio intercambio) {
+        intercambio.aceptarOferta();
+        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.OFERTA_ACEPTADA,
+                "Has aceptado una oferta de intercambio."));
+        cambiarPantalla(PANTALLA_INTERCAMBIOS);
+    }
+
+    /**
+     * Rejects an exchange proposal.
+     *
+     * @param intercambio exchange to reject
+     */
+    public void rechazarIntercambio(Intercambio intercambio) {
+        intercambio.rechazarOferta();
+        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.OFERTA_RECHAZADA,
+                "Has rechazado una oferta de intercambio."));
+        cambiarPantalla(PANTALLA_INTERCAMBIOS);
+    }
+
+    /**
      * Creates a second-hand product and stores it in the customer's wallet.
      *
      * @param nombre product name
@@ -264,6 +342,8 @@ public class Main extends JFrame {
         panelMisProductos = new PanelMisProductos(this, clienteActual);
         panelPerfil = new PanelPerfil(this);
         PanelSubirProducto panelSubir = new PanelSubirProducto(this);
+        panelPacks = new PanelPacks(this);
+        panelIntercambios = new PanelIntercambios(this);
 
         panelMisProductos.addListenerSubirProducto(e -> cambiarPantalla(PANTALLA_SUBIR));
         panelMisProductos.addListenerPedirValoracion(e -> {
@@ -284,6 +364,8 @@ public class Main extends JFrame {
         panelContenedor.add(panelMisProductos, PANTALLA_MIS_PRODUCTOS);
         panelContenedor.add(panelSubir, PANTALLA_SUBIR);
         panelContenedor.add(panelPerfil, PANTALLA_PERFIL);
+        panelContenedor.add(panelPacks, PANTALLA_PACKS);
+        panelContenedor.add(panelIntercambios, PANTALLA_INTERCAMBIOS);
     }
 
     private void refrescarPantallasConDatos() {
@@ -298,6 +380,12 @@ public class Main extends JFrame {
         }
         if (panelPerfil != null) {
             panelPerfil.refrescar();
+        }
+        if (panelPacks != null) {
+            panelPacks.refrescar();
+        }
+        if (panelIntercambios != null) {
+            panelIntercambios.refrescar();
         }
     }
 
@@ -319,30 +407,55 @@ public class Main extends JFrame {
                 "Figura sin caja original, con pequenos signos de uso.", null, clienteActual);
         clienteActual.getCartera().a\u00f1adirProducto(pendiente);
 
-        registrarProductoTienda(crearComic("Dragon Ball, Vol. 1",
+        ProductoTienda dragonBall = crearComic("Dragon Ball, Vol. 1",
                 "Aventuras de Goku en el inicio de una de las sagas mas conocidas del manga.",
-                13.00, 5, Genero.AVENTURA), 12);
-        registrarProductoTienda(crearJuego("Risk",
+                13.00, 5, Genero.AVENTURA);
+        registrarProductoTienda(dragonBall, 12);
+        ProductoTienda risk = crearJuego("Risk",
                 "Juego de conquista y estrategia para competir por el control global.",
-                44.80, 4, TipoJuego.JUEGO_MESA), 8);
-        registrarProductoTienda(crearFigura("Funko Star Wars Pop! Maul",
+                44.80, 4, TipoJuego.JUEGO_MESA);
+        registrarProductoTienda(risk, 8);
+        ProductoTienda funko = crearFigura("Funko Star Wars Pop! Maul",
                 "Figura coleccionable de Darth Maul con sable laser de doble hoja.",
-                13.00, 3), 20);
-        registrarProductoTienda(crearJuego("Monopoly",
+                13.00, 3);
+        registrarProductoTienda(funko, 20);
+        ProductoTienda monopoly = crearJuego("Monopoly",
                 "Clasico juego de mesa de compra de propiedades y gestion economica.",
-                33.50, 4, TipoJuego.JUEGO_MESA), 10);
-        registrarProductoTienda(crearFigura("Mazinger Z",
+                33.50, 4, TipoJuego.JUEGO_MESA);
+        registrarProductoTienda(monopoly, 10);
+        ProductoTienda mazinger = crearFigura("Mazinger Z",
                 "Figura articulada del legendario robot Mazinger Z.",
-                128.40, 5), 2);
-        registrarProductoTienda(crearComic("Oishinbo: Cocina japonesa",
+                128.40, 5);
+        registrarProductoTienda(mazinger, 2);
+        ProductoTienda oishinbo = crearComic("Oishinbo: Cocina japonesa",
                 "Manga gastronomico centrado en la cultura culinaria japonesa.",
-                12.00, 4, Genero.COMEDIA), 5);
+                12.00, 4, Genero.COMEDIA);
+        registrarProductoTienda(oishinbo, 5);
+
+        packs.add(new Pack("Pack estrategia", 69.90, listaProductos(risk, monopoly)));
+        packs.add(new Pack("Pack coleccionista", 139.90, listaProductos(funko, mazinger)));
+        packs.add(new Pack("Pack manga inicial", 22.50, listaProductos(dragonBall, oishinbo)));
+
+        ClienteRegistrado otroCliente = new ClienteRegistrado("laura67", "1234", "11111111H");
+        ProductoSegundaMano deseado = new ProductoSegundaMano("Comic X-Men 1992",
+                "Comic valorado por otro usuario.", null, otroCliente);
+        deseado.setValoracion(4, 21.00, EstadoConservacion.MUY_BUENO);
+        Oferta oferta = new Oferta(deseado, pendiente, clienteActual, otroCliente);
+        intercambios.add(new Intercambio(new Date(), oferta));
     }
 
     private void registrarProductoTienda(ProductoTienda producto, int unidades) {
         productosTienda.add(producto);
         sistema.addProducto(producto);
         stock.a\u00f1adirProducto(producto, unidades);
+    }
+
+    private List<Producto> listaProductos(Producto... productos) {
+        List<Producto> resultado = new ArrayList<>();
+        for (Producto producto : productos) {
+            resultado.add(producto);
+        }
+        return resultado;
     }
 
     private ProductoTienda crearComic(String nombre, String descripcion, double precio, int valoracion, Genero genero) {
