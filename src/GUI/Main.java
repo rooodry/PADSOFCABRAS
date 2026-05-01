@@ -93,6 +93,12 @@ public class Main extends JFrame {
     /** Basic employee/manager management screen. */
     public static final String PANTALLA_GESTION = "PANTALLA_GESTION";
 
+    /** Employee dashboard screen. */
+    public static final String PANTALLA_EMPLEADO = "PANTALLA_EMPLEADO";
+
+    /** Manager dashboard screen. */
+    public static final String PANTALLA_GESTOR = "PANTALLA_GESTOR";
+
     private final Sistema sistema;
     private final Stock stock;
     private final List<ProductoTienda> productosTienda;
@@ -112,8 +118,12 @@ public class Main extends JFrame {
     private PanelNotificaciones panelNotificaciones;
     private PanelPedidos panelPedidos;
     private PanelGestion panelGestion;
+    private PanelEmpleado panelEmpleado;
+    private PanelGestor panelGestor;
     private ClienteNoRegistrado clienteInvitado;
     private boolean sesionRegistrada;
+    private boolean sesionEmpleado;
+    private boolean sesionGestor;
 
     /**
      * Builds the window, seed data and the registered-customer screens.
@@ -152,6 +162,23 @@ public class Main extends JFrame {
             cardLayout.show(panelContenedor, PANTALLA_CLIENTE);
             return;
         }
+
+        if (esPantallaSoloGestion(nombrePantalla) && !(sesionEmpleado || sesionGestor)) {
+            JOptionPane.showMessageDialog(this,
+                    "Solo empleados y gestores pueden acceder a la gestion de stock.",
+                    "Acceso denegado", JOptionPane.WARNING_MESSAGE);
+            cardLayout.show(panelContenedor, PANTALLA_HOME);
+            return;
+        }
+
+        if (PANTALLA_GESTION.equals(nombrePantalla)) {
+            if (sesionGestor) {
+                nombrePantalla = PANTALLA_GESTOR;
+            } else if (sesionEmpleado) {
+                nombrePantalla = PANTALLA_EMPLEADO;
+            }
+        }
+
         refrescarPantallasConDatos();
         cardLayout.show(panelContenedor, nombrePantalla);
     }
@@ -163,6 +190,14 @@ public class Main extends JFrame {
      */
     public boolean isSesionRegistrada() {
         return sesionRegistrada;
+    }
+
+    public boolean isSesionEmpleado() {
+        return sesionEmpleado;
+    }
+
+    public boolean isSesionGestor() {
+        return sesionGestor;
     }
 
     /**
@@ -232,6 +267,8 @@ public class Main extends JFrame {
      */
     public void iniciarSesionCliente(String identificacion) {
         sesionRegistrada = true;
+        sesionEmpleado = false;
+        sesionGestor = false;
         if (identificacion != null && !identificacion.isBlank()) {
             clienteActual.editarPerfil(identificacion.trim(), clienteActual.getContrase\u00f1a());
         }
@@ -247,6 +284,8 @@ public class Main extends JFrame {
             sistema.addUsuario(clienteInvitado);
         }
         sesionRegistrada = false;
+        sesionEmpleado = false;
+        sesionGestor = false;
         cambiarPantalla(PANTALLA_HOME);
     }
 
@@ -257,6 +296,8 @@ public class Main extends JFrame {
      */
     public void iniciarSesionGestion(String rol) {
         sesionRegistrada = true;
+        sesionEmpleado = "Empleado".equalsIgnoreCase(rol);
+        sesionGestor = "Gestor".equalsIgnoreCase(rol);
         cambiarPantalla(PANTALLA_GESTION);
     }
 
@@ -269,6 +310,8 @@ public class Main extends JFrame {
      */
     public void registrarCliente(String nombre, String contrasena, String dni) {
         sesionRegistrada = true;
+        sesionEmpleado = false;
+        sesionGestor = false;
         clienteActual = new ClienteRegistrado(nombre, contrasena, dni);
         sistema.addUsuario(clienteActual);
         clienteActual.addNotificacion(new Notificacion(TipoNotificacion.NUEVO_DESCUENTO,
@@ -627,6 +670,8 @@ public class Main extends JFrame {
         panelNotificaciones = new PanelNotificaciones(this);
         panelPedidos = new PanelPedidos(this);
         panelGestion = new PanelGestion(this);
+        panelEmpleado = new PanelEmpleado(this);
+        panelGestor = new PanelGestor(this);
 
         panelMisProductos.addListenerSubirProducto(e -> cambiarPantalla(PANTALLA_SUBIR));
         panelMisProductos.addListenerPedirValoracion(e -> {
@@ -652,6 +697,8 @@ public class Main extends JFrame {
         panelContenedor.add(panelNotificaciones, PANTALLA_NOTIFICACIONES);
         panelContenedor.add(panelPedidos, PANTALLA_PEDIDOS);
         panelContenedor.add(panelGestion, PANTALLA_GESTION);
+        panelContenedor.add(panelEmpleado, PANTALLA_EMPLEADO);
+        panelContenedor.add(panelGestor, PANTALLA_GESTOR);
     }
 
     private boolean esPantallaSoloRegistrado(String nombrePantalla) {
@@ -661,9 +708,14 @@ public class Main extends JFrame {
                 || PANTALLA_PERFIL.equals(nombrePantalla)
                 || PANTALLA_PACKS.equals(nombrePantalla)
                 || PANTALLA_PEDIDOS.equals(nombrePantalla)
-                || PANTALLA_GESTION.equals(nombrePantalla)
                 || PANTALLA_INTERCAMBIOS.equals(nombrePantalla)
                 || PANTALLA_NOTIFICACIONES.equals(nombrePantalla);
+    }
+
+    private boolean esPantallaSoloGestion(String nombrePantalla) {
+        return PANTALLA_GESTION.equals(nombrePantalla)
+                || PANTALLA_EMPLEADO.equals(nombrePantalla)
+                || PANTALLA_GESTOR.equals(nombrePantalla);
     }
 
     private void refrescarPantallasConDatos() {
@@ -693,6 +745,12 @@ public class Main extends JFrame {
         }
         if (panelGestion != null) {
             panelGestion.refrescar();
+        }
+        if (panelEmpleado != null) {
+            panelEmpleado.refrescar();
+        }
+        if (panelGestor != null) {
+            panelGestor.refrescar();
         }
     }
 

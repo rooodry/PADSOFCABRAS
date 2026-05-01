@@ -410,7 +410,9 @@ public class HomePanel extends JPanel {
             menu.add(crearItemMenu("PACKS", "PACKS", Main.PANTALLA_PACKS, activo, mainFrame));
             menu.addSeparator();
             menu.add(crearItemMenu("PERFIL", "PERFIL", Main.PANTALLA_PERFIL, activo, mainFrame));
-            menu.add(crearItemMenu("GESTION", "GESTION", Main.PANTALLA_GESTION, activo, mainFrame));
+            if (mainFrame.isSesionEmpleado() || mainFrame.isSesionGestor()) {
+                menu.add(crearItemMenu("GESTION", "GESTION", Main.PANTALLA_GESTION, activo, mainFrame));
+            }
 
             menu.show(origen, 0, origen.getHeight() + 6);
         }
