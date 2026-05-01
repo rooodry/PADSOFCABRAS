@@ -1,142 +1,161 @@
 package GUI;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import utilidades.EstadoConservacion;
+import java.awt.*;
+import java.io.File;
 
-/**
- * Formulario para subir un producto de segunda mano a la cartera del cliente.
- */
 public class PanelSubirProducto extends JPanel {
+    private Main mainFrame;
+    private JTextField txtNombre;
+    private JTextArea txtDescripcion;
+    private JTextField txtImagen;
+    private JComboBox<EstadoConservacion> cboEstado;
 
-    private static final long serialVersionUID = 1L;
-
-    private final Main mainFrame;
-    private final JTextField txtNombre;
-    private final JTextField txtImagen;
-    private final JTextArea txtDescripcion;
-
-    /**
-     * Crea el formulario de subida.
-     *
-     * @param mainFrame controlador principal de la aplicacion
-     */
     public PanelSubirProducto(Main mainFrame) {
         this.mainFrame = mainFrame;
-        this.txtNombre = crearCampo();
-        this.txtImagen = crearCampo();
-        this.txtDescripcion = new JTextArea(6, 28);
-
         setLayout(new BorderLayout());
-        setBackground(UiStyle.COLOR_FONDO);
-        add(new HomePanel.PanelNavegacionCliente(mainFrame, "MIS PRODUCTOS"), BorderLayout.NORTH);
-        add(crearContenido(), BorderLayout.CENTER);
-    }
+        setBackground(Color.WHITE);
 
-    private JPanel crearContenido() {
-        JPanel centrado = new JPanel(new GridBagLayout());
-        centrado.setBackground(UiStyle.COLOR_FONDO);
+        add(crearCabecera("SUBIR NUEVO PRODUCTO"), BorderLayout.NORTH);
 
-        JPanel formulario = new UiStyle.RoundedPanel(UiStyle.COLOR_CABECERA, 30);
-        formulario.setLayout(new BoxLayout(formulario, BoxLayout.Y_AXIS));
-        formulario.setBorder(new EmptyBorder(28, 36, 28, 36));
+        // Bordes Redondeados
+        JPanel contenedorForm = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(165, 143, 122)); // Color café de la maqueta
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+            }
+        };
+        contenedorForm.setOpaque(false);
+        contenedorForm.setLayout(new BoxLayout(contenedorForm, BoxLayout.Y_AXIS));
+        contenedorForm.setBorder(new EmptyBorder(30, 40, 30, 40));
 
-        JLabel titulo = new JLabel("Nuevo producto", SwingConstants.CENTER);
-        titulo.setFont(new Font("SansSerif", Font.BOLD, 22));
-        titulo.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        titulo.setAlignmentX(CENTER_ALIGNMENT);
+        // Campos del Formulario
+        txtNombre = crearCampo("NOMBRE DEL PRODUCTO");
 
+        JLabel lblEstado = new JLabel("ESTADO DEL PRODUCTO");
+        lblEstado.setForeground(Color.WHITE);
+        lblEstado.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cboEstado = new JComboBox<>(EstadoConservacion.values());
+        cboEstado.setMaximumSize(new Dimension(400, 32));
+        cboEstado.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel lblImagen = new JLabel("FOTO DEL PRODUCTO");
+        lblImagen.setForeground(Color.WHITE);
+        lblImagen.setAlignmentX(Component.CENTER_ALIGNMENT);
+        txtImagen = crearCampo("RUTA DE LA FOTO");
+        JButton btnBuscarImagen = crearBotonForm("Buscar foto", new Color(80, 60, 44));
+        btnBuscarImagen.setPreferredSize(new Dimension(120, 30));
+        btnBuscarImagen.addActionListener(e -> seleccionarImagen());
+        JPanel panelImagen = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
+        panelImagen.setOpaque(false);
+        panelImagen.add(txtImagen);
+        panelImagen.add(btnBuscarImagen);
+
+        JLabel lblDesc = new JLabel("DESCRIPCIÓN");
+        lblDesc.setForeground(Color.WHITE);
+        lblDesc.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        txtDescripcion = new JTextArea(5, 20);
         txtDescripcion.setLineWrap(true);
         txtDescripcion.setWrapStyleWord(true);
-        JScrollPane scrollDescripcion = new JScrollPane(txtDescripcion);
-        scrollDescripcion.setMaximumSize(new Dimension(420, 130));
+        JScrollPane scrollDesc = new JScrollPane(txtDescripcion);
 
-        formulario.add(titulo);
-        formulario.add(Box.createVerticalStrut(18));
-        formulario.add(crearEtiqueta("Nombre"));
-        formulario.add(txtNombre);
-        formulario.add(Box.createVerticalStrut(10));
-        formulario.add(crearEtiqueta("Ruta de imagen (opcional)"));
-        formulario.add(txtImagen);
-        formulario.add(Box.createVerticalStrut(10));
-        formulario.add(crearEtiqueta("Descripcion"));
-        formulario.add(scrollDescripcion);
-        formulario.add(Box.createVerticalStrut(20));
-        formulario.add(crearBotones());
+        // Botones de Acción
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        panelBotones.setOpaque(false);
+        
+        JButton btnGuardar = crearBotonForm("GUARDAR", new Color(102, 80, 61));
+        JButton btnCancelar = crearBotonForm("CANCELAR", new Color(181, 86, 68));
 
-        centrado.add(formulario);
-        return centrado;
+        // Listeners para navegar
+        btnCancelar.addActionListener(e -> mainFrame.cambiarPantalla("PANTALLA_MIS_PRODUCTOS"));
+        btnGuardar.addActionListener(e -> guardarProducto());
+
+        // Ensamblar
+        contenedorForm.add(new JLabel("<html><center><h2 style='color:white;'>NUEVO PRODUCTO</h2></center></html>"));
+        contenedorForm.add(Box.createVerticalStrut(20));
+        contenedorForm.add(txtNombre);
+        contenedorForm.add(Box.createVerticalStrut(10));
+        contenedorForm.add(lblEstado);
+        contenedorForm.add(cboEstado);
+        contenedorForm.add(Box.createVerticalStrut(10));
+        contenedorForm.add(lblImagen);
+        contenedorForm.add(panelImagen);
+        contenedorForm.add(Box.createVerticalStrut(10));
+        contenedorForm.add(lblDesc);
+        contenedorForm.add(scrollDesc);
+        contenedorForm.add(Box.createVerticalStrut(25));
+        panelBotones.add(btnCancelar);
+        panelBotones.add(btnGuardar);
+        contenedorForm.add(panelBotones);
+
+        // Centrar el formulario en la pantalla
+        JPanel centrado = new JPanel(new GridBagLayout());
+        centrado.setBackground(Color.WHITE);
+        centrado.add(contenedorForm);
+        add(centrado, BorderLayout.CENTER);
     }
 
-    private JPanel crearBotones() {
-        JPanel botones = new JPanel();
-        botones.setOpaque(false);
+    private JPanel crearCabecera(String titulo) {
+        JPanel cabecera = new JPanel(new BorderLayout());
+        cabecera.setBackground(new Color(165, 143, 122));
+        cabecera.setBorder(new EmptyBorder(16, 24, 16, 24));
 
-        JButton cancelar = crearBoton("Cancelar");
-        cancelar.addActionListener(e -> mainFrame.cambiarPantalla(Main.PANTALLA_MIS_PRODUCTOS));
+        JLabel lblTitulo = new JLabel(titulo, SwingConstants.LEFT);
+        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 24));
+        lblTitulo.setForeground(Color.WHITE);
+        cabecera.add(lblTitulo, BorderLayout.WEST);
 
-        JButton guardar = crearBoton("Guardar");
-        guardar.addActionListener(e -> guardarProducto());
+        return cabecera;
+    }
 
-        botones.add(cancelar);
-        botones.add(guardar);
-        return botones;
+    private JTextField crearCampo(String placeholder) {
+        JTextField tf = new JTextField(placeholder);
+        tf.setMaximumSize(new Dimension(400, 35));
+        return tf;
+    }
+
+    private JButton crearBotonForm(String texto, Color color) {
+        JButton btn = new JButton(texto);
+        btn.setBackground(color);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createLineBorder(color, 8, true));
+        return btn;
+    }
+
+    private void seleccionarImagen() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                "Imágenes", "jpg", "jpeg", "png", "gif"));
+        int resultado = chooser.showOpenDialog(this);
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            File archivo = chooser.getSelectedFile();
+            txtImagen.setText(archivo.getAbsolutePath());
+        }
     }
 
     private void guardarProducto() {
         String nombre = txtNombre.getText().trim();
         String descripcion = txtDescripcion.getText().trim();
         String imagen = txtImagen.getText().trim();
+        EstadoConservacion estado = (EstadoConservacion) cboEstado.getSelectedItem();
 
         if (nombre.isEmpty() || descripcion.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Introduce nombre y descripcion.", "Datos incompletos",
-                    JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Debes indicar al menos el nombre y la descripción del producto.",
+                    "Campos incompletos", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        mainFrame.anadirProductoALaCartera(nombre, descripcion, imagen.isBlank() ? null : imagen);
-        txtNombre.setText("");
-        txtImagen.setText("");
-        txtDescripcion.setText("");
-        JOptionPane.showMessageDialog(this, "Producto subido a tu cartera.");
-        mainFrame.cambiarPantalla(Main.PANTALLA_MIS_PRODUCTOS);
-    }
-
-    private JLabel crearEtiqueta(String texto) {
-        JLabel etiqueta = new JLabel(texto);
-        etiqueta.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        etiqueta.setFont(new Font("SansSerif", Font.BOLD, 13));
-        etiqueta.setAlignmentX(LEFT_ALIGNMENT);
-        return etiqueta;
-    }
-
-    private JTextField crearCampo() {
-        JTextField campo = new JTextField();
-        campo.setMaximumSize(new Dimension(420, 34));
-        campo.setBorder(BorderFactory.createEmptyBorder(6, 8, 6, 8));
-        return campo;
-    }
-
-    private JButton crearBoton(String texto) {
-        JButton boton = new UiStyle.RoundedButton(texto, UiStyle.COLOR_TEXTO, UiStyle.COLOR_MARRON_MEDIO, 18);
-        boton.setPreferredSize(new Dimension(110, 34));
-        boton.setFocusPainted(false);
-        boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        return boton;
+        mainFrame.anadirProductoALaCartera(nombre, descripcion, imagen, estado);
+        JOptionPane.showMessageDialog(this, "¡Producto subido con éxito!");
+        mainFrame.cambiarPantalla("PANTALLA_MIS_PRODUCTOS");
     }
 }

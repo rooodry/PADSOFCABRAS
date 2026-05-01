@@ -40,8 +40,8 @@ import productos.ProductoTienda;
 /**
  * Product detail panel shown when the customer opens a catalogue card.
  *
- * <p>The layout follows the mockup: a warm top bar, product summary on the
- * left and description/comments on the right.</p>
+ * <p>The layout shows product summary on the left, description and comments on
+ * the right, with a side scrollbar to avoid needing a larger window.</p>
  */
 public class PanelDeProducto extends JPanel {
 
@@ -105,14 +105,19 @@ public class PanelDeProducto extends JPanel {
     private void construirUI() {
         setLayout(new BorderLayout());
         setBackground(UiStyle.COLOR_FONDO);
-        setPreferredSize(new Dimension(752, 374));
-        add(crearCuerpo(), BorderLayout.CENTER);
+        setPreferredSize(new Dimension(752, 380));
+
+        JScrollPane scroll = new JScrollPane(crearCuerpo(), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setBorder(null);
+        scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
+        add(scroll, BorderLayout.CENTER);
     }
 
     private JPanel crearCuerpo() {
-        JPanel cuerpo = new JPanel(new BorderLayout());
+        JPanel cuerpo = new JPanel(new BorderLayout(14, 0));
         cuerpo.setBackground(UiStyle.COLOR_FONDO);
-        cuerpo.setBorder(new EmptyBorder(14, 24, 12, 28));
+        cuerpo.setBorder(new EmptyBorder(14, 24, 14, 28));
         cuerpo.add(crearPanelIzquierdo(), BorderLayout.WEST);
         cuerpo.add(crearPanelDerecho(), BorderLayout.CENTER);
         return cuerpo;
@@ -132,7 +137,7 @@ public class PanelDeProducto extends JPanel {
         panel.add(crearEstrellas(producto.getValoracion()));
         panel.add(Box.createVerticalStrut(8));
         panel.add(crearPrecio());
-        panel.add(Box.createVerticalStrut(6));
+        panel.add(Box.createVerticalStrut(12));
         panel.add(crearBotonCesta());
         return panel;
     }
@@ -213,11 +218,10 @@ public class PanelDeProducto extends JPanel {
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.insets = new Insets(2, 0, 8, 0);
-
+        gbc.insets = new Insets(0, 0, 12, 0);
         derecho.add(crearSeccionDescripcion(), gbc);
 
-        gbc.gridy++;
+        gbc.gridy = 1;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         derecho.add(crearSeccionComentarios(), gbc);

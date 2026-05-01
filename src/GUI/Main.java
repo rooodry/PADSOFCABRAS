@@ -510,6 +510,22 @@ public class Main extends JFrame {
                     "Intercambios", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        proponerIntercambio(deseado, ofertado);
+    }
+
+    public void proponerIntercambio(ProductoSegundaMano deseado, ProductoSegundaMano ofertado) {
+        if (deseado == null || ofertado == null) {
+            return;
+        }
+        if (clienteActual == null) {
+            return;
+        }
+        if (!ofertado.getDisponibilidad() && ofertado.getEstadoProducto() != EstadoProducto.VALORADO) {
+            JOptionPane.showMessageDialog(this,
+                    "Este producto no está disponible para intercambiar.",
+                    "Intercambios", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         ofertado.setDisponibilidad(false);
         ofertado.setEstadoProducto(EstadoProducto.EN_OFERTA);
@@ -518,6 +534,9 @@ public class Main extends JFrame {
         intercambios.add(intercambio);
         clienteActual.addNotificacion(new Notificacion(TipoNotificacion.NUEVA_OFERTA,
                 "Has propuesto intercambiar " + ofertado.getNombre() + " por " + deseado.getNombre() + "."));
+        JOptionPane.showMessageDialog(this,
+                "Oferta creada. Espera la respuesta del otro usuario.",
+                "Intercambio lanzado", JOptionPane.INFORMATION_MESSAGE);
         refrescarPantallasConDatos();
     }
 
@@ -596,8 +615,11 @@ public class Main extends JFrame {
      * @param descripcion product description
      * @param imagen optional image path
      */
-    public void anadirProductoALaCartera(String nombre, String descripcion, String imagen) {
+    public void anadirProductoALaCartera(String nombre, String descripcion, String imagen, EstadoConservacion estado) {
         ProductoSegundaMano nuevo = new ProductoSegundaMano(nombre, descripcion, imagen, clienteActual);
+        if (estado != null) {
+            nuevo.setEstadoConservacion(estado);
+        }
         clienteActual.subirProducto(nuevo);
         clienteActual.addNotificacion(new Notificacion(TipoNotificacion.VALORACION_REALIZADA,
                 "Producto subido. Puedes solicitar su valoracion desde cartera."));
