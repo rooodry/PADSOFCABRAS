@@ -966,7 +966,12 @@ public class Main extends JFrame {
                     campoConDefecto(datos, 15, "PVC")));
         }
 
-        producto.setImagen(crearPortadaParaProducto(producto));
+        String imagenCsv = campo(datos, 17);
+        if (!imagenCsv.isBlank()) {
+            producto.setImagen(imagenCsv);
+        } else {
+            producto.setImagen(crearPortadaParaProducto(producto));
+        }
         producto.addComentario("juan15",
                 "Un producto muy interesante para ampliar la coleccion y revisar con calma en la ficha.");
         producto.addComentario("laura67",
