@@ -42,10 +42,15 @@ import productos.categoria.TipoJuego;
 import sistema.Sistema;
 import usuarios.ClienteRegistrado;
 import usuarios.ClienteNoRegistrado;
+import usuarios.Empleado;
+import usuarios.Gestor;
+import usuarios.Usuario;
 import utilidades.EstadoConservacion;
+import utilidades.EstadoOferta;
 import utilidades.EstadoPedido;
 import utilidades.EstadoProducto;
 import utilidades.TipoNotificacion;
+import utilidades.TiposEmpleado;
 
 /**
  * Main Swing window for the registered-customer flow.
@@ -121,6 +126,8 @@ public class Main extends JFrame {
     private PanelEmpleado panelEmpleado;
     private PanelGestor panelGestor;
     private ClienteNoRegistrado clienteInvitado;
+    private Empleado empleadoActual;
+    private Gestor gestorPrincipal;
     private boolean sesionRegistrada;
     private boolean sesionEmpleado;
     private boolean sesionGestor;
@@ -209,6 +216,24 @@ public class Main extends JFrame {
         return clienteActual;
     }
 
+    public Empleado getEmpleadoActual() {
+        return empleadoActual;
+    }
+
+    public Gestor getGestorPrincipal() {
+        return gestorPrincipal;
+    }
+
+    public List<Empleado> getEmpleados() {
+        List<Empleado> empleados = new ArrayList<>();
+        for (Usuario usuario : sistema.getUsuarios()) {
+            if (usuario instanceof Empleado) {
+                empleados.add((Empleado) usuario);
+            }
+        }
+        return empleados;
+    }
+
     /**
      * Returns a copy of the products shown in the shop catalogue.
      *
@@ -245,6 +270,36 @@ public class Main extends JFrame {
         return new ArrayList<>(intercambios);
     }
 
+    public List<Pedido> getPedidosGestion() {
+        return sistema.getPedidos();
+    }
+
+    public List<ProductoSegundaMano> getProductosSegundaManoGestion() {
+        List<ProductoSegundaMano> productos = new ArrayList<>();
+        if (clienteActual != null) {
+            productos.addAll(clienteActual.getCartera().getProductos());
+        }
+        productos.addAll(productosSegundaMano);
+        return productos;
+    }
+
+    public List<ProductoSegundaMano> getProductosPendientesValoracion() {
+        List<ProductoSegundaMano> pendientes = new ArrayList<>();
+        if (clienteActual != null) {
+            for (ProductoSegundaMano producto : clienteActual.getCartera().getProductos()) {
+                if (producto.getEstadoProducto() == EstadoProducto.PENDIENTE_DE_VALORAR) {
+                    pendientes.add(producto);
+                }
+            }
+        }
+        for (ProductoSegundaMano producto : productosSegundaMano) {
+            if (producto.getEstadoProducto() == EstadoProducto.PENDIENTE_DE_VALORAR) {
+                pendientes.add(producto);
+            }
+        }
+        return pendientes;
+    }
+
     /**
      * Returns public second-hand products owned by other customers.
      *
@@ -265,14 +320,15 @@ public class Main extends JFrame {
      *
      * @param identificacion user name entered in the form
      */
-    public void iniciarSesionCliente(String identificacion) {
+    public boolean iniciarSesionCliente(String identificacion, String contrasena) {
+        if (!credencialesValidas(clienteActual, identificacion, contrasena)) {
+            return false;
+        }
         sesionRegistrada = true;
         sesionEmpleado = false;
         sesionGestor = false;
-        if (identificacion != null && !identificacion.isBlank()) {
-            clienteActual.editarPerfil(identificacion.trim(), clienteActual.getContrase\u00f1a());
-        }
         cambiarPantalla(PANTALLA_HOME);
+        return true;
     }
 
     /**
@@ -294,10 +350,57 @@ public class Main extends JFrame {
      *
      * @param rol selected role name
      */
+    public boolean iniciarSesionGestion(String rol, String identificacion, String contrasena) {
+        if ("Empleado".equalsIgnoreCase(rol)) {
+            Empleado empleado = buscarEmpleado(identificacion, contrasena);
+            if (empleado == null) {
+                JOptionPane.showMessageDialog(this,
+                        "El empleado no existe o las credenciales no coinciden.",
+                        "Login empleado", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            empleadoActual = empleado;
+            sesionRegistrada = false;
+            sesionEmpleado = true;
+            sesionGestor = false;
+            cambiarPantalla(PANTALLA_GESTION);
+            return true;
+        }
+
+        if ("Gestor".equalsIgnoreCase(rol)) {
+            if (!credencialesValidas(gestorPrincipal, identificacion, contrasena)) {
+                JOptionPane.showMessageDialog(this,
+                        "El gestor no existe o las credenciales no coinciden.",
+                        "Login gestor", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            empleadoActual = new Empleado(gestorPrincipal.getNombre(), gestorPrincipal.getContrase\u00f1a());
+            empleadoActual.addPermiso(TiposEmpleado.EMPLEADOS_PRODUCTO);
+            empleadoActual.addPermiso(TiposEmpleado.EMPLEADOS_PEDIDO);
+            empleadoActual.addPermiso(TiposEmpleado.EMPLEADOS_INTERCAMBIO);
+            sesionRegistrada = false;
+            sesionEmpleado = false;
+            sesionGestor = true;
+            cambiarPantalla(PANTALLA_GESTION);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Starts a basic employee or manager session without credentials.
+     *
+     * @param rol selected role name
+     */
     public void iniciarSesionGestion(String rol) {
         sesionRegistrada = true;
         sesionEmpleado = "Empleado".equalsIgnoreCase(rol);
         sesionGestor = "Gestor".equalsIgnoreCase(rol);
+        if (sesionEmpleado && empleadoActual == null) {
+            List<Empleado> empleados = getEmpleados();
+            empleadoActual = empleados.isEmpty() ? null : empleados.get(0);
+        }
         cambiarPantalla(PANTALLA_GESTION);
     }
 
@@ -427,8 +530,8 @@ public class Main extends JFrame {
             return;
         }
         pedido.setEstadoPedido(EstadoPedido.LISTO);
-        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.PEDIDO_LISTO,
-                "Tu pedido esta listo para recoger con DNI " + clienteActual.getDNI()
+        pedido.getCliente().addNotificacion(new Notificacion(TipoNotificacion.PEDIDO_LISTO,
+                "Tu pedido esta listo para recoger con DNI " + pedido.getCliente().getDNI()
                         + " y codigo " + pedido.getCodigo().getCodigo() + "."));
         refrescarPantallasConDatos();
     }
@@ -443,7 +546,7 @@ public class Main extends JFrame {
             return;
         }
         pedido.setEstadoPedido(EstadoPedido.ENTREGADO);
-        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.PAGO_REALIZADO,
+        pedido.getCliente().addNotificacion(new Notificacion(TipoNotificacion.PAGO_REALIZADO,
                 "Pedido entregado correctamente."));
         refrescarPantallasConDatos();
     }
@@ -678,6 +781,124 @@ public class Main extends JFrame {
         }
     }
 
+    public void fijarStockProducto(ProductoTienda producto, int unidades) {
+        if (producto == null || unidades < 0) {
+            return;
+        }
+        int actual = stock.getNumProductos(producto);
+        if (unidades > actual) {
+            stock.a\u00f1adirProducto(producto, unidades - actual);
+        } else if (unidades < actual) {
+            stock.reducirStock(producto, actual - unidades);
+        }
+        refrescarPantallasConDatos();
+    }
+
+    public void editarProductoTienda(ProductoTienda producto, double precio, int unidades,
+            String descripcion, String imagen, List<String> categorias) {
+        if (producto == null) {
+            return;
+        }
+        producto.setPrecio(Math.max(0.0, precio));
+        producto.setDescripcion(descripcion == null ? "" : descripcion.trim());
+        producto.setImagen(imagen == null ? "" : imagen.trim());
+        producto.setCategoriasTexto(categorias);
+        fijarStockProducto(producto, Math.max(0, unidades));
+    }
+
+    public void recargarCatalogoDesdeFichero(String ruta) {
+        if (ruta == null || ruta.isBlank()) {
+            return;
+        }
+        cargarCatalogoDesdeCsv(new File(ruta.trim()));
+        aplicarPromocionesIniciales();
+        crearPacksDesdeCatalogo();
+        refrescarPantallasConDatos();
+    }
+
+    public void crearPackGestion(String nombre, double precio, List<Producto> productos) {
+        if (nombre == null || nombre.isBlank()) {
+            JOptionPane.showMessageDialog(this, "El pack necesita nombre.", "Pack", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        packs.add(new Pack(nombre.trim(), Math.max(0.0, precio), productos == null ? new ArrayList<>() : productos));
+        refrescarPantallasConDatos();
+    }
+
+    public void modificarPackGestion(Pack pack, double precio, List<Producto> productos) {
+        if (pack == null) {
+            return;
+        }
+        pack.setPrecio(Math.max(0.0, precio));
+        for (Producto producto : pack.getProductos()) {
+            pack.removeProducto(producto);
+        }
+        if (productos != null) {
+            for (Producto producto : productos) {
+                pack.addProducto(producto);
+            }
+        }
+        refrescarPantallasConDatos();
+    }
+
+    public void valorarProductoSegundaMano(ProductoSegundaMano producto, int valoracion,
+            double valorEstimado, EstadoConservacion conservacion) {
+        if (producto == null) {
+            return;
+        }
+        producto.setValoracion(valoracion, valorEstimado, conservacion);
+        producto.setFechaValoracion(new Date());
+        producto.getPropietario().addNotificacion(new Notificacion(TipoNotificacion.VALORACION_REALIZADA,
+                "Tu producto " + producto.getNombre() + " ha sido valorado."));
+        refrescarPantallasConDatos();
+    }
+
+    public void marcarIntercambioRealizado(Intercambio intercambio) {
+        if (intercambio == null) {
+            return;
+        }
+        if (intercambio.getOferta().getEstadoOferta() == EstadoOferta.PENDIENTE) {
+            intercambio.aceptarOferta();
+        }
+        intercambio.setIntercambiado(true);
+        intercambio.getOferta().getProductoDeseado().setDisponibilidad(false);
+        intercambio.getOferta().getProductoOfertado().setDisponibilidad(false);
+        intercambio.getOferta().getUsuarioLanzador().addNotificacion(new Notificacion(
+                TipoNotificacion.INTERCAMBIO_REALIZADO, "El intercambio se ha marcado como realizado."));
+        intercambio.getOferta().getUsuarioReceptor().addNotificacion(new Notificacion(
+                TipoNotificacion.INTERCAMBIO_REALIZADO, "El intercambio se ha marcado como realizado."));
+        refrescarPantallasConDatos();
+    }
+
+    public void crearEmpleadoDesdeGestor(String nombre, String contrasena, Set<TiposEmpleado> permisos) {
+        if (!sesionGestor || nombre == null || nombre.isBlank() || contrasena == null || contrasena.isBlank()) {
+            JOptionPane.showMessageDialog(this,
+                    "Solo el gestor puede crear empleados con nombre y contrasena validos.",
+                    "Empleado", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        Empleado existente = buscarEmpleadoPorNombre(nombre);
+        if (existente != null) {
+            configurarPermisosEmpleado(existente, permisos);
+            existente.setContrase\u00f1a(contrasena);
+            return;
+        }
+        Empleado nuevo = new Empleado(nombre.trim(), contrasena);
+        for (TiposEmpleado permiso : permisos) {
+            nuevo.addPermiso(permiso);
+        }
+        sistema.addUsuario(nuevo);
+        refrescarPantallasConDatos();
+    }
+
+    public void configurarPermisosEmpleado(Empleado empleado, Set<TiposEmpleado> permisos) {
+        if (!sesionGestor || empleado == null || permisos == null) {
+            return;
+        }
+        gestorPrincipal.configurarPermisos(empleado, permisos);
+        refrescarPantallasConDatos();
+    }
+
     private void construirPantallas() {
         panelContenedor.add(new LoginClientePanel(this), PANTALLA_CLIENTE);
         panelContenedor.add(new RegistroPanel(this), PANTALLA_REGISTRO);
@@ -781,6 +1002,35 @@ public class Main extends JFrame {
         return pedidos.isEmpty() ? null : pedidos.get(pedidos.size() - 1);
     }
 
+    private boolean credencialesValidas(Usuario usuario, String identificacion, String contrasena) {
+        return usuario != null
+                && identificacion != null
+                && contrasena != null
+                && usuario.getNombre().equals(identificacion.trim())
+                && usuario.getContrase\u00f1a().equals(contrasena);
+    }
+
+    private Empleado buscarEmpleado(String identificacion, String contrasena) {
+        for (Empleado empleado : getEmpleados()) {
+            if (credencialesValidas(empleado, identificacion, contrasena)) {
+                return empleado;
+            }
+        }
+        return null;
+    }
+
+    private Empleado buscarEmpleadoPorNombre(String nombre) {
+        if (nombre == null) {
+            return null;
+        }
+        for (Empleado empleado : getEmpleados()) {
+            if (empleado.getNombre().equalsIgnoreCase(nombre.trim())) {
+                return empleado;
+            }
+        }
+        return null;
+    }
+
     /**
      * Returns recommended products for the active customer.
      *
@@ -822,6 +1072,15 @@ public class Main extends JFrame {
     private void inicializarDatos() {
         clienteActual = new ClienteRegistrado("cliente", "1234", "00000000T");
         sistema.addUsuario(clienteActual);
+        gestorPrincipal = new Gestor("gestor", "1234");
+        sistema.addUsuario(gestorPrincipal);
+        Empleado empleadoTienda = new Empleado("empleado", "1234");
+        empleadoTienda.addPermiso(TiposEmpleado.EMPLEADOS_PRODUCTO);
+        empleadoTienda.addPermiso(TiposEmpleado.EMPLEADOS_PEDIDO);
+        sistema.addUsuario(empleadoTienda);
+        Empleado empleadoIntercambios = new Empleado("intercambios", "1234");
+        empleadoIntercambios.addPermiso(TiposEmpleado.EMPLEADOS_INTERCAMBIO);
+        sistema.addUsuario(empleadoIntercambios);
         sistema.setStock(stock);
         clienteActual.addNotificacion(new Notificacion(TipoNotificacion.PEDIDO_LISTO,
                 "Tu ultimo pedido esta listo para recoger."));
@@ -851,6 +1110,7 @@ public class Main extends JFrame {
         cargarCatalogoDesdeCsv();
         aplicarPromocionesIniciales();
         crearPacksDesdeCatalogo();
+        crearPedidosDemoGestion();
 
         ClienteRegistrado otroCliente = new ClienteRegistrado("laura67", "1234", "11111111H");
         ProductoSegundaMano deseado = new ProductoSegundaMano("Comic X-Men 1992",
@@ -876,6 +1136,25 @@ public class Main extends JFrame {
         return null;
     }
 
+    private void crearPedidosDemoGestion() {
+        if (productosTienda.size() < 2) {
+            return;
+        }
+        Map<ProductoTienda, Integer> productosPedido = new HashMap<>();
+        productosPedido.put(productosTienda.get(0), 1);
+        productosPedido.put(productosTienda.get(1), 1);
+        Pedido enPreparacion = new Pedido(clienteActual, productosPedido);
+        enPreparacion.setEstadoPedido(EstadoPedido.EN_PREPARACION);
+        sistema.addPedido(enPreparacion);
+
+        Map<ProductoTienda, Integer> productosListos = new HashMap<>();
+        productosListos.put(productosTienda.get(2), 1);
+        Pedido listo = new Pedido(clienteActual, productosListos);
+        listo.setEstadoPedido(EstadoPedido.EN_PREPARACION);
+        listo.setEstadoPedido(EstadoPedido.LISTO);
+        sistema.addPedido(listo);
+    }
+
     private void aplicarPromocionesIniciales() {
         for (int i = 0; i < productosTienda.size(); i++) {
             ProductoTienda producto = productosTienda.get(i);
@@ -892,12 +1171,18 @@ public class Main extends JFrame {
     }
 
     private void cargarCatalogoDesdeCsv() {
-        productosTienda.clear();
-
         File archivo = new File("productos.csv");
         if (!archivo.exists()) {
             archivo = new File("..", "productos.csv");
         }
+        cargarCatalogoDesdeCsv(archivo);
+    }
+
+    private void cargarCatalogoDesdeCsv(File archivo) {
+        for (ProductoTienda producto : new ArrayList<>(productosTienda)) {
+            stock.retirarProducto(producto);
+        }
+        productosTienda.clear();
 
         try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
             String linea;
@@ -922,7 +1207,7 @@ public class Main extends JFrame {
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this,
-                    "No se ha podido cargar productos.csv. Revisa que el archivo este en la raiz del proyecto.",
+                    "No se ha podido cargar " + archivo.getPath() + ".",
                     "Catalogo", JOptionPane.WARNING_MESSAGE);
         }
     }
@@ -947,6 +1232,7 @@ public class Main extends JFrame {
         producto.setId(id.isBlank() ? producto.getId() : id);
         producto.setPrecio(precio);
         producto.setValoracion(3 + (indice % 3));
+        producto.setCategoriasTexto(parseCategoriasTexto(campo(datos, 6)));
 
         if ("C".equals(tipo)) {
             producto.setCategoria(new Comic(nombre, parseIntCsv(campo(datos, 7), 120),
@@ -988,6 +1274,19 @@ public class Main extends JFrame {
     private String campoConDefecto(String[] datos, int indice, String defecto) {
         String valor = campo(datos, indice);
         return valor.isBlank() ? defecto : valor;
+    }
+
+    private List<String> parseCategoriasTexto(String categorias) {
+        List<String> resultado = new ArrayList<>();
+        if (categorias == null || categorias.isBlank()) {
+            return resultado;
+        }
+        for (String categoria : categorias.split(",")) {
+            if (!categoria.trim().isBlank()) {
+                resultado.add(categoria.trim());
+            }
+        }
+        return resultado;
     }
 
     private int parseIntCsv(String valor, int defecto) {

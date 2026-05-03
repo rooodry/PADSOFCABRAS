@@ -6,7 +6,7 @@ public class MainPerfil {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new PanelPerfil();
+                new GUI.Main().setVisible(true);
             }
         });
     }

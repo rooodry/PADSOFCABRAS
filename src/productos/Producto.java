@@ -1,6 +1,8 @@
 package productos;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import productos.categoria.Categoria;
 
@@ -16,6 +18,7 @@ public abstract class Producto {
     private String imagen;
     private final Date fechaPublicacion;
     private Categoria categoria;
+    private List<String> categoriasTexto;
 
     /**
      * Constructor de la clase Producto.
@@ -33,6 +36,7 @@ public abstract class Producto {
         this.imagen = imagen;
         this.fechaPublicacion = new Date();
         this.categoria = null;
+        this.categoriasTexto = new ArrayList<>();
     }
 
     /**
@@ -64,6 +68,31 @@ public abstract class Producto {
      * @param categoria Objeto Categoria asociado.
      */
     public void setCategoria(Categoria categoria) {this.categoria = categoria;}
+
+    public void setCategoriasTexto(List<String> categorias) {
+        this.categoriasTexto = new ArrayList<>();
+        if (categorias != null) {
+            for (String categoriaTexto : categorias) {
+                addCategoriaTexto(categoriaTexto);
+            }
+        }
+    }
+
+    public void addCategoriaTexto(String categoriaTexto) {
+        if (categoriaTexto == null || categoriaTexto.isBlank()) {
+            return;
+        }
+        String normalizada = categoriaTexto.trim();
+        if (!this.categoriasTexto.contains(normalizada)) {
+            this.categoriasTexto.add(normalizada);
+        }
+    }
+
+    public void removeCategoriaTexto(String categoriaTexto) {
+        if (categoriaTexto != null) {
+            this.categoriasTexto.removeIf(c -> c.equalsIgnoreCase(categoriaTexto.trim()));
+        }
+    }
 
     /**
      * Establece un identificador específico para el producto.
@@ -112,4 +141,6 @@ public abstract class Producto {
      * @return Objeto Categoria asociado al producto.
      */
     public Categoria getCategoria() {return categoria;}
+
+    public List<String> getCategoriasTexto() {return new ArrayList<>(categoriasTexto);}
 }

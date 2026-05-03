@@ -282,7 +282,7 @@ public class PanelPerfil extends JPanel {
         tarjeta.setLayout(new BorderLayout(12, 12));
         tarjeta.setBorder(new EmptyBorder(12, 12, 12, 12));
 
-        JLabel estado = new JLabel(pedido.getEstado().toString());
+        JLabel estado = new JLabel(pedido.getEstadoPedido().toString());
         estado.setFont(new Font("SansSerif", Font.BOLD, 16));
         estado.setForeground(UiStyle.COLOR_TEXTO);
         tarjeta.add(estado, BorderLayout.NORTH);
@@ -293,7 +293,7 @@ public class PanelPerfil extends JPanel {
         fecha.setForeground(UiStyle.COLOR_TEXTO);
         tarjeta.add(fecha, BorderLayout.WEST);
 
-        JLabel total = new JLabel(String.format("%.2f€", pedido.getTotal()));
+        JLabel total = new JLabel(String.format("%.2f€", pedido.calcularPrecioTotal()));
         total.setFont(new Font("SansSerif", Font.BOLD, 14));
         total.setForeground(UiStyle.COLOR_TEXTO);
         tarjeta.add(total, BorderLayout.CENTER);
