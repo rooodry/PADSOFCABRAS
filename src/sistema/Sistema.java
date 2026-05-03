@@ -512,7 +512,7 @@ public class Sistema {
                 }
 
                 String[] elementos = linea.split(";", -1);
-                if (elementos.length < 17) {
+                if (elementos.length < 18) {
                     System.err.println("Linea de producto incompleta: " + linea);
                     continue;
                 }
@@ -534,11 +534,13 @@ public class Sistema {
                 String marca = elementos[14].trim();
                 String material = elementos[15].trim();
                 String dimension = elementos[16].trim();
+                String imagen = elementos[17].trim();
 
                 ProductoTienda producto = new ProductoTienda(nombre, descripcion, "");
                 producto.setId(id);
                 producto.setPrecio(precio);
                 producto.setValoracion(4);
+                producto.setImagen(imagen);
 
                 if (tipo.equals("C")) {
                     producto.setCategoria(new Comic(nombre, paginas, autor, editorial,
@@ -595,7 +597,7 @@ public class Sistema {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
             bw.write("TIPO(C/J/F);ID;NOMBRE;DESCRIPCION;PRECIO;UNIDADES;CATEGORIAS;PAGINAS;"
                    + "AUTOR;EDITORIAL;AÑO;JUGADORES;EDAD;ESTILO(Cartas/Dados/JuegoDeMesa);"
-                   + "MARCA;MATERIAL;DIMENSION");
+                   + "MARCA;MATERIAL;DIMENSION;IMAGEN");
             bw.newLine();
 
             for (Producto p : this.productos) {
@@ -621,8 +623,7 @@ public class Sistema {
                     bw.write(c.getNumPaginas() + ";");
                     bw.write(c.getAutor() + ";");
                     bw.write(c.getEditorial() + ";");
-                    bw.write(c.getAño());
-                    bw.newLine();
+                    bw.write(c.getAño()+ ";");
 
                 } else if (p.getCategoria() instanceof Figura) {
                     bw.write("F;");
@@ -630,16 +631,16 @@ public class Sistema {
                     bw.write(f.getMarca() + ";");
                     bw.write(f.getMaterial() + ";");
                     bw.write(f.getAltura() + ";");
-                    bw.newLine();
 
                 } else {
                     bw.write("J;");
                     Juego j = (Juego) p.getCategoria();
                     bw.write(j.getNumJugadores() + ";");
                     bw.write(j.getEdadMinima() + ";");
-                    bw.write(j.getTipoJuego().toString());
-                    bw.newLine();
+                    bw.write(j.getTipoJuego().toString()+ ";");
                 }
+                bw.write(p.getImagen());
+                bw.newLine();
             }
 
         } catch (IOException e) {
