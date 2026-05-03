@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.ButtonGroup;
@@ -15,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -44,7 +46,7 @@ public class LoginClientePanel extends JPanel {
         gbc.insets = new Insets(5, 0, 5, 0);
         gbc.gridx = 0;
 
-        JLabel titleLabel = new JLabel("Log in", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Log in Cliente", SwingConstants.CENTER);
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
         titleLabel.setForeground(UiStyle.COLOR_TEXTO_CLARO);
         gbc.gridy = 0;
@@ -71,14 +73,20 @@ public class LoginClientePanel extends JPanel {
         grupoRoles.add(empleadoRadio);
         grupoRoles.add(gestorRadio);
 
-        JButton loginButton = crearBoton("Continuar");
+        JButton loginButton = crearBoton("Entrar como Cliente");
         loginButton.addActionListener(e -> {
+            String identificacion = idField.getText();
+            String contrasena = new String(passField.getPassword());
             if (empleadoRadio.isSelected()) {
-                mainFrame.iniciarSesionGestion("Empleado");
+                mainFrame.iniciarSesionGestion("Empleado", identificacion, contrasena);
             } else if (gestorRadio.isSelected()) {
-                mainFrame.iniciarSesionGestion("Gestor");
+                mainFrame.iniciarSesionGestion("Gestor", identificacion, contrasena);
             } else {
-                mainFrame.iniciarSesionCliente(idField.getText());
+                if (!mainFrame.iniciarSesionCliente(identificacion, contrasena)) {
+                    JOptionPane.showMessageDialog(this,
+                            "Identificacion o contrasena incorrecta.",
+                            "Login", JOptionPane.WARNING_MESSAGE);
+                }
             }
         });
         gbc.gridy = 5;
@@ -107,6 +115,35 @@ public class LoginClientePanel extends JPanel {
         clienteRadio.setForeground(UiStyle.COLOR_TEXTO_CLARO);
         empleadoRadio.setForeground(UiStyle.COLOR_TEXTO_CLARO);
         gestorRadio.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        ActionListener selectorRol = e -> {
+            if (empleadoRadio.isSelected()) {
+                titleLabel.setText("Log in Empleado");
+                idField.setText("empleado");
+                passField.setText("1234");
+                loginButton.setText("Entrar como Empleado");
+                registerPanel.setVisible(false);
+                invitado.setVisible(false);
+            } else if (gestorRadio.isSelected()) {
+                titleLabel.setText("Log in Gestor");
+                idField.setText("gestor");
+                passField.setText("1234");
+                loginButton.setText("Entrar como Gestor");
+                registerPanel.setVisible(false);
+                invitado.setVisible(false);
+            } else {
+                titleLabel.setText("Log in Cliente");
+                idField.setText(mainFrame.getClienteActual().getNombre());
+                passField.setText("1234");
+                loginButton.setText("Entrar como Cliente");
+                registerPanel.setVisible(true);
+                invitado.setVisible(true);
+            }
+            formContainer.revalidate();
+            formContainer.repaint();
+        };
+        clienteRadio.addActionListener(selectorRol);
+        empleadoRadio.addActionListener(selectorRol);
+        gestorRadio.addActionListener(selectorRol);
         radioPanel.add(clienteRadio);
         radioPanel.add(empleadoRadio);
         radioPanel.add(gestorRadio);

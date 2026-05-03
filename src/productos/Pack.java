@@ -33,6 +33,16 @@ public class Pack {
      */
     public void addSubpack(Pack subpack) {this.subpacks.add(subpack);}
 
+    public void addProducto(Producto producto) {
+        if (producto != null && !this.productos.contains(producto)) {
+            this.productos.add(producto);
+        }
+    }
+
+    public void removeProducto(Producto producto) {
+        this.productos.remove(producto);
+    }
+
     /**
      * Establece o modifica el precio del pack completo.
      * @param precio Nuevo precio.

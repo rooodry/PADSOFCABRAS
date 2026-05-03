@@ -59,6 +59,10 @@ public class Sistema {
 
     public void setStock(Stock s) { this.stock = s; }
 
+    public List<Usuario> getUsuarios() { return new ArrayList<>(this.usuarios); }
+
+    public List<Pedido> getPedidos() { return new ArrayList<>(this.pedidos); }
+
     /**
      * Devuelve una copia de los productos registrados en el sistema.
      *
