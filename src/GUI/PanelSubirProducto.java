@@ -2,7 +2,6 @@ package GUI;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import utilidades.EstadoConservacion;
 import java.awt.*;
 import java.io.File;
 
@@ -11,7 +10,6 @@ public class PanelSubirProducto extends JPanel {
     private JTextField txtNombre;
     private JTextArea txtDescripcion;
     private JTextField txtImagen;
-    private JComboBox<EstadoConservacion> cboEstado;
 
     public PanelSubirProducto(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -36,13 +34,6 @@ public class PanelSubirProducto extends JPanel {
 
         // Campos del Formulario
         txtNombre = crearCampo("NOMBRE DEL PRODUCTO");
-
-        JLabel lblEstado = new JLabel("ESTADO DEL PRODUCTO");
-        lblEstado.setForeground(Color.WHITE);
-        lblEstado.setAlignmentX(Component.CENTER_ALIGNMENT);
-        cboEstado = new JComboBox<>(EstadoConservacion.values());
-        cboEstado.setMaximumSize(new Dimension(400, 32));
-        cboEstado.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel lblImagen = new JLabel("FOTO DEL PRODUCTO");
         lblImagen.setForeground(Color.WHITE);
@@ -80,9 +71,6 @@ public class PanelSubirProducto extends JPanel {
         contenedorForm.add(new JLabel("<html><center><h2 style='color:white;'>NUEVO PRODUCTO</h2></center></html>"));
         contenedorForm.add(Box.createVerticalStrut(20));
         contenedorForm.add(txtNombre);
-        contenedorForm.add(Box.createVerticalStrut(10));
-        contenedorForm.add(lblEstado);
-        contenedorForm.add(cboEstado);
         contenedorForm.add(Box.createVerticalStrut(10));
         contenedorForm.add(lblImagen);
         contenedorForm.add(panelImagen);
@@ -145,7 +133,6 @@ public class PanelSubirProducto extends JPanel {
         String nombre = txtNombre.getText().trim();
         String descripcion = txtDescripcion.getText().trim();
         String imagen = txtImagen.getText().trim();
-        EstadoConservacion estado = (EstadoConservacion) cboEstado.getSelectedItem();
 
         if (nombre.isEmpty() || descripcion.isEmpty()) {
             JOptionPane.showMessageDialog(this,
@@ -154,7 +141,7 @@ public class PanelSubirProducto extends JPanel {
             return;
         }
 
-        mainFrame.anadirProductoALaCartera(nombre, descripcion, imagen, estado);
+        mainFrame.anadirProductoALaCartera(nombre, descripcion, imagen);
         JOptionPane.showMessageDialog(this, "¡Producto subido con éxito!");
         mainFrame.cambiarPantalla("PANTALLA_MIS_PRODUCTOS");
     }

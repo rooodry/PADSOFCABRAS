@@ -23,6 +23,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import productos.ProductoSegundaMano;
+import utilidades.EstadoConservacion;
 import utilidades.EstadoProducto;
 
 /**
@@ -53,7 +54,7 @@ public class TarjetaSegundaMano extends JPanel {
         add(Box.createVerticalStrut(10));
         add(crearNombre(producto.getNombre()));
         add(Box.createVerticalStrut(5));
-        add(crearEstrellas(producto.getValoracionEmpleado()));
+        add(crearEstado(producto.getEstadoConservacion()));
         add(Box.createVerticalStrut(5));
         add(crearPrecio(producto.getValorEstimado()));
 
@@ -106,16 +107,13 @@ public class TarjetaSegundaMano extends JPanel {
         return label;
     }
 
-    private JPanel crearEstrellas(int valoracion) {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 0));
-        panel.setOpaque(false);
-        for (int i = 0; i < 5; i++) {
-            JLabel estrella = new JLabel("*");
-            estrella.setFont(new Font("Dialog", Font.BOLD, 18));
-            estrella.setForeground(i < valoracion ? new Color(245, 230, 180) : new Color(220, 205, 190));
-            panel.add(estrella);
-        }
-        return panel;
+    private JLabel crearEstado(EstadoConservacion estado) {
+        JLabel label = new JLabel(estado == null ? "Sin valorar" : estado.toString(), SwingConstants.CENTER);
+        label.setFont(new Font("SansSerif", Font.BOLD, 13));
+        label.setForeground(new Color(255, 245, 220));
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setMaximumSize(new Dimension(170, 24));
+        return label;
     }
 
     private JLabel crearPrecio(double precio) {

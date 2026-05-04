@@ -66,6 +66,19 @@ public class ProductoSegundaMano extends Producto {
     }
 
     /**
+     * Registra la tasación de segunda mano: valor económico y estado físico.
+     * @param valorEstimado      Valor monetario estimado del producto.
+     * @param estadoConservacion Estado físico del producto.
+     */
+    public void setValoracion(double valorEstimado, EstadoConservacion estadoConservacion) {
+        this.valoracionEmpleado = 0;
+        this.valorEstimado = valorEstimado;
+        this.estadoConservacion = estadoConservacion;
+        this.estaValorado = true;
+        this.estadoProducto = EstadoProducto.VALORADO;
+    }
+
+    /**
      * Indica manualmente si el producto ha sido valorado.
      * @param flag true si está valorado, false si no.
      */

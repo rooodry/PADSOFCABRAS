@@ -413,6 +413,8 @@ public class HomePanel extends JPanel {
             if (mainFrame.isSesionEmpleado() || mainFrame.isSesionGestor()) {
                 menu.add(crearItemMenu("GESTION", "GESTION", Main.PANTALLA_GESTION, activo, mainFrame));
             }
+            menu.addSeparator();
+            menu.add(crearItemCerrarSesion(mainFrame));
 
             menu.show(origen, 0, origen.getHeight() + 6);
         }
@@ -425,6 +427,17 @@ public class HomePanel extends JPanel {
             item.setFont(new Font("SansSerif", Font.BOLD, 14));
             item.setBorder(new EmptyBorder(8, 16, 8, 46));
             item.addActionListener(e -> mainFrame.cambiarPantalla(pantalla));
+            return item;
+        }
+
+        private JMenuItem crearItemCerrarSesion(Main mainFrame) {
+            JMenuItem item = new JMenuItem("CERRAR SESION");
+            item.setOpaque(true);
+            item.setBackground(UiStyle.COLOR_CABECERA);
+            item.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+            item.setFont(new Font("SansSerif", Font.BOLD, 14));
+            item.setBorder(new EmptyBorder(8, 16, 8, 46));
+            item.addActionListener(e -> mainFrame.cerrarSesion());
             return item;
         }
 

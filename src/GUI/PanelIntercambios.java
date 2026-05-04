@@ -205,7 +205,7 @@ public class PanelIntercambios extends JPanel {
         cuerpo.add(Box.createVerticalStrut(14));
         cuerpo.add(crearEtiquetaGrande(productoSeleccionado.getNombre()));
         cuerpo.add(Box.createVerticalStrut(10));
-        cuerpo.add(crearEstrellas(productoSeleccionado.getValoracion()));
+        cuerpo.add(crearEtiquetaEstado(productoSeleccionado));
         cuerpo.add(Box.createVerticalStrut(10));
         cuerpo.add(crearEtiquetaNormal(productoSeleccionado.getDescripcion()));
         cuerpo.add(Box.createVerticalStrut(12));
@@ -303,7 +303,7 @@ public class PanelIntercambios extends JPanel {
         nombre.setAlignmentX(Component.LEFT_ALIGNMENT);
         centro.add(nombre);
         centro.add(Box.createVerticalStrut(8));
-        centro.add(crearEstrellas(producto.getValoracion()));
+        centro.add(crearEtiquetaEstado(producto));
         centro.add(Box.createVerticalStrut(8));
         JLabel valor = new JLabel("Valor: " + String.format("%.2f EUR", producto.getValorEstimado()));
         valor.setFont(new Font("SansSerif", Font.PLAIN, 12));
@@ -338,6 +338,16 @@ public class PanelIntercambios extends JPanel {
         label.setForeground(UiStyle.COLOR_TEXTO);
         panel.add(label);
         return panel;
+    }
+
+    private JLabel crearEtiquetaEstado(ProductoSegundaMano producto) {
+        String estado = producto.getEstadoConservacion() == null
+                ? "Sin valorar" : producto.getEstadoConservacion().toString();
+        JLabel label = new JLabel("Estado: " + estado);
+        label.setFont(new Font("SansSerif", Font.BOLD, 13));
+        label.setForeground(UiStyle.COLOR_TEXTO);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return label;
     }
 
     private JLabel crearMiniatura(String ruta, int ancho, int alto) {

@@ -55,11 +55,15 @@ public class PanelEmpleado extends JPanel {
     private final Main mainFrame;
     private final JPanel contenido;
     private String seccionActiva;
+    private ProductoTienda productoSeleccionado;
+    private boolean editandoProducto;
+    private String seccionAnteriorProductos;
 
     public PanelEmpleado(Main mainFrame) {
         this.mainFrame = mainFrame;
         this.contenido = new JPanel();
         this.seccionActiva = "HOME";
+        this.seccionAnteriorProductos = "HOME";
 
         setLayout(new BorderLayout());
         setBackground(UiStyle.COLOR_FONDO);
@@ -82,13 +86,18 @@ public class PanelEmpleado extends JPanel {
             return;
         }
 
-        if ("STOCK".equals(seccionActiva) && empleado.tienePermiso(TiposEmpleado.EMPLEADOS_PRODUCTO)) {
+        if ("DETALLE_PRODUCTO".equals(seccionActiva) && productoSeleccionado != null
+                && empleado.tienePermiso(TiposEmpleado.EMPLEADOS_PRODUCTO)) {
+            pintarDetalleProducto();
+        } else if ("STOCK".equals(seccionActiva) && empleado.tienePermiso(TiposEmpleado.EMPLEADOS_PRODUCTO)) {
             pintarStock();
         } else if ("PEDIDOS".equals(seccionActiva) && empleado.tienePermiso(TiposEmpleado.EMPLEADOS_PEDIDO)) {
             pintarPedidos();
         } else if ("INTERCAMBIOS".equals(seccionActiva)
                 && empleado.tienePermiso(TiposEmpleado.EMPLEADOS_INTERCAMBIO)) {
             pintarIntercambios();
+        } else if ("SEGUNDA_MANO".equals(seccionActiva) && empleado.tienePermiso(TiposEmpleado.EMPLEADOS_PRODUCTO)) {
+            pintarSegundaMano();
         } else if ("PACKS".equals(seccionActiva) && empleado.tienePermiso(TiposEmpleado.EMPLEADOS_PRODUCTO)) {
             pintarPacks();
         } else {
@@ -101,48 +110,55 @@ public class PanelEmpleado extends JPanel {
     private JPanel crearCabecera() {
         JPanel cabecera = new JPanel(new BorderLayout());
         cabecera.setBackground(UiStyle.COLOR_CABECERA);
-        cabecera.setPreferredSize(new Dimension(0, 72));
-        cabecera.setBorder(new EmptyBorder(6, 22, 6, 22));
+        cabecera.setPreferredSize(new Dimension(0, 50));
+        cabecera.setBorder(new EmptyBorder(3, 14, 3, 12));
 
-        JButton menu = new JButton("\u2630");
-        menu.setFont(new Font("SansSerif", Font.BOLD, 42));
-        menu.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        menu.setContentAreaFilled(false);
-        menu.setBorderPainted(false);
-        menu.setFocusPainted(false);
-        menu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        menu.setPreferredSize(new Dimension(86, 60));
+        JPanel izquierda = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        izquierda.setOpaque(false);
+        JButton menu = crearBotonIcono("\u2630", "Abrir menu", 32, 48);
         menu.addActionListener(e -> mostrarMenuLateral(menu));
-        cabecera.add(menu, BorderLayout.WEST);
+        izquierda.add(menu);
+        cabecera.add(izquierda, BorderLayout.WEST);
 
-        JLabel marca = new JLabel("GOAT & GET", SwingConstants.CENTER);
-        marca.setFont(new Font("SansSerif", Font.BOLD, 42));
-        marca.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        cabecera.add(marca, BorderLayout.CENTER);
+        JLabel titulo = new JLabel("GOAT & GET", SwingConstants.CENTER);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 34));
+        titulo.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        cabecera.add(titulo, BorderLayout.CENTER);
 
-        JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 4));
+        JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
         derecha.setOpaque(false);
-        JLabel campana = new JLabel("\uD83D\uDD14");
-        campana.setFont(new Font("Dialog", Font.PLAIN, 38));
-        campana.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        JLabel perfil = new JLabel("\uD83D\uDC10");
-        perfil.setFont(new Font("Dialog", Font.PLAIN, 38));
-        perfil.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        derecha.add(campana);
-        derecha.add(perfil);
+        derecha.add(crearBotonIcono("\uD83D\uDD14", "Notificaciones", 26, 42));
+        derecha.add(crearBotonIcono("\uD83D\uDC10", "Empleado", 28, 42));
         cabecera.add(derecha, BorderLayout.EAST);
 
         return cabecera;
+    }
+
+    private JButton crearBotonIcono(String texto, String tooltip, int fontSize, int ancho) {
+        JButton boton = new JButton(texto);
+        boton.setFont(new Font("Dialog", Font.BOLD, fontSize));
+        boton.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        boton.setBackground(UiStyle.COLOR_CABECERA);
+        boton.setBorderPainted(false);
+        boton.setContentAreaFilled(false);
+        boton.setFocusPainted(false);
+        boton.setOpaque(false);
+        boton.setToolTipText(tooltip);
+        boton.setPreferredSize(new Dimension(ancho, 40));
+        boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return boton;
     }
 
     private void mostrarMenuLateral(JButton origen) {
         Empleado empleado = mainFrame.getEmpleadoActual();
         JPopupMenu menu = new JPopupMenu();
         menu.setBackground(UiStyle.COLOR_CABECERA);
-        menu.setBorder(BorderFactory.createLineBorder(UiStyle.COLOR_TEXTO_CLARO, 2));
+        menu.setBorder(new EmptyBorder(8, 8, 8, 8));
 
         menu.add(crearItemMenu("HOME", "HOME", true));
         menu.add(crearItemMenu("STOCK", "STOCK",
+                empleado == null || empleado.tienePermiso(TiposEmpleado.EMPLEADOS_PRODUCTO)));
+        menu.add(crearItemMenu("SEGUNDA MANO", "SEGUNDA_MANO",
                 empleado == null || empleado.tienePermiso(TiposEmpleado.EMPLEADOS_PRODUCTO)));
         menu.add(crearItemMenu("GEST. PEDIDOS", "PEDIDOS",
                 empleado == null || empleado.tienePermiso(TiposEmpleado.EMPLEADOS_PEDIDO)));
@@ -150,17 +166,21 @@ public class PanelEmpleado extends JPanel {
                 empleado == null || empleado.tienePermiso(TiposEmpleado.EMPLEADOS_PRODUCTO)));
         menu.add(crearItemMenu("GEST. INTERCAMBIOS", "INTERCAMBIOS",
                 empleado == null || empleado.tienePermiso(TiposEmpleado.EMPLEADOS_INTERCAMBIO)));
+        menu.addSeparator();
+        JMenuItem salir = crearItemMenu("CERRAR SESION", seccionActiva, true);
+        salir.addActionListener(e -> mainFrame.cerrarSesion());
+        menu.add(salir);
 
-        menu.show(origen, -22, origen.getHeight() + 6);
+        menu.show(origen, 0, origen.getHeight() + 6);
     }
 
     private JMenuItem crearItemMenu(String texto, String seccion, boolean habilitado) {
         JMenuItem item = new JMenuItem(texto);
         item.setOpaque(true);
-        item.setBackground(UiStyle.COLOR_CABECERA);
+        item.setBackground(seccion.equals(seccionActiva) ? UiStyle.COLOR_TEXTO : UiStyle.COLOR_CABECERA);
         item.setForeground(habilitado ? UiStyle.COLOR_TEXTO_CLARO : new Color(215, 205, 192));
-        item.setFont(new Font("SansSerif", Font.BOLD, 30));
-        item.setBorder(new EmptyBorder(24, 52, 24, 150));
+        item.setFont(new Font("SansSerif", Font.BOLD, 14));
+        item.setBorder(new EmptyBorder(8, 16, 8, 68));
         item.setEnabled(habilitado);
         item.addActionListener(e -> {
             seccionActiva = seccion;
@@ -180,20 +200,31 @@ public class PanelEmpleado extends JPanel {
     }
 
     private JPanel crearTarjetaProducto(ProductoTienda producto, boolean editable) {
-        JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_CABECERA, 18);
-        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
-        tarjeta.setBorder(new EmptyBorder(18, 20, 16, 20));
-        tarjeta.setPreferredSize(new Dimension(220, 290));
-        tarjeta.setMinimumSize(new Dimension(220, 290));
-        tarjeta.setMaximumSize(new Dimension(220, 290));
-        tarjeta.add(crearImagenProducto(producto));
-        tarjeta.add(crearNombreProducto(producto.getNombre()));
+        JPanel tarjeta = new JPanel(new BorderLayout(0, 8));
+        tarjeta.setOpaque(false);
+        TarjetaProducto vistaCliente = new TarjetaProducto(producto);
+        vistaCliente.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                abrirDetalleProducto(producto, false);
+            }
+        });
+        tarjeta.add(vistaCliente, BorderLayout.CENTER);
         JButton editar = crearBoton("Editar", 120);
-        editar.setAlignmentX(Component.CENTER_ALIGNMENT);
         editar.setEnabled(editable);
-        editar.addActionListener(e -> editarProducto(producto));
-        tarjeta.add(editar);
+        editar.addActionListener(e -> abrirDetalleProducto(producto, true));
+        tarjeta.add(editar, BorderLayout.SOUTH);
         return tarjeta;
+    }
+
+    private void abrirDetalleProducto(ProductoTienda producto, boolean editar) {
+        productoSeleccionado = producto;
+        editandoProducto = editar;
+        if (!"DETALLE_PRODUCTO".equals(seccionActiva)) {
+            seccionAnteriorProductos = seccionActiva;
+        }
+        seccionActiva = "DETALLE_PRODUCTO";
+        refrescar();
     }
 
     private JLabel crearImagenProducto(ProductoTienda producto) {
@@ -239,34 +270,51 @@ public class PanelEmpleado extends JPanel {
         JPanel grid = new JPanel(new GridLayout(0, 3, 14, 14));
         grid.setOpaque(false);
         for (ProductoTienda producto : mainFrame.getProductosTienda()) {
-            JPanel tarjeta = crearTarjeta();
-            tarjeta.add(crearEtiqueta("<b>" + producto.getNombre() + "</b>"));
-            tarjeta.add(crearEtiqueta(String.format("%.2f EUR | %d Stock",
-                    producto.getPrecio(), mainFrame.getStock().getNumProductos(producto))));
-            tarjeta.add(crearEtiqueta("Categorias: " + textoCategorias(producto)));
+            JPanel tarjeta = new JPanel(new BorderLayout(0, 6));
+            tarjeta.setOpaque(false);
+            TarjetaProducto vistaCliente = new TarjetaProducto(producto);
+            vistaCliente.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    abrirDetalleProducto(producto, false);
+                }
+            });
+            tarjeta.add(vistaCliente, BorderLayout.CENTER);
+            tarjeta.add(crearEtiqueta(String.format("%d unidades en stock",
+                    mainFrame.getStock().getNumProductos(producto))), BorderLayout.NORTH);
             JButton editar = crearBoton("Editar producto", 150);
-            editar.addActionListener(e -> editarProducto(producto));
-            tarjeta.add(editar);
+            editar.addActionListener(e -> abrirDetalleProducto(producto, true));
+            tarjeta.add(editar, BorderLayout.SOUTH);
             grid.add(tarjeta);
         }
         contenido.add(grid);
-
-        contenido.add(crearTitulo("Valoraciones pendientes"));
-        for (ProductoSegundaMano producto : mainFrame.getProductosPendientesValoracion()) {
-            contenido.add(crearFilaValoracion(producto));
-        }
     }
 
     private JPanel crearFilaValoracion(ProductoSegundaMano producto) {
         JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
         fila.setLayout(new BorderLayout(10, 0));
-        fila.setBorder(new EmptyBorder(10, 14, 10, 14));
-        fila.add(crearEtiqueta(producto.getNombre() + " | propietario: "
-                + producto.getPropietario().getNombre()), BorderLayout.CENTER);
-        JButton valorar = crearBoton("Valorar", 110);
+        fila.setBorder(new EmptyBorder(22, 14, 22, 14));
+        fila.setPreferredSize(new Dimension(0, 86));
+        fila.setMinimumSize(new Dimension(0, 86));
+        fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
+        fila.add(crearEtiqueta(textoProductoSegundaMano(producto)), BorderLayout.CENTER);
+        JButton valorar = crearBoton(producto.getEstaValorado() ? "Modificar" : "Valorar", 120);
         valorar.addActionListener(e -> valorarProducto(producto));
         fila.add(valorar, BorderLayout.EAST);
         return fila;
+    }
+
+    private void pintarSegundaMano() {
+        contenido.add(crearTitulo("SEGUNDA MANO"));
+        contenido.add(crearSubtitulo("Productos de clientes pendientes de valoracion o ya valorados."));
+        List<ProductoSegundaMano> productos = mainFrame.getProductosSegundaManoGestion();
+        if (productos.isEmpty()) {
+            contenido.add(crearEtiqueta("No hay productos de segunda mano."));
+            return;
+        }
+        for (ProductoSegundaMano producto : productos) {
+            contenido.add(crearFilaValoracion(producto));
+        }
     }
 
     private void pintarPedidos() {
@@ -288,7 +336,10 @@ public class PanelEmpleado extends JPanel {
     private JPanel crearFilaPedido(Pedido pedido, String accion) {
         JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
         fila.setLayout(new BorderLayout(10, 0));
-        fila.setBorder(new EmptyBorder(10, 14, 10, 14));
+        fila.setBorder(new EmptyBorder(22, 14, 22, 14));
+        fila.setPreferredSize(new Dimension(0, 86));
+        fila.setMinimumSize(new Dimension(0, 86));
+        fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
         fila.add(crearEtiqueta(resumenPedido(pedido)), BorderLayout.CENTER);
         JPanel acciones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         acciones.setOpaque(false);
@@ -314,7 +365,10 @@ public class PanelEmpleado extends JPanel {
         for (Intercambio intercambio : mainFrame.getIntercambios()) {
             JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
             fila.setLayout(new BorderLayout(10, 0));
-            fila.setBorder(new EmptyBorder(10, 14, 10, 14));
+            fila.setBorder(new EmptyBorder(22, 14, 22, 14));
+            fila.setPreferredSize(new Dimension(0, 86));
+            fila.setMinimumSize(new Dimension(0, 86));
+            fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
             String texto = intercambio.getOferta().getProductoOfertado().getNombre()
                     + " por " + intercambio.getOferta().getProductoDeseado().getNombre()
                     + " | " + intercambio.getOferta().getEstadoOferta();
@@ -336,7 +390,10 @@ public class PanelEmpleado extends JPanel {
         for (Pack pack : mainFrame.getPacks()) {
             JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
             fila.setLayout(new BorderLayout(10, 0));
-            fila.setBorder(new EmptyBorder(10, 14, 10, 14));
+            fila.setBorder(new EmptyBorder(22, 14, 22, 14));
+            fila.setPreferredSize(new Dimension(0, 86));
+            fila.setMinimumSize(new Dimension(0, 86));
+            fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
             fila.add(crearEtiqueta(pack.getNombre() + " | " + resumenPack(pack)
                     + " = " + String.format("%.2f EUR", pack.getPrecio())), BorderLayout.CENTER);
             JButton editar = crearBoton("Modificar", 120);
@@ -347,34 +404,71 @@ public class PanelEmpleado extends JPanel {
     }
 
     private void editarProducto(ProductoTienda producto) {
-        JTextField precio = new JTextField(String.format("%.2f", producto.getPrecio()).replace(',', '.'));
-        JSpinner stock = new JSpinner(new SpinnerNumberModel(mainFrame.getStock().getNumProductos(producto), 0, 9999, 1));
-        JTextArea descripcion = new JTextArea(producto.getDescripcion(), 5, 28);
-        JTextField imagen = new JTextField(producto.getImagen() == null ? "" : producto.getImagen());
-        JTextField categorias = new JTextField(String.join(", ", producto.getCategoriasTexto()));
+        abrirDetalleProducto(producto, true);
+    }
 
-        JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
-        panel.add(new JLabel("Precio"));
-        panel.add(precio);
-        panel.add(new JLabel("Unidades de stock"));
-        panel.add(stock);
-        panel.add(new JLabel("Descripcion"));
-        panel.add(new JScrollPane(descripcion));
-        panel.add(new JLabel("Imagen"));
-        panel.add(imagen);
-        panel.add(new JLabel("Categorias separadas por coma"));
-        panel.add(categorias);
+    private void pintarDetalleProducto() {
+        contenido.setBorder(new EmptyBorder(8, 14, 24, 34));
+        contenido.add(crearBarraVolverProductos());
+        PanelDeProducto detalle = new PanelDeProducto(productoSeleccionado, mainFrame, editandoProducto);
+        detalle.configurarBotonCesta("Modificar", true);
+        detalle.addListenerCesta(e -> {
+            editandoProducto = true;
+            refrescar();
+        });
+        detalle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        detalle.setListenerEdicion(new PanelDeProducto.ListenerEdicion() {
+            @Override
+            public void confirmar(PanelDeProducto.DatosEdicion datos) {
+                mainFrame.editarProductoTienda(productoSeleccionado,
+                        datos.nombre,
+                        parseDouble(datos.precio, productoSeleccionado.getPrecio()),
+                        datos.stock,
+                        datos.descripcion,
+                        datos.imagen,
+                        parseCategorias(datos.categorias));
+                editandoProducto = false;
+                refrescar();
+            }
 
-        int respuesta = JOptionPane.showConfirmDialog(this, panel,
-                "Editar " + producto.getNombre(), JOptionPane.OK_CANCEL_OPTION);
-        if (respuesta == JOptionPane.OK_OPTION) {
-            mainFrame.editarProductoTienda(producto,
-                    parseDouble(precio.getText(), producto.getPrecio()),
-                    ((Integer) stock.getValue()).intValue(),
-                    descripcion.getText(),
-                    imagen.getText(),
-                    parseCategorias(categorias.getText()));
-        }
+            @Override
+            public void cancelar() {
+                editandoProducto = false;
+                refrescar();
+            }
+        });
+        contenido.add(detalle);
+    }
+
+    private JPanel crearBarraVolverProductos() {
+        JPanel barra = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        barra.setOpaque(false);
+        barra.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JButton volver = crearBotonFlechaVolver();
+        volver.addActionListener(e -> volverAListadoProductos());
+        barra.add(volver);
+        return barra;
+    }
+
+    private JButton crearBotonFlechaVolver() {
+        JButton boton = new JButton("\u2190");
+        boton.setFont(new Font("SansSerif", Font.BOLD, 30));
+        boton.setForeground(UiStyle.COLOR_TEXTO);
+        boton.setBorderPainted(false);
+        boton.setContentAreaFilled(false);
+        boton.setFocusPainted(false);
+        boton.setOpaque(false);
+        boton.setToolTipText("Volver a productos");
+        boton.setPreferredSize(new Dimension(48, 40));
+        boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return boton;
+    }
+
+    private void volverAListadoProductos() {
+        editandoProducto = false;
+        productoSeleccionado = null;
+        seccionActiva = seccionAnteriorProductos;
+        refrescar();
     }
 
     private void cargarProductosDeFichero() {
@@ -439,21 +533,22 @@ public class PanelEmpleado extends JPanel {
     }
 
     private void valorarProducto(ProductoSegundaMano producto) {
-        JSpinner valoracion = new JSpinner(new SpinnerNumberModel(3, 1, 5, 1));
-        JSpinner precio = new JSpinner(new SpinnerNumberModel(10.0, 0.0, 9999.0, 1.0));
+        double precioInicial = producto.getEstaValorado() ? producto.getValorEstimado() : 10.0;
+        JSpinner precio = new JSpinner(new SpinnerNumberModel(precioInicial, 0.0, 9999.0, 1.0));
         JComboBox<EstadoConservacion> conservacion = new JComboBox<>(EstadoConservacion.values());
+        if (producto.getEstadoConservacion() != null) {
+            conservacion.setSelectedItem(producto.getEstadoConservacion());
+        }
         JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
-        panel.add(new JLabel("Valoracion"));
-        panel.add(valoracion);
-        panel.add(new JLabel("Valor estimado"));
+        panel.add(new JLabel("Precio estimado"));
         panel.add(precio);
-        panel.add(new JLabel("Conservacion"));
+        panel.add(new JLabel("Estado de conservacion"));
         panel.add(conservacion);
         int respuesta = JOptionPane.showConfirmDialog(this, panel,
-                "Valorar " + producto.getNombre(), JOptionPane.OK_CANCEL_OPTION);
+                (producto.getEstaValorado() ? "Modificar " : "Valorar ") + producto.getNombre(),
+                JOptionPane.OK_CANCEL_OPTION);
         if (respuesta == JOptionPane.OK_OPTION) {
             mainFrame.valorarProductoSegundaMano(producto,
-                    ((Integer) valoracion.getValue()).intValue(),
                     ((Double) precio.getValue()).doubleValue(),
                     (EstadoConservacion) conservacion.getSelectedItem());
         }
@@ -468,6 +563,14 @@ public class PanelEmpleado extends JPanel {
             productos.append(entry.getKey().getNombre()).append(" x").append(entry.getValue());
         }
         return pedido.getEstadoPedido() + " | " + productos;
+    }
+
+    private String textoProductoSegundaMano(ProductoSegundaMano producto) {
+        String valor = producto.getEstaValorado()
+                ? String.format("%.2f EUR | %s", producto.getValorEstimado(), producto.getEstadoConservacion())
+                : "pendiente de valorar";
+        return "<b>" + producto.getNombre() + "</b> | propietario: "
+                + producto.getPropietario().getNombre() + " | " + valor;
     }
 
     private String resumenPack(Pack pack) {

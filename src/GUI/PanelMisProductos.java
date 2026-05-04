@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -219,7 +220,14 @@ public class PanelMisProductos extends JPanel {
         for (ProductoSegundaMano producto : filtrados) {
             JPanel envoltura = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
             envoltura.setBackground(UiStyle.COLOR_FONDO);
-            envoltura.add(new TarjetaSegundaMano(producto, resolverListener(producto)));
+            TarjetaSegundaMano tarjeta = new TarjetaSegundaMano(producto, resolverListener(producto));
+            tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    mostrarDetalleProducto(producto);
+                }
+            });
+            envoltura.add(tarjeta);
             panelGrid.add(envoltura);
         }
 
@@ -242,6 +250,20 @@ public class PanelMisProductos extends JPanel {
 
         panelGrid.revalidate();
         panelGrid.repaint();
+    }
+
+    private void mostrarDetalleProducto(ProductoSegundaMano producto) {
+        String estado = producto.getEstadoConservacion() == null
+                ? "Pendiente de valorar" : producto.getEstadoConservacion().toString();
+        String precio = producto.getValorEstimado() > 0
+                ? String.format("%.2f EUR", producto.getValorEstimado()) : "Sin tasar";
+        JOptionPane.showMessageDialog(this,
+                "Producto: " + producto.getNombre()
+                        + "\nDescripcion: " + producto.getDescripcion()
+                        + "\nEstado: " + estado
+                        + "\nPrecio estimado: " + precio
+                        + "\nSituacion: " + producto.getEstadoProducto(),
+                "Producto de segunda mano", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private List<ProductoSegundaMano> filtrarPorTab(List<ProductoSegundaMano> productos) {

@@ -559,9 +559,9 @@ public class Main extends JFrame {
         }
         pedido.setEstadoPedido(EstadoPedido.EN_PREPARACION);
         clienteActual.addCodigo(pedido.getCodigo());
-        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.PAGO_REALIZADO,
+        notificarCambioEstadoPedido(pedido, TipoNotificacion.PAGO_REALIZADO,
                 "Pago realizado. Codigo de recogida: " + pedido.getCodigo().getCodigo()
-                        + ". Documento: " + clienteActual.getDNI()));
+                        + ". Documento: " + clienteActual.getDNI());
         JOptionPane.showMessageDialog(this, "Pago realizado. Codigo: " + pedido.getCodigo().getCodigo());
         refrescarPantallasConDatos();
     }
@@ -594,9 +594,9 @@ public class Main extends JFrame {
             return;
         }
         pedido.setEstadoPedido(EstadoPedido.LISTO);
-        pedido.getCliente().addNotificacion(new Notificacion(TipoNotificacion.PEDIDO_LISTO,
+        notificarCambioEstadoPedido(pedido, TipoNotificacion.PEDIDO_LISTO,
                 "Tu pedido esta listo para recoger con DNI " + pedido.getCliente().getDNI()
-                        + " y codigo " + pedido.getCodigo().getCodigo() + "."));
+                        + " y codigo " + pedido.getCodigo().getCodigo() + ".");
         refrescarPantallasConDatos();
     }
 
@@ -610,9 +610,16 @@ public class Main extends JFrame {
             return;
         }
         pedido.setEstadoPedido(EstadoPedido.ENTREGADO);
-        pedido.getCliente().addNotificacion(new Notificacion(TipoNotificacion.PAGO_REALIZADO,
-                "Pedido entregado correctamente."));
+        notificarCambioEstadoPedido(pedido, TipoNotificacion.PAGO_REALIZADO,
+                "Tu pedido se ha marcado como entregado correctamente.");
         refrescarPantallasConDatos();
+    }
+
+    private void notificarCambioEstadoPedido(Pedido pedido, TipoNotificacion tipo, String mensaje) {
+        if (pedido == null || pedido.getCliente() == null) {
+            return;
+        }
+        pedido.getCliente().addNotificacion(new Notificacion(tipo, mensaje));
     }
 
     /**
@@ -795,6 +802,10 @@ public class Main extends JFrame {
         guardarEstadoPersistente();
     }
 
+    public void anadirProductoALaCartera(String nombre, String descripcion, String imagen) {
+        anadirProductoALaCartera(nombre, descripcion, imagen, null);
+    }
+
     /**
      * Requests valuation for a second-hand product.
      *
@@ -874,6 +885,17 @@ public class Main extends JFrame {
         fijarStockProducto(producto, Math.max(0, unidades));
     }
 
+    public void editarProductoTienda(ProductoTienda producto, String nombre, double precio, int unidades,
+            String descripcion, String imagen, List<String> categorias) {
+        if (producto == null) {
+            return;
+        }
+        if (nombre != null && !nombre.isBlank()) {
+            producto.setNombre(nombre.trim());
+        }
+        editarProductoTienda(producto, precio, unidades, descripcion, imagen, categorias);
+    }
+
     public void recargarCatalogoDesdeFichero(String ruta) {
         if (ruta == null || ruta.isBlank()) {
             return;
@@ -915,6 +937,18 @@ public class Main extends JFrame {
             return;
         }
         producto.setValoracion(valoracion, valorEstimado, conservacion);
+        producto.setFechaValoracion(new Date());
+        producto.getPropietario().addNotificacion(new Notificacion(TipoNotificacion.VALORACION_REALIZADA,
+                "Tu producto " + producto.getNombre() + " ha sido valorado."));
+        refrescarPantallasConDatos();
+    }
+
+    public void valorarProductoSegundaMano(ProductoSegundaMano producto,
+            double valorEstimado, EstadoConservacion conservacion) {
+        if (producto == null) {
+            return;
+        }
+        producto.setValoracion(valorEstimado, conservacion);
         producto.setFechaValoracion(new Date());
         producto.getPropietario().addNotificacion(new Notificacion(TipoNotificacion.VALORACION_REALIZADA,
                 "Tu producto " + producto.getNombre() + " ha sido valorado."));

@@ -216,6 +216,17 @@ public class LoginClientePanel extends JPanel {
         radioPanel.add(gestorRadio);
         formContainer.add(radioPanel, fbgc);
 
+        ActionListener actualizarAccesosCliente = e -> {
+            boolean esCliente = clienteRadio.isSelected();
+            panelCrearCuenta.setVisible(esCliente);
+            continuarButton.setVisible(esCliente);
+            formContainer.revalidate();
+            formContainer.repaint();
+        };
+        clienteRadio.addActionListener(actualizarAccesosCliente);
+        empleadoRadio.addActionListener(actualizarAccesosCliente);
+        gestorRadio.addActionListener(actualizarAccesosCliente);
+
         panelCentral.add(formContainer, gbc);
         add(panelCentral, BorderLayout.CENTER);
     }

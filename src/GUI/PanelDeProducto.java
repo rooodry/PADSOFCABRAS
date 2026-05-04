@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.RenderingHints;
@@ -30,8 +31,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -54,7 +58,15 @@ public class PanelDeProducto extends JPanel {
     private final ProductoTienda producto;
     private final Main mainFrame;
     private final List<ActionListener> listenersCesta = new ArrayList<>();
+    private final boolean editable;
     private JButton botonCesta;
+    private JTextField campoNombre;
+    private JTextField campoPrecio;
+    private JSpinner campoStock;
+    private JTextField campoImagen;
+    private JTextField campoCategorias;
+    private JTextArea campoDescripcion;
+    private ListenerEdicion listenerEdicion;
 
     /**
      * Creates a detail panel for the given shop product.
@@ -72,11 +84,23 @@ public class PanelDeProducto extends JPanel {
      * @param mainFrame optional main GUI controller
      */
     public PanelDeProducto(ProductoTienda producto, Main mainFrame) {
+        this(producto, mainFrame, false);
+    }
+
+    /**
+     * Creates a detail panel that can optionally edit the product inline.
+     *
+     * @param producto product to show
+     * @param mainFrame optional main GUI controller
+     * @param editable true to show inline fields and confirm/cancel buttons
+     */
+    public PanelDeProducto(ProductoTienda producto, Main mainFrame, boolean editable) {
         if (producto == null) {
             throw new IllegalArgumentException("El producto no puede ser null.");
         }
         this.producto = producto;
         this.mainFrame = mainFrame;
+        this.editable = editable;
         construirUI();
     }
 
@@ -102,16 +126,23 @@ public class PanelDeProducto extends JPanel {
         }
     }
 
+    public void setListenerEdicion(ListenerEdicion listenerEdicion) {
+        this.listenerEdicion = listenerEdicion;
+    }
+
     private void construirUI() {
         setLayout(new BorderLayout());
         setBackground(UiStyle.COLOR_FONDO);
-        setPreferredSize(new Dimension(752, 380));
+        setPreferredSize(new Dimension(820, editable ? 470 : 380));
 
         JScrollPane scroll = new JScrollPane(crearCuerpo(), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(null);
         scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
         add(scroll, BorderLayout.CENTER);
+        if (editable) {
+            add(crearBotoneraEdicion(), BorderLayout.SOUTH);
+        }
     }
 
     private JPanel crearCuerpo() {
@@ -137,8 +168,14 @@ public class PanelDeProducto extends JPanel {
         panel.add(crearEstrellas(producto.getValoracion()));
         panel.add(Box.createVerticalStrut(8));
         panel.add(crearPrecio());
+        if (editable) {
+            panel.add(Box.createVerticalStrut(8));
+            panel.add(crearCamposProducto());
+        }
         panel.add(Box.createVerticalStrut(12));
-        panel.add(crearBotonCesta());
+        if (!editable) {
+            panel.add(crearBotonCesta());
+        }
         return panel;
     }
 
@@ -166,6 +203,14 @@ public class PanelDeProducto extends JPanel {
     }
 
     private JLabel crearNombre() {
+        if (editable) {
+            campoNombre = new JTextField(producto.getNombre());
+            campoNombre.setFont(new Font("SansSerif", Font.BOLD, 16));
+            campoNombre.setHorizontalAlignment(SwingConstants.CENTER);
+            campoNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
+            campoNombre.setMaximumSize(new Dimension(ANCHO_IZQUIERDA - 8, 30));
+            return envoltorioCampo(campoNombre, ANCHO_IZQUIERDA - 8, 30);
+        }
         JLabel label = new JLabel("<html><center>" + producto.getNombre() + "</center></html>", SwingConstants.CENTER);
         label.setFont(new Font("SansSerif", Font.BOLD, 16));
         label.setForeground(Color.BLACK);
@@ -188,11 +233,57 @@ public class PanelDeProducto extends JPanel {
     }
 
     private JLabel crearPrecio() {
+        if (editable) {
+            campoPrecio = new JTextField(String.format("%.2f", producto.getPrecio()).replace(',', '.'));
+            campoPrecio.setFont(new Font("SansSerif", Font.BOLD, 24));
+            campoPrecio.setHorizontalAlignment(SwingConstants.CENTER);
+            campoPrecio.setAlignmentX(Component.CENTER_ALIGNMENT);
+            campoPrecio.setMaximumSize(new Dimension(150, 34));
+            return envoltorioCampo(campoPrecio, 150, 34);
+        }
         JLabel label = new JLabel(String.format("%.2f\u20ac", producto.getPrecio()).replace('.', ','));
         label.setFont(new Font("SansSerif", Font.BOLD, 32));
         label.setForeground(Color.BLACK);
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         return label;
+    }
+
+    private JLabel envoltorioCampo(JComponent campo, int ancho, int alto) {
+        JLabel envoltorio = new JLabel();
+        envoltorio.setLayout(new BorderLayout());
+        envoltorio.setAlignmentX(Component.CENTER_ALIGNMENT);
+        envoltorio.setPreferredSize(new Dimension(ancho, alto));
+        envoltorio.setMinimumSize(new Dimension(ancho, alto));
+        envoltorio.setMaximumSize(new Dimension(ancho, alto));
+        envoltorio.add(campo, BorderLayout.CENTER);
+        return envoltorio;
+    }
+
+    private JPanel crearCamposProducto() {
+        JPanel campos = new JPanel(new GridLayout(0, 1, 4, 4));
+        campos.setOpaque(false);
+        campos.setAlignmentX(Component.CENTER_ALIGNMENT);
+        campos.setMaximumSize(new Dimension(ANCHO_IZQUIERDA - 18, 132));
+
+        campoStock = new JSpinner(new SpinnerNumberModel(
+                mainFrame == null ? 0 : mainFrame.getStock().getNumProductos(producto), 0, 9999, 1));
+        campoImagen = new JTextField(producto.getImagen() == null ? "" : producto.getImagen());
+        campoCategorias = new JTextField(String.join(", ", producto.getCategoriasTexto()));
+        campos.add(crearFilaEdicion("Stock", campoStock));
+        campos.add(crearFilaEdicion("Imagen", campoImagen));
+        campos.add(crearFilaEdicion("Categorias", campoCategorias));
+        return campos;
+    }
+
+    private JPanel crearFilaEdicion(String etiqueta, JComponent campo) {
+        JPanel fila = new JPanel(new BorderLayout(6, 0));
+        fila.setOpaque(false);
+        JLabel label = new JLabel(etiqueta);
+        label.setFont(new Font("SansSerif", Font.BOLD, 11));
+        label.setForeground(Color.BLACK);
+        fila.add(label, BorderLayout.WEST);
+        fila.add(campo, BorderLayout.CENTER);
+        return fila;
     }
 
     private JButton crearBotonCesta() {
@@ -239,13 +330,19 @@ public class PanelDeProducto extends JPanel {
         JTextArea descripcion = new JTextArea(producto.getDescripcion());
         descripcion.setFont(new Font("SansSerif", Font.PLAIN, 14));
         descripcion.setForeground(Color.BLACK);
-        descripcion.setOpaque(false);
-        descripcion.setEditable(false);
+        descripcion.setOpaque(editable);
+        descripcion.setEditable(editable);
         descripcion.setLineWrap(true);
         descripcion.setWrapStyleWord(true);
-        descripcion.setBorder(null);
+        descripcion.setBorder(editable ? BorderFactory.createLineBorder(UiStyle.COLOR_BORDE, 1) : null);
         descripcion.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panel.add(descripcion);
+        if (editable) {
+            descripcion.setRows(7);
+            campoDescripcion = descripcion;
+            panel.add(new JScrollPane(descripcion));
+        } else {
+            panel.add(descripcion);
+        }
 
         return panel;
     }
@@ -323,6 +420,40 @@ public class PanelDeProducto extends JPanel {
         return formulario;
     }
 
+    private JPanel crearBotoneraEdicion() {
+        JPanel botonera = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+        botonera.setBackground(UiStyle.COLOR_FONDO);
+        botonera.setBorder(new EmptyBorder(0, 24, 8, 24));
+
+        JButton cancelar = new UiStyle.RoundedButton("Cancelar", UiStyle.COLOR_CABECERA,
+                UiStyle.COLOR_MARRON_MEDIO, 12);
+        cancelar.setPreferredSize(new Dimension(112, 32));
+        cancelar.addActionListener(e -> {
+            if (listenerEdicion != null) {
+                listenerEdicion.cancelar();
+            }
+        });
+
+        JButton confirmar = new UiStyle.RoundedButton("Confirmar", new Color(94, 75, 57),
+                UiStyle.COLOR_MARRON_MEDIO, 12);
+        confirmar.setPreferredSize(new Dimension(122, 32));
+        confirmar.addActionListener(e -> {
+            if (listenerEdicion != null) {
+                listenerEdicion.confirmar(new DatosEdicion(
+                        campoNombre.getText(),
+                        campoPrecio.getText(),
+                        ((Integer) campoStock.getValue()).intValue(),
+                        campoDescripcion.getText(),
+                        campoImagen.getText(),
+                        campoCategorias.getText()));
+            }
+        });
+
+        botonera.add(cancelar);
+        botonera.add(confirmar);
+        return botonera;
+    }
+
     private JLabel crearTitulo(String texto) {
         JLabel label = new JLabel(texto);
         label.setFont(new Font("SansSerif", Font.BOLD, 17));
@@ -387,5 +518,29 @@ public class PanelDeProducto extends JPanel {
         avatar.setMinimumSize(dimension);
         avatar.setMaximumSize(dimension);
         return avatar;
+    }
+
+    static class DatosEdicion {
+        final String nombre;
+        final String precio;
+        final int stock;
+        final String descripcion;
+        final String imagen;
+        final String categorias;
+
+        DatosEdicion(String nombre, String precio, int stock, String descripcion, String imagen, String categorias) {
+            this.nombre = nombre;
+            this.precio = precio;
+            this.stock = stock;
+            this.descripcion = descripcion;
+            this.imagen = imagen;
+            this.categorias = categorias;
+        }
+    }
+
+    interface ListenerEdicion {
+        void confirmar(DatosEdicion datos);
+
+        void cancelar();
     }
 }
