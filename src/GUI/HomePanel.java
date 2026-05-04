@@ -405,7 +405,7 @@ public class HomePanel extends JPanel {
             menu.add(crearItemMenu("HOME", "HOME", Main.PANTALLA_HOME, activo, mainFrame));
             menu.add(crearItemMenu("CARTERA", "MIS PRODUCTOS", Main.PANTALLA_MIS_PRODUCTOS, activo, mainFrame));
             menu.add(crearItemMenu("CESTA", "CESTA", Main.PANTALLA_CESTA, activo, mainFrame));
-            menu.add(crearItemMenu("PEDIDOS", "PEDIDOS", Main.PANTALLA_PEDIDOS, activo, mainFrame));
+
             menu.add(crearItemMenu("INTERCAMBIOS", "INTERCAMBIOS", Main.PANTALLA_INTERCAMBIOS, activo, mainFrame));
             menu.add(crearItemMenu("PACKS", "PACKS", Main.PANTALLA_PACKS, activo, mainFrame));
             menu.addSeparator();

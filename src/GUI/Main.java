@@ -92,9 +92,6 @@ public class Main extends JFrame {
     /** Notification inbox screen. */
     public static final String PANTALLA_NOTIFICACIONES = "PANTALLA_NOTIFICACIONES";
 
-    /** Customer order history screen. */
-    public static final String PANTALLA_PEDIDOS = "PANTALLA_PEDIDOS";
-
     /** Basic employee/manager management screen. */
     public static final String PANTALLA_GESTION = "PANTALLA_GESTION";
 
@@ -121,7 +118,6 @@ public class Main extends JFrame {
     private PanelPacks panelPacks;
     private PanelIntercambios panelIntercambios;
     private PanelNotificaciones panelNotificaciones;
-    private PanelPedidos panelPedidos;
     private PanelGestion panelGestion;
     private PanelEmpleado panelEmpleado;
     private PanelGestor panelGestor;
@@ -469,16 +465,35 @@ public class Main extends JFrame {
      * Creates an order from the current basket.
      */
     public void finalizarCompra() {
+        String numeroTarjeta = JOptionPane.showInputDialog(this,
+                "Introduce el numero de tarjeta (16 digitos):",
+                "Pago - Numero de Tarjeta",
+                JOptionPane.PLAIN_MESSAGE);
+        
+        if (numeroTarjeta == null) {
+            return;
+        }
+        
+        numeroTarjeta = numeroTarjeta.replaceAll("\\s+", "");
+        
+        if (!numeroTarjeta.matches("\\d{16}")) {
+            JOptionPane.showMessageDialog(this,
+                    "El numero de tarjeta debe tener exactamente 16 digitos.",
+                    "Numero de tarjeta invalido",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         if (clienteActual.comprar().name().equals("OK")) {
             Pedido pedido = obtenerUltimoPedido();
             if (pedido != null) {
                 sistema.addPedido(pedido);
             }
             clienteActual.addNotificacion(new Notificacion(TipoNotificacion.PAGO_REALIZADO,
-                    "Tu pedido se ha creado correctamente. Puedes pagarlo desde pedidos."));
-            JOptionPane.showMessageDialog(this, "Pedido creado correctamente. Revisalo en la pantalla de pedidos.");
+                    "Pago realizado. Tu pedido se ha creado correctamente."));
+            JOptionPane.showMessageDialog(this, "Pago realizado. Pedido creado correctamente.");
             refrescarPantallasConDatos();
-            cambiarPantalla(PANTALLA_PEDIDOS);
+            cambiarPantalla(PANTALLA_HOME);
         } else {
             JOptionPane.showMessageDialog(this, "La cesta esta vacia.", "Cesta", JOptionPane.WARNING_MESSAGE);
         }
@@ -911,7 +926,6 @@ public class Main extends JFrame {
         panelPacks = new PanelPacks(this);
         panelIntercambios = new PanelIntercambios(this);
         panelNotificaciones = new PanelNotificaciones(this);
-        panelPedidos = new PanelPedidos(this);
         panelGestion = new PanelGestion(this);
         panelEmpleado = new PanelEmpleado(this);
         panelGestor = new PanelGestor(this);
@@ -938,7 +952,6 @@ public class Main extends JFrame {
         panelContenedor.add(panelPacks, PANTALLA_PACKS);
         panelContenedor.add(panelIntercambios, PANTALLA_INTERCAMBIOS);
         panelContenedor.add(panelNotificaciones, PANTALLA_NOTIFICACIONES);
-        panelContenedor.add(panelPedidos, PANTALLA_PEDIDOS);
         panelContenedor.add(panelGestion, PANTALLA_GESTION);
         panelContenedor.add(panelEmpleado, PANTALLA_EMPLEADO);
         panelContenedor.add(panelGestor, PANTALLA_GESTOR);
@@ -950,7 +963,6 @@ public class Main extends JFrame {
                 || PANTALLA_SUBIR.equals(nombrePantalla)
                 || PANTALLA_PERFIL.equals(nombrePantalla)
                 || PANTALLA_PACKS.equals(nombrePantalla)
-                || PANTALLA_PEDIDOS.equals(nombrePantalla)
                 || PANTALLA_INTERCAMBIOS.equals(nombrePantalla)
                 || PANTALLA_NOTIFICACIONES.equals(nombrePantalla);
     }
@@ -982,9 +994,6 @@ public class Main extends JFrame {
         }
         if (panelNotificaciones != null) {
             panelNotificaciones.refrescar();
-        }
-        if (panelPedidos != null) {
-            panelPedidos.refrescar();
         }
         if (panelGestion != null) {
             panelGestion.refrescar();

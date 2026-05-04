@@ -44,14 +44,12 @@ public class PanelPerfil extends JPanel {
 
     private static final long serialVersionUID = 1L;
     private static final String TAB_RECOMENDADOS = "Productos recomendados";
-    private static final String TAB_PEDIDOS = "Historial de pedidos";
     private static final String TAB_INTERCAMBIOS = "Historial de intercambios";
     private static final String TAB_CONFIG = "Configuración";
 
     private final Main mainFrame;
     private final JPanel contenidoCentral;
     private final JButton btnRecomendados;
-    private final JButton btnPedidos;
     private final JButton btnIntercambios;
     private final JButton btnConfig;
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
@@ -74,7 +72,6 @@ public class PanelPerfil extends JPanel {
         this.lblDni = new JLabel();
 
         this.btnRecomendados = crearTabButton(TAB_RECOMENDADOS);
-        this.btnPedidos = crearTabButton(TAB_PEDIDOS);
         this.btnIntercambios = crearTabButton(TAB_INTERCAMBIOS);
         this.btnConfig = crearTabButton(TAB_CONFIG);
 
@@ -123,8 +120,6 @@ public class PanelPerfil extends JPanel {
 
         barra.add(crearBotonNav(btnRecomendados, TAB_RECOMENDADOS));
         barra.add(Box.createVerticalStrut(8));
-        barra.add(crearBotonNav(btnPedidos, TAB_PEDIDOS));
-        barra.add(Box.createVerticalStrut(8));
         barra.add(crearBotonNav(btnIntercambios, TAB_INTERCAMBIOS));
         barra.add(Box.createVerticalStrut(8));
         barra.add(crearBotonNav(btnConfig, TAB_CONFIG));
@@ -168,8 +163,6 @@ public class PanelPerfil extends JPanel {
         
         if (TAB_RECOMENDADOS.equals(tabActivo)) {
             contenidoCentral.add(crearVistaRecomendados(), BorderLayout.CENTER);
-        } else if (TAB_PEDIDOS.equals(tabActivo)) {
-            contenidoCentral.add(crearVistaPedidos(), BorderLayout.CENTER);
         } else if (TAB_INTERCAMBIOS.equals(tabActivo)) {
             contenidoCentral.add(crearVistaIntercambios(), BorderLayout.CENTER);
         } else if (TAB_CONFIG.equals(tabActivo)) {
@@ -182,7 +175,6 @@ public class PanelPerfil extends JPanel {
 
     private void actualizarBotonesTabs() {
         actualizaBoton(btnRecomendados, TAB_RECOMENDADOS.equals(tabActivo));
-        actualizaBoton(btnPedidos, TAB_PEDIDOS.equals(tabActivo));
         actualizaBoton(btnIntercambios, TAB_INTERCAMBIOS.equals(tabActivo));
         actualizaBoton(btnConfig, TAB_CONFIG.equals(tabActivo));
     }
@@ -238,74 +230,6 @@ public class PanelPerfil extends JPanel {
         precio.setFont(new Font("SansSerif", Font.BOLD, 14));
         precio.setForeground(UiStyle.COLOR_TEXTO);
         tarjeta.add(precio, BorderLayout.SOUTH);
-
-        return tarjeta;
-    }
-
-    private JPanel crearVistaPedidos() {
-        JPanel vista = new JPanel(new BorderLayout());
-        vista.setOpaque(false);
-
-        JLabel titulo = new JLabel("Historial de pedidos", SwingConstants.LEFT);
-        titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
-        titulo.setForeground(UiStyle.COLOR_TEXTO);
-        vista.add(titulo, BorderLayout.NORTH);
-
-        JPanel lista = new JPanel();
-        lista.setOpaque(false);
-        lista.setLayout(new BoxLayout(lista, BoxLayout.Y_AXIS));
-
-        List<Pedido> pedidos = mainFrame.getClienteActual().getPedidos();
-        if (pedidos.isEmpty()) {
-            JLabel vacio = new JLabel("Aún no tienes pedidos.");
-            vacio.setFont(new Font("SansSerif", Font.PLAIN, 16));
-            vacio.setForeground(UiStyle.COLOR_TEXTO);
-            lista.add(vacio);
-        } else {
-            for (Pedido pedido : pedidos) {
-                lista.add(crearTarjetaPedido(pedido));
-                lista.add(Box.createVerticalStrut(12));
-            }
-        }
-
-        JScrollPane scroll = new JScrollPane(lista,
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setBorder(null);
-        scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
-        vista.add(scroll, BorderLayout.CENTER);
-        return vista;
-    }
-
-    private JPanel crearTarjetaPedido(Pedido pedido) {
-        JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 20);
-        tarjeta.setLayout(new BorderLayout(12, 12));
-        tarjeta.setBorder(new EmptyBorder(12, 12, 12, 12));
-
-        JLabel estado = new JLabel(pedido.getEstadoPedido().toString());
-        estado.setFont(new Font("SansSerif", Font.BOLD, 16));
-        estado.setForeground(UiStyle.COLOR_TEXTO);
-        tarjeta.add(estado, BorderLayout.NORTH);
-
-        Date fechaPedido = pedido.getFechaRecogida() != null ? pedido.getFechaRecogida() : pedido.getFechaRealizacion();
-        JLabel fecha = new JLabel("Lo recogiste el " + formatoFecha.format(fechaPedido));
-        fecha.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        fecha.setForeground(UiStyle.COLOR_TEXTO);
-        tarjeta.add(fecha, BorderLayout.WEST);
-
-        JLabel total = new JLabel(String.format("%.2f€", pedido.calcularPrecioTotal()));
-        total.setFont(new Font("SansSerif", Font.BOLD, 14));
-        total.setForeground(UiStyle.COLOR_TEXTO);
-        tarjeta.add(total, BorderLayout.CENTER);
-
-        JPanel imagenes = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
-        imagenes.setOpaque(false);
-        for (Map.Entry<ProductoTienda, Integer> entry : pedido.getProductos().entrySet()) {
-            JLabel imgProducto = new JLabel("📦");
-            imgProducto.setFont(new Font("SansSerif", Font.PLAIN, 16));
-            imagenes.add(imgProducto);
-        }
-        tarjeta.add(imagenes, BorderLayout.EAST);
 
         return tarjeta;
     }
