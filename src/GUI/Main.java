@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import descuentos.Descuento;
 import intercambios.Intercambio;
 import intercambios.Oferta;
 import notificaciones.Notificacion;
@@ -288,6 +289,20 @@ public class Main extends JFrame {
 
     public List<Pedido> getPedidosGestion() {
         return sistema.getPedidos();
+    }
+
+    public List<Descuento> getDescuentosGestion() {
+        return sistema.getDescuentos();
+    }
+
+    public List<ClienteRegistrado> getClientesRegistrados() {
+        List<ClienteRegistrado> clientes = new ArrayList<>();
+        for (Usuario usuario : sistema.getUsuarios()) {
+            if (usuario instanceof ClienteRegistrado) {
+                clientes.add((ClienteRegistrado) usuario);
+            }
+        }
+        return clientes;
     }
 
     public List<ProductoSegundaMano> getProductosSegundaManoGestion() {
@@ -937,12 +952,81 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
+    public void eliminarEmpleadoDesdeGestor(Empleado empleado) {
+        if (!sesionGestor || empleado == null) {
+            return;
+        }
+        sistema.removeUsuario(empleado);
+        if (empleado == empleadoActual) {
+            empleadoActual = null;
+        }
+        refrescarPantallasConDatos();
+    }
+
     public void configurarPermisosEmpleado(Empleado empleado, Set<TiposEmpleado> permisos) {
         if (!sesionGestor || empleado == null || permisos == null) {
             return;
         }
         gestorPrincipal.configurarPermisos(empleado, permisos);
         refrescarPantallasConDatos();
+    }
+
+    public void aplicarDescuentoProducto(ProductoTienda producto, double porcentaje,
+            double rebajaFija, boolean dosPorUno) {
+        if (!sesionGestor || producto == null) {
+            return;
+        }
+        producto.setRebajaPorcentaje(Math.max(0.0, porcentaje));
+        producto.setRebajaFija(Math.max(0.0, rebajaFija));
+        producto.setTiene2x1(dosPorUno);
+        refrescarPantallasConDatos();
+    }
+
+    public int aplicarDescuentoCategoria(String categoria, double porcentaje,
+            double rebajaFija, boolean dosPorUno) {
+        if (!sesionGestor || categoria == null || categoria.isBlank()) {
+            return 0;
+        }
+        int actualizados = 0;
+        for (ProductoTienda producto : productosTienda) {
+            if (productoCoincideConCategoria(producto, categoria)) {
+                producto.setRebajaPorcentaje(Math.max(0.0, porcentaje));
+                producto.setRebajaFija(Math.max(0.0, rebajaFija));
+                producto.setTiene2x1(dosPorUno);
+                actualizados++;
+            }
+        }
+        refrescarPantallasConDatos();
+        return actualizados;
+    }
+
+    public void limpiarDescuentoProducto(ProductoTienda producto) {
+        if (!sesionGestor || producto == null) {
+            return;
+        }
+        producto.setRebajaPorcentaje(0.0);
+        producto.setRebajaFija(0.0);
+        producto.setTiene2x1(false);
+        refrescarPantallasConDatos();
+    }
+
+    private boolean productoCoincideConCategoria(ProductoTienda producto, String categoria) {
+        String normalizada = categoria.trim().toLowerCase();
+        if (producto.getCategoria() != null) {
+            String nombreCategoria = producto.getCategoria().getNombre();
+            if (nombreCategoria != null && nombreCategoria.toLowerCase().contains(normalizada)) {
+                return true;
+            }
+            if (producto.getCategoria().getClass().getSimpleName().toLowerCase().contains(normalizada)) {
+                return true;
+            }
+        }
+        for (String categoriaTexto : producto.getCategoriasTexto()) {
+            if (categoriaTexto.toLowerCase().contains(normalizada)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void cerrarSesion() {
@@ -1098,6 +1182,7 @@ public class Main extends JFrame {
         EstadoAplicacion estado = new EstadoAplicacion();
         estado.usuarios = sistema.getUsuarios();
         estado.pedidos = sistema.getPedidos();
+        estado.descuentos = sistema.getDescuentos();
         estado.productosTienda = new ArrayList<>(productosTienda);
         estado.packs = new ArrayList<>(packs);
         estado.intercambios = new ArrayList<>(intercambios);
@@ -1169,7 +1254,7 @@ public class Main extends JFrame {
         List<Producto> productosSistema = new ArrayList<>();
         productosSistema.addAll(productosTienda);
         productosSistema.addAll(productosSegundaMano);
-        sistema.reemplazarEstado(productosSistema, estado.usuarios, estado.pedidos, stock);
+        sistema.reemplazarEstado(productosSistema, estado.usuarios, estado.pedidos, estado.descuentos, stock);
 
         clienteActual = buscarClientePorNombre(estado.nombreClienteActual);
         if (clienteActual == null) {
@@ -1232,6 +1317,7 @@ public class Main extends JFrame {
         private static final long serialVersionUID = 1L;
         private List<Usuario> usuarios;
         private List<Pedido> pedidos;
+        private List<Descuento> descuentos;
         private List<ProductoTienda> productosTienda;
         private List<Pack> packs;
         private List<Intercambio> intercambios;

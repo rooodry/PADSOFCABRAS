@@ -53,6 +53,8 @@ public class Sistema {
 
     public void addUsuario(Usuario u) { this.usuarios.add(u); }
 
+    public void removeUsuario(Usuario u) { this.usuarios.remove(u); }
+
     public void addNotificacion(Notificacion n) { this.notificaciones.add(n); }
 
     public void addPedido(Pedido p) { this.pedidos.add(p); }
@@ -63,10 +65,14 @@ public class Sistema {
 
     public List<Pedido> getPedidos() { return new ArrayList<>(this.pedidos); }
 
-    public void reemplazarEstado(List<Producto> productos, List<Usuario> usuarios, List<Pedido> pedidos, Stock stock) {
+    public List<Descuento> getDescuentos() { return new ArrayList<>(this.descuentos); }
+
+    public void reemplazarEstado(List<Producto> productos, List<Usuario> usuarios,
+            List<Pedido> pedidos, List<Descuento> descuentos, Stock stock) {
         this.productos.clear();
         this.usuarios.clear();
         this.pedidos.clear();
+        this.descuentos.clear();
 
         if (productos != null) {
             this.productos.addAll(productos);
@@ -76,6 +82,9 @@ public class Sistema {
         }
         if (pedidos != null) {
             this.pedidos.addAll(pedidos);
+        }
+        if (descuentos != null) {
+            this.descuentos.addAll(descuentos);
         }
         this.stock = stock;
     }
