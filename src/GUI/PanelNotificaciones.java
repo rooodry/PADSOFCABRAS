@@ -235,7 +235,10 @@ public class PanelNotificaciones extends JPanel {
         gbc.insets = new Insets(0, 2, 0, 4);
         JButton visto = crearBotonIcono("\u2713", new Color(84, 69, 51));
         visto.setToolTipText("Marcar como vista");
-        visto.addActionListener(e -> mainFrame.marcarNotificacionLeida(notificacion));
+        visto.addActionListener(e -> {
+            mainFrame.marcarNotificacionLeida(notificacion);
+            refrescar();
+        } );
         fila.add(visto, gbc);
 
         gbc.gridx = 3;
