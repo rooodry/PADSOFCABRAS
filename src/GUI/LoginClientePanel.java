@@ -13,10 +13,12 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Enumeration;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.ButtonGroup;
+import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -130,8 +132,9 @@ public class LoginClientePanel extends JPanel {
             String identificacion = idField.getText();
             String contrasena = new String(passField.getPassword());
             JRadioButton selectedRadio = null;
-            for (int i = 0; i < rbGroup.getButtonCount(); i++) {
-                JRadioButton rb = (JRadioButton) rbGroup.getElements().nextElement();
+            Enumeration<AbstractButton> botonesRol = rbGroup.getElements();
+            while (botonesRol.hasMoreElements()) {
+                JRadioButton rb = (JRadioButton) botonesRol.nextElement();
                 if (rb.isSelected()) {
                     selectedRadio = rb;
                     break;
