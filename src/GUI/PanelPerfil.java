@@ -44,12 +44,14 @@ public class PanelPerfil extends JPanel {
 
     private static final long serialVersionUID = 1L;
     private static final String TAB_RECOMENDADOS = "Productos recomendados";
+    private static final String TAB_PEDIDOS = "Historial de pedidos";
     private static final String TAB_INTERCAMBIOS = "Historial de intercambios";
     private static final String TAB_CONFIG = "Configuración";
 
     private final Main mainFrame;
     private final JPanel contenidoCentral;
     private final JButton btnRecomendados;
+    private final JButton btnPedidos;
     private final JButton btnIntercambios;
     private final JButton btnConfig;
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
@@ -72,6 +74,7 @@ public class PanelPerfil extends JPanel {
         this.lblDni = new JLabel();
 
         this.btnRecomendados = crearTabButton(TAB_RECOMENDADOS);
+        this.btnPedidos = crearTabButton(TAB_PEDIDOS);
         this.btnIntercambios = crearTabButton(TAB_INTERCAMBIOS);
         this.btnConfig = crearTabButton(TAB_CONFIG);
 
@@ -119,6 +122,8 @@ public class PanelPerfil extends JPanel {
         barra.add(Box.createVerticalStrut(16));
 
         barra.add(crearBotonNav(btnRecomendados, TAB_RECOMENDADOS));
+        barra.add(Box.createVerticalStrut(8));
+        barra.add(crearBotonNav(btnPedidos, TAB_PEDIDOS));
         barra.add(Box.createVerticalStrut(8));
         barra.add(crearBotonNav(btnIntercambios, TAB_INTERCAMBIOS));
         barra.add(Box.createVerticalStrut(8));
@@ -176,6 +181,8 @@ public class PanelPerfil extends JPanel {
         
         if (TAB_RECOMENDADOS.equals(tabActivo)) {
             contenidoCentral.add(crearVistaRecomendados(), BorderLayout.CENTER);
+        } else if (TAB_PEDIDOS.equals(tabActivo)) {
+            contenidoCentral.add(crearVistaPedidos(), BorderLayout.CENTER);
         } else if (TAB_INTERCAMBIOS.equals(tabActivo)) {
             contenidoCentral.add(crearVistaIntercambios(), BorderLayout.CENTER);
         } else if (TAB_CONFIG.equals(tabActivo)) {
@@ -188,6 +195,7 @@ public class PanelPerfil extends JPanel {
 
     private void actualizarBotonesTabs() {
         actualizaBoton(btnRecomendados, TAB_RECOMENDADOS.equals(tabActivo));
+        actualizaBoton(btnPedidos, TAB_PEDIDOS.equals(tabActivo));
         actualizaBoton(btnIntercambios, TAB_INTERCAMBIOS.equals(tabActivo));
         actualizaBoton(btnConfig, TAB_CONFIG.equals(tabActivo));
     }
@@ -245,6 +253,95 @@ public class PanelPerfil extends JPanel {
         tarjeta.add(precio, BorderLayout.SOUTH);
 
         return tarjeta;
+    }
+
+    private JPanel crearVistaPedidos() {
+        JPanel vista = new JPanel(new BorderLayout());
+        vista.setOpaque(false);
+
+        JLabel titulo = new JLabel("Historial de pedidos", SwingConstants.LEFT);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
+        titulo.setForeground(UiStyle.COLOR_TEXTO);
+        vista.add(titulo, BorderLayout.NORTH);
+
+        JPanel lista = new JPanel();
+        lista.setOpaque(false);
+        lista.setLayout(new BoxLayout(lista, BoxLayout.Y_AXIS));
+        lista.setBorder(new EmptyBorder(16, 0, 0, 0));
+
+        List<Pedido> pedidos = mainFrame.getClienteActual().getPedidos();
+        if (pedidos.isEmpty()) {
+            JLabel vacio = new JLabel("Todavia no tienes pedidos.");
+            vacio.setFont(new Font("SansSerif", Font.PLAIN, 16));
+            vacio.setForeground(UiStyle.COLOR_TEXTO);
+            lista.add(vacio);
+        } else {
+            for (Pedido pedido : pedidos) {
+                lista.add(crearTarjetaPedido(pedido));
+                lista.add(Box.createVerticalStrut(12));
+            }
+        }
+
+        JScrollPane scroll = new JScrollPane(lista,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setBorder(null);
+        scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        vista.add(scroll, BorderLayout.CENTER);
+        return vista;
+    }
+
+    private JPanel crearTarjetaPedido(Pedido pedido) {
+        JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 20);
+        tarjeta.setLayout(new GridBagLayout());
+        tarjeta.setBorder(new EmptyBorder(16, 18, 16, 18));
+        tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, 180));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(0, 0, 8, 0);
+
+        JLabel codigo = new JLabel("Pedido " + pedido.getCodigo().getCodigo());
+        codigo.setFont(new Font("SansSerif", Font.BOLD, 15));
+        codigo.setForeground(UiStyle.COLOR_TEXTO);
+        tarjeta.add(codigo, gbc);
+
+        gbc.gridy++;
+        tarjeta.add(crearLineaPedido("Estado: " + pedido.getEstadoPedido()
+                + "   Fecha: " + formatoFecha.format(pedido.getFechaRealizacion())), gbc);
+
+        gbc.gridy++;
+        tarjeta.add(crearLineaPedido(productosPedido(pedido)), gbc);
+
+        gbc.gridy++;
+        tarjeta.add(crearLineaPedido(String.format("Total: %.2f EUR", pedido.calcularPrecioTotal())), gbc);
+
+        return tarjeta;
+    }
+
+    private JLabel crearLineaPedido(String texto) {
+        JLabel label = new JLabel("<html>" + texto + "</html>");
+        label.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        label.setForeground(UiStyle.COLOR_TEXTO);
+        return label;
+    }
+
+    private String productosPedido(Pedido pedido) {
+        StringBuilder builder = new StringBuilder("Productos: ");
+        boolean primero = true;
+        for (Map.Entry<ProductoTienda, Integer> entry : pedido.getProductos().entrySet()) {
+            if (!primero) {
+                builder.append(", ");
+            }
+            builder.append(entry.getKey().getNombre()).append(" x").append(entry.getValue());
+            primero = false;
+        }
+        return builder.toString();
     }
 
     private JPanel crearVistaIntercambios() {
