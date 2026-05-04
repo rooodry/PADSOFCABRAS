@@ -2,13 +2,16 @@ package intercambios;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.io.Serializable;
 import utilidades.EstadoOferta;
 
 /**
  * Clase que gestiona el ciclo de vida, los plazos temporales 
  * y la ejecución final de una oferta.
  */
-public class Intercambio {
+public class Intercambio implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Date fechaOferta;
     private final Date fechaLimite;

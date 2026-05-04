@@ -1,5 +1,6 @@
 package descuentos;
 
+import java.io.Serializable;
 import java.util.Date;
 import compras.Pedido;
 
@@ -19,7 +20,9 @@ import compras.Pedido;
  * @see DescuentoRegalo
  * @see DescuentoDosPorUno
  */
-public abstract class Descuento {
+public abstract class Descuento implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** Fecha a partir de la cual el descuento es válido. */
     private final Date fechaInicio;

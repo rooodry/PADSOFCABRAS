@@ -6,11 +6,18 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,6 +68,7 @@ import utilidades.TiposEmpleado;
 public class Main extends JFrame {
 
     private static final long serialVersionUID = 1L;
+    private static final String FICHERO_DATOS = "goatget-data.dat";
 
     /** Customer login screen. */
     public static final String PANTALLA_CLIENTE = "PANTALLA_CLIENTE";
@@ -127,6 +135,7 @@ public class Main extends JFrame {
     private boolean sesionRegistrada;
     private boolean sesionEmpleado;
     private boolean sesionGestor;
+    private boolean persistenciaActiva;
 
     /**
      * Builds the window, seed data and the registered-customer screens.
@@ -146,9 +155,18 @@ public class Main extends JFrame {
         this.cardLayout = new CardLayout();
         this.panelContenedor = new JPanel(cardLayout);
         this.sesionRegistrada = false;
+        this.persistenciaActiva = false;
 
         inicializarDatos();
+        cargarEstadoPersistente();
         construirPantallas();
+        this.persistenciaActiva = true;
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                guardarEstadoPersistente();
+            }
+        });
         add(panelContenedor);
     }
 
@@ -317,8 +335,13 @@ public class Main extends JFrame {
      * @param identificacion user name entered in the form
      */
     public boolean iniciarSesionCliente(String identificacion, String contrasena) {
-        if (!credencialesValidas(clienteActual, identificacion, contrasena)) {
+        ClienteRegistrado cliente = buscarCliente(identificacion, contrasena);
+        if (cliente == null) {
             return false;
+        }
+        clienteActual = cliente;
+        if (panelMisProductos != null) {
+            panelMisProductos.setCliente(clienteActual);
         }
         sesionRegistrada = true;
         sesionEmpleado = false;
@@ -419,6 +442,7 @@ public class Main extends JFrame {
             panelMisProductos.setCliente(clienteActual);
         }
         refrescarPantallasConDatos();
+        guardarEstadoPersistente();
         cambiarPantalla(PANTALLA_HOME);
     }
 
@@ -444,6 +468,7 @@ public class Main extends JFrame {
         clienteActual.a\u00f1adirALaCesta(producto, stock);
         panelCesta.refrescar();
         homePanel.refrescar();
+        guardarEstadoPersistente();
         JOptionPane.showMessageDialog(this, "Producto anadido a la cesta.");
     }
 
@@ -582,6 +607,7 @@ public class Main extends JFrame {
         }
         panelCesta.refrescar();
         homePanel.refrescar();
+        guardarEstadoPersistente();
         JOptionPane.showMessageDialog(this, "Pack anadido a la cesta.");
     }
 
@@ -742,6 +768,7 @@ public class Main extends JFrame {
         clienteActual.addNotificacion(new Notificacion(TipoNotificacion.VALORACION_REALIZADA,
                 "Producto subido. Puedes solicitar su valoracion desde cartera."));
         panelMisProductos.refrescar();
+        guardarEstadoPersistente();
     }
 
     /**
@@ -753,6 +780,7 @@ public class Main extends JFrame {
         producto.pedirValoracion();
         JOptionPane.showMessageDialog(this, "Solicitud enviada. Un empleado debera valorar el producto.");
         panelMisProductos.refrescar();
+        guardarEstadoPersistente();
     }
 
     /**
@@ -769,6 +797,7 @@ public class Main extends JFrame {
                     "No publicado", JOptionPane.WARNING_MESSAGE);
         }
         panelMisProductos.refrescar();
+        guardarEstadoPersistente();
     }
 
     /**
@@ -914,6 +943,15 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
+    public void cerrarSesion() {
+        guardarEstadoPersistente();
+        sesionRegistrada = false;
+        sesionEmpleado = false;
+        sesionGestor = false;
+        empleadoActual = null;
+        cardLayout.show(panelContenedor, PANTALLA_CLIENTE);
+    }
+
     private void construirPantallas() {
         panelContenedor.add(new LoginClientePanel(this), PANTALLA_CLIENTE);
         panelContenedor.add(new RegistroPanel(this), PANTALLA_REGISTRO);
@@ -1004,6 +1042,7 @@ public class Main extends JFrame {
         if (panelGestor != null) {
             panelGestor.refrescar();
         }
+        guardarEstadoPersistente();
     }
 
     private Pedido obtenerUltimoPedido() {
@@ -1017,6 +1056,16 @@ public class Main extends JFrame {
                 && contrasena != null
                 && usuario.getNombre().equals(identificacion.trim())
                 && usuario.getContrase\u00f1a().equals(contrasena);
+    }
+
+    private ClienteRegistrado buscarCliente(String identificacion, String contrasena) {
+        for (Usuario usuario : sistema.getUsuarios()) {
+            if (usuario instanceof ClienteRegistrado
+                    && credencialesValidas(usuario, identificacion, contrasena)) {
+                return (ClienteRegistrado) usuario;
+            }
+        }
+        return null;
     }
 
     private Empleado buscarEmpleado(String identificacion, String contrasena) {
@@ -1038,6 +1087,139 @@ public class Main extends JFrame {
             }
         }
         return null;
+    }
+
+    private void guardarEstadoPersistente() {
+        if (!persistenciaActiva) {
+            return;
+        }
+        EstadoAplicacion estado = new EstadoAplicacion();
+        estado.usuarios = sistema.getUsuarios();
+        estado.pedidos = sistema.getPedidos();
+        estado.productosTienda = new ArrayList<>(productosTienda);
+        estado.packs = new ArrayList<>(packs);
+        estado.intercambios = new ArrayList<>(intercambios);
+        estado.productosSegundaMano = new ArrayList<>(productosSegundaMano);
+        estado.stock = stock.getProductos();
+        estado.nombreClienteActual = clienteActual != null ? clienteActual.getNombre() : null;
+        estado.nombreGestorPrincipal = gestorPrincipal != null ? gestorPrincipal.getNombre() : null;
+
+        try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(FICHERO_DATOS))) {
+            salida.writeObject(estado);
+        } catch (IOException e) {
+            System.err.println("No se ha podido guardar el estado en " + FICHERO_DATOS + ": " + e.getMessage());
+        }
+    }
+
+    private void cargarEstadoPersistente() {
+        File fichero = new File(FICHERO_DATOS);
+        if (!fichero.exists()) {
+            return;
+        }
+
+        try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))) {
+            Object objeto = entrada.readObject();
+            if (objeto instanceof EstadoAplicacion) {
+                aplicarEstadoPersistente((EstadoAplicacion) objeto);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("No se ha podido cargar el estado de " + FICHERO_DATOS + ": " + e.getMessage());
+        }
+    }
+
+    private void aplicarEstadoPersistente(EstadoAplicacion estado) {
+        productosTienda.clear();
+        packs.clear();
+        intercambios.clear();
+        productosSegundaMano.clear();
+
+        if (estado.productosTienda != null) {
+            productosTienda.addAll(estado.productosTienda);
+        }
+        if (estado.packs != null) {
+            packs.addAll(estado.packs);
+        }
+        if (estado.intercambios != null) {
+            intercambios.addAll(estado.intercambios);
+        }
+        if (estado.productosSegundaMano != null) {
+            productosSegundaMano.addAll(estado.productosSegundaMano);
+        }
+        stock.reemplazarProductos(estado.stock);
+
+        List<Producto> productosSistema = new ArrayList<>();
+        productosSistema.addAll(productosTienda);
+        productosSistema.addAll(productosSegundaMano);
+        sistema.reemplazarEstado(productosSistema, estado.usuarios, estado.pedidos, stock);
+
+        clienteActual = buscarClientePorNombre(estado.nombreClienteActual);
+        if (clienteActual == null) {
+            clienteActual = buscarPrimerClienteRegistrado();
+        }
+        gestorPrincipal = buscarGestorPorNombre(estado.nombreGestorPrincipal);
+        if (gestorPrincipal == null) {
+            gestorPrincipal = buscarPrimerGestor();
+        }
+        empleadoActual = null;
+        clienteInvitado = null;
+        sesionRegistrada = false;
+        sesionEmpleado = false;
+        sesionGestor = false;
+    }
+
+    private ClienteRegistrado buscarClientePorNombre(String nombre) {
+        if (nombre == null) {
+            return null;
+        }
+        for (Usuario usuario : sistema.getUsuarios()) {
+            if (usuario instanceof ClienteRegistrado && usuario.getNombre().equals(nombre)) {
+                return (ClienteRegistrado) usuario;
+            }
+        }
+        return null;
+    }
+
+    private ClienteRegistrado buscarPrimerClienteRegistrado() {
+        for (Usuario usuario : sistema.getUsuarios()) {
+            if (usuario instanceof ClienteRegistrado) {
+                return (ClienteRegistrado) usuario;
+            }
+        }
+        return null;
+    }
+
+    private Gestor buscarGestorPorNombre(String nombre) {
+        if (nombre == null) {
+            return null;
+        }
+        for (Usuario usuario : sistema.getUsuarios()) {
+            if (usuario instanceof Gestor && usuario.getNombre().equals(nombre)) {
+                return (Gestor) usuario;
+            }
+        }
+        return null;
+    }
+
+    private Gestor buscarPrimerGestor() {
+        for (Usuario usuario : sistema.getUsuarios()) {
+            if (usuario instanceof Gestor) {
+                return (Gestor) usuario;
+            }
+        }
+        return null;
+    }
+
+    private static class EstadoAplicacion implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private List<Usuario> usuarios;
+        private List<Pedido> pedidos;
+        private List<ProductoTienda> productosTienda;
+        private List<Pack> packs;
+        private List<Intercambio> intercambios;
+        private List<ProductoSegundaMano> productosSegundaMano;
+        private Map<ProductoTienda, Integer> stock;
+        private String nombreClienteActual;
+        private String nombreGestorPrincipal;
     }
 
     /**

@@ -1,5 +1,6 @@
 package usuarios;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import productos.ProductoSegundaMano;
@@ -15,7 +16,9 @@ import productos.ProductoSegundaMano;
  * <p>El accesor {@link #getProductos()} devuelve una copia defensiva para
  * evitar modificaciones externas de la lista interna.</p>
  */
-public class Cartera {
+public class Cartera implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** Lista de productos de segunda mano del cliente. */
     private List<ProductoSegundaMano> productos;

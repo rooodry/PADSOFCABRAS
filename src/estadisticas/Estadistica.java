@@ -26,7 +26,9 @@ import intercambios.*;
  * <p>Todos los métodos de escritura capturan {@link IOException} internamente
  * y muestran el error por {@code System.err} sin propagarlo.</p>
  */
-public class Estadistica {
+public class Estadistica implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** Ruta al fichero donde se escriben los resultados del informe. */
     private String fichero;

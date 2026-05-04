@@ -1,5 +1,6 @@
 package productos;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,9 @@ import java.util.List;
  * Representa una agrupación de productos o de otros packs (subpacks)
  * vendidos en conjunto bajo un precio específico.
  */
-public class Pack {
+public class Pack implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private final String nombre;
     private final List<Producto> productos;
     private final List<Pack> subpacks;

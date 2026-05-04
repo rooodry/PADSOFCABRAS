@@ -3,6 +3,8 @@
 // ============================================================
 package productos.categoria;
 
+import java.io.Serializable;
+
 /**
  * Clase abstracta que representa la categoría de un producto.
  *
@@ -16,7 +18,9 @@ package productos.categoria;
  * {@code Categoria}. El campo {@code subCategoria} se inicializa a
  * {@code null}.</p>
  */
-public abstract class Categoria {
+public abstract class Categoria implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** Nombre identificador de la categoría. */
     private String nombre;

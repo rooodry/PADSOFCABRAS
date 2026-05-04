@@ -124,8 +124,21 @@ public class PanelPerfil extends JPanel {
         barra.add(Box.createVerticalStrut(8));
         barra.add(crearBotonNav(btnConfig, TAB_CONFIG));
         barra.add(Box.createVerticalGlue());
+        barra.add(crearBotonCerrarSesion());
 
         return barra;
+    }
+
+    private JButton crearBotonCerrarSesion() {
+        JButton boton = new UiStyle.RoundedButton("Cerrar sesion",
+                UiStyle.COLOR_MARRON_MEDIO, UiStyle.COLOR_CABECERA, 16);
+        boton.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        boton.setPreferredSize(new Dimension(268, 40));
+        boton.setMaximumSize(new Dimension(268, 40));
+        boton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        boton.addActionListener(e -> mainFrame.cerrarSesion());
+        return boton;
     }
 
     private JPanel crearBotonNav(JButton boton, String id) {

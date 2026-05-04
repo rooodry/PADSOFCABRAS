@@ -1,5 +1,6 @@
 package compras;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import productos.ProductoTienda;
@@ -8,7 +9,9 @@ import productos.ProductoTienda;
  * Representa la cesta de la compra en la que se agrupan los productos
  * seleccionados por un usuario antes de formalizar un pedido.
  */
-public class Cesta {
+public class Cesta implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private Map<ProductoTienda, Integer> productos;
 
     /**

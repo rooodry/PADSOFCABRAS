@@ -63,6 +63,23 @@ public class Sistema {
 
     public List<Pedido> getPedidos() { return new ArrayList<>(this.pedidos); }
 
+    public void reemplazarEstado(List<Producto> productos, List<Usuario> usuarios, List<Pedido> pedidos, Stock stock) {
+        this.productos.clear();
+        this.usuarios.clear();
+        this.pedidos.clear();
+
+        if (productos != null) {
+            this.productos.addAll(productos);
+        }
+        if (usuarios != null) {
+            this.usuarios.addAll(usuarios);
+        }
+        if (pedidos != null) {
+            this.pedidos.addAll(pedidos);
+        }
+        this.stock = stock;
+    }
+
     /**
      * Devuelve una copia de los productos registrados en el sistema.
      *

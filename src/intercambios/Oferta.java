@@ -1,5 +1,6 @@
 package intercambios;
 
+import java.io.Serializable;
 import productos.ProductoSegundaMano;
 import usuarios.ClienteRegistrado;
 import utilidades.EstadoOferta;
@@ -8,7 +9,9 @@ import utilidades.EstadoOferta;
  * Representa una propuesta de intercambio de productos de segunda mano 
  * lanzada por un usuario hacia otro.
  */
-public class Oferta {
+public class Oferta implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     
     private EstadoOferta estadoOferta;
     private final ProductoSegundaMano productoOfertado;  

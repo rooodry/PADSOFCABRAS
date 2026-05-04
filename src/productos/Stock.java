@@ -1,5 +1,6 @@
 package productos;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,9 @@ import utilidades.Status;
  * Gestiona el inventario de los productos de la tienda, 
  * controlando las existencias disponibles de cada uno.
  */
-public class Stock {
+public class Stock implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private Map<ProductoTienda, Integer> productos;
     
     /**
@@ -24,6 +27,13 @@ public class Stock {
      * @return Una copia del mapa de productos e inventario.
      */
     public Map<ProductoTienda, Integer> getProductos() {return new HashMap<ProductoTienda, Integer>(this.productos);}
+
+    public void reemplazarProductos(Map<ProductoTienda, Integer> productos) {
+        this.productos.clear();
+        if (productos != null) {
+            this.productos.putAll(productos);
+        }
+    }
 
     /**
      * Elimina por completo un producto del inventario, sin importar su cantidad.

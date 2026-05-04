@@ -1,6 +1,7 @@
 package usuarios;
 
 import notificaciones.Notificacion;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -14,7 +15,9 @@ import java.util.*;
  * <p>El accesor de notificaciones devuelve una copia defensiva para
  * evitar modificaciones externas de la lista interna.</p>
  */
-public class Usuario {
+public class Usuario implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** Nombre de usuario utilizado para identificarse en el sistema. */
     private String nombreUsuario;

@@ -1,5 +1,6 @@
 package productos;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,7 +11,9 @@ import productos.categoria.Categoria;
  * Clase abstracta que representa la base de un producto en el sistema.
  * Contiene los atributos comunes a cualquier tipo de producto.
  */
-public abstract class Producto {
+public abstract class Producto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     protected String id; 
     private String nombre;
     private String descripcion;

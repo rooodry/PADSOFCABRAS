@@ -1,5 +1,6 @@
 package compras;
 
+import java.io.Serializable;
 import java.util.*;
 
 import productos.*;
@@ -11,7 +12,9 @@ import descuentos.*;
  * Representa un pedido formalizado por un cliente en el sistema.
  * Gestiona el ciclo de vida del pedido, sus productos, descuentos aplicables y el cálculo del importe.
  */
-public class Pedido {
+public class Pedido implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private final Codigo codigo;
     private final Date fechaRealizacion;
     private Date fechaPago;

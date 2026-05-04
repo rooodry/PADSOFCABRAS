@@ -1,12 +1,15 @@
 package notificaciones;
 
+import java.io.Serializable;
 import utilidades.TipoNotificacion;
 
 /**
  * Representa un aviso o alerta dirigida a un usuario del sistema.
  * Contiene el estado de lectura, visibilidad y el tipo de mensaje.
  */
-public class Notificacion {
+public class Notificacion implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final TipoNotificacion tipoNotificacion;
     private String mensaje;

@@ -1,11 +1,14 @@
 package compras;
  
+import java.io.Serializable;
 import java.util.UUID;
  
 /**
  * Clase envoltorio que representa un identificador único alfanumérico.
  */
-public class Codigo {
+public class Codigo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private final String codigo;
  
     /**
