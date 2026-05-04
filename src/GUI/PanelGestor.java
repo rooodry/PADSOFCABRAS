@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -23,11 +24,15 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -61,11 +66,13 @@ public class PanelGestor extends JPanel {
     private static final String PACKS = "PACKS";
     private static final String OPERATIVA = "OPERATIVA";
     private static final String ESTADISTICAS = "ESTADISTICAS";
+    private static final String DETALLE_PRODUCTO = "DETALLE_PRODUCTO";
 
     private final Main mainFrame;
     private final JPanel contenido;
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
     private String seccionActiva;
+    private ProductoTienda productoSeleccionado;
 
     public PanelGestor(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -75,7 +82,7 @@ public class PanelGestor extends JPanel {
         setLayout(new BorderLayout());
         setBackground(UiStyle.COLOR_FONDO);
         add(crearCabecera(), BorderLayout.NORTH);
-        add(crearCuerpo(), BorderLayout.CENTER);
+        add(crearScroll(), BorderLayout.CENTER);
         refrescar();
     }
 
@@ -99,6 +106,8 @@ public class PanelGestor extends JPanel {
             pintarOperativa();
         } else if (ESTADISTICAS.equals(seccionActiva)) {
             pintarEstadisticas();
+        } else if (DETALLE_PRODUCTO.equals(seccionActiva)) {
+            pintarDetalleProducto();
         }
 
         contenido.revalidate();
@@ -108,65 +117,74 @@ public class PanelGestor extends JPanel {
     private JPanel crearCabecera() {
         JPanel cabecera = new JPanel(new BorderLayout());
         cabecera.setBackground(UiStyle.COLOR_CABECERA);
-        cabecera.setPreferredSize(new Dimension(0, 74));
-        cabecera.setBorder(new EmptyBorder(8, 24, 8, 24));
+        cabecera.setPreferredSize(new Dimension(0, 50));
+        cabecera.setBorder(new EmptyBorder(3, 14, 3, 12));
 
-        JLabel titulo = new JLabel("GOAT & GET", SwingConstants.LEFT);
+        JPanel izquierda = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        izquierda.setOpaque(false);
+        JButton menu = crearBotonIcono("\u2630", "Abrir menu", 32, 48);
+        menu.addActionListener(e -> mostrarMenu(menu));
+        izquierda.add(menu);
+        cabecera.add(izquierda, BorderLayout.WEST);
+
+        JLabel titulo = new JLabel("GOAT & GET", SwingConstants.CENTER);
         titulo.setFont(new Font("SansSerif", Font.BOLD, 34));
         titulo.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        cabecera.add(titulo, BorderLayout.WEST);
+        cabecera.add(titulo, BorderLayout.CENTER);
 
-        JLabel rol = new JLabel("PANEL GESTOR", SwingConstants.RIGHT);
-        rol.setFont(new Font("SansSerif", Font.BOLD, 20));
-        rol.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        cabecera.add(rol, BorderLayout.EAST);
+        JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
+        derecha.setOpaque(false);
+        derecha.add(crearBotonIcono("\uD83D\uDD14", "Notificaciones", 26, 42));
+        derecha.add(crearBotonIcono("\uD83D\uDC10", "Gestor", 28, 42));
+        cabecera.add(derecha, BorderLayout.EAST);
         return cabecera;
     }
 
-    private JPanel crearCuerpo() {
-        JPanel cuerpo = new JPanel(new BorderLayout());
-        cuerpo.setBackground(UiStyle.COLOR_FONDO);
-        cuerpo.add(crearMenuLateral(), BorderLayout.WEST);
-        cuerpo.add(crearScroll(), BorderLayout.CENTER);
-        return cuerpo;
-    }
-
-    private JPanel crearMenuLateral() {
-        JPanel menu = new JPanel();
-        menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
-        menu.setBackground(UiStyle.COLOR_CABECERA);
-        menu.setBorder(new EmptyBorder(22, 14, 22, 14));
-        menu.setPreferredSize(new Dimension(230, 0));
-
-        menu.add(crearBotonMenu("Inicio", DASHBOARD));
-        menu.add(crearBotonMenu("Empleados", EMPLEADOS));
-        menu.add(crearBotonMenu("Inventario", INVENTARIO));
-        menu.add(crearBotonMenu("Descuentos", DESCUENTOS));
-        menu.add(crearBotonMenu("Packs", PACKS));
-        menu.add(crearBotonMenu("Pedidos e interc.", OPERATIVA));
-        menu.add(crearBotonMenu("Estadisticas", ESTADISTICAS));
-        menu.add(Box.createVerticalGlue());
-        JButton cerrar = crearBotonMenu("Cerrar sesion", "LOGOUT");
-        cerrar.addActionListener(e -> mainFrame.cerrarSesion());
-        menu.add(cerrar);
-        return menu;
-    }
-
-    private JButton crearBotonMenu(String texto, String seccion) {
-        JButton boton = new UiStyle.RoundedButton(texto, UiStyle.COLOR_CABECERA,
-                UiStyle.COLOR_MARRON_MEDIO, 18);
+    private JButton crearBotonIcono(String texto, String tooltip, int fontSize, int ancho) {
+        JButton boton = new JButton(texto);
+        boton.setFont(new Font("Dialog", Font.BOLD, fontSize));
         boton.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        boton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        boton.setMaximumSize(new Dimension(198, 42));
-        boton.setPreferredSize(new Dimension(198, 42));
+        boton.setBackground(UiStyle.COLOR_CABECERA);
+        boton.setBorderPainted(false);
+        boton.setContentAreaFilled(false);
+        boton.setFocusPainted(false);
+        boton.setOpaque(false);
+        boton.setToolTipText(tooltip);
+        boton.setPreferredSize(new Dimension(ancho, 40));
         boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        boton.addActionListener(e -> {
-            if (!"LOGOUT".equals(seccion)) {
-                seccionActiva = seccion;
-                refrescar();
-            }
-        });
         return boton;
+    }
+
+    private void mostrarMenu(JButton origen) {
+        JPopupMenu menu = new JPopupMenu();
+        menu.setBackground(UiStyle.COLOR_CABECERA);
+        menu.setBorder(new EmptyBorder(8, 8, 8, 8));
+        menu.add(crearItemMenu("HOME", DASHBOARD));
+        menu.add(crearItemMenu("PRODUCTOS", INVENTARIO));
+        menu.add(crearItemMenu("DESCUENTOS", DESCUENTOS));
+        menu.add(crearItemMenu("PACKS", PACKS));
+        menu.add(crearItemMenu("EMPLEADOS", EMPLEADOS));
+        menu.add(crearItemMenu("PEDIDOS E INTERC.", OPERATIVA));
+        menu.add(crearItemMenu("ESTADISTICAS", ESTADISTICAS));
+        menu.addSeparator();
+        JMenuItem salir = crearItemMenu("CERRAR SESION", DASHBOARD);
+        salir.addActionListener(e -> mainFrame.cerrarSesion());
+        menu.add(salir);
+        menu.show(origen, 0, origen.getHeight() + 6);
+    }
+
+    private JMenuItem crearItemMenu(String texto, String seccion) {
+        JMenuItem item = new JMenuItem(texto);
+        item.setOpaque(true);
+        item.setBackground(seccion.equals(seccionActiva) ? UiStyle.COLOR_TEXTO : UiStyle.COLOR_CABECERA);
+        item.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        item.setFont(new Font("SansSerif", Font.BOLD, 14));
+        item.setBorder(new EmptyBorder(8, 16, 8, 68));
+        item.addActionListener(e -> {
+            seccionActiva = seccion;
+            refrescar();
+        });
+        return item;
     }
 
     private JScrollPane crearScroll() {
@@ -262,37 +280,183 @@ public class PanelGestor extends JPanel {
     }
 
     private void pintarInventario() {
-        contenido.add(crearTitulo("Inventario y catalogo"));
-        contenido.add(crearSubtitulo("Actualiza precios, stock, descripcion, imagen y categorias."));
-        JButton cargar = crearBoton("Cargar productos desde CSV", 230);
+        contenido.setBorder(new EmptyBorder(12, 60, 24, 60));
+        JLabel titulo = new JLabel("HOME", SwingConstants.CENTER);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
+        titulo.setForeground(UiStyle.COLOR_TEXTO);
+        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contenido.add(titulo);
+        contenido.add(Box.createVerticalStrut(10));
+
+        JPanel herramientas = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
+        herramientas.setOpaque(false);
+        JButton cargar = crearBoton("Cargar CSV", 118);
         cargar.addActionListener(e -> cargarProductosDeFichero());
-        contenido.add(cargar);
+        herramientas.add(cargar);
+        contenido.add(herramientas);
         contenido.add(Box.createVerticalStrut(14));
 
-        JPanel grid = new JPanel(new GridLayout(0, 2, 14, 14));
+        JPanel grid = new JPanel(new GridLayout(0, 3, 54, 24));
         grid.setOpaque(false);
         for (ProductoTienda producto : mainFrame.getProductosTienda()) {
-            grid.add(crearTarjetaProducto(producto));
+            JPanel envoltura = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+            envoltura.setOpaque(false);
+            envoltura.add(crearTarjetaProductoHome(producto));
+            grid.add(envoltura);
         }
         contenido.add(grid);
     }
 
-    private JPanel crearTarjetaProducto(ProductoTienda producto) {
-        JPanel tarjeta = crearTarjeta();
-        tarjeta.add(crearEtiqueta("<b>" + producto.getNombre() + "</b>"));
-        tarjeta.add(crearEtiqueta(String.format("%.2f EUR | stock %d",
-                producto.getPrecio(), mainFrame.getStock().getNumProductos(producto))));
-        tarjeta.add(crearEtiqueta("Categorias: " + textoCategorias(producto)));
-        tarjeta.add(crearEtiqueta("Promo: " + textoDescuento(producto)));
-        JPanel acciones = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        acciones.setOpaque(false);
-        JButton editar = crearBoton("Editar", 95);
+    private JPanel crearTarjetaProductoHome(ProductoTienda producto) {
+        JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_CABECERA, 12);
+        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
+        tarjeta.setBorder(new EmptyBorder(12, 12, 12, 12));
+        tarjeta.setPreferredSize(new Dimension(168, 200));
+        tarjeta.setMaximumSize(new Dimension(168, 200));
+        tarjeta.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        tarjeta.add(crearImagenProducto(producto, 94, 126));
+        tarjeta.add(Box.createVerticalStrut(6));
+        JLabel nombre = new JLabel(producto.getNombre(), SwingConstants.CENTER);
+        nombre.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        nombre.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
+        nombre.setPreferredSize(new Dimension(144, 22));
+        nombre.setMaximumSize(new Dimension(144, 22));
+        tarjeta.add(nombre);
+        JButton editar = new UiStyle.RoundedButton("Editar", new Color(94, 75, 57),
+                UiStyle.COLOR_MARRON_MEDIO, 12);
+        editar.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        editar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        editar.setPreferredSize(new Dimension(146, 22));
+        editar.setMaximumSize(new Dimension(146, 22));
         editar.addActionListener(e -> editarProducto(producto));
-        acciones.add(editar);
-        JButton sumar = crearBoton("+5 stock", 105);
-        sumar.addActionListener(e -> mainFrame.sumarStockProducto(producto, 5));
-        acciones.add(sumar);
-        tarjeta.add(acciones);
+        tarjeta.add(editar);
+        tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                productoSeleccionado = producto;
+                seccionActiva = DETALLE_PRODUCTO;
+                refrescar();
+            }
+        });
+        return tarjeta;
+    }
+
+    private JLabel crearImagenProducto(ProductoTienda producto, int ancho, int alto) {
+        JLabel label = new JLabel();
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setPreferredSize(new Dimension(ancho, alto));
+        label.setMinimumSize(new Dimension(ancho, alto));
+        label.setMaximumSize(new Dimension(ancho, alto));
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
+        String ruta = producto.getImagen();
+        if (ruta != null && !ruta.isBlank()) {
+            ImageIcon icono = new ImageIcon(ruta);
+            Image imagen = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+            label.setIcon(new ImageIcon(imagen));
+        } else {
+            label.setText("<html><center>SIN<br>IMAGEN</center></html>");
+            label.setOpaque(true);
+            label.setBackground(UiStyle.COLOR_MARRON_MEDIO);
+            label.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        }
+        return label;
+    }
+
+    private void pintarDetalleProducto() {
+        if (productoSeleccionado == null) {
+            seccionActiva = INVENTARIO;
+            pintarInventario();
+            return;
+        }
+        contenido.setBorder(new EmptyBorder(24, 28, 24, 28));
+        JPanel cuerpo = new JPanel(new BorderLayout(28, 0));
+        cuerpo.setOpaque(false);
+        cuerpo.add(crearDetalleIzquierdo(productoSeleccionado), BorderLayout.WEST);
+        cuerpo.add(crearDetalleDerecho(productoSeleccionado), BorderLayout.CENTER);
+        contenido.add(cuerpo);
+    }
+
+    private JPanel crearDetalleIzquierdo(ProductoTienda producto) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setOpaque(false);
+        panel.setPreferredSize(new Dimension(300, 0));
+        panel.add(crearImagenProducto(producto, 184, 250));
+        panel.add(Box.createVerticalStrut(12));
+        JLabel nombre = new JLabel("<html><center>" + producto.getNombre() + "</center></html>", SwingConstants.CENTER);
+        nombre.setFont(new Font("SansSerif", Font.BOLD, 20));
+        nombre.setForeground(Color.BLACK);
+        nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
+        nombre.setMaximumSize(new Dimension(290, 52));
+        panel.add(nombre);
+        JLabel precio = new JLabel(String.format("%.2f\u20ac", producto.getPrecio()).replace('.', ','));
+        precio.setFont(new Font("SansSerif", Font.BOLD, 38));
+        precio.setForeground(Color.BLACK);
+        precio.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(precio);
+        JButton editar = new UiStyle.RoundedButton("Editar", new Color(94, 75, 57),
+                UiStyle.COLOR_MARRON_MEDIO, 12);
+        editar.setFont(new Font("SansSerif", Font.PLAIN, 22));
+        editar.setPreferredSize(new Dimension(270, 38));
+        editar.setMaximumSize(new Dimension(270, 38));
+        editar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        editar.addActionListener(e -> editarProducto(producto));
+        panel.add(editar);
+        return panel;
+    }
+
+    private JPanel crearDetalleDerecho(ProductoTienda producto) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setOpaque(false);
+        panel.add(crearTituloDetalle("Descripcion"));
+        JTextArea descripcion = new JTextArea(producto.getDescripcion());
+        descripcion.setFont(new Font("SansSerif", Font.PLAIN, 17));
+        descripcion.setForeground(Color.BLACK);
+        descripcion.setOpaque(false);
+        descripcion.setEditable(false);
+        descripcion.setLineWrap(true);
+        descripcion.setWrapStyleWord(true);
+        descripcion.setBorder(null);
+        panel.add(descripcion);
+        panel.add(Box.createVerticalStrut(14));
+        panel.add(crearTituloDetalle("Comentarios"));
+        for (String[] comentario : producto.getComentarios()) {
+            panel.add(crearComentarioGestor(comentario[0], comentario[1]));
+            panel.add(Box.createVerticalStrut(6));
+        }
+        return panel;
+    }
+
+    private JLabel crearTituloDetalle(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font("SansSerif", Font.BOLD, 22));
+        label.setForeground(Color.BLACK);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return label;
+    }
+
+    private JPanel crearComentarioGestor(String usuario, String texto) {
+        JPanel tarjeta = new UiStyle.RoundedPanel(new Color(145, 124, 101), 12);
+        tarjeta.setLayout(new BorderLayout(6, 2));
+        tarjeta.setBorder(new EmptyBorder(6, 10, 7, 10));
+        tarjeta.setAlignmentX(Component.LEFT_ALIGNMENT);
+        tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, 72));
+        JLabel nombre = new JLabel("@" + usuario);
+        nombre.setFont(new Font("SansSerif", Font.BOLD, 14));
+        nombre.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        JTextArea cuerpo = new JTextArea(texto);
+        cuerpo.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        cuerpo.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        cuerpo.setOpaque(false);
+        cuerpo.setEditable(false);
+        cuerpo.setLineWrap(true);
+        cuerpo.setWrapStyleWord(true);
+        cuerpo.setBorder(null);
+        tarjeta.add(nombre, BorderLayout.NORTH);
+        tarjeta.add(cuerpo, BorderLayout.CENTER);
         return tarjeta;
     }
 

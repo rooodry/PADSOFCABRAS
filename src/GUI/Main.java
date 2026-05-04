@@ -165,11 +165,18 @@ public class Main extends JFrame {
         construirPantallas();
         this.persistenciaActiva = true;
         addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            try {
                 guardarEstadoPersistente();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                dispose();
+                System.exit(0);
             }
-        });
+    }
+});
         add(panelContenedor);
     }
 
