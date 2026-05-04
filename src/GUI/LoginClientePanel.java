@@ -172,7 +172,7 @@ public class LoginClientePanel extends JPanel {
         pregunta.setForeground(UiStyle.COLOR_TEXTO_CLARO);
         panelCrearCuenta.add(pregunta);
         
-        JButton crearButton = crearBoton("Crear cuenta", 70);
+        JButton crearButton = crearBoton("Crear cuenta", 102);
         crearButton.addActionListener(e -> mainFrame.cambiarPantalla(Main.PANTALLA_REGISTRO));
         panelCrearCuenta.add(crearButton);
         
