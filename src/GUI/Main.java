@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -1104,9 +1106,14 @@ public class Main extends JFrame {
         estado.nombreClienteActual = clienteActual != null ? clienteActual.getNombre() : null;
         estado.nombreGestorPrincipal = gestorPrincipal != null ? gestorPrincipal.getNombre() : null;
 
-        try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(FICHERO_DATOS))) {
+        File temporal = new File(FICHERO_DATOS + ".tmp");
+        try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(temporal))) {
             salida.writeObject(estado);
+            Files.move(temporal.toPath(), new File(FICHERO_DATOS).toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
+            if (temporal.exists() && !temporal.delete()) {
+                temporal.deleteOnExit();
+            }
             System.err.println("No se ha podido guardar el estado en " + FICHERO_DATOS + ": " + e.getMessage());
         }
     }
@@ -1122,8 +1129,20 @@ public class Main extends JFrame {
             if (objeto instanceof EstadoAplicacion) {
                 aplicarEstadoPersistente((EstadoAplicacion) objeto);
             }
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("No se ha podido cargar el estado de " + FICHERO_DATOS + ": " + e.getMessage());
+        } catch (IOException | ClassNotFoundException | ClassCastException e) {
+            archivarEstadoPersistenteInvalido(fichero, e);
+        }
+    }
+
+    private void archivarEstadoPersistenteInvalido(File fichero, Exception causa) {
+        File copiaSeguridad = new File(FICHERO_DATOS + ".bak");
+        try {
+            Files.move(fichero.toPath(), copiaSeguridad.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            System.err.println("No se ha podido cargar el estado de " + FICHERO_DATOS
+                    + ": " + causa.getMessage() + ". Se ha archivado como " + copiaSeguridad.getName() + ".");
+        } catch (IOException e) {
+            System.err.println("No se ha podido cargar el estado de " + FICHERO_DATOS
+                    + ": " + causa.getMessage() + ". Ademas, no se pudo archivar el fichero: " + e.getMessage());
         }
     }
 
