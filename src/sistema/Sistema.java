@@ -529,6 +529,8 @@ public class Sistema {
         if (this.stock == null) {
             this.stock = new Stock();
         }
+        this.productos.clear();
+        this.stock = new Stock();
 
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea;
@@ -543,7 +545,7 @@ public class Sistema {
                     continue;
                 }
 
-                String tipo = elementos[0].trim();
+                String tipo = elementos[0].replace("\uFEFF", "").trim();
                 String id = elementos[1].trim();
                 String nombre = elementos[2].trim();
                 String descripcion = elementos[3].trim();
