@@ -66,6 +66,7 @@ public class PanelDeProducto extends JPanel {
     private JTextField campoImagen;
     private JTextField campoCategorias;
     private JTextArea campoDescripcion;
+    private JScrollPane scrollComentarios;
     private ListenerEdicion listenerEdicion;
 
     /**
@@ -349,6 +350,14 @@ public class PanelDeProducto extends JPanel {
     }
 
     private JScrollPane crearSeccionComentarios() {
+        scrollComentarios = new JScrollPane(crearPanelComentarios(), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollComentarios.setBorder(null);
+        scrollComentarios.getViewport().setBackground(UiStyle.COLOR_FONDO);
+        return scrollComentarios;
+    }
+
+    private JPanel crearPanelComentarios() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(UiStyle.COLOR_FONDO);
@@ -370,12 +379,13 @@ public class PanelDeProducto extends JPanel {
             panel.add(Box.createVerticalStrut(8));
             panel.add(crearFormularioResena());
         }
+        return panel;
+    }
 
-        JScrollPane scroll = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setBorder(null);
-        scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
-        return scroll;
+    private void refrescarComentarios() {
+        if (scrollComentarios != null) {
+            scrollComentarios.setViewportView(crearPanelComentarios());
+        }
     }
 
     private JPanel crearFormularioResena() {
@@ -387,7 +397,7 @@ public class PanelDeProducto extends JPanel {
 
         JPanel superior = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         superior.setOpaque(false);
-        JLabel label = new JLabel("Tu valoracion");
+        JLabel label = new JLabel("Tu valoración");
         label.setFont(new Font("SansSerif", Font.BOLD, 12));
         label.setForeground(UiStyle.COLOR_TEXTO);
         JComboBox<Integer> valoracion = new JComboBox<>(new Integer[] {1, 2, 3, 4, 5});
@@ -401,18 +411,19 @@ public class PanelDeProducto extends JPanel {
         texto.setRows(2);
         texto.setFont(new Font("SansSerif", Font.PLAIN, 12));
 
-        JButton publicar = new UiStyle.RoundedButton("Publicar resena", UiStyle.COLOR_TEXTO,
+        JButton publicar = new UiStyle.RoundedButton("Publicar reseña", UiStyle.COLOR_TEXTO,
                 UiStyle.COLOR_MARRON_MEDIO, 12);
         publicar.setPreferredSize(new Dimension(136, 30));
         publicar.addActionListener(e -> {
             String comentario = texto.getText().trim();
             if (comentario.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Escribe un comentario para publicarlo.",
-                        "Resena", JOptionPane.WARNING_MESSAGE);
+                        "Reseña", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             mainFrame.comentarYValorarProducto(producto, (Integer) valoracion.getSelectedItem(), comentario);
             texto.setText("");
+            refrescarComentarios();
         });
 
         formulario.add(superior, BorderLayout.NORTH);

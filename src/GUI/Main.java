@@ -831,7 +831,7 @@ public class Main extends JFrame {
     public void comentarYValorarProducto(ProductoTienda producto, int valoracion, String comentario) {
         if (!clienteHaCompradoProducto(producto)) {
             JOptionPane.showMessageDialog(this,
-                    "Solo puedes comentar productos que hayas comprado.", "Resena",
+                    "Solo puedes comentar productos que hayas comprado.", "Reseña",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
