@@ -310,7 +310,7 @@ public class PanelPerfil extends JPanel {
         JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 20);
         tarjeta.setLayout(new GridBagLayout());
         tarjeta.setBorder(new EmptyBorder(16, 18, 16, 18));
-        tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, 180));
+        tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, 220));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -335,7 +335,70 @@ public class PanelPerfil extends JPanel {
         gbc.gridy++;
         tarjeta.add(crearLineaPedido(String.format("Total: %.2f EUR", pedido.calcularPrecioTotal())), gbc);
 
+        gbc.gridy++;
+        JButton btnVerPedido = new UiStyle.RoundedButton(
+                "Ver pedido",
+                UiStyle.COLOR_MARRON_MEDIO,
+                UiStyle.COLOR_CABECERA,
+                16
+        );
+        btnVerPedido.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        btnVerPedido.setPreferredSize(new Dimension(140, 35));
+        btnVerPedido.addActionListener(e -> mostrarDetallePedido(pedido));
+
+        tarjeta.add(btnVerPedido, gbc);
+
         return tarjeta;
+    }
+
+    private void mostrarDetallePedido(Pedido pedido) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        for (Map.Entry<ProductoTienda, Integer> entry : pedido.getProductos().entrySet()) {
+            ProductoTienda producto = entry.getKey();
+            int cantidad = entry.getValue();
+
+            JPanel fila = new JPanel(new BorderLayout(12, 8));
+            fila.setBorder(new EmptyBorder(8, 8, 8, 8));
+
+            JLabel imagen = new JLabel();
+            imagen.setPreferredSize(new Dimension(80, 100));
+            imagen.setHorizontalAlignment(SwingConstants.CENTER);
+
+            ImageIcon icono = new ImageIcon(producto.getImagen());
+            Image img = icono.getImage().getScaledInstance(80, 100, Image.SCALE_SMOOTH);
+            imagen.setIcon(new ImageIcon(img));
+
+            fila.add(imagen, BorderLayout.WEST);
+
+            JPanel datos = new JPanel();
+            datos.setLayout(new BoxLayout(datos, BoxLayout.Y_AXIS));
+
+            JLabel nombre = new JLabel("Producto: " + producto.getNombre());
+            JLabel cantidadLabel = new JLabel("Cantidad: " + cantidad);
+            JLabel precio = new JLabel(String.format("Precio: %.2f EUR", producto.getPrecio()));
+
+            datos.add(nombre);
+            datos.add(cantidadLabel);
+            datos.add(precio);
+
+            fila.add(datos, BorderLayout.CENTER);
+
+            panel.add(fila);
+            panel.add(Box.createVerticalStrut(10));
+        }
+
+        JScrollPane scroll = new JScrollPane(panel);
+        scroll.setPreferredSize(new Dimension(420, 300));
+
+        JOptionPane.showMessageDialog(
+                mainFrame,
+                scroll,
+                "Detalle del pedido",
+                JOptionPane.PLAIN_MESSAGE
+        );
     }
 
     private JLabel crearLineaPedido(String texto) {
