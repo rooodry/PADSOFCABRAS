@@ -1627,13 +1627,17 @@ public class Main extends JFrame {
                     continue;
                 }
 
-                ProductoTienda productoTienda = crearProductoDesdeLineaCsv(linea, indice);
-                if (productoTienda != null) {
-                    int unidades = parseIntCsv(campo(linea.split(";", -1), 5), 1);
-                    registrarProductoTienda(productoTienda, unidades);
-                    indice++;
-                }
+                try {
+                    ProductoTienda productoTienda = crearProductoDesdeLineaCsv(linea, indice);
+                    if (productoTienda != null) {
+                        int unidades = parseIntCsv(campo(linea.split(";", -1), 5), 1);
+                        registrarProductoTienda(productoTienda, unidades);
+                        indice++;
+                    }
+                } catch (RuntimeException e) {
+                    System.err.println("Linea de producto omitida por formato invalido: " + linea);
             }
+        }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this,
                     "No se ha podido cargar " + archivo.getPath() + ".",
