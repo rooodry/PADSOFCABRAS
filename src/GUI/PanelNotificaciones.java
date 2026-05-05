@@ -265,6 +265,15 @@ public class PanelNotificaciones extends JPanel {
             case OFERTA_RECHAZADA:
                 texto = "\u2612";
                 break;
+            case OFERTA_CADUCA:
+                texto = "\u23F0";
+                break;
+            case PEDIDO_ENTREGADO:
+                texto = "\u2705";
+                break;
+            case PAGO_REALIZADO:
+                texto = "\uD83D\uDCB3";
+                break;
             default:
                 texto = "\uD83D\uDCE6";
                 break;
@@ -279,6 +288,8 @@ public class PanelNotificaciones extends JPanel {
     private String tituloNotificacion(TipoNotificacion tipo) {
         switch (tipo) {
             case PAGO_REALIZADO:
+                return "PAGO REALIZADO";
+            case PEDIDO_ENTREGADO:
                 return "PEDIDO ENTREGADO";
             case PEDIDO_LISTO:
                 return "PEDIDO LISTO";
@@ -290,6 +301,8 @@ public class PanelNotificaciones extends JPanel {
                 return "OFERTA ACEPTADA";
             case OFERTA_RECHAZADA:
                 return "OFERTA RECHAZADA";
+            case OFERTA_CADUCA:
+                return "OFERTA A PUNTO DE CADUCAR";
             case NUEVO_DESCUENTO:
                 return "NUEVO DESCUENTO DISPONIBLE";
             case INTERCAMBIO_REALIZADO:

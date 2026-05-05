@@ -7,6 +7,9 @@ public enum TipoNotificacion {
     /** Aviso de que se ha completado el pago de un pedido. */
     PAGO_REALIZADO,
     
+    /** Aviso de que un pedido se ha entregado o finalizado. */
+    PEDIDO_ENTREGADO,
+    
     /** Aviso de que un pedido está preparado para ser recogido o enviado. */
     PEDIDO_LISTO,
     
@@ -21,6 +24,9 @@ public enum TipoNotificacion {
     
     /** Aviso de que una propuesta de intercambio enviada fue rechazada. */
     OFERTA_RECHAZADA,
+
+    /** Aviso de que una oferta de intercambio está a punto de caducar. */
+    OFERTA_CADUCA,
     
     /** Aviso de que un nuevo descuento promocional está disponible. */
     NUEVO_DESCUENTO,

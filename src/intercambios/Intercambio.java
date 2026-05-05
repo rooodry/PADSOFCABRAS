@@ -18,6 +18,7 @@ public class Intercambio implements Serializable {
     private Date fechaAceptada;
     private boolean intercambiado;
     private final Oferta oferta;
+    private boolean notificacionCaducidadEnviada;
 
     /**
      * Constructor de la clase Intercambio.
@@ -93,6 +94,22 @@ public class Intercambio implements Serializable {
      */
     public Oferta getOferta() {
         return this.oferta;
+    }
+
+    /**
+     * Indica si ya se ha enviado un aviso de caducidad para esta oferta.
+     * @return true si el recordatorio ya fue enviado.
+     */
+    public boolean isNotificacionCaducidadEnviada() {
+        return this.notificacionCaducidadEnviada;
+    }
+
+    /**
+     * Marca si ya se ha avisado al usuario de la proximidad de caducidad.
+     * @param enviado true si el aviso ya se envió.
+     */
+    public void setNotificacionCaducidadEnviada(boolean enviado) {
+        this.notificacionCaducidadEnviada = enviado;
     }
 
     /**

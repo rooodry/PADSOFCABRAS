@@ -612,8 +612,8 @@ public class Main extends JFrame {
             return;
         }
         pedido.setEstadoPedido(EstadoPedido.ENTREGADO);
-        notificarCambioEstadoPedido(pedido, TipoNotificacion.PAGO_REALIZADO,
-                "Tu pedido se ha marcado como entregado correctamente.");
+        notificarCambioEstadoPedido(pedido, TipoNotificacion.PEDIDO_ENTREGADO,
+                "Tu pedido se ha entregado correctamente.");
         refrescarPantallasConDatos();
     }
 
@@ -622,6 +622,60 @@ public class Main extends JFrame {
             return;
         }
         pedido.getCliente().addNotificacion(new Notificacion(tipo, mensaje));
+    }
+
+    private void notificarClientes(TipoNotificacion tipo, String mensaje) {
+        for (Usuario usuario : sistema.getUsuarios()) {
+            if (usuario instanceof ClienteRegistrado) {
+                usuario.addNotificacion(new Notificacion(tipo, mensaje));
+            }
+        }
+    }
+
+    private void notificarIntercambio(Intercambio intercambio,
+            TipoNotificacion tipoLanzador, String mensajeLanzador,
+            TipoNotificacion tipoReceptor, String mensajeReceptor) {
+        if (intercambio == null || intercambio.getOferta() == null) {
+            return;
+        }
+        ClienteRegistrado lanzador = intercambio.getOferta().getUsuarioLanzador();
+        ClienteRegistrado receptor = intercambio.getOferta().getUsuarioReceptor();
+        if (lanzador != null) {
+            lanzador.addNotificacion(new Notificacion(tipoLanzador, mensajeLanzador));
+        }
+        if (receptor != null) {
+            receptor.addNotificacion(new Notificacion(tipoReceptor, mensajeReceptor));
+        }
+    }
+
+    private void enviarRecordatorioOfertasCaducidad() {
+        long unDiaMs = 24L * 60L * 60L * 1000L;
+        long ahora = System.currentTimeMillis();
+        for (Intercambio intercambio : intercambios) {
+            if (intercambio == null || intercambio.getOferta() == null) {
+                continue;
+            }
+            if (intercambio.isNotificacionCaducidadEnviada()) {
+                continue;
+            }
+            if (intercambio.getOferta().getEstadoOferta() != EstadoOferta.PENDIENTE) {
+                continue;
+            }
+            long tiempoRestante = intercambio.getFechaLimite().getTime() - ahora;
+            if (tiempoRestante > 0 && tiempoRestante <= unDiaMs) {
+                ClienteRegistrado receptor = intercambio.getOferta().getUsuarioReceptor();
+                ClienteRegistrado lanzador = intercambio.getOferta().getUsuarioLanzador();
+                if (receptor != null) {
+                    receptor.addNotificacion(new Notificacion(TipoNotificacion.OFERTA_CADUCA,
+                            "Tienes una oferta pendiente que caduca en menos de 24 horas."));
+                }
+                if (lanzador != null) {
+                    lanzador.addNotificacion(new Notificacion(TipoNotificacion.OFERTA_CADUCA,
+                            "La oferta que has enviado caduca en menos de 24 horas."));
+                }
+                intercambio.setNotificacionCaducidadEnviada(true);
+            }
+        }
     }
 
     /**
@@ -655,8 +709,11 @@ public class Main extends JFrame {
         intercambio.getOferta().getProductoOfertado().setDisponibilidad(false);
         intercambio.getOferta().getProductoDeseado().setEstadoProducto(EstadoProducto.EN_INTERCAMBIO);
         intercambio.getOferta().getProductoOfertado().setEstadoProducto(EstadoProducto.EN_INTERCAMBIO);
-        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.OFERTA_ACEPTADA,
-                "Has aceptado una oferta de intercambio."));
+        notificarIntercambio(intercambio,
+                TipoNotificacion.OFERTA_ACEPTADA,
+                "Tu oferta ha sido aceptada. Prepárate para el intercambio.",
+                TipoNotificacion.OFERTA_ACEPTADA,
+                "Has aceptado una oferta de intercambio.");
         cambiarPantalla(PANTALLA_INTERCAMBIOS);
     }
 
@@ -669,8 +726,11 @@ public class Main extends JFrame {
         intercambio.rechazarOferta();
         intercambio.getOferta().getProductoOfertado().setDisponibilidad(true);
         intercambio.getOferta().getProductoOfertado().setEstadoProducto(EstadoProducto.VALORADO);
-        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.OFERTA_RECHAZADA,
-                "Has rechazado una oferta de intercambio."));
+        notificarIntercambio(intercambio,
+                TipoNotificacion.OFERTA_RECHAZADA,
+                "Tu oferta ha sido rechazada.",
+                TipoNotificacion.OFERTA_RECHAZADA,
+                "Has rechazado una oferta de intercambio.");
         cambiarPantalla(PANTALLA_INTERCAMBIOS);
     }
 
@@ -709,8 +769,12 @@ public class Main extends JFrame {
         Oferta oferta = new Oferta(ofertado, deseado, deseado.getPropietario(), clienteActual);
         Intercambio intercambio = new Intercambio(new Date(), oferta);
         intercambios.add(intercambio);
-        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.NUEVA_OFERTA,
-                "Has propuesto intercambiar " + ofertado.getNombre() + " por " + deseado.getNombre() + "."));
+        notificarIntercambio(intercambio,
+                TipoNotificacion.NUEVA_OFERTA,
+                "Has propuesto intercambiar " + ofertado.getNombre() + " por " + deseado.getNombre() + ".",
+                TipoNotificacion.NUEVA_OFERTA,
+                "Tienes una nueva oferta de intercambio: " + clienteActual.getNombre() + " propone "
+                        + ofertado.getNombre() + " por " + deseado.getNombre() + ".");
         JOptionPane.showMessageDialog(this,
                 "Oferta creada. Espera la respuesta del otro usuario.",
                 "Intercambio lanzado", JOptionPane.INFORMATION_MESSAGE);
@@ -1022,6 +1086,8 @@ public class Main extends JFrame {
         producto.setRebajaPorcentaje(Math.max(0.0, porcentaje));
         producto.setRebajaFija(Math.max(0.0, rebajaFija));
         producto.setTiene2x1(dosPorUno);
+        notificarClientes(TipoNotificacion.NUEVO_DESCUENTO,
+                "Nuevo descuento disponible en " + producto.getNombre() + ". Aprovecha antes de que se agote.");
         refrescarPantallasConDatos();
     }
 
@@ -1038,6 +1104,10 @@ public class Main extends JFrame {
                 producto.setTiene2x1(dosPorUno);
                 actualizados++;
             }
+        }
+        if (actualizados > 0) {
+            notificarClientes(TipoNotificacion.NUEVO_DESCUENTO,
+                    "Hay nuevos descuentos activos en la categoría " + categoria + ". Revisa el catálogo.");
         }
         refrescarPantallasConDatos();
         return actualizados;
@@ -1141,6 +1211,7 @@ public class Main extends JFrame {
     }
 
     private void refrescarPantallasConDatos() {
+        enviarRecordatorioOfertasCaducidad();
         if (homePanel != null) {
             homePanel.refrescar();
         }
