@@ -10,13 +10,16 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.text.SimpleDateFormat;
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -28,7 +31,9 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
+import javax.swing.Icon;
 import javax.swing.border.EmptyBorder;
+
 
 import compras.Pedido;
 import intercambios.Intercambio;
@@ -59,6 +64,7 @@ public class PanelPerfil extends JPanel {
     private final JTextField txtNuevoNombre;
     private final JLabel lblUsuario;
     private final JLabel lblDni;
+    private final JLabel lblAvatar;
     private JButton btnGuardarCambios;
     private String nuevoNombrePendiente = null;
     private String nuevaContrasenaPendiente = null;
@@ -81,6 +87,7 @@ public class PanelPerfil extends JPanel {
         this.btnPedidos = crearTabButton(TAB_PEDIDOS);
         this.btnIntercambios = crearTabButton(TAB_INTERCAMBIOS);
         this.btnConfig = crearTabButton(TAB_CONFIG);
+        this.lblAvatar = new JLabel("lib/fotos/fotousuario.jpg", SwingConstants.CENTER);
 
         setLayout(new BorderLayout());
         setBackground(UiStyle.COLOR_FONDO);
@@ -108,9 +115,8 @@ public class PanelPerfil extends JPanel {
         JPanel avatar = new JPanel(new BorderLayout());
         avatar.setOpaque(false);
         avatar.setMaximumSize(new Dimension(268, 120));
-        JLabel iconoAvatar = new JLabel("👤", SwingConstants.CENTER);
-        iconoAvatar.setFont(new Font("SansSerif", Font.PLAIN, 60));
-        avatar.add(iconoAvatar, BorderLayout.CENTER);
+        lblAvatar.setFont(new Font("SansSerif", Font.PLAIN, 60));
+        avatar.add(lblAvatar, BorderLayout.CENTER);
         barra.add(avatar);
         barra.add(Box.createVerticalStrut(12));
 
@@ -176,6 +182,7 @@ public class PanelPerfil extends JPanel {
         lblUsuario.setText("@" + mainFrame.getClienteActual().getNombre());
         lblDni.setText("DNI: " + mainFrame.getClienteActual().getDNI());
         txtNuevoNombre.setText(mainFrame.getClienteActual().getNombre());
+        actualizarAvatar();
         construirVista();
     }
 
@@ -241,9 +248,12 @@ public class PanelPerfil extends JPanel {
 
         JLabel imagen = new JLabel();
         imagen.setPreferredSize(new Dimension(120, 160));
-        imagen.setText("[Imagen]");
         imagen.setHorizontalAlignment(SwingConstants.CENTER);
-        imagen.setFont(new Font("SansSerif", Font.PLAIN, 10));
+
+        ImageIcon icono = new ImageIcon(producto.getImagen());
+        Image img = icono.getImage().getScaledInstance(120, 160, Image.SCALE_SMOOTH);
+        imagen.setIcon(new ImageIcon(img));
+
         tarjeta.add(imagen, BorderLayout.NORTH);
 
         JLabel nombre = new JLabel("<html><b>" + producto.getNombre() + "</b></html>");
@@ -601,4 +611,28 @@ public class PanelPerfil extends JPanel {
         mostrarBotonGuardarSiHayCambios();
         refrescar();
     }
+
+    private void actualizarAvatar() {
+        String rutaFoto = mainFrame.getClienteActual().getFotoPerfil();
+        if (rutaFoto == null || rutaFoto.isBlank()) {
+            lblAvatar.setIcon(null);
+            lblAvatar.setText("👤");
+            lblAvatar.setFont(new Font("SansSerif", Font.PLAIN, 60));
+            return;
+        }
+
+        File archivo = new File(rutaFoto);
+        if (!archivo.exists()) {
+            lblAvatar.setIcon(null);
+            lblAvatar.setText("👤");
+            lblAvatar.setFont(new Font("SansSerif", Font.PLAIN, 60));
+            return;
+        }
+
+        ImageIcon original = new ImageIcon(rutaFoto);
+        Icon escalado = new ImageIcon(original.getImage().getScaledInstance(96, 96, java.awt.Image.SCALE_SMOOTH));
+        lblAvatar.setIcon(escalado);
+        lblAvatar.setText("");
+    }
+
 }

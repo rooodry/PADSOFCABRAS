@@ -28,6 +28,10 @@ public class Usuario implements Serializable {
     /** Lista de notificaciones recibidas por el usuario. */
     private List<Notificacion> notificaciones;
 
+    /** Ruta local a la foto de perfil del usuario. */
+    private String fotoPerfil;
+
+
     /**
      * Construye un usuario con las credenciales indicadas y sin notificaciones.
      *
@@ -38,6 +42,7 @@ public class Usuario implements Serializable {
         this.nombreUsuario  = nombreUsuario;
         this.contraseña     = contraseña;
         this.notificaciones = new ArrayList<>();
+        this.fotoPerfil = "lib/fotos/fotousuario.jpg";
     }
 
     /**
@@ -103,5 +108,23 @@ public class Usuario implements Serializable {
      */
     public List<Notificacion> getNotificaciones() {
         return new ArrayList<>(this.notificaciones);
+    }
+
+    /**
+     * Actualiza la ruta de la foto de perfil.
+     *
+     * @param fotoPerfil ruta local a la imagen (o {@code null} para quitarla)
+     */
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
+    }
+
+    /**
+     * Devuelve la ruta de la foto de perfil.
+     *
+     * @return ruta local de la foto, o {@code null} si no tiene
+     */
+    public String getFotoPerfil() {
+        return this.fotoPerfil;
     }
 }
