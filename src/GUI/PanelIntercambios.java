@@ -107,7 +107,9 @@ public class PanelIntercambios extends JPanel {
     }
 
     private void actualizarFiltro() {
-        mercado = new ArrayList<>(mainFrame.getProductosSegundaManoDisponibles());
+         mercado = new ArrayList<>(mainFrame.getProductosSegundaManoGestion());
+        mercado.removeIf(producto -> producto.getPropietario() == mainFrame.getClienteActual()
+                || producto.getEstadoProducto() != EstadoProducto.VALORADO);
         String termino = terminoBusqueda.toLowerCase();
         if (!termino.isBlank()) {
             mercado.removeIf(p -> !(p.getNombre().toLowerCase().contains(termino)
