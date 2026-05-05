@@ -913,6 +913,16 @@ public class Main extends JFrame {
         }
     }
 
+    public boolean cambiarContrasenaCliente(String nuevaContrasena) {
+        if (nuevaContrasena == null || nuevaContrasena.isBlank()) {
+            return false;
+        }
+
+        clienteActual.editarPerfil(clienteActual.getNombre(), nuevaContrasena.trim());
+        refrescarPantallasConDatos();
+        return true;
+    }
+
     /**
      * Adds stock units to a shop product from the management screen.
      *

@@ -22,6 +22,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -58,6 +59,9 @@ public class PanelPerfil extends JPanel {
     private final JTextField txtNuevoNombre;
     private final JLabel lblUsuario;
     private final JLabel lblDni;
+    private JButton btnGuardarCambios;
+    private String nuevoNombrePendiente = null;
+    private String nuevaContrasenaPendiente = null;
 
     private String tabActivo = TAB_RECOMENDADOS;
 
@@ -486,12 +490,21 @@ public class PanelPerfil extends JPanel {
 
         panel.add(Box.createVerticalGlue());
 
-        JButton btnGuardar = new UiStyle.RoundedButton("Guardar cambios", UiStyle.COLOR_MARRON_MEDIO, UiStyle.COLOR_CABECERA, 18);
-        btnGuardar.setPreferredSize(new Dimension(180, 40));
-        btnGuardar.setMaximumSize(new Dimension(180, 40));
-        btnGuardar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnGuardar.addActionListener(e -> mainFrame.cambiarNombreCliente(txtNuevoNombre.getText()));
-        panel.add(btnGuardar);
+        btnGuardarCambios = new UiStyle.RoundedButton(
+        "Guardar cambios",
+        UiStyle.COLOR_MARRON_MEDIO,
+        UiStyle.COLOR_CABECERA,
+        18
+        );
+
+        btnGuardarCambios.setPreferredSize(new Dimension(180, 40));
+        btnGuardarCambios.setMaximumSize(new Dimension(180, 40));
+        btnGuardarCambios.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnGuardarCambios.setVisible(hayCambiosPendientes());
+
+        btnGuardarCambios.addActionListener(e -> guardarCambiosPendientes());
+
+        panel.add(btnGuardarCambios);
 
         vista.add(panel, BorderLayout.NORTH);
         return vista;
@@ -501,16 +514,91 @@ public class PanelPerfil extends JPanel {
         String nuevoNombre = javax.swing.JOptionPane.showInputDialog(mainFrame,
                 "Ingresa tu nuevo nombre:",
                 mainFrame.getClienteActual().getNombre());
+
         if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
-            mainFrame.cambiarNombreCliente(nuevoNombre);
-            refrescar();
+            nuevoNombrePendiente = nuevoNombre.trim();
+            lblUsuario.setText("@" + nuevoNombrePendiente);
+            txtNuevoNombre.setText(nuevoNombrePendiente);
+            mostrarBotonGuardarSiHayCambios();
         }
     }
 
     private void abrirDialogoCambiarContraseña() {
+        javax.swing.JPasswordField campoNueva = new javax.swing.JPasswordField();
+        javax.swing.JPasswordField campoConfirmacion = new javax.swing.JPasswordField();
+
+        Object[] mensaje = {
+                "Nueva contraseña:", campoNueva,
+                "Confirmar contraseña:", campoConfirmacion
+        };
+
+        int opcion = javax.swing.JOptionPane.showConfirmDialog(mainFrame, mensaje,
+                "Cambiar contraseña",
+                javax.swing.JOptionPane.OK_CANCEL_OPTION,
+                javax.swing.JOptionPane.PLAIN_MESSAGE);
+
+        if (opcion != javax.swing.JOptionPane.OK_OPTION) {
+            return;
+        }
+
+        String nueva = new String(campoNueva.getPassword()).trim();
+        String confirmacion = new String(campoConfirmacion.getPassword()).trim();
+
+        if (nueva.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(mainFrame,
+                    "La contraseña no puede estar vacía.",
+                    "Error",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!nueva.equals(confirmacion)) {
+            javax.swing.JOptionPane.showMessageDialog(mainFrame,
+                    "Las contraseñas no coinciden.",
+                    "Error",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        nuevaContrasenaPendiente = nueva;
+
         javax.swing.JOptionPane.showMessageDialog(mainFrame,
-                "Funcionalidad de cambio de contraseña no disponible en este momento.",
+                "Contraseña preparada para guardar.",
                 "Cambiar contraseña",
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+        mostrarBotonGuardarSiHayCambios();
+        }
+    
+
+    private boolean hayCambiosPendientes() {
+    return nuevoNombrePendiente != null || nuevaContrasenaPendiente != null;
+}
+
+    private void mostrarBotonGuardarSiHayCambios() {
+        if (btnGuardarCambios != null) {
+            btnGuardarCambios.setVisible(hayCambiosPendientes());
+            btnGuardarCambios.revalidate();
+            btnGuardarCambios.repaint();
+        }
+    }
+
+    private void guardarCambiosPendientes() {
+        if (nuevoNombrePendiente != null) {
+            mainFrame.cambiarNombreCliente(nuevoNombrePendiente);
+            nuevoNombrePendiente = null;
+        }
+
+        if (nuevaContrasenaPendiente != null) {
+            boolean cambiada = mainFrame.cambiarContrasenaCliente(nuevaContrasenaPendiente);
+            if (cambiada) {
+                nuevaContrasenaPendiente = null;
+            }
+        }
+
+        JOptionPane.showMessageDialog(mainFrame, "Cambios guardados correctamente");
+
+        mostrarBotonGuardarSiHayCambios();
+        refrescar();
     }
 }
