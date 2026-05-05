@@ -536,7 +536,9 @@ public class Main extends JFrame {
         if (clienteActual.comprar().name().equals("OK")) {
             Pedido pedido = obtenerUltimoPedido();
             if (pedido != null) {
-                sistema.addPedido(pedido);
+                pedido.setEstadoPedido(EstadoPedido.EN_PREPARACION);
+                clienteActual.addCodigo(pedido.getCodigo());
+                sistema.registrarPedido(pedido);
             }
             clienteActual.addNotificacion(new Notificacion(TipoNotificacion.PAGO_REALIZADO,
                     "Pago realizado. Tu pedido se ha creado correctamente."));
@@ -1235,6 +1237,15 @@ public class Main extends JFrame {
         File temporal = new File(FICHERO_DATOS + ".tmp");
         try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(temporal))) {
             salida.writeObject(estado);
+        } catch (IOException e) {
+            if (temporal.exists() && !temporal.delete()) {
+                temporal.deleteOnExit();
+            }
+            System.err.println("No se ha podido guardar el estado en " + FICHERO_DATOS + ": " + e.getMessage());
+            return;
+        }
+
+        try {
             Files.move(temporal.toPath(), new File(FICHERO_DATOS).toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             if (temporal.exists() && !temporal.delete()) {

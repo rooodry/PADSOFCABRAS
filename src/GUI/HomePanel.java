@@ -332,6 +332,8 @@ public class HomePanel extends JPanel {
 
         dialogo.add(detalle);
         dialogo.pack();
+        dialogo.setResizable(true);
+        dialogo.setSize(Math.max(dialogo.getWidth(), 860), Math.max(dialogo.getHeight(), 560));
         dialogo.setLocationRelativeTo(this);
         dialogo.setVisible(true);
     }

@@ -133,11 +133,12 @@ public class PanelDeProducto extends JPanel {
     private void construirUI() {
         setLayout(new BorderLayout());
         setBackground(UiStyle.COLOR_FONDO);
-        setPreferredSize(new Dimension(820, editable ? 470 : 380));
+        setPreferredSize(new Dimension(820, 520));
 
         JScrollPane scroll = new JScrollPane(crearCuerpo(), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(null);
+        scroll.setPreferredSize(new Dimension(820, 520));
         scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
         add(scroll, BorderLayout.CENTER);
         if (editable) {

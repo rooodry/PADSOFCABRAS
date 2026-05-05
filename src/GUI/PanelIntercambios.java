@@ -114,8 +114,8 @@ public class PanelIntercambios extends JPanel {
                     || p.getDescripcion().toLowerCase().contains(termino)
                     || p.getEstadoProducto().toString().toLowerCase().contains(termino)));
         }
-        if (productoSeleccionado == null || !mercado.contains(productoSeleccionado)) {
-            productoSeleccionado = mercado.isEmpty() ? null : mercado.get(0);
+        if (productoSeleccionado != null && !mercado.contains(productoSeleccionado)) {
+            productoSeleccionado = null;
         }
     }
 
@@ -139,6 +139,10 @@ public class PanelIntercambios extends JPanel {
         boton.setPreferredSize(new Dimension(180, 40));
         boton.addActionListener(e -> {
             tabActivo = texto;
+            if (TAB_LANZAR.equals(texto)) {
+                productoSeleccionado = null;
+                eligiendoProductoPropio = false;
+            }
             construirVista();
         });
         return boton;
@@ -167,78 +171,54 @@ public class PanelIntercambios extends JPanel {
     }
 
     private JPanel crearVistaLanzar() {
-        JPanel vista = new JPanel(new BorderLayout(18, 0));
-        vista.setOpaque(false);
-        vista.add(crearPanelSeleccion(), BorderLayout.WEST);
-        vista.add(crearPanelMercado(), BorderLayout.CENTER);
-        return vista;
+        if (productoSeleccionado == null) {
+            return crearPanelCatalogo();
+        }
+        if (eligiendoProductoPropio) {
+            return crearPanelSeleccionPropio();
+        }
+        return crearPanelDetalle(productoSeleccionado);
     }
 
-    private JPanel crearPanelSeleccion() {
-        JPanel seleccion = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 24);
-        seleccion.setLayout(new BorderLayout(0, 18));
-        seleccion.setBorder(new EmptyBorder(20, 20, 20, 20));
-        seleccion.setPreferredSize(new Dimension(380, 0));
+    private JPanel crearPanelCatalogo() {
+        JPanel panel = new JPanel(new BorderLayout(0, 18));
+        panel.setOpaque(false);
 
-        JLabel titulo = new JLabel("Producto seleccionado", SwingConstants.LEFT);
-        titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
-        titulo.setForeground(UiStyle.COLOR_TEXTO);
-        seleccion.add(titulo, BorderLayout.NORTH);
+        JPanel cabecera = crearCabeceraCatalogo("Productos disponibles");
+        panel.add(cabecera, BorderLayout.NORTH);
 
-        if (productoSeleccionado == null) {
-            JLabel vacio = new JLabel("No hay productos disponibles para intercambiar.", SwingConstants.CENTER);
-            vacio.setFont(new Font("SansSerif", Font.PLAIN, 14));
-            vacio.setForeground(UiStyle.COLOR_TEXTO);
-            seleccion.add(vacio, BorderLayout.CENTER);
-            return seleccion;
+        JPanel grid = new JPanel(new GridLayout(0, 3, 18, 18));
+        grid.setOpaque(false);
+        if (mercado.isEmpty()) {
+            JPanel aviso = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 20);
+            aviso.setOpaque(true);
+            aviso.setBorder(new EmptyBorder(24, 24, 24, 24));
+            aviso.setLayout(new BorderLayout());
+            JLabel mensaje = new JLabel("No hay productos que coincidan con la búsqueda.", SwingConstants.CENTER);
+            mensaje.setFont(new Font("SansSerif", Font.PLAIN, 16));
+            mensaje.setForeground(UiStyle.COLOR_TEXTO);
+            aviso.add(mensaje, BorderLayout.CENTER);
+            grid.add(aviso);
+        } else {
+            for (ProductoSegundaMano producto : mercado) {
+                grid.add(crearTarjetaCatalogo(producto));
+            }
         }
 
-        JLabel subtitulo = new JLabel("Sigue estos pasos:");
-        subtitulo.setFont(new Font("SansSerif", Font.BOLD, 14));
-        subtitulo.setForeground(UiStyle.COLOR_TEXTO);
-        seleccion.add(subtitulo, BorderLayout.SOUTH);
-
-        JPanel cuerpo = new JPanel();
-        cuerpo.setOpaque(false);
-        cuerpo.setLayout(new BoxLayout(cuerpo, BoxLayout.Y_AXIS));
-        cuerpo.add(crearImagenGrande(productoSeleccionado));
-        cuerpo.add(Box.createVerticalStrut(14));
-        cuerpo.add(crearEtiquetaGrande(productoSeleccionado.getNombre()));
-        cuerpo.add(Box.createVerticalStrut(10));
-        cuerpo.add(crearEtiquetaEstado(productoSeleccionado));
-        cuerpo.add(Box.createVerticalStrut(10));
-        cuerpo.add(crearEtiquetaNormal(productoSeleccionado.getDescripcion()));
-        cuerpo.add(Box.createVerticalStrut(12));
-        cuerpo.add(crearEtiquetaNormal("Valor estimado: " + String.format("%.2f EUR", productoSeleccionado.getValorEstimado())));
-        cuerpo.add(Box.createVerticalStrut(8));
-        cuerpo.add(crearEtiquetaNormal("Estado: " + productoSeleccionado.getEstadoProducto()));
-        cuerpo.add(Box.createVerticalStrut(16));
-
-        JLabel ayuda = new JLabel("1. Selecciona un producto del mercado. 2. Haz clic en Hacer oferta.");
-        ayuda.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        ayuda.setForeground(UiStyle.COLOR_TEXTO);
-        ayuda.setAlignmentX(Component.CENTER_ALIGNMENT);
-        cuerpo.add(ayuda);
-        cuerpo.add(Box.createVerticalStrut(12));
-
-        JButton boton = new UiStyle.RoundedButton("Hacer oferta", UiStyle.COLOR_MARRON_MEDIO, UiStyle.COLOR_CABECERA, 18);
-        boton.setPreferredSize(new Dimension(220, 42));
-        boton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        boton.addActionListener(e -> abrirDialogoSeleccionPropio(productoSeleccionado));
-        cuerpo.add(boton);
-
-        seleccion.add(cuerpo, BorderLayout.CENTER);
-        return seleccion;
+        JScrollPane scroll = new JScrollPane(grid,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setBorder(null);
+        scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
+        panel.add(scroll, BorderLayout.CENTER);
+        return panel;
     }
 
-    private JPanel crearPanelMercado() {
-        JPanel mercadoPanel = new JPanel(new BorderLayout(0, 14));
-        mercadoPanel.setOpaque(false);
-
+    private JPanel crearCabeceraCatalogo(String tituloTexto) {
         JPanel cabecera = new JPanel(new BorderLayout(16, 16));
         cabecera.setOpaque(false);
 
-        JLabel titulo = new JLabel("Productos disponibles", SwingConstants.LEFT);
+        JLabel titulo = new JLabel(tituloTexto, SwingConstants.LEFT);
         titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
         titulo.setForeground(UiStyle.COLOR_TEXTO);
         cabecera.add(titulo, BorderLayout.NORTH);
@@ -253,26 +233,186 @@ public class PanelIntercambios extends JPanel {
         txtBuscar.setPreferredSize(new Dimension(240, 32));
         buscador.add(txtBuscar);
         cabecera.add(buscador, BorderLayout.SOUTH);
+        return cabecera;
+    }
 
-        mercadoPanel.add(cabecera, BorderLayout.NORTH);
+    private JPanel crearTarjetaCatalogo(ProductoSegundaMano producto) {
+        JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 24);
+        tarjeta.setLayout(new BorderLayout(0, 14));
+        tarjeta.setBorder(new EmptyBorder(14, 14, 14, 14));
 
-        JPanel grid = new JPanel(new GridLayout(0, 2, 18, 18));
+        JLabel imagen = crearMiniatura(producto.getImagen(), 180, 160);
+        tarjeta.add(imagen, BorderLayout.NORTH);
+
+        JPanel centro = new JPanel();
+        centro.setOpaque(false);
+        centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
+        JLabel nombre = new JLabel("<html><b>" + producto.getNombre() + "</b></html>");
+        nombre.setFont(new Font("SansSerif", Font.BOLD, 14));
+        nombre.setForeground(UiStyle.COLOR_TEXTO);
+        nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
+        centro.add(nombre);
+        centro.add(Box.createVerticalStrut(8));
+        centro.add(crearEstrellas(producto.getValoracion()));
+        centro.add(Box.createVerticalStrut(8));
+        tarjeta.add(centro, BorderLayout.CENTER);
+
+        JButton lanzar = new UiStyle.RoundedButton("Lanzar oferta", UiStyle.COLOR_MARRON_MEDIO, UiStyle.COLOR_CABECERA, 18);
+        lanzar.setPreferredSize(new Dimension(160, 34));
+        lanzar.addActionListener(e -> {
+            productoSeleccionado = producto;
+            eligiendoProductoPropio = false;
+            construirVista();
+        });
+        JPanel botonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        botonPanel.setOpaque(false);
+        botonPanel.add(lanzar);
+        tarjeta.add(botonPanel, BorderLayout.SOUTH);
+
+        return tarjeta;
+    }
+
+    private JPanel crearPanelDetalle(ProductoSegundaMano producto) {
+        JPanel pantalla = new JPanel(new BorderLayout(18, 0));
+        pantalla.setOpaque(false);
+
+        JPanel izquierda = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 24);
+        izquierda.setOpaque(true);
+        izquierda.setLayout(new BorderLayout(0, 14));
+        izquierda.setBorder(new EmptyBorder(20, 20, 20, 20));
+        izquierda.setPreferredSize(new Dimension(420, 0));
+
+        JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        topBar.setOpaque(false);
+        JButton btnVolver = new UiStyle.RoundedButton("Volver al catálogo", UiStyle.COLOR_TARJETA, UiStyle.COLOR_TEXTO, 14);
+        btnVolver.setPreferredSize(new Dimension(180, 34));
+        btnVolver.addActionListener(e -> {
+            productoSeleccionado = null;
+            construirVista();
+        });
+        topBar.add(btnVolver);
+        izquierda.add(topBar, BorderLayout.NORTH);
+
+        izquierda.add(crearImagenGrande(producto), BorderLayout.CENTER);
+
+        JPanel infoIzquierda = new JPanel();
+        infoIzquierda.setOpaque(false);
+        infoIzquierda.setLayout(new BoxLayout(infoIzquierda, BoxLayout.Y_AXIS));
+        infoIzquierda.add(crearEtiquetaGrande(producto.getNombre()));
+        infoIzquierda.add(Box.createVerticalStrut(10));
+        infoIzquierda.add(crearEstrellas(producto.getValoracion()));
+        infoIzquierda.add(Box.createVerticalStrut(18));
+
+        JButton boton = new UiStyle.RoundedButton("Hacer oferta", UiStyle.COLOR_MARRON_MEDIO, UiStyle.COLOR_CABECERA, 20);
+        boton.setPreferredSize(new Dimension(260, 44));
+        boton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        boton.addActionListener(e -> {
+            eligiendoProductoPropio = true;
+            construirVista();
+        });
+        infoIzquierda.add(boton);
+        izquierda.add(infoIzquierda, BorderLayout.CENTER);
+
+        pantalla.add(izquierda, BorderLayout.WEST);
+
+        JPanel derecha = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 24);
+        derecha.setOpaque(true);
+        derecha.setLayout(new BoxLayout(derecha, BoxLayout.Y_AXIS));
+        derecha.setBorder(new EmptyBorder(32, 28, 32, 28));
+
+        JLabel tituloDescripcion = new JLabel("Descripción");
+        tituloDescripcion.setFont(new Font("SansSerif", Font.BOLD, 20));
+        tituloDescripcion.setForeground(UiStyle.COLOR_TEXTO);
+        derecha.add(tituloDescripcion);
+        derecha.add(Box.createVerticalStrut(12));
+        JLabel descripcion = new JLabel("<html>" + producto.getDescripcion() + "</html>");
+        descripcion.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        descripcion.setForeground(UiStyle.COLOR_TEXTO);
+        derecha.add(descripcion);
+        derecha.add(Box.createVerticalStrut(22));
+
+        JLabel estadoTitulo = new JLabel("Estado");
+        estadoTitulo.setFont(new Font("SansSerif", Font.BOLD, 18));
+        estadoTitulo.setForeground(UiStyle.COLOR_TEXTO);
+        derecha.add(estadoTitulo);
+        derecha.add(Box.createVerticalStrut(10));
+        JLabel estado = new JLabel(producto.getEstadoProducto().toString());
+        estado.setFont(new Font("SansSerif", Font.BOLD, 14));
+        estado.setOpaque(true);
+        estado.setBackground(new Color(175, 80, 62));
+        estado.setForeground(Color.WHITE);
+        estado.setBorder(new EmptyBorder(8, 14, 8, 14));
+        estado.setAlignmentX(Component.LEFT_ALIGNMENT);
+        derecha.add(estado);
+
+        pantalla.add(derecha, BorderLayout.CENTER);
+        return pantalla;
+    }
+
+    private JPanel crearPanelSeleccionPropio() {
+        JPanel pantalla = new JPanel(new BorderLayout(18, 0));
+        pantalla.setOpaque(false);
+
+        JPanel izquierda = crearPanelDetalle(productoSeleccionado);
+        JPanel wrapperIzquierda = new JPanel(new BorderLayout());
+        wrapperIzquierda.setOpaque(false);
+        wrapperIzquierda.add(izquierda, BorderLayout.CENTER);
+
+        JPanel derecho = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 24);
+        derecho.setOpaque(true);
+        derecho.setLayout(new BorderLayout(0, 18));
+        derecho.setBorder(new EmptyBorder(20, 20, 20, 20));
+        derecho.setPreferredSize(new Dimension(520, 0));
+
+        JLabel titulo = new JLabel("Elige tu producto", SwingConstants.LEFT);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
+        titulo.setForeground(UiStyle.COLOR_TEXTO);
+        derecho.add(titulo, BorderLayout.NORTH);
+
+        JPanel grid = new JPanel(new GridLayout(0, 3, 18, 18));
         grid.setOpaque(false);
-        if (mercado.isEmpty()) {
-            JPanel aviso = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 20);
-            aviso.setOpaque(true);
-            aviso.setBackground(UiStyle.COLOR_TARJETA);
-            aviso.setBorder(new EmptyBorder(24, 24, 24, 24));
-            aviso.setLayout(new BorderLayout());
-            JLabel mensaje = new JLabel("No hay productos que coincidan con la búsqueda.", SwingConstants.CENTER);
-            mensaje.setFont(new Font("SansSerif", Font.PLAIN, 16));
-            mensaje.setForeground(UiStyle.COLOR_TEXTO);
-            aviso.add(mensaje, BorderLayout.CENTER);
-            grid.add(aviso);
-        } else {
-            for (ProductoSegundaMano producto : mercado) {
-                grid.add(crearTarjetaMercado(producto));
+        List<ProductoSegundaMano> propiosValorados = new ArrayList<>();
+        for (ProductoSegundaMano producto : mainFrame.getClienteActual().getCartera().getProductos()) {
+            if (producto.getEstadoProducto() == EstadoProducto.VALORADO) {
+                propiosValorados.add(producto);
             }
+        }
+
+        if (propiosValorados.isEmpty()) {
+            JLabel mensaje = new JLabel("No tienes productos valorados en la cartera.");
+            mensaje.setFont(new Font("SansSerif", Font.PLAIN, 14));
+            mensaje.setForeground(UiStyle.COLOR_TEXTO);
+            mensaje.setHorizontalAlignment(SwingConstants.CENTER);
+            derecho.add(mensaje, BorderLayout.CENTER);
+            pantalla.add(wrapperIzquierda, BorderLayout.WEST);
+            pantalla.add(derecho, BorderLayout.CENTER);
+            return pantalla;
+        }
+
+        for (ProductoSegundaMano producto : propiosValorados) {
+            JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 20);
+            tarjeta.setLayout(new BorderLayout(0, 10));
+            tarjeta.setBorder(new EmptyBorder(12, 12, 12, 12));
+            tarjeta.add(crearMiniatura(producto.getImagen(), 140, 110), BorderLayout.NORTH);
+
+            JLabel nombre = new JLabel("<html><b>" + producto.getNombre() + "</b></html>");
+            nombre.setFont(new Font("SansSerif", Font.BOLD, 13));
+            nombre.setForeground(UiStyle.COLOR_TEXTO);
+            tarjeta.add(nombre, BorderLayout.CENTER);
+
+            JButton elegir = new UiStyle.RoundedButton("Elegir producto", UiStyle.COLOR_MARRON_MEDIO, UiStyle.COLOR_CABECERA, 14);
+            elegir.setPreferredSize(new Dimension(140, 32));
+            elegir.addActionListener(e -> {
+                mainFrame.proponerIntercambio(productoSeleccionado, producto);
+                eligiendoProductoPropio = false;
+                productoSeleccionado = null;
+                construirVista();
+            });
+            JPanel botonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+            botonPanel.setOpaque(false);
+            botonPanel.add(elegir);
+            tarjeta.add(botonPanel, BorderLayout.SOUTH);
+            grid.add(tarjeta);
         }
 
         JScrollPane scroll = new JScrollPane(grid,
@@ -280,8 +420,11 @@ public class PanelIntercambios extends JPanel {
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(null);
         scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
-        mercadoPanel.add(scroll, BorderLayout.CENTER);
-        return mercadoPanel;
+        derecho.add(scroll, BorderLayout.CENTER);
+
+        pantalla.add(wrapperIzquierda, BorderLayout.WEST);
+        pantalla.add(derecho, BorderLayout.CENTER);
+        return pantalla;
     }
 
     private JPanel crearTarjetaMercado(ProductoSegundaMano producto) {
@@ -303,24 +446,21 @@ public class PanelIntercambios extends JPanel {
         nombre.setAlignmentX(Component.LEFT_ALIGNMENT);
         centro.add(nombre);
         centro.add(Box.createVerticalStrut(8));
-        centro.add(crearEtiquetaEstado(producto));
+        centro.add(crearEstrellas(producto.getValoracion()));
         centro.add(Box.createVerticalStrut(8));
-        JLabel valor = new JLabel("Valor: " + String.format("%.2f EUR", producto.getValorEstimado()));
-        valor.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        valor.setForeground(UiStyle.COLOR_TEXTO);
-        valor.setAlignmentX(Component.LEFT_ALIGNMENT);
-        centro.add(valor);
+        centro.add(crearEtiquetaEstado(producto));
         tarjeta.add(centro, BorderLayout.CENTER);
 
-        JButton seleccionar = new UiStyle.RoundedButton("Seleccionar", UiStyle.COLOR_MARRON_MEDIO, UiStyle.COLOR_CABECERA, 18);
-        seleccionar.setPreferredSize(new Dimension(160, 34));
-        seleccionar.addActionListener(e -> {
+        JButton detalles = new UiStyle.RoundedButton("Ver detalles", UiStyle.COLOR_MARRON_MEDIO, UiStyle.COLOR_CABECERA, 18);
+        detalles.setPreferredSize(new Dimension(160, 34));
+        detalles.addActionListener(e -> {
             productoSeleccionado = producto;
+            eligiendoProductoPropio = false;
             construirVista();
         });
         JPanel botonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         botonPanel.setOpaque(false);
-        botonPanel.add(seleccionar);
+        botonPanel.add(detalles);
         tarjeta.add(botonPanel, BorderLayout.SOUTH);
 
         return tarjeta;
