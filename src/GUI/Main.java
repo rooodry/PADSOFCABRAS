@@ -1079,6 +1079,12 @@ public class Main extends JFrame {
         if (producto == null) {
             return;
         }
+        if (producto.getEstaValorado()) {
+            JOptionPane.showMessageDialog(this,
+                    "Este producto ya fue valorado y no puede modificarse.",
+                    "Valoracion bloqueada", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         producto.setValoracion(valoracion, valorEstimado, conservacion);
         producto.setFechaValoracion(new Date());
         producto.getPropietario().addNotificacion(new Notificacion(TipoNotificacion.VALORACION_REALIZADA,
@@ -1089,6 +1095,12 @@ public class Main extends JFrame {
     public void valorarProductoSegundaMano(ProductoSegundaMano producto,
             double valorEstimado, EstadoConservacion conservacion) {
         if (producto == null) {
+            return;
+        }
+        if (producto.getEstaValorado()) {
+            JOptionPane.showMessageDialog(this,
+                    "Este producto ya fue valorado y no puede modificarse.",
+                    "Valoracion bloqueada", JOptionPane.WARNING_MESSAGE);
             return;
         }
         producto.setValoracion(valorEstimado, conservacion);

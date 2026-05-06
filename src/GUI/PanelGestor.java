@@ -666,7 +666,8 @@ public class PanelGestor extends JPanel {
         fila.setMinimumSize(new Dimension(0, 86));
         fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
         fila.add(crearEtiqueta(textoProductoSegundaMano(producto)), BorderLayout.CENTER);
-        JButton valorar = crearBoton(producto.getEstaValorado() ? "Modificar" : "Valorar", 125);
+        JButton valorar = crearBoton(producto.getEstaValorado() ? "Valorado" : "Valorar", 125);
+        valorar.setEnabled(!producto.getEstaValorado());
         valorar.addActionListener(e -> valorarProductoSegundaMano(producto));
         fila.add(valorar, BorderLayout.EAST);
         return fila;
@@ -941,6 +942,12 @@ public class PanelGestor extends JPanel {
     }
 
     private void valorarProductoSegundaMano(ProductoSegundaMano producto) {
+        if (producto.getEstaValorado()) {
+            JOptionPane.showMessageDialog(this,
+                    "Este producto ya fue valorado y no puede modificarse.",
+                    "Valoracion bloqueada", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         double precioInicial = producto.getEstaValorado() ? producto.getValorEstimado() : 10.0;
         JSpinner precio = new JSpinner(new SpinnerNumberModel(precioInicial, 0.0, 9999.0, 1.0));
         JComboBox<EstadoConservacion> conservacion = new JComboBox<>(EstadoConservacion.values());
@@ -955,7 +962,7 @@ public class PanelGestor extends JPanel {
         panel.add(conservacion);
 
         int respuesta = JOptionPane.showConfirmDialog(this, panel,
-                (producto.getEstaValorado() ? "Modificar " : "Valorar ") + producto.getNombre(),
+                "Valorar " + producto.getNombre(),
                 JOptionPane.OK_CANCEL_OPTION);
         if (respuesta == JOptionPane.OK_OPTION) {
             mainFrame.valorarProductoSegundaMano(producto,
