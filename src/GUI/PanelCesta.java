@@ -22,6 +22,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import productos.ProductoTienda;
+import productos.Pack;
 
 /**
  * Pantalla de cesta del cliente registrado.
@@ -36,6 +37,7 @@ public class PanelCesta extends JPanel {
 
     private final Main mainFrame;
     private final JPanel listaProductos;
+    private final JPanel listaPacks;
     private final JLabel lblTotal;
 
     /**
@@ -46,6 +48,7 @@ public class PanelCesta extends JPanel {
     public PanelCesta(Main mainFrame) {
         this.mainFrame = mainFrame;
         this.listaProductos = new JPanel(new GridBagLayout());
+        this.listaPacks = new JPanel(new GridBagLayout());
         this.lblTotal = new JLabel();
 
         setLayout(new BorderLayout());
@@ -103,6 +106,7 @@ public class PanelCesta extends JPanel {
         listaProductos.setBorder(new EmptyBorder(12, 12, 12, 12));
 
         Map<ProductoTienda, Integer> productos = mainFrame.getClienteActual().getCesta().getProductos();
+        Map<Pack, Integer> packs = mainFrame.getClienteActual().getCesta().getPacks();
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -111,7 +115,7 @@ public class PanelCesta extends JPanel {
         gbc.insets = new Insets(0, 0, 12, 0);
 
         double total = 0.0;
-        if (productos.isEmpty()) {
+        if (productos.isEmpty() && packs.isEmpty()) {
             JLabel vacia = new JLabel("La cesta esta vacia.", SwingConstants.CENTER);
             vacia.setFont(new Font("SansSerif", Font.PLAIN, 16));
             vacia.setForeground(UiStyle.COLOR_TEXTO);
@@ -124,6 +128,15 @@ public class PanelCesta extends JPanel {
                 total += precioTotal;
                 listaProductos.add(crearTarjetaProducto(producto, cantidad, precioTotal), gbc);
                 gbc.gridy++;
+            }
+            for(Map.Entry<Pack, Integer> entrada : packs.entrySet()) {
+                Pack pack = entrada.getKey();
+                int cantidad = entrada.getValue();
+                double precioTotal = pack.getPrecio();
+                total += precioTotal;
+                listaPacks.add(crearTarjetaPack(pack, cantidad));
+                gbc.gridy++;
+
             }
         }
 
@@ -180,6 +193,10 @@ public class PanelCesta extends JPanel {
         tarjeta.add(retirar, BorderLayout.EAST);
 
         return tarjeta;
+    }
+
+    private JPanel crearTarjetaPack(Pack pack, int cantidad) {
+
     }
 
     private void cargarImagenMiniatura(JLabel label, String rutaImagen) {
