@@ -536,19 +536,22 @@ public class PanelGestor extends JPanel {
                 mainFrame.getProductosTienda().toArray(new ProductoTienda[0]));
         productos.setRenderer((list, value, index, selected, focus) ->
                 new JLabel(value == null ? "" : value.getNombre()));
+        JComboBox<String> tipo = new JComboBox<>(new String[] {"Porcentaje", "Rebaja fija", "2x1"});
         JSpinner porcentaje = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 100.0, 1.0));
         JSpinner fija = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 999.0, 1.0));
-        JCheckBox dosPorUno = new JCheckBox("2x1");
+        tipo.addActionListener(e -> actualizarCamposDescuento(tipo, porcentaje, fija));
+        productos.addActionListener(e -> seleccionarTipoDescuentoActual(
+                (ProductoTienda) productos.getSelectedItem(), tipo, porcentaje, fija));
         panel.add(productos);
-        panel.add(crearLineaCampos("Porcentaje", porcentaje, "Rebaja fija", fija, dosPorUno));
+        panel.add(crearPanelSeleccionDescuento(tipo, porcentaje, fija));
+        seleccionarTipoDescuentoActual((ProductoTienda) productos.getSelectedItem(), tipo, porcentaje, fija);
         JPanel acciones = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         acciones.setOpaque(false);
         JButton aplicar = crearBoton("Aplicar", 110);
         aplicar.addActionListener(e -> mainFrame.aplicarDescuentoProducto(
                 (ProductoTienda) productos.getSelectedItem(),
-                ((Double) porcentaje.getValue()).doubleValue(),
-                ((Double) fija.getValue()).doubleValue(),
-                dosPorUno.isSelected()));
+                tipoDescuentoSeleccionado(tipo),
+                valorDescuentoSeleccionado(tipo, porcentaje, fija)));
         acciones.add(aplicar);
         JButton limpiar = crearBoton("Quitar", 100);
         limpiar.addActionListener(e -> mainFrame.limpiarDescuentoProducto(
@@ -563,34 +566,82 @@ public class PanelGestor extends JPanel {
         panel.add(crearEtiqueta("<b>Aplicar a categoria</b>"));
         JTextField categoria = new JTextField();
         categoria.setMaximumSize(new Dimension(360, 30));
+        JComboBox<String> tipo = new JComboBox<>(new String[] {"Porcentaje", "Rebaja fija", "2x1"});
         JSpinner porcentaje = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 100.0, 1.0));
         JSpinner fija = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 999.0, 1.0));
-        JCheckBox dosPorUno = new JCheckBox("2x1");
+        tipo.addActionListener(e -> actualizarCamposDescuento(tipo, porcentaje, fija));
         panel.add(crearEtiqueta("Categoria o texto de categoria"));
         panel.add(categoria);
-        panel.add(crearLineaCampos("Porcentaje", porcentaje, "Rebaja fija", fija, dosPorUno));
+        panel.add(crearPanelSeleccionDescuento(tipo, porcentaje, fija));
+        actualizarCamposDescuento(tipo, porcentaje, fija);
         JButton aplicar = crearBoton("Aplicar a categoria", 180);
         aplicar.addActionListener(e -> {
             int total = mainFrame.aplicarDescuentoCategoria(categoria.getText(),
-                    ((Double) porcentaje.getValue()).doubleValue(),
-                    ((Double) fija.getValue()).doubleValue(),
-                    dosPorUno.isSelected());
+                    tipoDescuentoSeleccionado(tipo),
+                    valorDescuentoSeleccionado(tipo, porcentaje, fija));
             JOptionPane.showMessageDialog(this, "Productos actualizados: " + total);
         });
         panel.add(aplicar);
         return panel;
     }
 
-    private JPanel crearLineaCampos(String etiqueta1, JSpinner spinner1, String etiqueta2,
-            JSpinner spinner2, JCheckBox check) {
+    private JPanel crearPanelSeleccionDescuento(JComboBox<String> tipo, JSpinner porcentaje, JSpinner fija) {
         JPanel linea = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         linea.setOpaque(false);
-        linea.add(new JLabel(etiqueta1));
-        linea.add(spinner1);
-        linea.add(new JLabel(etiqueta2));
-        linea.add(spinner2);
-        linea.add(check);
+        linea.add(new JLabel("Tipo"));
+        linea.add(tipo);
+        linea.add(new JLabel("Porcentaje"));
+        linea.add(porcentaje);
+        linea.add(new JLabel("Rebaja fija"));
+        linea.add(fija);
         return linea;
+    }
+
+    private void actualizarCamposDescuento(JComboBox<String> tipo, JSpinner porcentaje, JSpinner fija) {
+        String seleccion = (String) tipo.getSelectedItem();
+        porcentaje.setEnabled("Porcentaje".equals(seleccion));
+        fija.setEnabled("Rebaja fija".equals(seleccion));
+    }
+
+    private void seleccionarTipoDescuentoActual(ProductoTienda producto,
+            JComboBox<String> tipo, JSpinner porcentaje, JSpinner fija) {
+        String activo = mainFrame.getTipoDescuentoProducto(producto);
+        if ("PORCENTAJE".equals(activo)) {
+            tipo.setSelectedItem("Porcentaje");
+            porcentaje.setValue(producto.getRebajaPorcentaje());
+        } else if ("FIJO".equals(activo)) {
+            tipo.setSelectedItem("Rebaja fija");
+            fija.setValue(producto.getRebajaFija());
+        } else if ("DOS_POR_UNO".equals(activo)) {
+            tipo.setSelectedItem("2x1");
+        } else {
+            tipo.setSelectedItem("Porcentaje");
+            porcentaje.setValue(0.0);
+            fija.setValue(0.0);
+        }
+        actualizarCamposDescuento(tipo, porcentaje, fija);
+    }
+
+    private String tipoDescuentoSeleccionado(JComboBox<String> tipo) {
+        String seleccion = (String) tipo.getSelectedItem();
+        if ("Rebaja fija".equals(seleccion)) {
+            return "FIJO";
+        }
+        if ("2x1".equals(seleccion)) {
+            return "DOS_POR_UNO";
+        }
+        return "PORCENTAJE";
+    }
+
+    private double valorDescuentoSeleccionado(JComboBox<String> tipo, JSpinner porcentaje, JSpinner fija) {
+        String seleccion = (String) tipo.getSelectedItem();
+        if ("Rebaja fija".equals(seleccion)) {
+            return ((Double) fija.getValue()).doubleValue();
+        }
+        if ("2x1".equals(seleccion)) {
+            return 0.0;
+        }
+        return ((Double) porcentaje.getValue()).doubleValue();
     }
 
     private void pintarSegundaMano() {
