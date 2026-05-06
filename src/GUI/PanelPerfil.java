@@ -44,8 +44,6 @@ import productos.ProductoSegundaMano;
 import productos.ProductoTienda;
 import utilidades.EstadoPedido;
 import utilidades.EstadoOferta;
-import productos.Pack;
-import productos.Producto;
 
 /**
  * Profile panel with tabbed navigation: Recommended, Orders, Exchanges, Settings.
@@ -230,79 +228,20 @@ public class PanelPerfil extends JPanel {
         titulo.setForeground(UiStyle.COLOR_TEXTO);
         vista.add(titulo, BorderLayout.NORTH);
 
-        JPanel contenido = new JPanel();
-        contenido.setOpaque(false);
-        contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
-        contenido.setBorder(new EmptyBorder(12, 0, 0, 0));
-
         List<ProductoTienda> recomendados = mainFrame.getProductosRecomendados();
-        JPanel gridProductos = new JPanel(new GridLayout(0, 3, 16, 16));
-        gridProductos.setOpaque(false);
+        JPanel grid = new JPanel(new GridLayout(0, 3, 16, 16));
+        grid.setOpaque(false);
         for (ProductoTienda producto : recomendados) {
-            gridProductos.add(crearTarjetaProducto(producto));
+            grid.add(crearTarjetaProducto(producto));
         }
-        contenido.add(gridProductos);
 
-        contenido.add(Box.createVerticalStrut(18));
-        JLabel subtituloPacks = new JLabel("Packs recomendados", SwingConstants.LEFT);
-        subtituloPacks.setFont(new Font("SansSerif", Font.BOLD, 18));
-        subtituloPacks.setForeground(UiStyle.COLOR_TEXTO);
-        subtituloPacks.setAlignmentX(Component.LEFT_ALIGNMENT);
-        contenido.add(subtituloPacks);
-        contenido.add(Box.createVerticalStrut(12));
-
-        JPanel gridPacks = new JPanel(new GridLayout(0, 3, 16, 16));
-        gridPacks.setOpaque(false);
-        for (Pack pack : mainFrame.getPacks()) {
-            gridPacks.add(crearTarjetaPack(pack));
-        }
-        contenido.add(gridPacks);
-
-        JScrollPane scroll = new JScrollPane(contenido,
+        JScrollPane scroll = new JScrollPane(grid,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(null);
         scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
         vista.add(scroll, BorderLayout.CENTER);
         return vista;
-    }
-
-     private JPanel crearTarjetaPack(Pack pack) {
-        JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_CABECERA, 20);
-        tarjeta.setLayout(new BorderLayout(0, 10));
-        tarjeta.setBorder(new EmptyBorder(12, 12, 12, 12));
-
-        JLabel nombre = new JLabel("<html><b>" + pack.getNombre() + "</b></html>");
-        nombre.setFont(new Font("SansSerif", Font.BOLD, 12));
-        nombre.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        tarjeta.add(nombre, BorderLayout.NORTH);
-
-        JPanel listaProductos = new JPanel();
-        listaProductos.setOpaque(false);
-        listaProductos.setLayout(new BoxLayout(listaProductos, BoxLayout.Y_AXIS));
-
-        int max = Math.min(pack.getProductos().size(), 3);
-        for (int i = 0; i < max; i++) {
-            Producto producto = pack.getProductos().get(i);
-            JLabel linea = new JLabel("- " + producto.getNombre());
-            linea.setFont(new Font("SansSerif", Font.PLAIN, 12));
-            linea.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-            listaProductos.add(linea);
-        }
-        if (pack.getProductos().size() > 3) {
-            JLabel resto = new JLabel("... y " + (pack.getProductos().size() - 3) + " más");
-            resto.setFont(new Font("SansSerif", Font.PLAIN, 12));
-            resto.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-            listaProductos.add(resto);
-        }
-        tarjeta.add(listaProductos, BorderLayout.CENTER);
-
-        JLabel precio = new JLabel(String.format("%.2f EUR", pack.getPrecio()));
-        precio.setFont(new Font("SansSerif", Font.BOLD, 14));
-        precio.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        tarjeta.add(precio, BorderLayout.SOUTH);
-
-        return tarjeta;
     }
 
     private JPanel crearTarjetaProducto(ProductoTienda producto) {

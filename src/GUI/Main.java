@@ -684,9 +684,14 @@ public class Main extends JFrame {
      * @param pack selected pack
      */
     public void anadirPackACesta(Pack pack) {
-        
-        this.clienteActual.getCesta().añadirPack(pack);
-
+        for (Producto producto : pack.getProductos()) {
+            if (producto instanceof ProductoTienda) {
+                ProductoTienda tienda = (ProductoTienda) producto;
+                if (stock.getNumProductos(tienda) > 0) {
+                    clienteActual.a\u00f1adirALaCesta(tienda, stock);
+                }
+            }
+        }
         panelCesta.refrescar();
         homePanel.refrescar();
         guardarEstadoPersistente();

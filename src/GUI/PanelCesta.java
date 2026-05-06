@@ -129,6 +129,15 @@ public class PanelCesta extends JPanel {
                 listaProductos.add(crearTarjetaProducto(producto, cantidad, precioTotal), gbc);
                 gbc.gridy++;
             }
+            for(Map.Entry<Pack, Integer> entrada : packs.entrySet()) {
+                Pack pack = entrada.getKey();
+                int cantidad = entrada.getValue();
+                double precioTotal = pack.getPrecio();
+                total += precioTotal;
+                listaPacks.add(crearTarjetaPack(pack, cantidad));
+                gbc.gridy++;
+
+            }
         }
 
         lblTotal.setText(String.format("Total  %.2f€", total));
@@ -186,6 +195,9 @@ public class PanelCesta extends JPanel {
         return tarjeta;
     }
 
+    private JPanel crearTarjetaPack(Pack pack, int cantidad) {
+
+    }
 
     private void cargarImagenMiniatura(JLabel label, String rutaImagen) {
         try {
