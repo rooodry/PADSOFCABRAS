@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import productos.ProductoTienda;
+import productos.Pack;
 
 /**
  * Representa la cesta de la compra en la que se agrupan los productos
@@ -13,6 +14,7 @@ public class Cesta implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private Map<ProductoTienda, Integer> productos;
+    private Map<Pack, Integer> packs;
 
     /**
      * Constructor de la clase Cesta.
@@ -20,6 +22,7 @@ public class Cesta implements Serializable {
      */
     public Cesta() {
         this.productos = new HashMap<>();
+        this.packs = new HashMap<>();
     }
 
     /**
@@ -34,6 +37,10 @@ public class Cesta implements Serializable {
         }
     }
 
+    public void añadirPack(Pack pack) {
+        this.packs.merge(pack, 1, Integer::sum);
+    }
+
     /**
      * Obtiene el mapa completo de productos contenidos en la cesta y sus cantidades.
      * * @return Una copia del mapa de productos de la cesta.
@@ -41,6 +48,11 @@ public class Cesta implements Serializable {
     public Map<ProductoTienda, Integer> getProductos() {
         return new HashMap<>(this.productos);
     }
+
+    public Map<Pack, Integer> getPacks() {
+        return new HashMap<>(this.packs);
+    }
+
 
     /**
      * Comprueba si la cesta se encuentra vacía.
