@@ -429,7 +429,7 @@ public class PanelIntercambios extends JPanel {
         return pantalla;
     }
 
-    private JPanel crearTarjetaMercado(ProductoSegundaMano producto) {
+    /*private JPanel crearTarjetaMercado(ProductoSegundaMano producto) {
         JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 24);
         tarjeta.setLayout(new BorderLayout(0, 14));
         LineBorder resaltado = new LineBorder(UiStyle.COLOR_MARRON_MEDIO, 2, true);
@@ -467,6 +467,7 @@ public class PanelIntercambios extends JPanel {
 
         return tarjeta;
     }
+        */
 
     private JPanel crearEstrellas(int valoracion) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
@@ -482,7 +483,7 @@ public class PanelIntercambios extends JPanel {
         return panel;
     }
 
-    private JLabel crearEtiquetaEstado(ProductoSegundaMano producto) {
+    /*private JLabel crearEtiquetaEstado(ProductoSegundaMano producto) {
         String estado = producto.getEstadoConservacion() == null
                 ? "Sin valorar" : producto.getEstadoConservacion().toString();
         JLabel label = new JLabel("Estado: " + estado);
@@ -491,6 +492,7 @@ public class PanelIntercambios extends JPanel {
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         return label;
     }
+        */
 
     private JLabel crearMiniatura(String ruta, int ancho, int alto) {
         JLabel label = new JLabel();
@@ -508,8 +510,8 @@ public class PanelIntercambios extends JPanel {
 
     private void cargarImagenEnLabel(JLabel label, String ruta, int ancho, int alto) {
         try {
-            File archivo = new File(ruta);
-            if (!archivo.exists()) {
+            File archivo = resolverRutaImagen(ruta);
+            if (archivo == null || !archivo.exists()) {
                 throw new IOException("Archivo de imagen no encontrado: " + ruta);
             }
             Image imagen = ImageIO.read(archivo);
@@ -527,6 +529,30 @@ public class PanelIntercambios extends JPanel {
         }
     }
 
+    private File resolverRutaImagen(String ruta) {
+        if (ruta == null || ruta.isBlank()) {
+            return null;
+        }
+
+        File archivoDirecto = new File(ruta);
+        if (archivoDirecto.exists()) {
+            return archivoDirecto;
+        }
+
+        File archivoEnFotos = new File("lib/fotos", ruta);
+        if (archivoEnFotos.exists()) {
+            return archivoEnFotos;
+        }
+
+        File archivoPorNombre = new File("lib/fotos", new File(ruta).getName());
+        if (archivoPorNombre.exists()) {
+            return archivoPorNombre;
+        }
+
+        return archivoDirecto;
+    }
+
+
     private JLabel crearEtiquetaGrande(String texto) {
         JLabel label = new JLabel("<html><b>" + texto + "</b></html>");
         label.setFont(new Font("SansSerif", Font.BOLD, 18));
@@ -535,13 +561,13 @@ public class PanelIntercambios extends JPanel {
         return label;
     }
 
-    private JLabel crearEtiquetaNormal(String texto) {
+    /*private JLabel crearEtiquetaNormal(String texto) {
         JLabel label = new JLabel("<html>" + texto + "</html>");
         label.setFont(new Font("SansSerif", Font.PLAIN, 14));
         label.setForeground(UiStyle.COLOR_TEXTO);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         return label;
-    }
+    }*/
 
     private JLabel crearImagenGrande(ProductoSegundaMano producto) {
         JLabel imagen = new JLabel();
@@ -676,61 +702,5 @@ public class PanelIntercambios extends JPanel {
         return boton;
     }
 
-    private void abrirDialogoSeleccionPropio(ProductoSegundaMano deseado) {
-        List<ProductoSegundaMano> propios = mainFrame.getClienteActual().getCartera().getProductos();
-        if (propios.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "No tienes productos en la cartera para ofrecer.",
-                    "Seleccionar producto", javax.swing.JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        JDialog dialog = new JDialog(mainFrame, "Selecciona tu producto", true);
-        dialog.setSize(840, 560);
-        dialog.setLocationRelativeTo(mainFrame);
-        dialog.setLayout(new BorderLayout());
-
-        JLabel titulo = new JLabel("Selecciona el producto que quieres ofrecer", SwingConstants.CENTER);
-        titulo.setFont(new Font("SansSerif", Font.BOLD, 22));
-        titulo.setForeground(UiStyle.COLOR_TEXTO);
-        titulo.setBorder(new EmptyBorder(18, 18, 18, 18));
-        dialog.add(titulo, BorderLayout.NORTH);
-
-        JPanel grid = new JPanel(new GridLayout(0, 3, 16, 16));
-        grid.setBorder(new EmptyBorder(18, 18, 18, 18));
-        grid.setBackground(UiStyle.COLOR_FONDO);
-
-        for (ProductoSegundaMano producto : propios) {
-            JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 20);
-            tarjeta.setLayout(new BorderLayout(10, 10));
-            tarjeta.setBorder(new EmptyBorder(10, 10, 10, 10));
-            tarjeta.add(crearMiniatura(producto.getImagen(), 220, 150), BorderLayout.NORTH);
-
-            JLabel nombre = new JLabel("<html><b>" + producto.getNombre() + "</b></html>");
-            nombre.setFont(new Font("SansSerif", Font.BOLD, 14));
-            nombre.setForeground(UiStyle.COLOR_TEXTO);
-            tarjeta.add(nombre, BorderLayout.CENTER);
-
-            JButton seleccionar = new UiStyle.RoundedButton("Seleccionar", UiStyle.COLOR_MARRON_MEDIO, UiStyle.COLOR_CABECERA, 18);
-            seleccionar.addActionListener(e -> {
-                mainFrame.proponerIntercambio(deseado, producto);
-                dialog.dispose();
-                refrescar();
-            });
-            JPanel botonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            botonPanel.setOpaque(false);
-            botonPanel.add(seleccionar);
-            tarjeta.add(botonPanel, BorderLayout.SOUTH);
-
-            grid.add(tarjeta);
-        }
-
-        JScrollPane scroll = new JScrollPane(grid,
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setBorder(null);
-        dialog.add(scroll, BorderLayout.CENTER);
-
-        dialog.setVisible(true);
-    }
+    
 }
