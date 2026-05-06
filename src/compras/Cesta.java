@@ -6,10 +6,7 @@ import java.util.Map;
 import productos.ProductoTienda;
 import productos.Pack;
 
-/**
- * Representa la cesta de la compra en la que se agrupan los productos
- * seleccionados por un usuario antes de formalizar un pedido.
- */
+
 public class Cesta implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -32,12 +29,14 @@ public class Cesta implements Serializable {
      * @param cantidad Número de unidades a añadir (debe ser mayor que 0).
      */
     public void añadirProducto(ProductoTienda producto, int cantidad) {
+        asegurarMapasInicializados();
         if(cantidad > 0) {
             this.productos.put(producto, this.productos.getOrDefault(producto, 0) + cantidad);
         }
     }
 
     public void añadirPack(Pack pack) {
+        asegurarMapasInicializados();
         this.packs.merge(pack, 1, Integer::sum);
     }
 
@@ -46,10 +45,12 @@ public class Cesta implements Serializable {
      * * @return Una copia del mapa de productos de la cesta.
      */
     public Map<ProductoTienda, Integer> getProductos() {
+        asegurarMapasInicializados();
         return new HashMap<>(this.productos);
     }
 
     public Map<Pack, Integer> getPacks() {
+        asegurarMapasInicializados();
         return new HashMap<>(this.packs);
     }
 
@@ -59,14 +60,17 @@ public class Cesta implements Serializable {
      * * @return true si no hay productos en la cesta, false en caso contrario.
      */
     public boolean estaVacia() {
-        return this.productos.isEmpty();
+        asegurarMapasInicializados();
+        return this.productos.isEmpty() && this.packs.isEmpty();
     }
 
     /**
      * Vacía completamente la cesta, eliminando todos los productos que contenga.
      */
     public void limpiarCesta() {
+        asegurarMapasInicializados();
         this.productos.clear();
+        this.packs.clear();
     }
    
     /**
@@ -74,6 +78,30 @@ public class Cesta implements Serializable {
      * * @param producto Objeto ProductoTienda a eliminar.
      */
     public void eliminarProducto(ProductoTienda producto) {
+        asegurarMapasInicializados();
         this.productos.remove(producto);
     }
+
+    private void asegurarMapasInicializados() {
+        if (this.productos == null) {
+            this.productos = new HashMap<>();
+        }
+        if (this.packs == null) {
+            this.packs = new HashMap<>();
+        }
+    }
+
+    public void retirarPack(Pack pack) {
+    if (!packs.containsKey(pack)) {
+        return;
+    }
+
+    int cantidad = packs.get(pack);
+
+    if (cantidad <= 1) {
+        packs.remove(pack);
+    } else {
+        packs.put(pack, cantidad - 1);
+    }
+}
 }

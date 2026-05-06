@@ -982,7 +982,7 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
-    public void crearPackGestion(String nombre, double precio, List<Producto> productos) {
+    public void crearPackGestion(String nombre, double precio, List<ProductoTienda> productos) {
         if (nombre == null || nombre.isBlank()) {
             JOptionPane.showMessageDialog(this, "El pack necesita nombre.", "Pack", JOptionPane.WARNING_MESSAGE);
             return;
@@ -991,16 +991,16 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
-    public void modificarPackGestion(Pack pack, double precio, List<Producto> productos) {
+    public void modificarPackGestion(Pack pack, double precio, List<ProductoTienda> productos) {
         if (pack == null) {
             return;
         }
         pack.setPrecio(Math.max(0.0, precio));
-        for (Producto producto : pack.getProductos()) {
+        for (ProductoTienda producto : pack.getProductos()) {
             pack.removeProducto(producto);
         }
         if (productos != null) {
-            for (Producto producto : productos) {
+            for (ProductoTienda producto : productos) {
                 pack.addProducto(producto);
             }
         }
@@ -1828,9 +1828,9 @@ public class Main extends JFrame {
         stock.a\u00f1adirProducto(producto, unidades);
     }
 
-    private List<Producto> listaProductos(Producto... productos) {
-        List<Producto> resultado = new ArrayList<>();
-        for (Producto producto : productos) {
+    private List<ProductoTienda> listaProductos(ProductoTienda... productos) {
+        List<ProductoTienda> resultado = new ArrayList<>();
+        for (ProductoTienda producto : productos) {
             resultado.add(producto);
         }
         return resultado;
@@ -1946,6 +1946,11 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
+    public void retirarPackDeCesta(Pack pack) {
+    clienteActual.getCesta().retirarPack(pack);
+    panelCesta.refrescar();
+}
+
     /**
      * Application entry point.
      *
@@ -1954,4 +1959,6 @@ public class Main extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Main().setVisible(true));
     }
+
+
 }

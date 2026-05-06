@@ -855,10 +855,10 @@ public class PanelGestor extends JPanel {
             return;
         }
 
-        List<Producto> seleccionados = new ArrayList<>();
+        List<ProductoTienda> seleccionados = new ArrayList<>();
         for (JCheckBox check : checks) {
             if (check.isSelected()) {
-                seleccionados.add((Producto) check.getClientProperty("producto"));
+                seleccionados.add((ProductoTienda) check.getClientProperty("producto"));
             }
         }
         if (pack == null) {

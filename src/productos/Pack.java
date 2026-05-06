@@ -12,7 +12,7 @@ public class Pack implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private final String nombre;
-    private final List<Producto> productos;
+    private final List<ProductoTienda> productos;
     private final List<Pack> subpacks;
     private double precio;
 
@@ -23,7 +23,7 @@ public class Pack implements Serializable {
      * @param precio    Precio total del conjunto.
      * @param productos Lista inicial de productos incluidos en el pack.
      */
-    public Pack(String nombre, double precio, List<Producto> productos) {
+    public Pack(String nombre, double precio, List<ProductoTienda> productos) {
         this.nombre = nombre;
         this.precio = precio;
         this.productos = new ArrayList<>(productos); 
@@ -36,13 +36,13 @@ public class Pack implements Serializable {
      */
     public void addSubpack(Pack subpack) {this.subpacks.add(subpack);}
 
-    public void addProducto(Producto producto) {
+    public void addProducto(ProductoTienda producto) {
         if (producto != null && !this.productos.contains(producto)) {
             this.productos.add(producto);
         }
     }
 
-    public void removeProducto(Producto producto) {
+    public void removeProducto(ProductoTienda producto) {
         this.productos.remove(producto);
     }
 
@@ -68,7 +68,7 @@ public class Pack implements Serializable {
      * Obtiene la lista de productos sueltos contenidos en el pack.
      * @return Copia de la lista de productos.
      */
-    public List<Producto> getProductos() {return new ArrayList<>(this.productos);}
+    public List<ProductoTienda> getProductos() {return new ArrayList<>(this.productos);}
 
     /**
      * Obtiene la lista de subpacks contenidos en este pack.
