@@ -1937,6 +1937,15 @@ public class Main extends JFrame {
         }
     }
 
+    public void cambiarFotoPerfilCliente(String nuevaRutaFoto) {
+        if (nuevaRutaFoto == null || nuevaRutaFoto.isBlank()) {
+            return;
+        }
+
+        clienteActual.setFotoPerfil(nuevaRutaFoto.trim());
+        refrescarPantallasConDatos();
+    }
+
     /**
      * Application entry point.
      *

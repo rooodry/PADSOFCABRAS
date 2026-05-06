@@ -33,6 +33,8 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.Icon;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 import compras.Pedido;
@@ -68,6 +70,7 @@ public class PanelPerfil extends JPanel {
     private JButton btnGuardarCambios;
     private String nuevoNombrePendiente = null;
     private String nuevaContrasenaPendiente = null;
+    private String nuevaFotoPendiente = null;
 
     private String tabActivo = TAB_RECOMENDADOS;
 
@@ -561,6 +564,14 @@ public class PanelPerfil extends JPanel {
         btnCambiarContraseña.addActionListener(e -> abrirDialogoCambiarContraseña());
         panel.add(btnCambiarContraseña);
 
+        JButton btnCambiarFoto = new UiStyle.RoundedButton("Cambiar foto de perfil", UiStyle.COLOR_TARJETA, UiStyle.COLOR_MARRON_MEDIO, 16);
+        btnCambiarFoto.setPreferredSize(new Dimension(220, 36));
+        btnCambiarFoto.setMaximumSize(new Dimension(220, 36));
+        btnCambiarFoto.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnCambiarFoto.addActionListener(e -> abrirDialogoCambiarFotoPerfil());
+        panel.add(btnCambiarFoto);
+        panel.add(Box.createVerticalStrut(8));
+
         panel.add(Box.createVerticalGlue());
 
         btnGuardarCambios = new UiStyle.RoundedButton(
@@ -675,8 +686,8 @@ public class PanelPerfil extends JPanel {
         refrescar();
     }
 
-    private void actualizarAvatar() {
-        String rutaFoto = mainFrame.getClienteActual().getFotoPerfil();
+    private void actualizarAvatarPreview(String rutaFoto) {
+        
         if (rutaFoto == null || rutaFoto.isBlank()) {
             lblAvatar.setIcon(null);
             lblAvatar.setText("👤");
@@ -692,10 +703,41 @@ public class PanelPerfil extends JPanel {
             return;
         }
 
+    
+
         ImageIcon original = new ImageIcon(rutaFoto);
         Icon escalado = new ImageIcon(original.getImage().getScaledInstance(96, 96, java.awt.Image.SCALE_SMOOTH));
         lblAvatar.setIcon(escalado);
         lblAvatar.setText("");
+    }
+
+    private void abrirDialogoCambiarFotoPerfil() {
+        JFileChooser chooser = new JFileChooser(".");
+        chooser.setDialogTitle("Selecciona una foto de perfil");
+        chooser.setFileFilter(new FileNameExtensionFilter("Imágenes", "jpg", "jpeg", "png", "gif", "bmp"));
+
+        int resultado = chooser.showOpenDialog(this);
+        if (resultado != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        File seleccionada = chooser.getSelectedFile();
+        if (seleccionada == null || !seleccionada.exists()) {
+            JOptionPane.showMessageDialog(mainFrame,
+                    "No se ha seleccionado una imagen válida.",
+                    "Foto de perfil",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        nuevaFotoPendiente = seleccionada.getAbsolutePath();
+        actualizarAvatarPreview(nuevaFotoPendiente);
+        mostrarBotonGuardarSiHayCambios();
+    }
+
+    private void actualizarAvatar() {
+        String rutaFoto = mainFrame.getClienteActual().getFotoPerfil();
+        actualizarAvatarPreview(rutaFoto);
     }
 
 }

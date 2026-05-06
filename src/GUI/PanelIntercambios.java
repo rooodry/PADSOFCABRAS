@@ -2,14 +2,10 @@ package GUI;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.ActionListener;
@@ -24,7 +20,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -33,9 +28,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 import intercambios.Intercambio;
 import intercambios.Oferta;
@@ -107,9 +100,8 @@ public class PanelIntercambios extends JPanel {
     }
 
     private void actualizarFiltro() {
-         mercado = new ArrayList<>(mainFrame.getProductosSegundaManoGestion());
-        mercado.removeIf(producto -> producto.getPropietario() == mainFrame.getClienteActual()
-                || producto.getEstadoProducto() != EstadoProducto.VALORADO);
+        mercado = new ArrayList<>(mainFrame.getProductosSegundaManoDisponibles());
+        mercado.removeIf(p -> mainFrame.getClienteActual().getCartera().getProductos().contains(p));
         String termino = terminoBusqueda.toLowerCase();
         if (!termino.isBlank()) {
             mercado.removeIf(p -> !(p.getNombre().toLowerCase().contains(termino)
