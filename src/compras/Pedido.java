@@ -186,7 +186,7 @@ public class Pedido implements Serializable {
             
             double precioUnitario = p.getPrecio();
             if (p.getRebajaPorcentaje() > 0) {
-                precioUnitario -= precioUnitario * p.getRebajaPorcentaje();
+                precioUnitario -= precioUnitario * (p.getRebajaPorcentaje() / 100.0);
             } else if (p.getRebajaFija() > 0) {
                 precioUnitario -= p.getRebajaFija();
             }
@@ -213,7 +213,7 @@ public class Pedido implements Serializable {
                     int cantidad = entry.getValue();
                     double precioUnitario = p.getPrecio();
                     if (p.getRebajaPorcentaje() > 0) {
-                        precioUnitario -= precioUnitario * p.getRebajaPorcentaje();
+                        precioUnitario -= precioUnitario * (p.getRebajaPorcentaje() / 100.0);
                     } else if (p.getRebajaFija() > 0) {
                         precioUnitario -= p.getRebajaFija();
                     }

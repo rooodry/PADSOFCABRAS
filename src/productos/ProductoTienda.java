@@ -75,7 +75,13 @@ public class ProductoTienda extends Producto {
      *
      * @param tiene2x1 nuevo estado de la promoción
      */
-    public void setTiene2x1(boolean tiene2x1) { this.tiene2x1 = tiene2x1; }
+    public void setTiene2x1(boolean tiene2x1) {
+        this.tiene2x1 = tiene2x1;
+        if (tiene2x1) {
+            this.rebajaPorcentaje = 0;
+            this.rebajaFija = 0;
+        }
+    }
 
     /**
      * Devuelve el porcentaje de rebaja aplicado.
@@ -91,6 +97,10 @@ public class ProductoTienda extends Producto {
      */
     public void setRebajaPorcentaje(double rebajaPorcentaje) {
         this.rebajaPorcentaje = rebajaPorcentaje;
+        if (rebajaPorcentaje > 0) {
+            this.rebajaFija = 0;
+            this.tiene2x1 = false;
+        }
     }
 
     /**
@@ -105,7 +115,13 @@ public class ProductoTienda extends Producto {
      *
      * @param rebajaFija descuento fijo en euros
      */
-    public void setRebajaFija(double rebajaFija) { this.rebajaFija = rebajaFija; }
+    public void setRebajaFija(double rebajaFija) {
+        this.rebajaFija = rebajaFija;
+        if (rebajaFija > 0) {
+            this.rebajaPorcentaje = 0;
+            this.tiene2x1 = false;
+        }
+    }
 
     /**
      * Sobrescribe la valoración para uso en productos de tienda.

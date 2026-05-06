@@ -118,6 +118,7 @@ public class Main extends JFrame {
     private final List<Pack> packs;
     private final List<Intercambio> intercambios;
     private final List<ProductoSegundaMano> productosSegundaMano;
+    private final Map<ProductoTienda, Pack> packsEnCesta;
     private final CardLayout cardLayout;
     private final JPanel panelContenedor;
 
@@ -155,6 +156,7 @@ public class Main extends JFrame {
         this.packs = new ArrayList<>();
         this.intercambios = new ArrayList<>();
         this.productosSegundaMano = new ArrayList<>();
+        this.packsEnCesta = new HashMap<>();
         this.cardLayout = new CardLayout();
         this.panelContenedor = new JPanel(cardLayout);
         this.sesionRegistrada = false;
@@ -505,7 +507,16 @@ public class Main extends JFrame {
         int cantidad = clienteActual.getCesta().getProductos().getOrDefault(producto, 0);
         if (cantidad > 0) {
             clienteActual.getCesta().eliminarProducto(producto);
-            stock.a\u00f1adirProducto(producto, cantidad);
+            Pack pack = packsEnCesta.remove(producto);
+            if (pack != null) {
+                for (Producto incluido : pack.getProductos()) {
+                    if (incluido instanceof ProductoTienda) {
+                        stock.a\u00f1adirProducto((ProductoTienda) incluido, cantidad);
+                    }
+                }
+            } else {
+                stock.a\u00f1adirProducto(producto, cantidad);
+            }
             refrescarPantallasConDatos();
         }
     }
@@ -684,14 +695,32 @@ public class Main extends JFrame {
      * @param pack selected pack
      */
     public void anadirPackACesta(Pack pack) {
+        if (!sesionRegistrada) {
+            JOptionPane.showMessageDialog(this,
+                    "Los clientes no registrados solo pueden consultar packs. Inicia sesion para comprar.",
+                    "Cliente no registrado", JOptionPane.INFORMATION_MESSAGE);
+            cambiarPantalla(PANTALLA_CLIENTE);
+            return;
+        }
+        for (Producto producto : pack.getProductos()) {
+            if (producto instanceof ProductoTienda
+                    && stock.getNumProductos((ProductoTienda) producto) <= 0) {
+                JOptionPane.showMessageDialog(this,
+                        "No queda stock suficiente para el pack completo.",
+                        "Stock agotado", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
         for (Producto producto : pack.getProductos()) {
             if (producto instanceof ProductoTienda) {
                 ProductoTienda tienda = (ProductoTienda) producto;
-                if (stock.getNumProductos(tienda) > 0) {
-                    clienteActual.a\u00f1adirALaCesta(tienda, stock);
-                }
+                stock.reducirStock(tienda, 1);
             }
         }
+        ProductoTienda lineaPack = new ProductoTienda(pack.getNombre(), resumenPack(pack), "");
+        lineaPack.setPrecio(pack.getPrecio());
+        clienteActual.getCesta().a\u00f1adirProducto(lineaPack, 1);
+        packsEnCesta.put(lineaPack, pack);
         panelCesta.refrescar();
         homePanel.refrescar();
         guardarEstadoPersistente();
@@ -1088,30 +1117,32 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
-    public void aplicarDescuentoProducto(ProductoTienda producto, double porcentaje,
-            double rebajaFija, boolean dosPorUno) {
+    public void aplicarDescuentoProducto(ProductoTienda producto, String tipoDescuento, double valor) {
         if (!sesionGestor || producto == null) {
             return;
         }
-        producto.setRebajaPorcentaje(Math.max(0.0, porcentaje));
-        producto.setRebajaFija(Math.max(0.0, rebajaFija));
-        producto.setTiene2x1(dosPorUno);
+        if (!puedeAplicarTipoDescuento(producto, tipoDescuento)) {
+            JOptionPane.showMessageDialog(this,
+                    "Este producto ya tiene un descuento de tipo " + textoTipoDescuento(tipoDescuentoActivo(producto))
+                            + ". Quitalo antes de aplicar otro tipo.",
+                    "Descuento existente", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        aplicarDescuentoExclusivo(producto, tipoDescuento, valor);
         notificarClientes(TipoNotificacion.NUEVO_DESCUENTO,
                 "Nuevo descuento disponible en " + producto.getNombre() + ". Aprovecha antes de que se agote.");
         refrescarPantallasConDatos();
     }
 
-    public int aplicarDescuentoCategoria(String categoria, double porcentaje,
-            double rebajaFija, boolean dosPorUno) {
+    public int aplicarDescuentoCategoria(String categoria, String tipoDescuento, double valor) {
         if (!sesionGestor || categoria == null || categoria.isBlank()) {
             return 0;
         }
         int actualizados = 0;
         for (ProductoTienda producto : productosTienda) {
-            if (productoCoincideConCategoria(producto, categoria)) {
-                producto.setRebajaPorcentaje(Math.max(0.0, porcentaje));
-                producto.setRebajaFija(Math.max(0.0, rebajaFija));
-                producto.setTiene2x1(dosPorUno);
+            if (productoCoincideConCategoria(producto, categoria)
+                    && puedeAplicarTipoDescuento(producto, tipoDescuento)) {
+                aplicarDescuentoExclusivo(producto, tipoDescuento, valor);
                 actualizados++;
             }
         }
@@ -1133,6 +1164,58 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
+    public String getTipoDescuentoProducto(ProductoTienda producto) {
+        return tipoDescuentoActivo(producto);
+    }
+
+    private boolean puedeAplicarTipoDescuento(ProductoTienda producto, String tipoDescuento) {
+        String activo = tipoDescuentoActivo(producto);
+        return activo == null || activo.equals(tipoDescuento);
+    }
+
+    private void aplicarDescuentoExclusivo(ProductoTienda producto, String tipoDescuento, double valor) {
+        producto.setRebajaPorcentaje(0.0);
+        producto.setRebajaFija(0.0);
+        producto.setTiene2x1(false);
+
+        if ("PORCENTAJE".equals(tipoDescuento)) {
+            producto.setRebajaPorcentaje(Math.max(0.0, Math.min(100.0, valor)));
+        } else if ("FIJO".equals(tipoDescuento)) {
+            producto.setRebajaFija(Math.max(0.0, valor));
+        } else if ("DOS_POR_UNO".equals(tipoDescuento)) {
+            producto.setTiene2x1(true);
+        }
+    }
+
+    private String tipoDescuentoActivo(ProductoTienda producto) {
+        if (producto == null) {
+            return null;
+        }
+        if (producto.getRebajaPorcentaje() > 0) {
+            return "PORCENTAJE";
+        }
+        if (producto.getRebajaFija() > 0) {
+            return "FIJO";
+        }
+        if (producto.isTiene2x1()) {
+            return "DOS_POR_UNO";
+        }
+        return null;
+    }
+
+    private String textoTipoDescuento(String tipoDescuento) {
+        if ("PORCENTAJE".equals(tipoDescuento)) {
+            return "porcentaje";
+        }
+        if ("FIJO".equals(tipoDescuento)) {
+            return "rebaja fija";
+        }
+        if ("DOS_POR_UNO".equals(tipoDescuento)) {
+            return "2x1";
+        }
+        return "sin descuento";
+    }
+
     private boolean productoCoincideConCategoria(ProductoTienda producto, String categoria) {
         String normalizada = categoria.trim().toLowerCase();
         if (producto.getCategoria() != null) {
@@ -1150,6 +1233,17 @@ public class Main extends JFrame {
             }
         }
         return false;
+    }
+
+    private String resumenPack(Pack pack) {
+        StringBuilder texto = new StringBuilder("Pack: ");
+        for (Producto producto : pack.getProductos()) {
+            if (texto.length() > "Pack: ".length()) {
+                texto.append(" + ");
+            }
+            texto.append(producto.getNombre());
+        }
+        return texto.toString();
     }
 
     public void cerrarSesion() {
