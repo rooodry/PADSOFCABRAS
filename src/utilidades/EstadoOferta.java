@@ -18,5 +18,9 @@ public enum EstadoOferta {
 
     /** * El usuario receptor ha declinado formalmente la propuesta de intercambio.
      */
-    RECHAZADA;
+    RECHAZADA,
+
+    /** * La oferta ha superado su fecha limite sin respuesta del receptor.
+     */
+    CADUCADA;
 }

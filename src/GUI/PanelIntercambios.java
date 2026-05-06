@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -89,6 +90,7 @@ public class PanelIntercambios extends JPanel {
     }
 
     public void refrescar() {
+        mainFrame.actualizarIntercambiosCaducados();
         actualizarFiltro();
         construirVista();
     }
@@ -662,7 +664,9 @@ public class PanelIntercambios extends JPanel {
         columnas.add(panelOfrecido);
         cuerpo.add(columnas, BorderLayout.CENTER);
 
-        JLabel detalles = new JLabel("Estado: " + oferta.getEstadoOferta() + " · Fecha: " + formatoFecha.format(intercambio.getFechaOferta()));
+        JLabel detalles = new JLabel("Estado: " + oferta.getEstadoOferta()
+                + " - Fecha: " + formatoFecha.format(intercambio.getFechaOferta())
+                + " - " + textoCuentaAtras(intercambio));
         detalles.setFont(new Font("SansSerif", Font.PLAIN, 12));
         detalles.setForeground(UiStyle.COLOR_TEXTO);
         cuerpo.add(detalles, BorderLayout.SOUTH);
@@ -692,6 +696,27 @@ public class PanelIntercambios extends JPanel {
         boton.setPreferredSize(new Dimension(112, 34));
         boton.addActionListener(listener);
         return boton;
+    }
+
+    private String textoCuentaAtras(Intercambio intercambio) {
+        if (intercambio.getOferta().getEstadoOferta() != EstadoOferta.PENDIENTE) {
+            return "Limite: " + formatoFecha.format(intercambio.getFechaLimite());
+        }
+        long restanteMs = intercambio.getFechaLimite().getTime() - new Date().getTime();
+        if (restanteMs <= 0) {
+            return "Caducada";
+        }
+        long totalMinutos = restanteMs / (60L * 1000L);
+        long dias = totalMinutos / (24L * 60L);
+        long horas = (totalMinutos % (24L * 60L)) / 60L;
+        long minutos = totalMinutos % 60L;
+        if (dias > 0) {
+            return "Caduca en " + dias + "d " + horas + "h";
+        }
+        if (horas > 0) {
+            return "Caduca en " + horas + "h " + minutos + "min";
+        }
+        return "Caduca en " + Math.max(1, minutos) + "min";
     }
 
     

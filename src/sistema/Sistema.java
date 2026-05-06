@@ -128,7 +128,7 @@ public class Sistema {
         ((Gestor) admin).configurarPermisos(e, nuevosPermisos);
     }
 
-    public Pack crearPack(Usuario admin, String nombre, double precio, List<Producto> productos)
+    public Pack crearPack(Usuario admin, String nombre, double precio, List<ProductoTienda> productos)
             throws ExcepcionUsuariosAdmin {
         if (!(admin instanceof Gestor)) {
             throw new ExcepcionUsuariosAdmin(admin.getNombre());

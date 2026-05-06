@@ -700,6 +700,8 @@ public class PanelGestor extends JPanel {
     private void pintarOperativa() {
         contenido.add(crearTitulo("Pedidos e intercambios"));
         contenido.add(crearSubtitulo("Supervision de pedidos preparados, entregas e intercambios."));
+        contenido.add(crearPanelPlazoOfertas());
+        contenido.add(Box.createVerticalStrut(10));
         contenido.add(crearTitulo("Pedidos"));
         for (Pedido pedido : mainFrame.getPedidosGestion()) {
             contenido.add(crearFilaPedido(pedido));
@@ -710,6 +712,25 @@ public class PanelGestor extends JPanel {
             contenido.add(crearFilaIntercambio(intercambio));
             contenido.add(Box.createVerticalStrut(8));
         }
+    }
+
+    private JPanel crearPanelPlazoOfertas() {
+        JPanel panel = crearTarjeta();
+        panel.add(crearEtiqueta("<b>Plazo de ofertas</b>"));
+        panel.add(crearSubtitulo("Tiempo maximo para aceptar una oferta antes de que caduque."));
+        JPanel linea = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        linea.setOpaque(false);
+        JSpinner horas = new JSpinner(new SpinnerNumberModel(mainFrame.getPlazoOfertasHoras(), 1, 720, 1));
+        linea.add(new JLabel("Horas"));
+        linea.add(horas);
+        JButton guardar = crearBoton("Guardar plazo", 140);
+        guardar.addActionListener(e -> {
+            mainFrame.setPlazoOfertasHoras(((Integer) horas.getValue()).intValue());
+            JOptionPane.showMessageDialog(this, "Plazo actualizado para nuevas ofertas.");
+        });
+        linea.add(guardar);
+        panel.add(linea);
+        return panel;
     }
 
     private JPanel crearFilaPedido(Pedido pedido) {

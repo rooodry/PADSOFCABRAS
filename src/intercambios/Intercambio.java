@@ -28,11 +28,22 @@ public class Intercambio implements Serializable {
      * @param oferta      Objeto Oferta asociado a este intercambio.
      */
     public Intercambio(Date fechaOferta, Oferta oferta) {
+        this(fechaOferta, oferta, 168);
+    }
+
+    /**
+     * Constructor de la clase Intercambio con plazo configurable.
+     *
+     * @param fechaOferta Fecha en la que se generó la propuesta.
+     * @param oferta      Objeto Oferta asociado a este intercambio.
+     * @param plazoHoras  Horas disponibles para responder a la oferta.
+     */
+    public Intercambio(Date fechaOferta, Oferta oferta, int plazoHoras) {
         this.fechaOferta = new Date(fechaOferta.getTime());
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(this.fechaOferta);
-        calendar.add(Calendar.DAY_OF_YEAR, 7);
+        calendar.add(Calendar.HOUR_OF_DAY, Math.max(1, plazoHoras));
         
         this.fechaLimite = calendar.getTime();
         this.fechaAceptada = null;
@@ -125,5 +136,12 @@ public class Intercambio implements Serializable {
      */
     public void rechazarOferta() {
         this.oferta.setEstadoOferta(EstadoOferta.RECHAZADA);
+    }
+
+    /**
+     * Marca la oferta como caducada.
+     */
+    public void caducarOferta() {
+        this.oferta.setEstadoOferta(EstadoOferta.CADUCADA);
     }
 }

@@ -140,6 +140,7 @@ public class Main extends JFrame {
     private boolean sesionEmpleado;
     private boolean sesionGestor;
     private boolean persistenciaActiva;
+    private int plazoOfertasHoras;
 
     /**
      * Builds the window, seed data and the registered-customer screens.
@@ -160,6 +161,7 @@ public class Main extends JFrame {
         this.cardLayout = new CardLayout();
         this.panelContenedor = new JPanel(cardLayout);
         this.sesionRegistrada = false;
+        this.plazoOfertasHoras = 168;
         this.persistenciaActiva = false;
 
         inicializarDatos();
@@ -666,13 +668,17 @@ public class Main extends JFrame {
             if (intercambio == null || intercambio.getOferta() == null) {
                 continue;
             }
-            if (intercambio.isNotificacionCaducidadEnviada()) {
-                continue;
-            }
             if (intercambio.getOferta().getEstadoOferta() != EstadoOferta.PENDIENTE) {
                 continue;
             }
             long tiempoRestante = intercambio.getFechaLimite().getTime() - ahora;
+            if (tiempoRestante <= 0) {
+                caducarIntercambio(intercambio);
+                continue;
+            }
+            if (intercambio.isNotificacionCaducidadEnviada()) {
+                continue;
+            }
             if (tiempoRestante > 0 && tiempoRestante <= unDiaMs) {
                 ClienteRegistrado receptor = intercambio.getOferta().getUsuarioReceptor();
                 ClienteRegistrado lanzador = intercambio.getOferta().getUsuarioLanzador();
@@ -687,6 +693,29 @@ public class Main extends JFrame {
                 intercambio.setNotificacionCaducidadEnviada(true);
             }
         }
+    }
+
+    public void actualizarIntercambiosCaducados() {
+        enviarRecordatorioOfertasCaducidad();
+    }
+
+    private void caducarIntercambio(Intercambio intercambio) {
+        intercambio.caducarOferta();
+        liberarProductoTrasOferta(intercambio.getOferta().getProductoDeseado());
+        liberarProductoTrasOferta(intercambio.getOferta().getProductoOfertado());
+        notificarIntercambio(intercambio,
+                TipoNotificacion.OFERTA_CADUCA,
+                "Tu oferta ha caducado. Los productos vuelven a estar disponibles.",
+                TipoNotificacion.OFERTA_CADUCA,
+                "Una oferta recibida ha caducado. Los productos vuelven a estar disponibles.");
+    }
+
+    private void liberarProductoTrasOferta(ProductoSegundaMano producto) {
+        if (producto == null) {
+            return;
+        }
+        producto.setDisponibilidad(true);
+        producto.setEstadoProducto(EstadoProducto.VALORADO);
     }
 
     /**
@@ -733,6 +762,9 @@ public class Main extends JFrame {
      * @param intercambio exchange to accept
      */
     public void aceptarIntercambio(Intercambio intercambio) {
+        if (intercambio == null || intercambio.getOferta().getEstadoOferta() != EstadoOferta.PENDIENTE) {
+            return;
+        }
         intercambio.aceptarOferta();
         intercambio.getOferta().getProductoDeseado().setDisponibilidad(false);
         intercambio.getOferta().getProductoOfertado().setDisponibilidad(false);
@@ -752,9 +784,12 @@ public class Main extends JFrame {
      * @param intercambio exchange to reject
      */
     public void rechazarIntercambio(Intercambio intercambio) {
+        if (intercambio == null || intercambio.getOferta().getEstadoOferta() != EstadoOferta.PENDIENTE) {
+            return;
+        }
         intercambio.rechazarOferta();
-        intercambio.getOferta().getProductoOfertado().setDisponibilidad(true);
-        intercambio.getOferta().getProductoOfertado().setEstadoProducto(EstadoProducto.VALORADO);
+        liberarProductoTrasOferta(intercambio.getOferta().getProductoDeseado());
+        liberarProductoTrasOferta(intercambio.getOferta().getProductoOfertado());
         notificarIntercambio(intercambio,
                 TipoNotificacion.OFERTA_RECHAZADA,
                 "Tu oferta ha sido rechazada.",
@@ -786,17 +821,20 @@ public class Main extends JFrame {
         if (clienteActual == null) {
             return;
         }
-        if (!ofertado.getDisponibilidad() && ofertado.getEstadoProducto() != EstadoProducto.VALORADO) {
+        if (!ofertado.getDisponibilidad() || ofertado.getEstadoProducto() != EstadoProducto.VALORADO
+                || !deseado.getDisponibilidad() || deseado.getEstadoProducto() != EstadoProducto.VALORADO) {
             JOptionPane.showMessageDialog(this,
-                    "Este producto no está disponible para intercambiar.",
+                    "Uno de los productos no está disponible para intercambiar.",
                     "Intercambios", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         ofertado.setDisponibilidad(false);
         ofertado.setEstadoProducto(EstadoProducto.EN_OFERTA);
+        deseado.setDisponibilidad(false);
+        deseado.setEstadoProducto(EstadoProducto.EN_OFERTA);
         Oferta oferta = new Oferta(ofertado, deseado, deseado.getPropietario(), clienteActual);
-        Intercambio intercambio = new Intercambio(new Date(), oferta);
+        Intercambio intercambio = new Intercambio(new Date(), oferta, plazoOfertasHoras);
         intercambios.add(intercambio);
         notificarIntercambio(intercambio,
                 TipoNotificacion.NUEVA_OFERTA,
@@ -1070,11 +1108,27 @@ public class Main extends JFrame {
         intercambio.setIntercambiado(true);
         intercambio.getOferta().getProductoDeseado().setDisponibilidad(false);
         intercambio.getOferta().getProductoOfertado().setDisponibilidad(false);
-        intercambio.getOferta().getUsuarioLanzador().addNotificacion(new Notificacion(
-                TipoNotificacion.INTERCAMBIO_REALIZADO, "El intercambio se ha marcado como realizado."));
-        intercambio.getOferta().getUsuarioReceptor().addNotificacion(new Notificacion(
-                TipoNotificacion.INTERCAMBIO_REALIZADO, "El intercambio se ha marcado como realizado."));
+        ClienteRegistrado lanzador = intercambio.getOferta().getUsuarioLanzador();
+        ClienteRegistrado receptor = intercambio.getOferta().getUsuarioReceptor();
+        if (lanzador != null && receptor != null) {
+            lanzador.addNotificacion(new Notificacion(TipoNotificacion.INTERCAMBIO_REALIZADO,
+                    "Tu intercambio con " + receptor.getNombre() + " ha sido realizado."));
+            receptor.addNotificacion(new Notificacion(TipoNotificacion.INTERCAMBIO_REALIZADO,
+                    "Tu intercambio con " + lanzador.getNombre() + " ha sido realizado."));
+        }
         refrescarPantallasConDatos();
+    }
+
+    public int getPlazoOfertasHoras() {
+        return plazoOfertasHoras;
+    }
+
+    public void setPlazoOfertasHoras(int plazoOfertasHoras) {
+        if (!sesionGestor) {
+            return;
+        }
+        this.plazoOfertasHoras = Math.max(1, plazoOfertasHoras);
+        guardarEstadoPersistente();
     }
 
     public void crearEmpleadoDesdeGestor(String nombre, String contrasena, Set<TiposEmpleado> permisos) {
@@ -1408,6 +1462,7 @@ public class Main extends JFrame {
         estado.stock = stock.getProductos();
         estado.nombreClienteActual = clienteActual != null ? clienteActual.getNombre() : null;
         estado.nombreGestorPrincipal = gestorPrincipal != null ? gestorPrincipal.getNombre() : null;
+        estado.plazoOfertasHoras = plazoOfertasHoras;
 
         File temporal = new File(FICHERO_DATOS + ".tmp");
         try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(temporal))) {
@@ -1496,6 +1551,7 @@ public class Main extends JFrame {
         sesionRegistrada = false;
         sesionEmpleado = false;
         sesionGestor = false;
+        plazoOfertasHoras = estado.plazoOfertasHoras > 0 ? estado.plazoOfertasHoras : 168;
     }
 
     private ClienteRegistrado buscarClientePorNombre(String nombre) {
@@ -1552,6 +1608,7 @@ public class Main extends JFrame {
         private Map<ProductoTienda, Integer> stock;
         private String nombreClienteActual;
         private String nombreGestorPrincipal;
+        private int plazoOfertasHoras;
     }
 
     /**

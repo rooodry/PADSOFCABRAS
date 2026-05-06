@@ -539,11 +539,14 @@ public class PanelEmpleado extends JPanel {
         if (producto.getEstadoConservacion() != null) {
             conservacion.setSelectedItem(producto.getEstadoConservacion());
         }
-        JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
-        panel.add(new JLabel("Precio estimado"));
-        panel.add(precio);
-        panel.add(new JLabel("Estado de conservacion"));
-        panel.add(conservacion);
+        JPanel panel = new JPanel(new BorderLayout(12, 12));
+        panel.add(crearImagenProductoSegundaMano(producto, 220, 160), BorderLayout.NORTH);
+        JPanel campos = new JPanel(new GridLayout(0, 1, 6, 6));
+        campos.add(new JLabel("Precio estimado"));
+        campos.add(precio);
+        campos.add(new JLabel("Estado de conservacion"));
+        campos.add(conservacion);
+        panel.add(campos, BorderLayout.CENTER);
         int respuesta = JOptionPane.showConfirmDialog(this, panel,
                 (producto.getEstaValorado() ? "Modificar " : "Valorar ") + producto.getNombre(),
                 JOptionPane.OK_CANCEL_OPTION);
@@ -552,6 +555,29 @@ public class PanelEmpleado extends JPanel {
                     ((Double) precio.getValue()).doubleValue(),
                     (EstadoConservacion) conservacion.getSelectedItem());
         }
+    }
+
+    private JLabel crearImagenProductoSegundaMano(ProductoSegundaMano producto, int ancho, int alto) {
+        JLabel label = new JLabel();
+        label.setPreferredSize(new Dimension(ancho, alto));
+        label.setMinimumSize(new Dimension(ancho, alto));
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setOpaque(true);
+        label.setBackground(UiStyle.COLOR_CABECERA);
+        label.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        label.setBorder(BorderFactory.createLineBorder(UiStyle.COLOR_BORDE, 2));
+
+        String ruta = producto.getImagen();
+        if (ruta != null && !ruta.isBlank()) {
+            ImageIcon icono = new ImageIcon(ruta);
+            Image imagen = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+            label.setIcon(new ImageIcon(imagen));
+            return label;
+        }
+
+        label.setText("SIN IMAGEN");
+        label.setFont(new Font("SansSerif", Font.BOLD, 14));
+        return label;
     }
 
     private String resumenPedido(Pedido pedido) {
