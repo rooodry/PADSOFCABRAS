@@ -298,6 +298,20 @@ public class Main extends JFrame {
         return new ArrayList<>(intercambios);
     }
 
+    public List<Intercambio> getIntercambiosClienteActual() {
+        List<Intercambio> resultado = new ArrayList<>();
+        if (clienteActual == null) {
+            return resultado;
+        }
+        for (Intercambio intercambio : intercambios) {
+            Oferta oferta = intercambio.getOferta();
+            if (oferta.getUsuarioReceptor() == clienteActual || oferta.getUsuarioLanzador() == clienteActual) {
+                resultado.add(intercambio);
+            }
+        }
+        return resultado;
+    }
+
     public List<Pedido> getPedidosGestion() {
         return sistema.getPedidos();
     }
@@ -317,24 +331,12 @@ public class Main extends JFrame {
     }
 
     public List<ProductoSegundaMano> getProductosSegundaManoGestion() {
-        List<ProductoSegundaMano> productos = new ArrayList<>();
-        if (clienteActual != null) {
-            productos.addAll(clienteActual.getCartera().getProductos());
-        }
-        productos.addAll(productosSegundaMano);
-        return productos;
+        return getTodosProductosSegundaMano();
     }
 
     public List<ProductoSegundaMano> getProductosPendientesValoracion() {
         List<ProductoSegundaMano> pendientes = new ArrayList<>();
-        if (clienteActual != null) {
-            for (ProductoSegundaMano producto : clienteActual.getCartera().getProductos()) {
-                if (producto.getEstadoProducto() == EstadoProducto.PENDIENTE_DE_VALORAR) {
-                    pendientes.add(producto);
-                }
-            }
-        }
-        for (ProductoSegundaMano producto : productosSegundaMano) {
+        for (ProductoSegundaMano producto : getTodosProductosSegundaMano()) {
             if (producto.getEstadoProducto() == EstadoProducto.PENDIENTE_DE_VALORAR) {
                 pendientes.add(producto);
             }
@@ -349,12 +351,31 @@ public class Main extends JFrame {
      */
     public List<ProductoSegundaMano> getProductosSegundaManoDisponibles() {
         List<ProductoSegundaMano> disponibles = new ArrayList<>();
-        for (ProductoSegundaMano producto : productosSegundaMano) {
-            if (producto.getDisponibilidad() && producto.getPropietario() != clienteActual) {
+        for (ProductoSegundaMano producto : getTodosProductosSegundaMano()) {
+            if (producto.getDisponibilidad()
+                    && producto.getEstadoProducto() == EstadoProducto.VALORADO
+                    && producto.getPropietario() != clienteActual) {
                 disponibles.add(producto);
             }
         }
         return disponibles;
+    }
+
+    private List<ProductoSegundaMano> getTodosProductosSegundaMano() {
+        List<ProductoSegundaMano> productos = new ArrayList<>();
+        for (ClienteRegistrado cliente : getClientesRegistrados()) {
+            for (ProductoSegundaMano producto : cliente.getCartera().getProductos()) {
+                if (!productos.contains(producto)) {
+                    productos.add(producto);
+                }
+            }
+        }
+        for (ProductoSegundaMano producto : productosSegundaMano) {
+            if (!productos.contains(producto)) {
+                productos.add(producto);
+            }
+        }
+        return productos;
     }
 
     /**
@@ -819,6 +840,12 @@ public class Main extends JFrame {
             return;
         }
         if (clienteActual == null) {
+            return;
+        }
+        if (deseado.getPropietario() == clienteActual) {
+            JOptionPane.showMessageDialog(this,
+                    "No puedes lanzar una oferta por un producto de tu propia cartera.",
+                    "Intercambios", JOptionPane.WARNING_MESSAGE);
             return;
         }
         if (!ofertado.getDisponibilidad() || ofertado.getEstadoProducto() != EstadoProducto.VALORADO
@@ -1758,15 +1785,18 @@ public class Main extends JFrame {
         crearPedidosDemoGestion();
 
         ClienteRegistrado otroCliente = new ClienteRegistrado("laura67", "1234", "11111111H");
+        sistema.addUsuario(otroCliente);
         ProductoSegundaMano deseado = new ProductoSegundaMano("Comic X-Men 1992",
                 "Comic valorado por otro usuario.", null, otroCliente);
         deseado.setValoracion(4, 21.00, EstadoConservacion.MUY_BUENO);
         deseado.subirProducto();
+        otroCliente.getCartera().a\u00f1adirProducto(deseado);
         productosSegundaMano.add(deseado);
         ProductoSegundaMano juegoRetro = new ProductoSegundaMano("Caja Zelda coleccionista",
                 "Edicion de segunda mano valorada, con caja y manual. Disponible para intercambio.", null, otroCliente);
         juegoRetro.setValoracion(5, 35.00, EstadoConservacion.PERFECTO);
         juegoRetro.subirProducto();
+        otroCliente.getCartera().a\u00f1adirProducto(juegoRetro);
         productosSegundaMano.add(juegoRetro);
         Oferta oferta = new Oferta(deseado, pendiente, clienteActual, otroCliente);
         intercambios.add(new Intercambio(new Date(), oferta));

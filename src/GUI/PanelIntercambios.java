@@ -602,13 +602,20 @@ public class PanelIntercambios extends JPanel {
         lista.setOpaque(false);
         lista.setLayout(new BoxLayout(lista, BoxLayout.Y_AXIS));
 
-        if (mainFrame.getIntercambios().isEmpty()) {
+        List<Intercambio> intercambiosCliente = new ArrayList<>();
+        for (Intercambio intercambio : mainFrame.getIntercambiosClienteActual()) {
+            if (intercambio.getOferta().getUsuarioReceptor() == mainFrame.getClienteActual()) {
+                intercambiosCliente.add(intercambio);
+            }
+        }
+
+        if (intercambiosCliente.isEmpty()) {
             JLabel vacio = new JLabel("No hay ofertas pendientes.");
             vacio.setFont(new Font("SansSerif", Font.PLAIN, 16));
             vacio.setForeground(UiStyle.COLOR_TEXTO);
             lista.add(vacio);
         } else {
-            for (Intercambio intercambio : mainFrame.getIntercambios()) {
+            for (Intercambio intercambio : intercambiosCliente) {
                 lista.add(crearTarjetaOferta(intercambio));
                 lista.add(Box.createVerticalStrut(18));
             }
