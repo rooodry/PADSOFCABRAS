@@ -2,6 +2,7 @@ package GUI;
 
 import java.awt.BorderLayout;
 import java.awt.BasicStroke;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -54,6 +55,8 @@ import productos.Pack;
 import productos.Producto;
 import productos.ProductoSegundaMano;
 import productos.ProductoTienda;
+import productos.categoria.Genero;
+import productos.categoria.TipoJuego;
 import usuarios.ClienteRegistrado;
 import usuarios.Empleado;
 import utilidades.EstadoConservacion;
@@ -305,6 +308,9 @@ public class PanelGestor extends JPanel {
 
         JPanel herramientas = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
         herramientas.setOpaque(false);
+        JButton nuevo = crearBoton("Nuevo producto", 150);
+        nuevo.addActionListener(e -> mostrarDialogoNuevoProducto());
+        herramientas.add(nuevo);
         JButton cargar = crearBoton("Cargar CSV", 118);
         cargar.addActionListener(e -> cargarProductosDeFichero());
         herramientas.add(cargar);
@@ -879,6 +885,150 @@ public class PanelGestor extends JPanel {
             mainFrame.recargarCatalogoDesdeFichero(chooser.getSelectedFile().getPath());
             refrescar();
         }
+    }
+
+    private void mostrarDialogoNuevoProducto() {
+        JTextField nombre = new JTextField();
+        JTextField precio = new JTextField("0.00");
+        JSpinner stock = new JSpinner(new SpinnerNumberModel(1, 0, 9999, 1));
+        JSpinner valoracion = new JSpinner(new SpinnerNumberModel(0, 0, 5, 1));
+        JTextField imagen = new JTextField();
+        JTextField categorias = new JTextField();
+        JTextArea descripcion = new JTextArea(4, 28);
+        descripcion.setLineWrap(true);
+        descripcion.setWrapStyleWord(true);
+
+        JComboBox<String> tipo = new JComboBox<>(new String[] {"COMIC", "JUEGO", "FIGURA"});
+        JPanel panelTipo = new JPanel(new CardLayout());
+
+        JSpinner comicPaginas = new JSpinner(new SpinnerNumberModel(120, 1, 3000, 1));
+        JTextField comicAutor = new JTextField();
+        JTextField comicEditorial = new JTextField();
+        JComboBox<Genero> comicGenero = new JComboBox<>(Genero.values());
+        JSpinner comicAnio = new JSpinner(new SpinnerNumberModel(2026, 1900, 2100, 1));
+        panelTipo.add(crearPanelComic(comicPaginas, comicAutor, comicEditorial, comicGenero, comicAnio), "COMIC");
+
+        JSpinner juegoJugadores = new JSpinner(new SpinnerNumberModel(4, 1, 99, 1));
+        JSpinner juegoEdad = new JSpinner(new SpinnerNumberModel(8, 0, 99, 1));
+        JComboBox<TipoJuego> tipoJuego = new JComboBox<>(TipoJuego.values());
+        panelTipo.add(crearPanelJuego(juegoJugadores, juegoEdad, tipoJuego), "JUEGO");
+
+        JSpinner figuraAltura = new JSpinner(new SpinnerNumberModel(10.0, 0.0, 999.0, 0.5));
+        JTextField figuraMarca = new JTextField();
+        JTextField figuraMaterial = new JTextField();
+        panelTipo.add(crearPanelFigura(figuraAltura, figuraMarca, figuraMaterial), "FIGURA");
+
+        tipo.addActionListener(e -> ((CardLayout) panelTipo.getLayout()).show(panelTipo, (String) tipo.getSelectedItem()));
+
+        JComboBox<String> promocion = new JComboBox<>(new String[] {
+                "Sin promocion", "2x1", "Rebaja porcentaje", "Rebaja fija"
+        });
+        JSpinner rebajaPorcentaje = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 100.0, 1.0));
+        JSpinner rebajaFija = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 9999.0, 1.0));
+
+        JPanel panel = new JPanel(new BorderLayout(0, 10));
+        JPanel datos = new JPanel(new GridLayout(0, 1, 6, 6));
+        datos.add(new JLabel("Nombre"));
+        datos.add(nombre);
+        datos.add(new JLabel("Precio"));
+        datos.add(precio);
+        datos.add(new JLabel("Stock inicial"));
+        datos.add(stock);
+        datos.add(new JLabel("Valoracion inicial"));
+        datos.add(valoracion);
+        datos.add(new JLabel("Imagen"));
+        datos.add(imagen);
+        datos.add(new JLabel("Categorias separadas por coma"));
+        datos.add(categorias);
+        datos.add(new JLabel("Descripcion"));
+        datos.add(new JScrollPane(descripcion));
+        datos.add(new JLabel("Tipo de producto"));
+        datos.add(tipo);
+        panel.add(datos, BorderLayout.NORTH);
+        panel.add(panelTipo, BorderLayout.CENTER);
+
+        JPanel descuentos = new JPanel(new GridLayout(0, 1, 6, 6));
+        descuentos.add(new JLabel("Promocion"));
+        descuentos.add(promocion);
+        descuentos.add(new JLabel("Porcentaje de rebaja"));
+        descuentos.add(rebajaPorcentaje);
+        descuentos.add(new JLabel("Rebaja fija"));
+        descuentos.add(rebajaFija);
+        panel.add(descuentos, BorderLayout.SOUTH);
+
+        int respuesta = JOptionPane.showConfirmDialog(this, panel, "Nuevo producto",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (respuesta != JOptionPane.OK_OPTION) {
+            return;
+        }
+        if (nombre.getText().trim().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El producto necesita nombre.",
+                    "Producto", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String promo = (String) promocion.getSelectedItem();
+        mainFrame.crearProductoTiendaGestion((String) tipo.getSelectedItem(),
+                nombre.getText(),
+                parseDouble(precio.getText(), 0.0),
+                ((Integer) stock.getValue()).intValue(),
+                ((Integer) valoracion.getValue()).intValue(),
+                descripcion.getText(),
+                imagen.getText(),
+                parseCategorias(categorias.getText()),
+                "2x1".equals(promo),
+                "Rebaja porcentaje".equals(promo) ? ((Double) rebajaPorcentaje.getValue()).doubleValue() : 0.0,
+                "Rebaja fija".equals(promo) ? ((Double) rebajaFija.getValue()).doubleValue() : 0.0,
+                ((Integer) comicPaginas.getValue()).intValue(),
+                comicAutor.getText(),
+                comicEditorial.getText(),
+                (Genero) comicGenero.getSelectedItem(),
+                ((Integer) comicAnio.getValue()).intValue(),
+                ((Integer) juegoJugadores.getValue()).intValue(),
+                ((Integer) juegoEdad.getValue()).intValue(),
+                (TipoJuego) tipoJuego.getSelectedItem(),
+                ((Double) figuraAltura.getValue()).doubleValue(),
+                figuraMarca.getText(),
+                figuraMaterial.getText());
+        refrescar();
+    }
+
+    private JPanel crearPanelComic(JSpinner paginas, JTextField autor, JTextField editorial,
+            JComboBox<Genero> genero, JSpinner anio) {
+        JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
+        panel.add(new JLabel("Paginas"));
+        panel.add(paginas);
+        panel.add(new JLabel("Autor"));
+        panel.add(autor);
+        panel.add(new JLabel("Editorial"));
+        panel.add(editorial);
+        panel.add(new JLabel("Genero"));
+        panel.add(genero);
+        panel.add(new JLabel("Anio de publicacion"));
+        panel.add(anio);
+        return panel;
+    }
+
+    private JPanel crearPanelJuego(JSpinner jugadores, JSpinner edad, JComboBox<TipoJuego> tipoJuego) {
+        JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
+        panel.add(new JLabel("Numero de jugadores"));
+        panel.add(jugadores);
+        panel.add(new JLabel("Edad minima"));
+        panel.add(edad);
+        panel.add(new JLabel("Tipo de juego"));
+        panel.add(tipoJuego);
+        return panel;
+    }
+
+    private JPanel crearPanelFigura(JSpinner altura, JTextField marca, JTextField material) {
+        JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
+        panel.add(new JLabel("Altura en cm"));
+        panel.add(altura);
+        panel.add(new JLabel("Marca"));
+        panel.add(marca);
+        panel.add(new JLabel("Material"));
+        panel.add(material);
+        return panel;
     }
 
     private void editarProducto(ProductoTienda producto) {

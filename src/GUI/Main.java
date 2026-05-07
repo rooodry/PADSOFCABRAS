@@ -1039,6 +1039,59 @@ public class Main extends JFrame {
         editarProductoTienda(producto, precio, unidades, descripcion, imagen, categorias);
     }
 
+    public void crearProductoTiendaGestion(String tipo, String nombre, double precio, int unidades,
+            int valoracion, String descripcion, String imagen, List<String> categorias,
+            boolean tiene2x1, double rebajaPorcentaje, double rebajaFija,
+            int comicPaginas, String comicAutor, String comicEditorial, Genero comicGenero, int comicAnio,
+            int juegoJugadores, int juegoEdadMinima, TipoJuego tipoJuego,
+            double figuraAltura, String figuraMarca, String figuraMaterial) {
+        if (nombre == null || nombre.isBlank()) {
+            JOptionPane.showMessageDialog(this, "El producto necesita nombre.", "Producto", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        ProductoTienda producto = new ProductoTienda(nombre.trim(), descripcion == null ? "" : descripcion.trim(),
+                imagen == null ? "" : imagen.trim());
+        producto.setPrecio(Math.max(0.0, precio));
+        producto.setValoracion(Math.max(0, Math.min(5, valoracion)));
+        producto.setCategoriasTexto(categorias);
+
+        String tipoNormalizado = tipo == null ? "" : tipo.trim().toUpperCase();
+        if ("COMIC".equals(tipoNormalizado)) {
+            producto.setCategoria(new Comic(producto.getNombre(), Math.max(1, comicPaginas),
+                    textoConDefecto(comicAutor, "Autor desconocido"),
+                    textoConDefecto(comicEditorial, "Editorial desconocida"),
+                    comicGenero == null ? Genero.AVENTURA : comicGenero,
+                    Math.max(1, comicAnio)));
+        } else if ("JUEGO".equals(tipoNormalizado)) {
+            producto.setCategoria(new Juego(producto.getNombre(), Math.max(1, juegoJugadores),
+                    Math.max(0, juegoEdadMinima),
+                    tipoJuego == null ? TipoJuego.JUEGO_MESA : tipoJuego));
+        } else if ("FIGURA".equals(tipoNormalizado)) {
+            producto.setCategoria(new Figura(producto.getNombre(), Math.max(0.0, figuraAltura),
+                    textoConDefecto(figuraMarca, "GOAT"),
+                    textoConDefecto(figuraMaterial, "PVC")));
+        }
+
+        if (producto.getImagen() == null || producto.getImagen().isBlank()) {
+            producto.setImagen(crearPortadaParaProducto(producto));
+        }
+        if (tiene2x1) {
+            producto.setTiene2x1(true);
+        } else if (rebajaPorcentaje > 0) {
+            producto.setRebajaPorcentaje(Math.min(100.0, rebajaPorcentaje));
+        } else if (rebajaFija > 0) {
+            producto.setRebajaFija(Math.min(producto.getPrecio(), rebajaFija));
+        }
+
+        registrarProductoTienda(producto, Math.max(0, unidades));
+        refrescarPantallasConDatos();
+    }
+
+    private String textoConDefecto(String texto, String defecto) {
+        return texto == null || texto.isBlank() ? defecto : texto.trim();
+    }
+
     public void recargarCatalogoDesdeFichero(String ruta) {
         if (ruta == null || ruta.isBlank()) {
             return;
