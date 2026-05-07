@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -97,8 +98,14 @@ public class PanelIntercambios extends JPanel {
 
     private void actualizarBusqueda() {
         terminoBusqueda = txtBuscar.getText().trim();
-        actualizarFiltro();
-        construirVista();
+        SwingUtilities.invokeLater(() -> {
+            actualizarFiltro();
+            construirVista();
+            if (TAB_LANZAR.equals(tabActivo) && productoSeleccionado == null) {
+                txtBuscar.requestFocusInWindow();
+                txtBuscar.setCaretPosition(txtBuscar.getText().length());
+            }
+        });
     }
 
     private void actualizarFiltro() {
