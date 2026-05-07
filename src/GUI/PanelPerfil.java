@@ -55,6 +55,7 @@ public class PanelPerfil extends JPanel {
     private static final String TAB_PEDIDOS = "Historial de pedidos";
     private static final String TAB_INTERCAMBIOS = "Historial de intercambios";
     private static final String TAB_CONFIG = "Configuración";
+    private static final int AVATAR_SIZE = 150;
 
     private final Main mainFrame;
     private final JPanel contenidoCentral;
@@ -117,8 +118,9 @@ public class PanelPerfil extends JPanel {
 
         JPanel avatar = new JPanel(new BorderLayout());
         avatar.setOpaque(false);
-        avatar.setMaximumSize(new Dimension(268, 120));
-        lblAvatar.setFont(new Font("SansSerif", Font.PLAIN, 60));
+        avatar.setPreferredSize(new Dimension(268, AVATAR_SIZE));
+        avatar.setMaximumSize(new Dimension(268, AVATAR_SIZE));
+        lblAvatar.setFont(new Font("SansSerif", Font.PLAIN, 92));
         avatar.add(lblAvatar, BorderLayout.CENTER);
         barra.add(avatar);
         barra.add(Box.createVerticalStrut(12));
@@ -135,11 +137,11 @@ public class PanelPerfil extends JPanel {
         barra.add(Box.createVerticalStrut(16));
 
         barra.add(crearBotonNav(btnRecomendados, TAB_RECOMENDADOS));
-        barra.add(Box.createVerticalStrut(8));
+        barra.add(crearSeparadorNav());
         barra.add(crearBotonNav(btnPedidos, TAB_PEDIDOS));
-        barra.add(Box.createVerticalStrut(8));
+        barra.add(crearSeparadorNav());
         barra.add(crearBotonNav(btnIntercambios, TAB_INTERCAMBIOS));
-        barra.add(Box.createVerticalStrut(8));
+        barra.add(crearSeparadorNav());
         barra.add(crearBotonNav(btnConfig, TAB_CONFIG));
         barra.add(Box.createVerticalGlue());
         barra.add(crearBotonCerrarSesion());
@@ -165,6 +167,15 @@ public class PanelPerfil extends JPanel {
         panel.setMaximumSize(new Dimension(268, 40));
         panel.add(boton, BorderLayout.CENTER);
         return panel;
+    }
+
+    private JPanel crearSeparadorNav() {
+        JPanel separador = new JPanel();
+        separador.setBackground(UiStyle.COLOR_BORDE);
+        separador.setMaximumSize(new Dimension(268, 2));
+        separador.setPreferredSize(new Dimension(268, 2));
+        separador.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return separador;
     }
 
     private JButton crearTabButton(String texto) {
@@ -229,7 +240,7 @@ public class PanelPerfil extends JPanel {
         vista.add(titulo, BorderLayout.NORTH);
 
         List<ProductoTienda> recomendados = mainFrame.getProductosRecomendados();
-        JPanel grid = new JPanel(new GridLayout(0, 3, 16, 16));
+        JPanel grid = new JPanel(new GridLayout(0, 3, 18, 18));
         grid.setOpaque(false);
         for (ProductoTienda producto : recomendados) {
             grid.add(crearTarjetaProducto(producto));
@@ -295,7 +306,7 @@ public class PanelPerfil extends JPanel {
         } else {
             for (Pedido pedido : pedidos) {
                 lista.add(crearTarjetaPedido(pedido));
-                lista.add(Box.createVerticalStrut(12));
+                lista.add(Box.createVerticalStrut(18));
             }
         }
 
@@ -446,7 +457,7 @@ public class PanelPerfil extends JPanel {
         } else {
             for (Intercambio intercambio : intercambios) {
                 lista.add(crearTarjetaIntercambio(intercambio));
-                lista.add(Box.createVerticalStrut(12));
+                lista.add(Box.createVerticalStrut(18));
             }
         }
 
@@ -464,6 +475,10 @@ public class PanelPerfil extends JPanel {
         JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 20);
         tarjeta.setLayout(new BorderLayout(12, 12));
         tarjeta.setBorder(new EmptyBorder(12, 12, 12, 12));
+        tarjeta.setPreferredSize(new Dimension(0, 180));
+        tarjeta.setMinimumSize(new Dimension(0, 180));
+        tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, 180));
+        tarjeta.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel estado = new JLabel(oferta.getEstadoOferta().toString());
         estado.setFont(new Font("SansSerif", Font.BOLD, 16));
@@ -691,7 +706,7 @@ public class PanelPerfil extends JPanel {
         if (rutaFoto == null || rutaFoto.isBlank()) {
             lblAvatar.setIcon(null);
             lblAvatar.setText("👤");
-            lblAvatar.setFont(new Font("SansSerif", Font.PLAIN, 60));
+            lblAvatar.setFont(new Font("SansSerif", Font.PLAIN, 92));
             return;
         }
 
@@ -699,14 +714,15 @@ public class PanelPerfil extends JPanel {
         if (!archivo.exists()) {
             lblAvatar.setIcon(null);
             lblAvatar.setText("👤");
-            lblAvatar.setFont(new Font("SansSerif", Font.PLAIN, 60));
+            lblAvatar.setFont(new Font("SansSerif", Font.PLAIN, 92));
             return;
         }
 
     
 
         ImageIcon original = new ImageIcon(rutaFoto);
-        Icon escalado = new ImageIcon(original.getImage().getScaledInstance(96, 96, java.awt.Image.SCALE_SMOOTH));
+        Icon escalado = new ImageIcon(original.getImage().getScaledInstance(AVATAR_SIZE, AVATAR_SIZE,
+                java.awt.Image.SCALE_SMOOTH));
         lblAvatar.setIcon(escalado);
         lblAvatar.setText("");
     }

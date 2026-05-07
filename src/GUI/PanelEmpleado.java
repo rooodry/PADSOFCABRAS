@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -267,7 +268,7 @@ public class PanelEmpleado extends JPanel {
         JButton cargar = crearBoton("Cargar productos de fichero", 220);
         cargar.addActionListener(e -> cargarProductosDeFichero());
         contenido.add(cargar);
-        JPanel grid = new JPanel(new GridLayout(0, 3, 14, 14));
+        JPanel grid = new JPanel(new GridLayout(0, 3, 18, 18));
         grid.setOpaque(false);
         for (ProductoTienda producto : mainFrame.getProductosTienda()) {
             JPanel tarjeta = new JPanel(new BorderLayout(0, 6));
@@ -315,6 +316,7 @@ public class PanelEmpleado extends JPanel {
         }
         for (ProductoSegundaMano producto : productos) {
             contenido.add(crearFilaValoracion(producto));
+            contenido.add(Box.createVerticalStrut(18));
         }
     }
 
@@ -324,12 +326,14 @@ public class PanelEmpleado extends JPanel {
         for (Pedido pedido : mainFrame.getPedidosGestion()) {
             if (pedido.getEstadoPedido() == EstadoPedido.EN_PREPARACION) {
                 contenido.add(crearFilaPedido(pedido, "Cambiar a listo"));
+                contenido.add(Box.createVerticalStrut(18));
             }
         }
         contenido.add(crearSubtitulo("Listos"));
         for (Pedido pedido : mainFrame.getPedidosGestion()) {
             if (pedido.getEstadoPedido() == EstadoPedido.LISTO) {
                 contenido.add(crearFilaPedido(pedido, "Cambiar a entregado"));
+                contenido.add(Box.createVerticalStrut(18));
             }
         }
     }
@@ -380,6 +384,7 @@ public class PanelEmpleado extends JPanel {
             marcar.addActionListener(e -> mainFrame.marcarIntercambioRealizado(intercambio));
             fila.add(marcar, BorderLayout.EAST);
             contenido.add(fila);
+            contenido.add(Box.createVerticalStrut(18));
         }
     }
 
@@ -401,6 +406,7 @@ public class PanelEmpleado extends JPanel {
             editar.addActionListener(e -> editarPack(pack));
             fila.add(editar, BorderLayout.EAST);
             contenido.add(fila);
+            contenido.add(Box.createVerticalStrut(18));
         }
     }
 

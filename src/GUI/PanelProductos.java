@@ -119,7 +119,7 @@ public class PanelProductos extends JPanel {
         int filas    = (int) Math.ceil(productos.size() / (double) columnas);
         filas        = Math.max(filas, 1);
 
-        JPanel grid = new JPanel(new GridLayout(filas, columnas, 12, 12));
+        JPanel grid = new JPanel(new GridLayout(filas, columnas, 18, 18));
         grid.setBackground(COLOR_FONDO);
         grid.setBorder(new EmptyBorder(16, 16, 16, 16));
 

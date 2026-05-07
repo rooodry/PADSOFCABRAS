@@ -610,7 +610,7 @@ public class PanelIntercambios extends JPanel {
         } else {
             for (Intercambio intercambio : mainFrame.getIntercambios()) {
                 lista.add(crearTarjetaOferta(intercambio));
-                lista.add(Box.createVerticalStrut(12));
+                lista.add(Box.createVerticalStrut(18));
             }
         }
 

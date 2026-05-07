@@ -6,17 +6,17 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
-import java.awt.RenderingHints;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -40,9 +40,8 @@ public class PanelNotificaciones extends JPanel {
         TODAS, PENDIENTES, VISTAS
     }
 
-    private static final Color COLOR_FILA = new Color(135, 116, 96);
-    private static final Color COLOR_BOTON = new Color(91, 73, 55);
     private static final Color COLOR_PAPELERA = new Color(154, 76, 60);
+    private static final int AVATAR_SIZE = 150;
 
     private final Main mainFrame;
     private final JPanel lista;
@@ -85,7 +84,7 @@ public class PanelNotificaciones extends JPanel {
         } else {
             for (Notificacion notificacion : visibles) {
                 lista.add(crearFila(notificacion));
-                lista.add(Box.createVerticalStrut(2));
+                lista.add(Box.createVerticalStrut(18));
             }
         }
 
@@ -95,70 +94,64 @@ public class PanelNotificaciones extends JPanel {
     }
 
     private JPanel crearCuerpo() {
-        JPanel cuerpo = new JPanel(new BorderLayout());
+        JPanel cuerpo = new JPanel(new BorderLayout(20, 0));
         cuerpo.setBackground(UiStyle.COLOR_FONDO);
-        cuerpo.setBorder(new EmptyBorder(8, 42, 8, 24));
+        cuerpo.setBorder(new EmptyBorder(22, 22, 22, 22));
 
         cuerpo.add(crearLateral(), BorderLayout.WEST);
 
+        JPanel contenido = new JPanel(new BorderLayout(0, 14));
+        contenido.setOpaque(false);
+        JLabel titulo = new JLabel("Notificaciones", SwingConstants.LEFT);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
+        titulo.setForeground(UiStyle.COLOR_TEXTO);
+        contenido.add(titulo, BorderLayout.NORTH);
         JScrollPane scroll = new JScrollPane(lista, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(null);
         scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
         scroll.getVerticalScrollBar().setUnitIncrement(18);
-        scroll.setPreferredSize(new Dimension(680, 0));
-        cuerpo.add(scroll, BorderLayout.CENTER);
+        contenido.add(scroll, BorderLayout.CENTER);
+        cuerpo.add(contenido, BorderLayout.CENTER);
 
         return cuerpo;
     }
 
     private JPanel crearLateral() {
-        JPanel lateral = new JPanel();
+        JPanel lateral = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 24);
         lateral.setLayout(new BoxLayout(lateral, BoxLayout.Y_AXIS));
-        lateral.setBackground(UiStyle.COLOR_FONDO);
-        lateral.setPreferredSize(new Dimension(156, 0));
-        lateral.setBorder(new EmptyBorder(38, 0, 0, 28));
+        lateral.setPreferredSize(new Dimension(300, 0));
+        lateral.setBorder(new EmptyBorder(20, 16, 20, 16));
 
         lateral.add(crearAvatarGrande());
-        lateral.add(Box.createVerticalStrut(8));
+        lateral.add(Box.createVerticalStrut(20));
         lateral.add(crearBotonFiltro("TODAS", Filtro.TODAS, 0));
+        lateral.add(crearSeparadorFiltro());
         lateral.add(crearBotonFiltro("PENDIENTES", Filtro.PENDIENTES, 1));
+        lateral.add(crearSeparadorFiltro());
         lateral.add(crearBotonFiltro("VISTAS", Filtro.VISTAS, 2));
+        lateral.add(Box.createVerticalGlue());
         return lateral;
     }
 
-    private JPanel crearAvatarGrande() {
-        JPanel avatar = new JPanel() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(229, 231, 233));
-                g2.fillOval(0, 0, getWidth(), getHeight());
-                g2.setColor(new Color(176, 181, 185));
-                g2.fillOval(44, 25, 48, 52);
-                g2.fillOval(24, 80, 88, 48);
-                g2.dispose();
-            }
-        };
+    private JLabel crearAvatarGrande() {
+        JLabel avatar = new JLabel("\uD83D\uDC64", SwingConstants.CENTER);
         avatar.setOpaque(false);
-        Dimension dimension = new Dimension(124, 124);
+        avatar.setFont(new Font("SansSerif", Font.PLAIN, 92));
+        avatar.setForeground(UiStyle.COLOR_TEXTO);
+        Dimension dimension = new Dimension(268, AVATAR_SIZE);
         avatar.setPreferredSize(dimension);
         avatar.setMaximumSize(dimension);
         avatar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cargarAvatar(avatar);
         return avatar;
     }
 
     private JButton crearBotonFiltro(String texto, Filtro filtro, int indice) {
-        JButton boton = new JButton(texto);
-        boton.setFont(new Font("SansSerif", Font.PLAIN, 10));
-        boton.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        boton.setBackground(COLOR_BOTON);
-        boton.setFocusPainted(false);
-        boton.setBorder(new EmptyBorder(8, 18, 8, 18));
-        boton.setMaximumSize(new Dimension(126, 31));
+        JButton boton = new UiStyle.RoundedButton(texto, UiStyle.COLOR_TARJETA, UiStyle.COLOR_MARRON_MEDIO, 16);
+        boton.setForeground(UiStyle.COLOR_TEXTO);
+        boton.setPreferredSize(new Dimension(268, 40));
+        boton.setMaximumSize(new Dimension(268, 40));
         boton.setAlignmentX(Component.CENTER_ALIGNMENT);
         boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         boton.addActionListener(e -> {
@@ -172,10 +165,36 @@ public class PanelNotificaciones extends JPanel {
     private void actualizarFiltros() {
         for (JButton boton : botonesFiltro) {
             if (boton != null) {
-                boton.setBackground(COLOR_BOTON);
+                boton.setBackground(UiStyle.COLOR_TARJETA);
+                boton.setForeground(UiStyle.COLOR_TEXTO);
             }
         }
-        botonesFiltro[filtroActivo.ordinal()].setBackground(UiStyle.COLOR_TEXTO);
+        botonesFiltro[filtroActivo.ordinal()].setBackground(UiStyle.COLOR_CABECERA);
+        botonesFiltro[filtroActivo.ordinal()].setForeground(UiStyle.COLOR_TEXTO_CLARO);
+    }
+
+    private JPanel crearSeparadorFiltro() {
+        JPanel separador = new JPanel();
+        separador.setBackground(UiStyle.COLOR_BORDE);
+        separador.setPreferredSize(new Dimension(268, 2));
+        separador.setMaximumSize(new Dimension(268, 2));
+        separador.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return separador;
+    }
+
+    private void cargarAvatar(JLabel avatar) {
+        String rutaFoto = mainFrame.getClienteActual().getFotoPerfil();
+        if (rutaFoto == null || rutaFoto.isBlank()) {
+            return;
+        }
+        File archivo = new File(rutaFoto);
+        if (!archivo.exists()) {
+            return;
+        }
+        ImageIcon original = new ImageIcon(rutaFoto);
+        Image imagen = original.getImage().getScaledInstance(AVATAR_SIZE, AVATAR_SIZE, Image.SCALE_SMOOTH);
+        avatar.setIcon(new ImageIcon(imagen));
+        avatar.setText("");
     }
 
     private List<Notificacion> filtrarNotificaciones() {
@@ -196,12 +215,13 @@ public class PanelNotificaciones extends JPanel {
     }
 
     private JPanel crearFila(Notificacion notificacion) {
-        JPanel fila = new UiStyle.RoundedPanel(COLOR_FILA, 7);
+        JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 20);
         fila.setLayout(new GridBagLayout());
-        fila.setBorder(new EmptyBorder(5, 12, 5, 10));
-        fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 46));
-        fila.setMinimumSize(new Dimension(620, 46));
-        fila.setPreferredSize(new Dimension(620, 46));
+        fila.setBorder(new EmptyBorder(14, 16, 14, 16));
+        fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
+        fila.setMinimumSize(new Dimension(620, 86));
+        fila.setPreferredSize(new Dimension(620, 86));
+        fila.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -217,14 +237,14 @@ public class PanelNotificaciones extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(0, 0, 0, 6);
         JLabel titulo = new JLabel(tituloNotificacion(notificacion.getTipoNotificacion()), SwingConstants.CENTER);
-        titulo.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        titulo.setForeground(UiStyle.COLOR_TEXTO);
         titulo.setFont(new Font("SansSerif", Font.BOLD, 16));
         fila.add(titulo, gbc);
 
         gbc.gridy = 1;
         JLabel mensaje = new JLabel(acortar(notificacion.getMensaje(), 72), SwingConstants.CENTER);
-        mensaje.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        mensaje.setFont(new Font("SansSerif", Font.BOLD, 13));
+        mensaje.setForeground(UiStyle.COLOR_TEXTO);
+        mensaje.setFont(new Font("SansSerif", Font.PLAIN, 13));
         fila.add(mensaje, gbc);
 
         gbc.gridx = 2;
@@ -233,7 +253,7 @@ public class PanelNotificaciones extends JPanel {
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.insets = new Insets(0, 2, 0, 4);
-        JButton visto = crearBotonIcono("\u2713", new Color(84, 69, 51));
+        JButton visto = crearBotonIcono("\u2713", UiStyle.COLOR_TEXTO);
         visto.setToolTipText("Marcar como vista");
         visto.addActionListener(e -> {
             mainFrame.marcarNotificacionLeida(notificacion);
@@ -280,7 +300,7 @@ public class PanelNotificaciones extends JPanel {
         }
         JLabel icono = new JLabel(texto, SwingConstants.CENTER);
         icono.setFont(new Font("Dialog", Font.BOLD, 28));
-        icono.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        icono.setForeground(UiStyle.COLOR_TEXTO);
         icono.setPreferredSize(new Dimension(54, 32));
         return icono;
     }
@@ -316,13 +336,13 @@ public class PanelNotificaciones extends JPanel {
 
     private JButton crearBotonIcono(String texto, Color color) {
         JButton boton = new JButton(texto);
-        boton.setFont(new Font("Dialog", Font.BOLD, 22));
+        boton.setFont(new Font("Dialog", Font.BOLD, 24));
         boton.setForeground(color);
         boton.setBorderPainted(false);
         boton.setContentAreaFilled(false);
         boton.setFocusPainted(false);
         boton.setOpaque(false);
-        boton.setPreferredSize(new Dimension(32, 32));
+        boton.setPreferredSize(new Dimension(38, 34));
         boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return boton;
     }

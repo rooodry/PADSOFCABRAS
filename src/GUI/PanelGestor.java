@@ -669,7 +669,7 @@ public class PanelGestor extends JPanel {
         }
         for (ProductoSegundaMano producto : productos) {
             contenido.add(crearFilaProductoSegundaMano(producto));
-            contenido.add(Box.createVerticalStrut(10));
+            contenido.add(Box.createVerticalStrut(18));
         }
     }
 
@@ -709,7 +709,7 @@ public class PanelGestor extends JPanel {
             editar.addActionListener(e -> editarPack(pack));
             fila.add(editar, BorderLayout.EAST);
             contenido.add(fila);
-            contenido.add(Box.createVerticalStrut(10));
+            contenido.add(Box.createVerticalStrut(18));
         }
     }
 
@@ -721,12 +721,12 @@ public class PanelGestor extends JPanel {
         contenido.add(crearTitulo("Pedidos"));
         for (Pedido pedido : mainFrame.getPedidosGestion()) {
             contenido.add(crearFilaPedido(pedido));
-            contenido.add(Box.createVerticalStrut(8));
+            contenido.add(Box.createVerticalStrut(18));
         }
         contenido.add(crearTitulo("Intercambios"));
         for (Intercambio intercambio : mainFrame.getIntercambios()) {
             contenido.add(crearFilaIntercambio(intercambio));
-            contenido.add(Box.createVerticalStrut(8));
+            contenido.add(Box.createVerticalStrut(18));
         }
     }
 
