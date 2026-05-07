@@ -2,7 +2,6 @@ package GUI;
 
 import java.awt.BorderLayout;
 import java.awt.BasicStroke;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -43,11 +42,13 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import compras.Pedido;
 import intercambios.Intercambio;
@@ -893,32 +894,56 @@ public class PanelGestor extends JPanel {
         JSpinner stock = new JSpinner(new SpinnerNumberModel(1, 0, 9999, 1));
         JSpinner valoracion = new JSpinner(new SpinnerNumberModel(0, 0, 5, 1));
         JTextField imagen = new JTextField();
+        imagen.setEditable(false);
         JTextField categorias = new JTextField();
-        JTextArea descripcion = new JTextArea(4, 28);
+        JTextArea descripcion = new JTextArea(7, 28);
         descripcion.setLineWrap(true);
         descripcion.setWrapStyleWord(true);
 
-        JComboBox<String> tipo = new JComboBox<>(new String[] {"COMIC", "JUEGO", "FIGURA"});
-        JPanel panelTipo = new JPanel(new CardLayout());
+        JLabel preview = new JLabel("Sin imagen", SwingConstants.CENTER);
+        preview.setPreferredSize(new Dimension(180, 190));
+        preview.setOpaque(true);
+        preview.setBackground(UiStyle.COLOR_TARJETA);
+        preview.setForeground(UiStyle.COLOR_TEXTO);
+        preview.setBorder(BorderFactory.createLineBorder(UiStyle.COLOR_BORDE, 1));
+        JButton buscarImagen = crearBoton("Buscar imagen", 140);
+        buscarImagen.addActionListener(e -> seleccionarImagenProducto(imagen, preview));
 
         JSpinner comicPaginas = new JSpinner(new SpinnerNumberModel(120, 1, 3000, 1));
         JTextField comicAutor = new JTextField();
         JTextField comicEditorial = new JTextField();
         JComboBox<Genero> comicGenero = new JComboBox<>(Genero.values());
         JSpinner comicAnio = new JSpinner(new SpinnerNumberModel(2026, 1900, 2100, 1));
-        panelTipo.add(crearPanelComic(comicPaginas, comicAutor, comicEditorial, comicGenero, comicAnio), "COMIC");
+        JTextField comicIdioma = new JTextField("Espanol");
+        JTextField comicFormato = new JTextField("Tapa blanda");
+        JTextField comicIsbn = new JTextField();
 
-        JSpinner juegoJugadores = new JSpinner(new SpinnerNumberModel(4, 1, 99, 1));
+        JSpinner juegoJugadoresMin = new JSpinner(new SpinnerNumberModel(2, 1, 99, 1));
+        JSpinner juegoJugadoresMax = new JSpinner(new SpinnerNumberModel(4, 1, 99, 1));
         JSpinner juegoEdad = new JSpinner(new SpinnerNumberModel(8, 0, 99, 1));
         JComboBox<TipoJuego> tipoJuego = new JComboBox<>(TipoJuego.values());
-        panelTipo.add(crearPanelJuego(juegoJugadores, juegoEdad, tipoJuego), "JUEGO");
+        JSpinner juegoDuracion = new JSpinner(new SpinnerNumberModel(30, 1, 999, 5));
+        JTextField juegoEditorial = new JTextField();
+        JTextField juegoIdioma = new JTextField("Espanol");
+        JTextArea juegoComponentes = new JTextArea(3, 20);
+        juegoComponentes.setLineWrap(true);
+        juegoComponentes.setWrapStyleWord(true);
 
         JSpinner figuraAltura = new JSpinner(new SpinnerNumberModel(10.0, 0.0, 999.0, 0.5));
         JTextField figuraMarca = new JTextField();
         JTextField figuraMaterial = new JTextField();
-        panelTipo.add(crearPanelFigura(figuraAltura, figuraMarca, figuraMaterial), "FIGURA");
+        JTextField figuraEscala = new JTextField("1/10");
+        JTextField figuraPersonaje = new JTextField();
+        JTextField figuraFranquicia = new JTextField();
+        JCheckBox figuraArticulada = new JCheckBox("Figura articulada");
 
-        tipo.addActionListener(e -> ((CardLayout) panelTipo.getLayout()).show(panelTipo, (String) tipo.getSelectedItem()));
+        JTabbedPane detalles = new JTabbedPane();
+        detalles.addTab("Comic", crearPanelComic(comicPaginas, comicAutor, comicEditorial,
+                comicGenero, comicAnio, comicIdioma, comicFormato, comicIsbn));
+        detalles.addTab("Juego", crearPanelJuego(juegoJugadoresMin, juegoJugadoresMax,
+                juegoEdad, tipoJuego, juegoDuracion, juegoEditorial, juegoIdioma, juegoComponentes));
+        detalles.addTab("Figura", crearPanelFigura(figuraAltura, figuraMarca, figuraMaterial,
+                figuraEscala, figuraPersonaje, figuraFranquicia, figuraArticulada));
 
         JComboBox<String> promocion = new JComboBox<>(new String[] {
                 "Sin promocion", "2x1", "Rebaja porcentaje", "Rebaja fija"
@@ -926,35 +951,37 @@ public class PanelGestor extends JPanel {
         JSpinner rebajaPorcentaje = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 100.0, 1.0));
         JSpinner rebajaFija = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 9999.0, 1.0));
 
-        JPanel panel = new JPanel(new BorderLayout(0, 10));
-        JPanel datos = new JPanel(new GridLayout(0, 1, 6, 6));
-        datos.add(new JLabel("Nombre"));
-        datos.add(nombre);
-        datos.add(new JLabel("Precio"));
-        datos.add(precio);
-        datos.add(new JLabel("Stock inicial"));
-        datos.add(stock);
-        datos.add(new JLabel("Valoracion inicial"));
-        datos.add(valoracion);
-        datos.add(new JLabel("Imagen"));
-        datos.add(imagen);
-        datos.add(new JLabel("Categorias separadas por coma"));
-        datos.add(categorias);
-        datos.add(new JLabel("Descripcion"));
-        datos.add(new JScrollPane(descripcion));
-        datos.add(new JLabel("Tipo de producto"));
-        datos.add(tipo);
-        panel.add(datos, BorderLayout.NORTH);
-        panel.add(panelTipo, BorderLayout.CENTER);
+        JPanel basicos = crearPanelFormulario();
+        basicos.add(crearTituloFormulario("Datos basicos"));
+        basicos.add(crearFilaFormulario("Nombre", nombre));
+        basicos.add(crearFilaFormulario("Precio", precio));
+        basicos.add(crearFilaFormulario("Stock inicial", stock));
+        basicos.add(crearFilaFormulario("Valoracion inicial", valoracion));
+        basicos.add(crearFilaFormulario("Categorias", categorias));
+        basicos.add(crearFilaFormulario("Promocion", promocion));
+        basicos.add(crearFilaFormulario("Porcentaje", rebajaPorcentaje));
+        basicos.add(crearFilaFormulario("Rebaja fija", rebajaFija));
+        basicos.add(crearTituloFormulario("Descripcion"));
+        basicos.add(new JScrollPane(descripcion));
 
-        JPanel descuentos = new JPanel(new GridLayout(0, 1, 6, 6));
-        descuentos.add(new JLabel("Promocion"));
-        descuentos.add(promocion);
-        descuentos.add(new JLabel("Porcentaje de rebaja"));
-        descuentos.add(rebajaPorcentaje);
-        descuentos.add(new JLabel("Rebaja fija"));
-        descuentos.add(rebajaFija);
-        panel.add(descuentos, BorderLayout.SOUTH);
+        JPanel imagenPanel = crearPanelFormulario();
+        imagenPanel.add(crearTituloFormulario("Imagen"));
+        imagenPanel.add(preview);
+        imagenPanel.add(Box.createVerticalStrut(8));
+        imagenPanel.add(buscarImagen);
+        imagenPanel.add(Box.createVerticalStrut(8));
+        imagenPanel.add(crearFilaFormulario("Archivo", imagen));
+
+        JPanel izquierda = new JPanel(new BorderLayout(0, 12));
+        izquierda.setOpaque(false);
+        izquierda.add(basicos, BorderLayout.CENTER);
+        izquierda.add(imagenPanel, BorderLayout.EAST);
+
+        JPanel panel = new JPanel(new BorderLayout(18, 0));
+        panel.setBorder(new EmptyBorder(8, 8, 8, 8));
+        panel.setPreferredSize(new Dimension(860, 560));
+        panel.add(izquierda, BorderLayout.CENTER);
+        panel.add(detalles, BorderLayout.EAST);
 
         int respuesta = JOptionPane.showConfirmDialog(this, panel, "Nuevo producto",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -968,12 +995,19 @@ public class PanelGestor extends JPanel {
         }
 
         String promo = (String) promocion.getSelectedItem();
-        mainFrame.crearProductoTiendaGestion((String) tipo.getSelectedItem(),
+        String tipoSeleccionado = detalles.getTitleAt(detalles.getSelectedIndex()).toUpperCase();
+        String descripcionCompleta = descripcionConDetalles(tipoSeleccionado, descripcion.getText(),
+                comicPaginas, comicAutor, comicEditorial, comicGenero, comicAnio, comicIdioma, comicFormato, comicIsbn,
+                juegoJugadoresMin, juegoJugadoresMax, juegoEdad, tipoJuego, juegoDuracion,
+                juegoEditorial, juegoIdioma, juegoComponentes,
+                figuraAltura, figuraMarca, figuraMaterial, figuraEscala, figuraPersonaje,
+                figuraFranquicia, figuraArticulada);
+        mainFrame.crearProductoTiendaGestion(tipoSeleccionado,
                 nombre.getText(),
                 parseDouble(precio.getText(), 0.0),
                 ((Integer) stock.getValue()).intValue(),
                 ((Integer) valoracion.getValue()).intValue(),
-                descripcion.getText(),
+                descripcionCompleta,
                 imagen.getText(),
                 parseCategorias(categorias.getText()),
                 "2x1".equals(promo),
@@ -984,7 +1018,7 @@ public class PanelGestor extends JPanel {
                 comicEditorial.getText(),
                 (Genero) comicGenero.getSelectedItem(),
                 ((Integer) comicAnio.getValue()).intValue(),
-                ((Integer) juegoJugadores.getValue()).intValue(),
+                ((Integer) juegoJugadoresMax.getValue()).intValue(),
                 ((Integer) juegoEdad.getValue()).intValue(),
                 (TipoJuego) tipoJuego.getSelectedItem(),
                 ((Double) figuraAltura.getValue()).doubleValue(),
@@ -994,41 +1028,151 @@ public class PanelGestor extends JPanel {
     }
 
     private JPanel crearPanelComic(JSpinner paginas, JTextField autor, JTextField editorial,
-            JComboBox<Genero> genero, JSpinner anio) {
-        JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
-        panel.add(new JLabel("Paginas"));
-        panel.add(paginas);
-        panel.add(new JLabel("Autor"));
-        panel.add(autor);
-        panel.add(new JLabel("Editorial"));
-        panel.add(editorial);
-        panel.add(new JLabel("Genero"));
-        panel.add(genero);
-        panel.add(new JLabel("Anio de publicacion"));
-        panel.add(anio);
+            JComboBox<Genero> genero, JSpinner anio, JTextField idioma,
+            JTextField formato, JTextField isbn) {
+        JPanel panel = crearPanelFormulario();
+        panel.setPreferredSize(new Dimension(330, 0));
+        panel.add(crearTituloFormulario("Detalles de comic"));
+        panel.add(crearFilaFormulario("Paginas", paginas));
+        panel.add(crearFilaFormulario("Autor", autor));
+        panel.add(crearFilaFormulario("Editorial", editorial));
+        panel.add(crearFilaFormulario("Genero", genero));
+        panel.add(crearFilaFormulario("Anio", anio));
+        panel.add(crearFilaFormulario("Idioma", idioma));
+        panel.add(crearFilaFormulario("Formato", formato));
+        panel.add(crearFilaFormulario("ISBN", isbn));
         return panel;
     }
 
-    private JPanel crearPanelJuego(JSpinner jugadores, JSpinner edad, JComboBox<TipoJuego> tipoJuego) {
-        JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
-        panel.add(new JLabel("Numero de jugadores"));
-        panel.add(jugadores);
-        panel.add(new JLabel("Edad minima"));
-        panel.add(edad);
-        panel.add(new JLabel("Tipo de juego"));
-        panel.add(tipoJuego);
+    private JPanel crearPanelJuego(JSpinner jugadoresMin, JSpinner jugadoresMax,
+            JSpinner edad, JComboBox<TipoJuego> tipoJuego, JSpinner duracion,
+            JTextField editorial, JTextField idioma, JTextArea componentes) {
+        JPanel panel = crearPanelFormulario();
+        panel.setPreferredSize(new Dimension(330, 0));
+        componentes.setLineWrap(true);
+        componentes.setWrapStyleWord(true);
+        panel.add(crearTituloFormulario("Detalles de juego"));
+        panel.add(crearFilaFormulario("Jugadores min.", jugadoresMin));
+        panel.add(crearFilaFormulario("Jugadores max.", jugadoresMax));
+        panel.add(crearFilaFormulario("Edad minima", edad));
+        panel.add(crearFilaFormulario("Tipo", tipoJuego));
+        panel.add(crearFilaFormulario("Duracion min.", duracion));
+        panel.add(crearFilaFormulario("Editorial", editorial));
+        panel.add(crearFilaFormulario("Idioma", idioma));
+        panel.add(crearTituloFormulario("Componentes"));
+        panel.add(new JScrollPane(componentes));
         return panel;
     }
 
-    private JPanel crearPanelFigura(JSpinner altura, JTextField marca, JTextField material) {
-        JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
-        panel.add(new JLabel("Altura en cm"));
-        panel.add(altura);
-        panel.add(new JLabel("Marca"));
-        panel.add(marca);
-        panel.add(new JLabel("Material"));
-        panel.add(material);
+    private JPanel crearPanelFigura(JSpinner altura, JTextField marca, JTextField material,
+            JTextField escala, JTextField personaje, JTextField franquicia, JCheckBox articulada) {
+        JPanel panel = crearPanelFormulario();
+        panel.setPreferredSize(new Dimension(330, 0));
+        panel.add(crearTituloFormulario("Detalles de figura"));
+        panel.add(crearFilaFormulario("Altura cm", altura));
+        panel.add(crearFilaFormulario("Marca", marca));
+        panel.add(crearFilaFormulario("Material", material));
+        panel.add(crearFilaFormulario("Escala", escala));
+        panel.add(crearFilaFormulario("Personaje", personaje));
+        panel.add(crearFilaFormulario("Franquicia", franquicia));
+        panel.add(articulada);
         return panel;
+    }
+
+    private JPanel crearPanelFormulario() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        return panel;
+    }
+
+    private JLabel crearTituloFormulario(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font("SansSerif", Font.BOLD, 15));
+        label.setForeground(UiStyle.COLOR_TEXTO);
+        label.setBorder(new EmptyBorder(8, 0, 8, 0));
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return label;
+    }
+
+    private JPanel crearFilaFormulario(String etiqueta, Component campo) {
+        JPanel fila = new JPanel(new BorderLayout(8, 0));
+        fila.setBorder(new EmptyBorder(4, 0, 4, 0));
+        fila.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel label = new JLabel(etiqueta);
+        label.setPreferredSize(new Dimension(104, 26));
+        label.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        fila.add(label, BorderLayout.WEST);
+        fila.add(campo, BorderLayout.CENTER);
+        return fila;
+    }
+
+    private void seleccionarImagenProducto(JTextField campoImagen, JLabel preview) {
+        JFileChooser chooser = new JFileChooser(".");
+        chooser.setFileFilter(new FileNameExtensionFilter("Imagenes", "png", "jpg", "jpeg", "gif"));
+        int respuesta = chooser.showOpenDialog(this);
+        if (respuesta != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        String ruta = chooser.getSelectedFile().getPath();
+        campoImagen.setText(ruta);
+        ImageIcon icono = new ImageIcon(ruta);
+        Image escalada = icono.getImage().getScaledInstance(180, 190, Image.SCALE_SMOOTH);
+        preview.setText("");
+        preview.setIcon(new ImageIcon(escalada));
+    }
+
+    private String descripcionConDetalles(String tipo, String descripcion,
+            JSpinner comicPaginas, JTextField comicAutor, JTextField comicEditorial,
+            JComboBox<Genero> comicGenero, JSpinner comicAnio, JTextField comicIdioma,
+            JTextField comicFormato, JTextField comicIsbn,
+            JSpinner juegoJugadoresMin, JSpinner juegoJugadoresMax, JSpinner juegoEdad,
+            JComboBox<TipoJuego> tipoJuego, JSpinner juegoDuracion, JTextField juegoEditorial,
+            JTextField juegoIdioma, JTextArea juegoComponentes,
+            JSpinner figuraAltura, JTextField figuraMarca, JTextField figuraMaterial,
+            JTextField figuraEscala, JTextField figuraPersonaje, JTextField figuraFranquicia,
+            JCheckBox figuraArticulada) {
+        StringBuilder texto = new StringBuilder(descripcion == null ? "" : descripcion.trim());
+        if (texto.length() > 0) {
+            texto.append("\n\n");
+        }
+        texto.append("Detalles del producto:\n");
+        if ("COMIC".equals(tipo)) {
+            texto.append("Paginas: ").append(comicPaginas.getValue()).append('\n');
+            texto.append("Autor: ").append(textoCampo(comicAutor)).append('\n');
+            texto.append("Editorial: ").append(textoCampo(comicEditorial)).append('\n');
+            texto.append("Genero: ").append(comicGenero.getSelectedItem()).append('\n');
+            texto.append("Anio: ").append(comicAnio.getValue()).append('\n');
+            texto.append("Idioma: ").append(textoCampo(comicIdioma)).append('\n');
+            texto.append("Formato: ").append(textoCampo(comicFormato)).append('\n');
+            texto.append("ISBN: ").append(textoCampo(comicIsbn));
+        } else if ("JUEGO".equals(tipo)) {
+            texto.append("Jugadores: ").append(juegoJugadoresMin.getValue()).append("-")
+                    .append(juegoJugadoresMax.getValue()).append('\n');
+            texto.append("Edad minima: ").append(juegoEdad.getValue()).append('\n');
+            texto.append("Tipo: ").append(tipoJuego.getSelectedItem()).append('\n');
+            texto.append("Duracion: ").append(juegoDuracion.getValue()).append(" min\n");
+            texto.append("Editorial: ").append(textoCampo(juegoEditorial)).append('\n');
+            texto.append("Idioma: ").append(textoCampo(juegoIdioma)).append('\n');
+            texto.append("Componentes: ").append(textoArea(juegoComponentes));
+        } else {
+            texto.append("Altura: ").append(figuraAltura.getValue()).append(" cm\n");
+            texto.append("Marca: ").append(textoCampo(figuraMarca)).append('\n');
+            texto.append("Material: ").append(textoCampo(figuraMaterial)).append('\n');
+            texto.append("Escala: ").append(textoCampo(figuraEscala)).append('\n');
+            texto.append("Personaje: ").append(textoCampo(figuraPersonaje)).append('\n');
+            texto.append("Franquicia: ").append(textoCampo(figuraFranquicia)).append('\n');
+            texto.append("Articulada: ").append(figuraArticulada.isSelected() ? "si" : "no");
+        }
+        return texto.toString();
+    }
+
+    private String textoCampo(JTextField campo) {
+        return campo.getText() == null || campo.getText().isBlank() ? "No indicado" : campo.getText().trim();
+    }
+
+    private String textoArea(JTextArea campo) {
+        return campo.getText() == null || campo.getText().isBlank() ? "No indicado" : campo.getText().trim();
     }
 
     private void editarProducto(ProductoTienda producto) {
