@@ -1,18 +1,26 @@
 package GUI;
 
 import java.awt.BorderLayout;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -777,25 +785,31 @@ public class PanelGestor extends JPanel {
 
     private void pintarEstadisticas() {
         contenido.add(crearTitulo("Estadisticas"));
-        JPanel grid = new JPanel(new GridLayout(0, 3, 14, 14));
+        JPanel grid = new JPanel(new GridLayout(0, 4, 14, 14));
         grid.setOpaque(false);
         grid.add(crearMetrica("Ventas", String.format("%.2f", totalVentasEntregadas()), "EUR entregados"));
+        grid.add(crearMetrica("Pedidos", String.valueOf(contarPedidos(EstadoPedido.ENTREGADO)), "entregados"));
         grid.add(crearMetrica("Valoraciones", String.format("%.2f", totalValoraciones()), "EUR estimados"));
         grid.add(crearMetrica("Clientes", String.valueOf(mainFrame.getClientesRegistrados().size()), "registrados"));
         contenido.add(grid);
 
+        contenido.add(crearTitulo("Ventas por mes"));
+        contenido.add(crearSubtitulo("Importe de pedidos entregados durante los ultimos 12 meses."));
+        contenido.add(new GraficaVentasMensuales(ventasEntregadasPorMes()));
+
         contenido.add(crearTitulo("Pedidos por estado"));
-        for (EstadoPedido estado : EstadoPedido.values()) {
-            contenido.add(crearEtiqueta(estado + ": " + contarPedidos(estado)));
-        }
+        contenido.add(crearPanelPedidosPorEstado());
 
         contenido.add(crearTitulo("Usuarios con mas compras"));
         List<ClienteRegistrado> clientes = new ArrayList<>(mainFrame.getClientesRegistrados());
         clientes.sort(Comparator.comparingInt((ClienteRegistrado c) -> c.getPedidos().size()).reversed());
+        int maxCompras = 1;
         for (ClienteRegistrado cliente : clientes) {
-            contenido.add(crearEtiqueta(cliente.getNombre() + " | DNI " + cliente.getDNI()
-                    + " | compras " + cliente.getPedidos().size()
-                    + " | cartera " + cliente.getCartera().getNumProductos()));
+            maxCompras = Math.max(maxCompras, cliente.getPedidos().size());
+        }
+        for (ClienteRegistrado cliente : clientes) {
+            contenido.add(crearBarraCliente(cliente, maxCompras));
+            contenido.add(Box.createVerticalStrut(8));
         }
     }
 
@@ -1029,6 +1043,113 @@ public class PanelGestor extends JPanel {
         return total;
     }
 
+    private Map<String, Double> ventasEntregadasPorMes() {
+        Map<String, Double> ventas = new LinkedHashMap<>();
+        SimpleDateFormat formatoMes = new SimpleDateFormat("MMM yy");
+        Calendar inicio = Calendar.getInstance();
+        inicio.set(Calendar.DAY_OF_MONTH, 1);
+        inicio.add(Calendar.MONTH, -11);
+
+        for (int i = 0; i < 12; i++) {
+            ventas.put(formatoMes.format(inicio.getTime()), 0.0);
+            inicio.add(Calendar.MONTH, 1);
+        }
+
+        Calendar limite = Calendar.getInstance();
+        limite.set(Calendar.DAY_OF_MONTH, 1);
+        limite.add(Calendar.MONTH, -11);
+
+        for (Pedido pedido : mainFrame.getPedidosGestion()) {
+            if (pedido.getEstadoPedido() == EstadoPedido.ENTREGADO) {
+                Date fecha = fechaEstadisticaPedido(pedido);
+                if (fecha != null && !fecha.before(limite.getTime())) {
+                    String mes = formatoMes.format(fecha);
+                    if (ventas.containsKey(mes)) {
+                        ventas.put(mes, ventas.get(mes) + pedido.calcularPrecioTotal());
+                    }
+                }
+            }
+        }
+        return ventas;
+    }
+
+    private Date fechaEstadisticaPedido(Pedido pedido) {
+        if (pedido.getFechaRecogida() != null) {
+            return pedido.getFechaRecogida();
+        }
+        if (pedido.getFechaPago() != null) {
+            return pedido.getFechaPago();
+        }
+        return pedido.getFechaRealizacion();
+    }
+
+    private JPanel crearPanelPedidosPorEstado() {
+        JPanel panel = crearTarjeta();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        int max = 1;
+        for (EstadoPedido estado : EstadoPedido.values()) {
+            max = Math.max(max, contarPedidos(estado));
+        }
+        for (EstadoPedido estado : EstadoPedido.values()) {
+            panel.add(crearBarraEstado(estado, contarPedidos(estado), max));
+            panel.add(Box.createVerticalStrut(8));
+        }
+        return panel;
+    }
+
+    private JPanel crearBarraEstado(EstadoPedido estado, int valor, int max) {
+        JPanel fila = new JPanel(new BorderLayout(12, 0));
+        fila.setOpaque(false);
+        fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
+
+        JLabel nombre = crearEtiqueta("<b>" + estado + "</b>");
+        nombre.setPreferredSize(new Dimension(160, 28));
+        fila.add(nombre, BorderLayout.WEST);
+        fila.add(new BarraProgreso(valor, max, colorEstadoPedido(estado)), BorderLayout.CENTER);
+
+        JLabel cantidad = crearEtiqueta(String.valueOf(valor));
+        cantidad.setHorizontalAlignment(SwingConstants.RIGHT);
+        cantidad.setPreferredSize(new Dimension(38, 28));
+        fila.add(cantidad, BorderLayout.EAST);
+        return fila;
+    }
+
+    private JPanel crearBarraCliente(ClienteRegistrado cliente, int maxCompras) {
+        JPanel fila = crearTarjeta();
+        fila.setLayout(new BorderLayout(12, 0));
+        fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 58));
+
+        JLabel datos = crearEtiqueta("<b>" + cliente.getNombre() + "</b><br>DNI " + cliente.getDNI()
+                + " | cartera " + cliente.getCartera().getNumProductos());
+        datos.setPreferredSize(new Dimension(260, 42));
+        fila.add(datos, BorderLayout.WEST);
+        fila.add(new BarraProgreso(cliente.getPedidos().size(), maxCompras, UiStyle.COLOR_MARRON_MEDIO),
+                BorderLayout.CENTER);
+
+        JLabel compras = crearEtiqueta("<b>" + cliente.getPedidos().size() + "</b> compras");
+        compras.setHorizontalAlignment(SwingConstants.RIGHT);
+        compras.setPreferredSize(new Dimension(110, 42));
+        fila.add(compras, BorderLayout.EAST);
+        return fila;
+    }
+
+    private Color colorEstadoPedido(EstadoPedido estado) {
+        switch (estado) {
+        case EN_CARRITO:
+            return new Color(116, 130, 145);
+        case EN_PREPARACION:
+            return new Color(188, 136, 55);
+        case LISTO:
+            return new Color(68, 132, 166);
+        case ENTREGADO:
+            return new Color(75, 145, 95);
+        case CANCELADO:
+            return new Color(170, 82, 72);
+        default:
+            return UiStyle.COLOR_MARRON_MEDIO;
+        }
+    }
+
     private double totalValoraciones() {
         double total = 0.0;
         for (ProductoSegundaMano producto : mainFrame.getProductosSegundaManoGestion()) {
@@ -1167,5 +1288,115 @@ public class PanelGestor extends JPanel {
         boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         boton.setBorder(BorderFactory.createLineBorder(UiStyle.COLOR_MARRON_MEDIO, 1));
         return boton;
+    }
+
+    private static class GraficaVentasMensuales extends JPanel {
+
+        private static final long serialVersionUID = 1L;
+
+        private final Map<String, Double> ventas;
+
+        GraficaVentasMensuales(Map<String, Double> ventas) {
+            this.ventas = ventas;
+            setOpaque(false);
+            setPreferredSize(new Dimension(0, 300));
+            setMinimumSize(new Dimension(0, 300));
+            setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
+            setBorder(new EmptyBorder(18, 18, 18, 18));
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            int x = 20;
+            int y = 10;
+            int w = getWidth() - 40;
+            int h = getHeight() - 20;
+            g2.setColor(UiStyle.COLOR_TARJETA);
+            g2.fillRoundRect(x, y, w, h, 18, 18);
+
+            int left = x + 56;
+            int right = x + w - 18;
+            int top = y + 36;
+            int bottom = y + h - 48;
+            double max = 1.0;
+            for (double valor : ventas.values()) {
+                max = Math.max(max, valor);
+            }
+
+            g2.setFont(new Font("SansSerif", Font.BOLD, 15));
+            g2.setColor(UiStyle.COLOR_TEXTO);
+            g2.drawString("Ventas mensuales", x + 18, y + 26);
+
+            g2.setStroke(new BasicStroke(1f));
+            g2.setFont(new Font("SansSerif", Font.PLAIN, 11));
+            FontMetrics metrics = g2.getFontMetrics();
+            for (int i = 0; i <= 4; i++) {
+                int gy = bottom - (int) ((bottom - top) * (i / 4.0));
+                g2.setColor(new Color(185, 165, 140));
+                g2.drawLine(left, gy, right, gy);
+                g2.setColor(UiStyle.COLOR_TEXTO);
+                String etiqueta = String.format("%.0f", max * i / 4.0);
+                g2.drawString(etiqueta, left - metrics.stringWidth(etiqueta) - 8, gy + 4);
+            }
+
+            int meses = ventas.size();
+            int espacio = Math.max(1, right - left);
+            int anchoBarra = Math.max(12, Math.min(42, espacio / (meses * 2)));
+            int indice = 0;
+            for (Map.Entry<String, Double> entry : ventas.entrySet()) {
+                int centro = left + (int) ((indice + 0.5) * espacio / meses);
+                int barraAltura = (int) ((bottom - top) * (entry.getValue() / max));
+                int bx = centro - anchoBarra / 2;
+                int by = bottom - barraAltura;
+
+                g2.setColor(UiStyle.COLOR_MARRON_MEDIO);
+                g2.fillRoundRect(bx, by, anchoBarra, barraAltura, 10, 10);
+                g2.setColor(UiStyle.COLOR_TEXTO);
+                String mes = entry.getKey();
+                g2.drawString(mes, centro - metrics.stringWidth(mes) / 2, bottom + 22);
+                indice++;
+            }
+            g2.dispose();
+        }
+    }
+
+    private static class BarraProgreso extends JPanel {
+
+        private static final long serialVersionUID = 1L;
+
+        private final int valor;
+        private final int max;
+        private final Color color;
+
+        BarraProgreso(int valor, int max, Color color) {
+            this.valor = valor;
+            this.max = Math.max(1, max);
+            this.color = color;
+            setOpaque(false);
+            setPreferredSize(new Dimension(120, 28));
+            setMinimumSize(new Dimension(80, 28));
+            setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            int h = Math.min(16, getHeight() - 8);
+            int y = (getHeight() - h) / 2;
+            g2.setColor(new Color(232, 222, 210));
+            g2.fillRoundRect(0, y, getWidth(), h, h, h);
+            int ancho = (int) (getWidth() * (valor / (double) max));
+            if (valor > 0) {
+                g2.setColor(color);
+                g2.fillRoundRect(0, y, Math.max(h, ancho), h, h, h);
+            }
+            g2.dispose();
+        }
     }
 }
