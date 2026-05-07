@@ -77,8 +77,8 @@ public class PanelProductos extends JPanel {
 
         JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 8));
         derecha.setBackground(COLOR_OSCURO);
-        derecha.add(crearBotonIcono("🔔", 16));
-        derecha.add(crearBotonIcono("👤", 16));
+        derecha.add(UiStyle.crearBotonImagen(UiStyle.ICONO_NOTIFICACIONES, "", "Notificaciones", 32, 32, 24));
+        derecha.add(UiStyle.crearBotonImagen(UiStyle.ICONO_PERFIL_CABRA, "", "Perfil", 32, 32, 25));
         cab.add(derecha, BorderLayout.EAST);
 
         return cab;

@@ -5,10 +5,13 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 /**
  * Shared visual constants and rounded Swing helpers for GOAT & GET.
@@ -36,7 +39,33 @@ final class UiStyle {
     /** Text on dark backgrounds. */
     static final Color COLOR_TEXTO_CLARO = Color.WHITE;
 
+    /** Goat profile icon used in navigation buttons. */
+    static final String ICONO_PERFIL_CABRA = "lib/fotos/icono_perfil_cabra.png";
+
+    /** Bell icon used in notification buttons. */
+    static final String ICONO_NOTIFICACIONES = "lib/fotos/icono_notificaciones_campana.png";
+
     private UiStyle() {
+    }
+
+    static JButton crearBotonImagen(String rutaIcono, String texto, String tooltip, int ancho, int alto, int iconSize) {
+        JButton boton = new JButton(texto);
+        ImageIcon icono = new ImageIcon(rutaIcono);
+        Image imagen = icono.getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH);
+        boton.setIcon(new ImageIcon(imagen));
+        boton.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 12));
+        boton.setForeground(COLOR_TEXTO_CLARO);
+        boton.setBackground(COLOR_CABECERA);
+        boton.setBorderPainted(false);
+        boton.setContentAreaFilled(false);
+        boton.setFocusPainted(false);
+        boton.setOpaque(false);
+        boton.setToolTipText(tooltip);
+        boton.setPreferredSize(new Dimension(ancho, alto));
+        boton.setHorizontalTextPosition(SwingConstants.RIGHT);
+        boton.setIconTextGap(1);
+        boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return boton;
     }
 
     /**

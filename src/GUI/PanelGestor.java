@@ -151,8 +151,8 @@ public class PanelGestor extends JPanel {
 
         JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
         derecha.setOpaque(false);
-        derecha.add(crearBotonIcono("\uD83D\uDD14", "Notificaciones", 26, 42));
-        derecha.add(crearBotonIcono("\uD83D\uDC10", "Gestor", 28, 42));
+        derecha.add(UiStyle.crearBotonImagen(UiStyle.ICONO_NOTIFICACIONES, "", "Notificaciones", 42, 40, 30));
+        derecha.add(UiStyle.crearBotonImagen(UiStyle.ICONO_PERFIL_CABRA, "", "Gestor", 42, 40, 32));
         cabecera.add(derecha, BorderLayout.EAST);
         return cabecera;
     }

@@ -365,9 +365,10 @@ public class HomePanel extends JPanel {
 
             JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
             derecha.setOpaque(false);
-            JButton campana = crearBotonIcono("\uD83D\uDD14" + contarNoLeidas(mainFrame), "Notificaciones", 25, 42);
+            JButton campana = UiStyle.crearBotonImagen(UiStyle.ICONO_NOTIFICACIONES, contarNoLeidas(mainFrame),
+                    "Notificaciones", 52, 40, 30);
             campana.addActionListener(e -> mainFrame.cambiarPantalla(Main.PANTALLA_NOTIFICACIONES));
-            JButton perfil = crearBotonIcono("\uD83D\uDC10", "Perfil", 27, 42);
+            JButton perfil = UiStyle.crearBotonImagen(UiStyle.ICONO_PERFIL_CABRA, "", "Perfil", 42, 40, 32);
             perfil.addActionListener(e -> mainFrame.cambiarPantalla(Main.PANTALLA_PERFIL));
             derecha.add(campana);
             derecha.add(perfil);

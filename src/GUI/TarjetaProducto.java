@@ -39,9 +39,9 @@ public class TarjetaProducto extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setOpaque(false);
         setBorder(new EmptyBorder(14, 14, 14, 14));
-        setPreferredSize(new Dimension(200, 258));
-        setMaximumSize(new Dimension(200, 258));
-        setMinimumSize(new Dimension(200, 258));
+        setPreferredSize(new Dimension(200, 282));
+        setMaximumSize(new Dimension(200, 282));
+        setMinimumSize(new Dimension(200, 282));
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         add(crearImagen(producto.getImagen()));
@@ -52,6 +52,7 @@ public class TarjetaProducto extends JPanel {
         add(Box.createVerticalStrut(6));
         add(crearPrecio(producto.getPrecio()));
         if (tienePromocion(producto)) {
+            add(Box.createVerticalStrut(3));
             add(crearPromocion(producto));
         }
     }
