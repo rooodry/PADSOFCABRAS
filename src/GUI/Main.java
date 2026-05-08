@@ -290,7 +290,16 @@ public class Main extends JFrame {
     }
 
     public Pack getPackAsociadoEnCesta(ProductoTienda producto) {
-        return packsEnCesta.get(producto);
+        Pack pack = packsEnCesta.get(producto);
+        if (pack != null) {
+            return pack;
+        }
+        for (Pack candidato : packs) {
+            if (candidato.getNombre().equals(producto.getNombre())) {
+                return candidato;
+            }
+        }
+        return null;
     }
 
     /**
@@ -533,13 +542,12 @@ public class Main extends JFrame {
     public void retirarProductoDeCesta(ProductoTienda producto) {
         int cantidad = clienteActual.getCesta().getProductos().getOrDefault(producto, 0);
         if (cantidad > 0) {
+            Pack pack = getPackAsociadoEnCesta(producto);
             clienteActual.getCesta().eliminarProducto(producto);
-            Pack pack = packsEnCesta.remove(producto);
+            packsEnCesta.remove(producto);
             if (pack != null) {
-                for (Producto incluido : pack.getProductos()) {
-                    if (incluido instanceof ProductoTienda) {
-                        stock.a\u00f1adirProducto((ProductoTienda) incluido, cantidad);
-                    }
+                for (Map.Entry<ProductoTienda, Integer> entry : contarProductosPack(pack).entrySet()) {
+                    stock.añadirProducto(entry.getKey(), entry.getValue() * cantidad);
                 }
             } else {
                 stock.a\u00f1adirProducto(producto, cantidad);
@@ -756,25 +764,23 @@ public class Main extends JFrame {
             cambiarPantalla(PANTALLA_CLIENTE);
             return;
         }
-        for (Producto producto : pack.getProductos()) {
-            if (producto instanceof ProductoTienda
-                    && stock.getNumProductos((ProductoTienda) producto) <= 0) {
+        Map<ProductoTienda, Integer> unidadesPack = contarProductosPack(pack);
+        for (Map.Entry<ProductoTienda, Integer> entry : unidadesPack.entrySet()) {
+            if (stock.getNumProductos(entry.getKey()) < entry.getValue()) {
                 JOptionPane.showMessageDialog(this,
                         "No queda stock suficiente para el pack completo.",
                         "Stock agotado", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         }
-        for (Producto producto : pack.getProductos()) {
-            if (producto instanceof ProductoTienda) {
-                ProductoTienda tienda = (ProductoTienda) producto;
-                stock.reducirStock(tienda, 1);
+
+        for (Map.Entry<ProductoTienda, Integer> entry : unidadesPack.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
+                stock.reducirStock(entry.getKey(), 1);
             }
         }
-        ProductoTienda lineaPack = new ProductoTienda(pack.getNombre(), resumenPack(pack), "");
-        lineaPack.setPrecio(pack.getPrecio());
-        clienteActual.getCesta().a\u00f1adirProducto(lineaPack, 1);
-        packsEnCesta.put(lineaPack, pack);
+
+        clienteActual.getCesta().añadirPack(pack);
         panelCesta.refrescar();
         homePanel.refrescar();
         guardarEstadoPersistente();
@@ -1387,13 +1393,28 @@ public class Main extends JFrame {
 
     private String resumenPack(Pack pack) {
         StringBuilder texto = new StringBuilder("Pack: ");
-        for (Producto producto : pack.getProductos()) {
+        for (ProductoTienda producto : contarProductosPack(pack).keySet()) {
             if (texto.length() > "Pack: ".length()) {
                 texto.append(" + ");
             }
             texto.append(producto.getNombre());
         }
         return texto.toString();
+    }
+
+    private Map<ProductoTienda, Integer> contarProductosPack(Pack pack) {
+        Map<ProductoTienda, Integer> productos = new HashMap<>();
+        acumularProductosPack(pack, productos);
+        return productos;
+    }
+
+    private void acumularProductosPack(Pack pack, Map<ProductoTienda, Integer> productos) {
+        for (ProductoTienda producto : pack.getProductos()) {
+            productos.merge(producto, 1, Integer::sum);
+        }
+        for (Pack subpack : pack.getSubpacks()) {
+            acumularProductosPack(subpack, productos);
+        }
     }
 
     public void cerrarSesion() {
@@ -2197,8 +2218,17 @@ public class Main extends JFrame {
     }
 
     public void retirarPackDeCesta(Pack pack) {
+        if (!clienteActual.getCesta().getPacks().containsKey(pack)) {
+            return;
+        }
+
         clienteActual.getCesta().retirarPack(pack);
+        for (Map.Entry<ProductoTienda, Integer> entry : contarProductosPack(pack).entrySet()) {
+            stock.añadirProducto(entry.getKey(), entry.getValue());
+        }
         panelCesta.refrescar();
+        homePanel.refrescar();
+        guardarEstadoPersistente();
     }
 
     /**

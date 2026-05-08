@@ -58,11 +58,41 @@ public class ClienteRegistrado extends Cliente {
             return Status.ERROR;
         }
 
-        Pedido nuevoPedido = new Pedido(this, this.cesta.getProductos()); 
+        Pedido nuevoPedido = new Pedido(this, productosPedidoDesdeCesta()); 
         this.pedidos.add(nuevoPedido);
         this.cesta.limpiarCesta();
 
         return Status.OK;
+    }
+
+    private Map<ProductoTienda, Integer> productosPedidoDesdeCesta() {
+        Map<ProductoTienda, Integer> productosPedido = this.cesta.getProductos();
+
+        for (Map.Entry<Pack, Integer> entry : this.cesta.getPacks().entrySet()) {
+            Pack pack = entry.getKey();
+            ProductoTienda lineaPack = new ProductoTienda(pack.getNombre(), resumenPack(pack), "");
+            lineaPack.setPrecio(pack.getPrecio());
+            productosPedido.put(lineaPack, entry.getValue());
+        }
+
+        return productosPedido;
+    }
+
+    private String resumenPack(Pack pack) {
+        StringBuilder texto = new StringBuilder("Pack: ");
+        for (ProductoTienda producto : pack.getProductos()) {
+            if (texto.length() > "Pack: ".length()) {
+                texto.append(" + ");
+            }
+            texto.append(producto.getNombre());
+        }
+        for (Pack subpack : pack.getSubpacks()) {
+            if (texto.length() > "Pack: ".length()) {
+                texto.append(" + ");
+            }
+            texto.append(subpack.getNombre());
+        }
+        return texto.toString();
     }
     /* 
     public Status pagarPedido(Pedido pedido, String numeroTarjeta) {
