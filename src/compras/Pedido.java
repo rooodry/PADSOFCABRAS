@@ -54,20 +54,14 @@ public class Pedido implements Serializable {
     public void setEstadoPedido(EstadoPedido estadoPedido) {
         this.estadoPedido = estadoPedido;
 
-        switch (estadoPedido) {
-        case EN_PREPARACION:
+        if (estadoPedido == EstadoPedido.EN_PREPARACION) {
             this.fechaPago = new Date();
-            break;
-        case LISTO:
+        } else if (estadoPedido == EstadoPedido.LISTO) {
             this.fechaPreparacion = new Date();
-            break;
-        case ENTREGADO:
+        } else if (estadoPedido == EstadoPedido.ENTREGADO) {
             if(this.fechaRecogida == null) {
                 this.fechaRecogida = new Date();
             }
-            break;
-        default:
-            break;
         }
     }
     
