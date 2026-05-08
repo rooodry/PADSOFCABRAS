@@ -1,15 +1,19 @@
 package GUI;
 
 import java.awt.BorderLayout;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +22,7 @@ import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -265,7 +270,7 @@ public class PanelNotificaciones extends JPanel {
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.insets = new Insets(0, 2, 0, 4);
-        JButton visto = crearBotonIcono("\u2713", UiStyle.COLOR_TEXTO);
+        JButton visto = crearBotonIcono(new IconoTic(UiStyle.COLOR_TEXTO));
         visto.setToolTipText("Marcar como vista");
         visto.addActionListener(e -> {
             mainFrame.marcarNotificacionLeida(notificacion);
@@ -274,7 +279,7 @@ public class PanelNotificaciones extends JPanel {
         fila.add(visto, gbc);
 
         gbc.gridx = 3;
-        JButton borrar = crearBotonIcono("\uD83D\uDDD1", COLOR_PAPELERA);
+        JButton borrar = crearBotonIcono(new IconoPapelera(COLOR_PAPELERA));
         borrar.setToolTipText("Eliminar notificacion");
         borrar.addActionListener(e -> mostrarConfirmacionBorrado(notificacion));
         fila.add(borrar, gbc);
@@ -384,10 +389,8 @@ public class PanelNotificaciones extends JPanel {
         }
     }
 
-    private JButton crearBotonIcono(String texto, Color color) {
-        JButton boton = new JButton(texto);
-        boton.setFont(new Font("Dialog", Font.BOLD, 24));
-        boton.setForeground(color);
+    private JButton crearBotonIcono(Icon icono) {
+        JButton boton = new JButton(icono);
         boton.setBorderPainted(false);
         boton.setContentAreaFilled(false);
         boton.setFocusPainted(false);
@@ -395,6 +398,74 @@ public class PanelNotificaciones extends JPanel {
         boton.setPreferredSize(new Dimension(38, 34));
         boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return boton;
+    }
+
+    private static final class IconoTic implements Icon {
+        private static final int SIZE = 24;
+        private final Color color;
+
+        private IconoTic(Color color) {
+            this.color = color;
+        }
+
+        @Override
+        public int getIconWidth() {
+            return SIZE;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return SIZE;
+        }
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(color);
+            g2.setStroke(new BasicStroke(4f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2.drawLine(x + 5, y + 13, x + 10, y + 18);
+            g2.drawLine(x + 10, y + 18, x + 20, y + 6);
+            g2.dispose();
+        }
+    }
+
+    private static final class IconoPapelera implements Icon {
+        private static final int SIZE = 24;
+        private final Color color;
+
+        private IconoPapelera(Color color) {
+            this.color = color;
+        }
+
+        @Override
+        public int getIconWidth() {
+            return SIZE;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return SIZE;
+        }
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(color);
+            g2.setStroke(new BasicStroke(2.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+
+            g2.drawLine(x + 7, y + 8, x + 17, y + 8);
+            g2.drawLine(x + 10, y + 5, x + 14, y + 5);
+            g2.drawLine(x + 11, y + 5, x + 11, y + 7);
+            g2.drawLine(x + 13, y + 5, x + 13, y + 7);
+
+            g2.drawRoundRect(x + 8, y + 10, 8, 10, 2, 2);
+            g2.drawLine(x + 10, y + 12, x + 10, y + 18);
+            g2.drawLine(x + 12, y + 12, x + 12, y + 18);
+            g2.drawLine(x + 14, y + 12, x + 14, y + 18);
+            g2.dispose();
+        }
     }
 
     private void mostrarConfirmacionBorrado(Notificacion notificacion) {

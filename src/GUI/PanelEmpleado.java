@@ -101,6 +101,8 @@ public class PanelEmpleado extends JPanel {
             pintarSegundaMano();
         } else if ("PACKS".equals(seccionActiva) && empleado.tienePermiso(TiposEmpleado.EMPLEADOS_PRODUCTO)) {
             pintarPacks();
+        } else if ("PERFIL".equals(seccionActiva)) {
+            pintarPerfilEmpleado(empleado);
         } else {
             pintarHome(empleado);
         }
@@ -128,8 +130,12 @@ public class PanelEmpleado extends JPanel {
 
         JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
         derecha.setOpaque(false);
-        derecha.add(UiStyle.crearBotonImagen(UiStyle.ICONO_NOTIFICACIONES, "", "Notificaciones", 42, 40, 30));
-        derecha.add(UiStyle.crearBotonImagen(UiStyle.ICONO_PERFIL_CABRA, "", "Empleado", 42, 40, 32));
+        JButton perfil = UiStyle.crearBotonImagen(UiStyle.ICONO_PERFIL_CABRA, "", "Perfil", 42, 40, 32);
+        perfil.addActionListener(e -> {
+            seccionActiva = "PERFIL";
+            refrescar();
+        });
+        derecha.add(perfil);
         cabecera.add(derecha, BorderLayout.EAST);
 
         return cabecera;
@@ -157,6 +163,7 @@ public class PanelEmpleado extends JPanel {
         menu.setBorder(new EmptyBorder(8, 8, 8, 8));
 
         menu.add(crearItemMenu("HOME", "HOME", true));
+        menu.add(crearItemMenu("PERFIL", "PERFIL", true));
         menu.add(crearItemMenu("STOCK", "STOCK",
                 empleado == null || empleado.tienePermiso(TiposEmpleado.EMPLEADOS_PRODUCTO)));
         menu.add(crearItemMenu("SEGUNDA MANO", "SEGUNDA_MANO",
@@ -261,6 +268,125 @@ public class PanelEmpleado extends JPanel {
         label.setMinimumSize(new Dimension(190, 38));
         label.setMaximumSize(new Dimension(190, 38));
         return label;
+    }
+
+    private void pintarPerfilEmpleado(Empleado empleado) {
+        contenido.setBorder(new EmptyBorder(34, 74, 34, 74));
+        contenido.add(crearTitulo("PERFIL DE EMPLEADO"));
+
+        JPanel layout = new JPanel(new BorderLayout(24, 0));
+        layout.setOpaque(false);
+        layout.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JPanel datos = crearTarjeta();
+        datos.setPreferredSize(new Dimension(420, 0));
+        datos.add(crearAvatarEmpleado(empleado));
+        datos.add(Box.createVerticalStrut(14));
+        datos.add(crearDatoPerfil("Usuario", empleado.getNombre()));
+        datos.add(crearDatoPerfil("Contraseña", empleado.getContraseña()));
+        datos.add(crearDatoPerfil("Foto de perfil", textoVacio(empleado.getFotoPerfil())));
+        datos.add(crearDatoPerfil("Notificaciones", String.valueOf(empleado.getNotificaciones().size())));
+        datos.add(crearDatoPerfil("Productos para valorar", String.valueOf(empleado.getProductosParaValorar().size())));
+        datos.add(crearDatoPerfil("Intercambios asignados", String.valueOf(empleado.getIntercambios().size())));
+
+        JPanel permisos = crearTarjeta();
+        permisos.add(crearSubtitulo("Permisos"));
+        for (TiposEmpleado permiso : TiposEmpleado.values()) {
+            permisos.add(crearFilaPermiso(permiso, empleado.tienePermiso(permiso)));
+            permisos.add(Box.createVerticalStrut(10));
+        }
+        permisos.add(Box.createVerticalGlue());
+
+        layout.add(datos, BorderLayout.WEST);
+        layout.add(permisos, BorderLayout.CENTER);
+        contenido.add(layout);
+    }
+
+    private JLabel crearAvatarEmpleado(Empleado empleado) {
+        JLabel avatar = new JLabel("", SwingConstants.CENTER);
+        avatar.setPreferredSize(new Dimension(180, 180));
+        avatar.setMinimumSize(new Dimension(180, 180));
+        avatar.setMaximumSize(new Dimension(180, 180));
+        avatar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        avatar.setOpaque(true);
+        avatar.setBackground(UiStyle.COLOR_CABECERA);
+        avatar.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        avatar.setBorder(BorderFactory.createLineBorder(UiStyle.COLOR_BORDE, 2));
+        avatar.setFont(new Font("SansSerif", Font.BOLD, 42));
+
+        String ruta = empleado.getFotoPerfil();
+        if (ruta != null && !ruta.isBlank()) {
+            ImageIcon icono = new ImageIcon(ruta);
+            Image imagen = icono.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
+            avatar.setIcon(new ImageIcon(imagen));
+            return avatar;
+        }
+
+        avatar.setText(inicialesEmpleado(empleado));
+        return avatar;
+    }
+
+    private JPanel crearDatoPerfil(String etiqueta, String valor) {
+        JPanel fila = new JPanel(new BorderLayout(12, 0));
+        fila.setOpaque(false);
+        fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
+        fila.setBorder(new EmptyBorder(4, 0, 4, 0));
+
+        JLabel label = new JLabel(etiqueta);
+        label.setFont(new Font("SansSerif", Font.BOLD, 13));
+        label.setForeground(UiStyle.COLOR_TEXTO);
+        label.setPreferredSize(new Dimension(150, 28));
+        fila.add(label, BorderLayout.WEST);
+
+        JLabel dato = new JLabel(valor == null ? "" : valor);
+        dato.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        dato.setForeground(UiStyle.COLOR_TEXTO);
+        fila.add(dato, BorderLayout.CENTER);
+        return fila;
+    }
+
+    private JPanel crearFilaPermiso(TiposEmpleado permiso, boolean activo) {
+        JPanel fila = new UiStyle.RoundedPanel(activo ? UiStyle.COLOR_FONDO : new Color(230, 222, 212), 14);
+        fila.setLayout(new BorderLayout(12, 0));
+        fila.setBorder(new EmptyBorder(12, 14, 12, 14));
+        fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 62));
+
+        JLabel estado = new JLabel(activo ? "✓" : "–", SwingConstants.CENTER);
+        estado.setFont(new Font("SansSerif", Font.BOLD, 22));
+        estado.setForeground(activo ? UiStyle.COLOR_TEXTO : new Color(138, 122, 106));
+        estado.setPreferredSize(new Dimension(34, 34));
+        fila.add(estado, BorderLayout.WEST);
+
+        JLabel texto = new JLabel(textoPermiso(permiso));
+        texto.setFont(new Font("SansSerif", Font.BOLD, 14));
+        texto.setForeground(UiStyle.COLOR_TEXTO);
+        fila.add(texto, BorderLayout.CENTER);
+        return fila;
+    }
+
+    private String textoPermiso(TiposEmpleado permiso) {
+        switch (permiso) {
+            case EMPLEADOS_PRODUCTO:
+                return "Gestion de productos, stock, packs y segunda mano";
+            case EMPLEADOS_PEDIDO:
+                return "Gestion de pedidos";
+            case EMPLEADOS_INTERCAMBIO:
+                return "Gestion de intercambios";
+            default:
+                return permiso.toString();
+        }
+    }
+
+    private String inicialesEmpleado(Empleado empleado) {
+        String nombre = empleado.getNombre();
+        if (nombre == null || nombre.isBlank()) {
+            return "EMP";
+        }
+        return nombre.substring(0, Math.min(2, nombre.length())).toUpperCase();
+    }
+
+    private String textoVacio(String texto) {
+        return texto == null || texto.isBlank() ? "Sin dato" : texto;
     }
 
     private void pintarStock() {
