@@ -265,9 +265,15 @@ public class PanelEmpleado extends JPanel {
 
     private void pintarStock() {
         contenido.add(crearTitulo("STOCK"));
+        JPanel acciones = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        acciones.setOpaque(false);
         JButton cargar = crearBoton("Cargar productos de fichero", 220);
         cargar.addActionListener(e -> cargarProductosDeFichero());
-        contenido.add(cargar);
+        acciones.add(cargar);
+        JButton crear = crearBoton("Crear producto", 150);
+        crear.addActionListener(e -> crearProductoEmpleado());
+        acciones.add(crear);
+        contenido.add(acciones);
         JPanel grid = new JPanel(new GridLayout(0, 3, 18, 18));
         grid.setOpaque(false);
         for (ProductoTienda producto : mainFrame.getProductosTienda()) {
@@ -400,7 +406,7 @@ public class PanelEmpleado extends JPanel {
             fila.setPreferredSize(new Dimension(0, 86));
             fila.setMinimumSize(new Dimension(0, 86));
             fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
-            fila.add(crearEtiqueta(pack.getNombre() + " | " + resumenPack(pack)
+            fila.add(crearEtiqueta(pack.getNombre() + " | Categoria: " + categoriaPack(pack) + " | " + resumenPack(pack)
                     + " = " + String.format("%.2f EUR", pack.getPrecio())), BorderLayout.CENTER);
             JButton editar = crearBoton("Modificar", 120);
             editar.addActionListener(e -> editarPack(pack));
@@ -486,6 +492,140 @@ public class PanelEmpleado extends JPanel {
         }
     }
 
+    private void crearProductoEmpleado() {
+        JTextField nombre = new JTextField();
+        JTextField precio = new JTextField("0.00");
+        JSpinner stock = new JSpinner(new SpinnerNumberModel(1, 0, 9999, 1));
+        JSpinner valoracion = new JSpinner(new SpinnerNumberModel(0, 0, 5, 1));
+        JComboBox<String> tipo = new JComboBox<>(new String[] {"COMIC", "JUEGO", "FIGURA"});
+        JTextField categorias = new JTextField();
+        JTextField imagen = new JTextField();
+        imagen.setEditable(false);
+        JTextArea descripcion = new JTextArea(5, 28);
+        descripcion.setLineWrap(true);
+        descripcion.setWrapStyleWord(true);
+
+        estilizarCampo(nombre);
+        estilizarCampo(precio);
+        estilizarCampo(categorias);
+        estilizarCampo(imagen);
+        descripcion.setBorder(new EmptyBorder(8, 8, 8, 8));
+        descripcion.setBackground(UiStyle.COLOR_FONDO);
+        descripcion.setForeground(UiStyle.COLOR_TEXTO);
+
+        JLabel preview = new JLabel("SIN IMAGEN", SwingConstants.CENTER);
+        preview.setPreferredSize(new Dimension(210, 240));
+        preview.setMinimumSize(new Dimension(210, 240));
+        preview.setMaximumSize(new Dimension(210, 240));
+        preview.setOpaque(true);
+        preview.setBackground(UiStyle.COLOR_CABECERA);
+        preview.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        preview.setFont(new Font("SansSerif", Font.BOLD, 14));
+        preview.setBorder(BorderFactory.createLineBorder(UiStyle.COLOR_BORDE, 2));
+
+        JButton buscarImagen = crearBoton("Buscar foto", 130);
+        buscarImagen.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser(".");
+            if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                String ruta = chooser.getSelectedFile().getPath();
+                imagen.setText(ruta);
+                ImageIcon icono = new ImageIcon(ruta);
+                Image escalada = icono.getImage().getScaledInstance(210, 240, Image.SCALE_SMOOTH);
+                preview.setText("");
+                preview.setIcon(new ImageIcon(escalada));
+            }
+        });
+
+        JPanel panel = new JPanel(new BorderLayout(18, 14));
+        panel.setBackground(UiStyle.COLOR_FONDO);
+        panel.setBorder(new EmptyBorder(16, 16, 16, 16));
+        panel.setPreferredSize(new Dimension(740, 520));
+
+        JLabel titulo = new JLabel("Crear producto");
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 24));
+        titulo.setForeground(UiStyle.COLOR_TEXTO);
+        panel.add(titulo, BorderLayout.NORTH);
+
+        JPanel campos = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
+        campos.setLayout(new BoxLayout(campos, BoxLayout.Y_AXIS));
+        campos.setBorder(new EmptyBorder(16, 18, 16, 18));
+        campos.add(crearCampoFormulario("Nombre", nombre));
+        campos.add(crearCampoFormulario("Tipo de producto", tipo));
+        campos.add(crearCampoFormulario("Categorias", categorias));
+        campos.add(crearCampoFormulario("Precio", precio));
+        campos.add(crearCampoFormulario("Stock inicial", stock));
+        campos.add(crearCampoFormulario("Estrellas", valoracion));
+        campos.add(crearEtiquetaFormulario("Descripcion"));
+        campos.add(new JScrollPane(descripcion));
+
+        JPanel imagenPanel = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
+        imagenPanel.setLayout(new BoxLayout(imagenPanel, BoxLayout.Y_AXIS));
+        imagenPanel.setBorder(new EmptyBorder(16, 16, 16, 16));
+        imagenPanel.add(crearEtiquetaFormulario("Foto"));
+        imagenPanel.add(preview);
+        imagenPanel.add(Box.createVerticalStrut(10));
+        JPanel filaFoto = new JPanel(new BorderLayout(8, 0));
+        filaFoto.setOpaque(false);
+        filaFoto.add(imagen, BorderLayout.CENTER);
+        filaFoto.add(buscarImagen, BorderLayout.EAST);
+        imagenPanel.add(filaFoto);
+
+        panel.add(campos, BorderLayout.CENTER);
+        panel.add(imagenPanel, BorderLayout.EAST);
+
+        int respuesta = JOptionPane.showConfirmDialog(this, panel, "Crear producto",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (respuesta != JOptionPane.OK_OPTION) {
+            return;
+        }
+        if (nombre.getText().trim().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El producto necesita nombre.", "Producto",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        mainFrame.crearProductoTiendaGestion((String) tipo.getSelectedItem(),
+                nombre.getText(),
+                parseDouble(precio.getText(), 0.0),
+                ((Integer) stock.getValue()).intValue(),
+                ((Integer) valoracion.getValue()).intValue(),
+                descripcion.getText(),
+                imagen.getText(),
+                parseCategorias(categorias.getText()),
+                false, 0.0, 0.0,
+                120, "", "", null, 2026,
+                4, 8, null,
+                10.0, "", "");
+        refrescar();
+    }
+
+    private JPanel crearCampoFormulario(String etiqueta, Component campo) {
+        JPanel fila = new JPanel(new BorderLayout(10, 0));
+        fila.setOpaque(false);
+        fila.setBorder(new EmptyBorder(4, 0, 8, 0));
+        JLabel label = crearEtiquetaFormulario(etiqueta);
+        label.setPreferredSize(new Dimension(150, 28));
+        fila.add(label, BorderLayout.WEST);
+        fila.add(campo, BorderLayout.CENTER);
+        return fila;
+    }
+
+    private JLabel crearEtiquetaFormulario(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font("SansSerif", Font.BOLD, 13));
+        label.setForeground(UiStyle.COLOR_TEXTO);
+        return label;
+    }
+
+    private void estilizarCampo(JTextField campo) {
+        campo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UiStyle.COLOR_BORDE, 1),
+                new EmptyBorder(6, 8, 6, 8)));
+        campo.setBackground(UiStyle.COLOR_FONDO);
+        campo.setForeground(UiStyle.COLOR_TEXTO);
+        campo.setFont(new Font("SansSerif", Font.PLAIN, 13));
+    }
+
     private void mostrarInfoPedido(Pedido pedido) {
         JOptionPane.showMessageDialog(this,
                 "Cliente: " + pedido.getCliente().getNombre()
@@ -500,23 +640,38 @@ public class PanelEmpleado extends JPanel {
     private void editarPack(Pack pack) {
         JTextField nombre = new JTextField(pack == null ? "" : pack.getNombre());
         nombre.setEnabled(pack == null);
+        JTextField categoria = new JTextField(pack == null ? "" : pack.getCategoria());
         JTextField precio = new JTextField(pack == null ? "0.00" : String.format("%.2f", pack.getPrecio()).replace(',', '.'));
+        JTextField buscar = new JTextField();
         JPanel productos = new JPanel(new GridLayout(0, 1, 4, 4));
-        List<JCheckBox> checks = new ArrayList<>();
+        List<JSpinner> cantidades = new ArrayList<>();
         for (ProductoTienda producto : mainFrame.getProductosTienda()) {
-            JCheckBox check = new JCheckBox(producto.getNombre());
-            check.putClientProperty("producto", producto);
-            check.setSelected(pack != null && pack.getProductos().contains(producto));
-            checks.add(check);
-            productos.add(check);
+            JSpinner cantidad = new JSpinner(new SpinnerNumberModel(cantidadProductoPack(pack, producto), 0, 99, 1));
+            cantidad.putClientProperty("producto", producto);
+            JPanel filaProducto = new JPanel(new BorderLayout(8, 0));
+            filaProducto.add(new JLabel(producto.getNombre() + " | " + categoriaProducto(producto)), BorderLayout.CENTER);
+            filaProducto.add(cantidad, BorderLayout.EAST);
+            cantidad.putClientProperty("fila", filaProducto);
+            cantidades.add(cantidad);
+            productos.add(filaProducto);
         }
+        buscar.addActionListener(e -> filtrarCantidadesProducto(buscar.getText(), productos, cantidades));
+        JButton aplicarBusqueda = crearBoton("Buscar", 90);
+        aplicarBusqueda.addActionListener(e -> filtrarCantidadesProducto(buscar.getText(), productos, cantidades));
 
         JPanel panel = new JPanel(new BorderLayout(8, 8));
         JPanel datos = new JPanel(new GridLayout(0, 1, 6, 6));
         datos.add(new JLabel("Nombre"));
         datos.add(nombre);
+        datos.add(new JLabel("Categoria del pack"));
+        datos.add(categoria);
         datos.add(new JLabel("Precio"));
         datos.add(precio);
+        datos.add(new JLabel("Buscar producto"));
+        JPanel filaBuscar = new JPanel(new BorderLayout(8, 0));
+        filaBuscar.add(buscar, BorderLayout.CENTER);
+        filaBuscar.add(aplicarBusqueda, BorderLayout.EAST);
+        datos.add(filaBuscar);
         panel.add(datos, BorderLayout.NORTH);
         panel.add(new JScrollPane(productos), BorderLayout.CENTER);
 
@@ -527,16 +682,45 @@ public class PanelEmpleado extends JPanel {
         }
 
         List<ProductoTienda> seleccionados = new ArrayList<>();
-        for (JCheckBox check : checks) {
-            if (check.isSelected()) {
-                seleccionados.add((ProductoTienda) check.getClientProperty("producto"));
+        for (JSpinner cantidad : cantidades) {
+            ProductoTienda producto = (ProductoTienda) cantidad.getClientProperty("producto");
+            int unidades = ((Integer) cantidad.getValue()).intValue();
+            for (int i = 0; i < unidades; i++) {
+                seleccionados.add(producto);
             }
         }
         if (pack == null) {
-            mainFrame.crearPackGestion(nombre.getText(), parseDouble(precio.getText(), 0.0), seleccionados);
+            mainFrame.crearPackGestion(nombre.getText(), categoria.getText(), parseDouble(precio.getText(), 0.0), seleccionados);
         } else {
-            mainFrame.modificarPackGestion(pack, parseDouble(precio.getText(), pack.getPrecio()), seleccionados);
+            mainFrame.modificarPackGestion(pack, categoria.getText(), parseDouble(precio.getText(), pack.getPrecio()), seleccionados);
         }
+    }
+
+    private void filtrarCantidadesProducto(String filtro, JPanel productos, List<JSpinner> cantidades) {
+        String normalizado = filtro == null ? "" : filtro.trim().toLowerCase();
+        productos.removeAll();
+        for (JSpinner cantidad : cantidades) {
+            ProductoTienda producto = (ProductoTienda) cantidad.getClientProperty("producto");
+            String texto = producto.getNombre() + " " + categoriaProducto(producto);
+            if (normalizado.isBlank() || texto.toLowerCase().contains(normalizado)) {
+                productos.add((JPanel) cantidad.getClientProperty("fila"));
+            }
+        }
+        productos.revalidate();
+        productos.repaint();
+    }
+
+    private int cantidadProductoPack(Pack pack, ProductoTienda producto) {
+        if (pack == null) {
+            return 0;
+        }
+        int cantidad = 0;
+        for (ProductoTienda incluido : pack.getProductos()) {
+            if (incluido == producto) {
+                cantidad++;
+            }
+        }
+        return cantidad;
     }
 
     private void valorarProducto(ProductoSegundaMano producto) {
@@ -614,13 +798,34 @@ public class PanelEmpleado extends JPanel {
 
     private String resumenPack(Pack pack) {
         StringBuilder texto = new StringBuilder();
-        for (Producto producto : pack.getProductos()) {
+        Map<ProductoTienda, Integer> cantidades = new java.util.LinkedHashMap<>();
+        for (ProductoTienda producto : pack.getProductos()) {
+            cantidades.merge(producto, 1, Integer::sum);
+        }
+        for (Map.Entry<ProductoTienda, Integer> entry : cantidades.entrySet()) {
             if (texto.length() > 0) {
                 texto.append(" + ");
             }
-            texto.append(producto.getNombre());
+            texto.append(entry.getKey().getNombre());
+            if (entry.getValue() > 1) {
+                texto.append(" x").append(entry.getValue());
+            }
+            texto.append(" [").append(categoriaProducto(entry.getKey())).append("]");
         }
         return texto.toString();
+    }
+
+    private String categoriaPack(Pack pack) {
+        String categoria = pack.getCategoria();
+        return categoria == null || categoria.isBlank() ? "sin categoria" : categoria;
+    }
+
+    private String categoriaProducto(ProductoTienda producto) {
+        List<String> categorias = producto.getCategoriasTexto();
+        if (!categorias.isEmpty()) {
+            return String.join(", ", categorias);
+        }
+        return producto.getCategoria() == null ? "sin categoria" : producto.getCategoria().getNombre();
     }
 
     private String textoCategorias(ProductoTienda producto) {

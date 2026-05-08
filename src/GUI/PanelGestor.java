@@ -703,6 +703,7 @@ public class PanelGestor extends JPanel {
             fila.setMinimumSize(new Dimension(0, 86));
             fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
             fila.add(crearEtiqueta("<b>" + pack.getNombre() + "</b><br>"
+                    + "Categoria: " + categoriaPack(pack) + "<br>"
                     + resumenPack(pack) + "<br>" + String.format("%.2f EUR", pack.getPrecio())),
                     BorderLayout.CENTER);
             JButton editar = crearBoton("Modificar", 125);
@@ -1209,24 +1210,39 @@ public class PanelGestor extends JPanel {
     private void editarPack(Pack pack) {
         JTextField nombre = new JTextField(pack == null ? "" : pack.getNombre());
         nombre.setEnabled(pack == null);
+        JTextField categoria = new JTextField(pack == null ? "" : pack.getCategoria());
         JTextField precio = new JTextField(pack == null ? "0.00"
                 : String.format("%.2f", pack.getPrecio()).replace(',', '.'));
+        JTextField buscar = new JTextField();
         JPanel productos = new JPanel(new GridLayout(0, 1, 4, 4));
-        List<JCheckBox> checks = new ArrayList<>();
+        List<JSpinner> cantidades = new ArrayList<>();
         for (ProductoTienda producto : mainFrame.getProductosTienda()) {
-            JCheckBox check = new JCheckBox(producto.getNombre());
-            check.putClientProperty("producto", producto);
-            check.setSelected(pack != null && pack.getProductos().contains(producto));
-            checks.add(check);
-            productos.add(check);
+            JSpinner cantidad = new JSpinner(new SpinnerNumberModel(cantidadProductoPack(pack, producto), 0, 99, 1));
+            cantidad.putClientProperty("producto", producto);
+            JPanel filaProducto = new JPanel(new BorderLayout(8, 0));
+            filaProducto.add(new JLabel(producto.getNombre() + " | " + categoriaProducto(producto)), BorderLayout.CENTER);
+            filaProducto.add(cantidad, BorderLayout.EAST);
+            cantidad.putClientProperty("fila", filaProducto);
+            cantidades.add(cantidad);
+            productos.add(filaProducto);
         }
+        buscar.addActionListener(e -> filtrarCantidadesProducto(buscar.getText(), productos, cantidades));
+        JButton aplicarBusqueda = crearBoton("Buscar", 90);
+        aplicarBusqueda.addActionListener(e -> filtrarCantidadesProducto(buscar.getText(), productos, cantidades));
 
         JPanel panel = new JPanel(new BorderLayout(8, 8));
         JPanel datos = new JPanel(new GridLayout(0, 1, 6, 6));
         datos.add(new JLabel("Nombre"));
         datos.add(nombre);
+        datos.add(new JLabel("Categoria del pack"));
+        datos.add(categoria);
         datos.add(new JLabel("Precio"));
         datos.add(precio);
+        datos.add(new JLabel("Buscar producto"));
+        JPanel filaBuscar = new JPanel(new BorderLayout(8, 0));
+        filaBuscar.add(buscar, BorderLayout.CENTER);
+        filaBuscar.add(aplicarBusqueda, BorderLayout.EAST);
+        datos.add(filaBuscar);
         panel.add(datos, BorderLayout.NORTH);
         panel.add(new JScrollPane(productos), BorderLayout.CENTER);
 
@@ -1237,16 +1253,45 @@ public class PanelGestor extends JPanel {
         }
 
         List<ProductoTienda> seleccionados = new ArrayList<>();
-        for (JCheckBox check : checks) {
-            if (check.isSelected()) {
-                seleccionados.add((ProductoTienda) check.getClientProperty("producto"));
+        for (JSpinner cantidad : cantidades) {
+            ProductoTienda producto = (ProductoTienda) cantidad.getClientProperty("producto");
+            int unidades = ((Integer) cantidad.getValue()).intValue();
+            for (int i = 0; i < unidades; i++) {
+                seleccionados.add(producto);
             }
         }
         if (pack == null) {
-            mainFrame.crearPackGestion(nombre.getText(), parseDouble(precio.getText(), 0.0), seleccionados);
+            mainFrame.crearPackGestion(nombre.getText(), categoria.getText(), parseDouble(precio.getText(), 0.0), seleccionados);
         } else {
-            mainFrame.modificarPackGestion(pack, parseDouble(precio.getText(), pack.getPrecio()), seleccionados);
+            mainFrame.modificarPackGestion(pack, categoria.getText(), parseDouble(precio.getText(), pack.getPrecio()), seleccionados);
         }
+    }
+
+    private void filtrarCantidadesProducto(String filtro, JPanel productos, List<JSpinner> cantidades) {
+        String normalizado = filtro == null ? "" : filtro.trim().toLowerCase();
+        productos.removeAll();
+        for (JSpinner cantidad : cantidades) {
+            ProductoTienda producto = (ProductoTienda) cantidad.getClientProperty("producto");
+            String texto = producto.getNombre() + " " + categoriaProducto(producto);
+            if (normalizado.isBlank() || texto.toLowerCase().contains(normalizado)) {
+                productos.add((JPanel) cantidad.getClientProperty("fila"));
+            }
+        }
+        productos.revalidate();
+        productos.repaint();
+    }
+
+    private int cantidadProductoPack(Pack pack, ProductoTienda producto) {
+        if (pack == null) {
+            return 0;
+        }
+        int cantidad = 0;
+        for (ProductoTienda incluido : pack.getProductos()) {
+            if (incluido == producto) {
+                cantidad++;
+            }
+        }
+        return cantidad;
     }
 
     private void valorarProductoSegundaMano(ProductoSegundaMano producto) {
@@ -1510,13 +1555,30 @@ public class PanelGestor extends JPanel {
 
     private String resumenPack(Pack pack) {
         StringBuilder texto = new StringBuilder();
-        for (Producto producto : pack.getProductos()) {
+        Map<ProductoTienda, Integer> cantidades = new LinkedHashMap<>();
+        for (ProductoTienda producto : pack.getProductos()) {
+            cantidades.merge(producto, 1, Integer::sum);
+        }
+        for (Map.Entry<ProductoTienda, Integer> entry : cantidades.entrySet()) {
             if (texto.length() > 0) {
                 texto.append(" + ");
             }
-            texto.append(producto.getNombre());
+            texto.append(entry.getKey().getNombre());
+            if (entry.getValue() > 1) {
+                texto.append(" x").append(entry.getValue());
+            }
+            texto.append(" [").append(categoriaProducto(entry.getKey())).append("]");
         }
         return texto.length() == 0 ? "sin productos" : texto.toString();
+    }
+
+    private String categoriaPack(Pack pack) {
+        String categoria = pack.getCategoria();
+        return categoria == null || categoria.isBlank() ? "sin categoria" : categoria;
+    }
+
+    private String categoriaProducto(ProductoTienda producto) {
+        return textoCategorias(producto);
     }
 
     private List<String> parseCategorias(String texto) {

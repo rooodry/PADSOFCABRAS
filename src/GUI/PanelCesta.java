@@ -10,6 +10,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.List;
 
@@ -303,7 +304,12 @@ public class PanelCesta extends JPanel {
             vacio.setForeground(UiStyle.COLOR_TEXTO);
             panelPack.add(vacio, gbc);
         } else {
-            gbc.gridy = agregarLineasPack(pack, panelPack, gbc, 0);
+            JLabel categoria = new JLabel("Categoria del pack: " + categoriaPack(pack));
+            categoria.setFont(new Font("SansSerif", Font.BOLD, 14));
+            categoria.setForeground(UiStyle.COLOR_TEXTO);
+            panelPack.add(categoria, gbc);
+            gbc.gridy++;
+            gbc.gridy = agregarLineasPack(pack, panelPack, gbc, gbc.gridy);
         }
 
         JScrollPane scroll = new JScrollPane(panelPack);
@@ -320,9 +326,13 @@ public class PanelCesta extends JPanel {
     }
 
     private int agregarLineasPack(Pack pack, JPanel panelPack, GridBagConstraints gbc, int fila) {
+        Map<ProductoTienda, Integer> cantidades = new LinkedHashMap<>();
         for (ProductoTienda producto : pack.getProductos()) {
+            cantidades.merge(producto, 1, Integer::sum);
+        }
+        for (Map.Entry<ProductoTienda, Integer> entry : cantidades.entrySet()) {
             gbc.gridy = fila++;
-            panelPack.add(crearLineaProductoPack(producto), gbc);
+            panelPack.add(crearLineaProductoPack(entry.getKey(), entry.getValue()), gbc);
         }
 
         for (Pack subpack : pack.getSubpacks()) {
@@ -332,7 +342,7 @@ public class PanelCesta extends JPanel {
         return fila;
     }
 
-private JPanel crearLineaProductoPack(ProductoTienda producto) {
+private JPanel crearLineaProductoPack(ProductoTienda producto, int cantidad) {
     JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 12);
     tarjeta.setLayout(new BorderLayout(12, 0));
     tarjeta.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -348,7 +358,7 @@ private JPanel crearLineaProductoPack(ProductoTienda producto) {
     JPanel infoPanel = new JPanel(new BorderLayout(0, 4));
     infoPanel.setOpaque(false);
 
-    JLabel nombre = new JLabel(producto.getNombre());
+    JLabel nombre = new JLabel(cantidad > 1 ? producto.getNombre() + " x" + cantidad : producto.getNombre());
     nombre.setFont(new Font("SansSerif", Font.BOLD, 13));
     nombre.setForeground(UiStyle.COLOR_TEXTO);
     infoPanel.add(nombre, BorderLayout.NORTH);
@@ -356,12 +366,29 @@ private JPanel crearLineaProductoPack(ProductoTienda producto) {
     JLabel precio = new JLabel(String.format("%.2f€", precioUnitarioFinal(producto)));
     precio.setFont(new Font("SansSerif", Font.BOLD, 14));
     precio.setForeground(UiStyle.COLOR_MARRON_MEDIO);
+    JLabel categoria = new JLabel("Categoria: " + categoriaProducto(producto));
+    categoria.setFont(new Font("SansSerif", Font.PLAIN, 12));
+    categoria.setForeground(new Color(100, 100, 100));
+    infoPanel.add(categoria, BorderLayout.CENTER);
     infoPanel.add(precio, BorderLayout.SOUTH);
 
     tarjeta.add(infoPanel, BorderLayout.CENTER);
 
     return tarjeta;
 }
+
+    private String categoriaProducto(ProductoTienda producto) {
+        List<String> categorias = producto.getCategoriasTexto();
+        if (!categorias.isEmpty()) {
+            return String.join(", ", categorias);
+        }
+        return producto.getCategoria() == null ? "sin categoria" : producto.getCategoria().getNombre();
+    }
+
+    private String categoriaPack(Pack pack) {
+        String categoria = pack.getCategoria();
+        return categoria == null || categoria.isBlank() ? "sin categoria" : categoria;
+    }
 
     private void cargarImagenMiniatura(JLabel label, String rutaImagen) {
         try {

@@ -15,6 +15,7 @@ public class Pack implements Serializable {
     private final List<ProductoTienda> productos;
     private final List<Pack> subpacks;
     private double precio;
+    private String categoria;
 
     /**
      * Constructor de la clase Pack.
@@ -24,7 +25,12 @@ public class Pack implements Serializable {
      * @param productos Lista inicial de productos incluidos en el pack.
      */
     public Pack(String nombre, double precio, List<ProductoTienda> productos) {
+        this(nombre, "", precio, productos);
+    }
+
+    public Pack(String nombre, String categoria, double precio, List<ProductoTienda> productos) {
         this.nombre = nombre;
+        this.categoria = categoria == null ? "" : categoria.trim();
         this.precio = precio;
         this.productos = new ArrayList<>(productos); 
         this.subpacks = new ArrayList<>();
@@ -37,8 +43,14 @@ public class Pack implements Serializable {
     public void addSubpack(Pack subpack) {this.subpacks.add(subpack);}
 
     public void addProducto(ProductoTienda producto) {
-        if (producto != null && !this.productos.contains(producto)) {
+        if (producto != null) {
             this.productos.add(producto);
+        }
+    }
+
+    public void addProducto(ProductoTienda producto, int cantidad) {
+        for (int i = 0; i < cantidad; i++) {
+            addProducto(producto);
         }
     }
 
@@ -52,6 +64,10 @@ public class Pack implements Serializable {
      */
     public void setPrecio(double precio) {this.precio = precio;}
 
+    public void setCategoria(String categoria) {
+        this.categoria = categoria == null ? "" : categoria.trim();
+    }
+
     /**
      * Obtiene el nombre del pack.
      * @return Nombre del pack.
@@ -63,6 +79,8 @@ public class Pack implements Serializable {
      * @return Precio monetario del pack.
      */
     public double getPrecio() {return this.precio;}
+
+    public String getCategoria() {return this.categoria == null ? "" : this.categoria;}
 
     /**
      * Obtiene la lista de productos sueltos contenidos en el pack.

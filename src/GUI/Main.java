@@ -1140,19 +1140,29 @@ public class Main extends JFrame {
     }
 
     public void crearPackGestion(String nombre, double precio, List<ProductoTienda> productos) {
+        crearPackGestion(nombre, "", precio, productos);
+    }
+
+    public void crearPackGestion(String nombre, String categoria, double precio, List<ProductoTienda> productos) {
         if (nombre == null || nombre.isBlank()) {
             JOptionPane.showMessageDialog(this, "El pack necesita nombre.", "Pack", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        packs.add(new Pack(nombre.trim(), Math.max(0.0, precio), productos == null ? new ArrayList<>() : productos));
+        packs.add(new Pack(nombre.trim(), categoria, Math.max(0.0, precio),
+                productos == null ? new ArrayList<>() : productos));
         refrescarPantallasConDatos();
     }
 
     public void modificarPackGestion(Pack pack, double precio, List<ProductoTienda> productos) {
+        modificarPackGestion(pack, pack == null ? "" : pack.getCategoria(), precio, productos);
+    }
+
+    public void modificarPackGestion(Pack pack, String categoria, double precio, List<ProductoTienda> productos) {
         if (pack == null) {
             return;
         }
         pack.setPrecio(Math.max(0.0, precio));
+        pack.setCategoria(categoria);
         for (ProductoTienda producto : pack.getProductos()) {
             pack.removeProducto(producto);
         }
