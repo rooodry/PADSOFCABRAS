@@ -448,9 +448,9 @@ public class PanelPerfil extends JPanel {
         lista.setOpaque(false);
         lista.setLayout(new BoxLayout(lista, BoxLayout.Y_AXIS));
 
-        List<Intercambio> intercambios = mainFrame.getIntercambios();
+        List<Intercambio> intercambios = mainFrame.getIntercambiosClienteActual();
         if (intercambios.isEmpty()) {
-            JLabel vacio = new JLabel("Aún no tienes intercambios realizados.");
+            JLabel vacio = new JLabel("Aun no tienes intercambios.");
             vacio.setFont(new Font("SansSerif", Font.PLAIN, 16));
             vacio.setForeground(UiStyle.COLOR_TEXTO);
             lista.add(vacio);
@@ -473,12 +473,73 @@ public class PanelPerfil extends JPanel {
     private JPanel crearTarjetaIntercambio(Intercambio intercambio) {
         Oferta oferta = intercambio.getOferta();
         JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 20);
-        tarjeta.setLayout(new BorderLayout(12, 12));
-        tarjeta.setBorder(new EmptyBorder(12, 12, 12, 12));
-        tarjeta.setPreferredSize(new Dimension(0, 180));
-        tarjeta.setMinimumSize(new Dimension(0, 180));
-        tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, 180));
+        tarjeta.setLayout(new GridBagLayout());
+        tarjeta.setBorder(new EmptyBorder(14, 16, 14, 16));
+        tarjeta.setPreferredSize(new Dimension(0, 170));
+        tarjeta.setMinimumSize(new Dimension(0, 170));
+        tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, 170));
         tarjeta.setAlignmentX(Component.LEFT_ALIGNMENT);
+        tarjeta.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                mostrarDetalleIntercambio(intercambio);
+            }
+        });
+
+        if (oferta != null) {
+            Date fechaIntercambio = intercambio.getFechaAceptada() != null
+                    ? intercambio.getFechaAceptada()
+                    : intercambio.getFechaOferta();
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.gridheight = 2;
+            gbc.insets = new Insets(0, 0, 0, 18);
+            gbc.anchor = GridBagConstraints.CENTER;
+            tarjeta.add(crearResumenProductoIntercambio(oferta.getProductoOfertado()), gbc);
+
+            gbc.gridx = 1;
+            JLabel flecha = new JLabel("<html><center>&harr;<br>Intercambio</center></html>", SwingConstants.CENTER);
+            flecha.setFont(new Font("SansSerif", Font.BOLD, 14));
+            flecha.setForeground(UiStyle.COLOR_TEXTO);
+            tarjeta.add(flecha, gbc);
+
+            gbc.gridx = 2;
+            tarjeta.add(crearResumenProductoIntercambio(oferta.getProductoDeseado()), gbc);
+
+            JPanel datos = new JPanel();
+            datos.setOpaque(false);
+            datos.setLayout(new BoxLayout(datos, BoxLayout.Y_AXIS));
+
+            JLabel estado = new JLabel("Estado: " + estadoIntercambio(intercambio));
+            estado.setFont(new Font("SansSerif", Font.BOLD, 16));
+            estado.setForeground(UiStyle.COLOR_TEXTO);
+            datos.add(estado);
+            datos.add(Box.createVerticalStrut(8));
+
+            JLabel fecha = new JLabel("Fecha: " + formatoFecha.format(fechaIntercambio));
+            fecha.setFont(new Font("SansSerif", Font.PLAIN, 13));
+            fecha.setForeground(UiStyle.COLOR_TEXTO);
+            datos.add(fecha);
+            datos.add(Box.createVerticalStrut(8));
+
+            JLabel clientes = new JLabel("Clientes: " + nombreCliente(oferta.getUsuarioLanzador())
+                    + " / " + nombreCliente(oferta.getUsuarioReceptor()));
+            clientes.setFont(new Font("SansSerif", Font.PLAIN, 13));
+            clientes.setForeground(UiStyle.COLOR_TEXTO);
+            datos.add(clientes);
+
+            gbc.gridx = 3;
+            gbc.gridy = 0;
+            gbc.gridheight = 2;
+            gbc.weightx = 1;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.anchor = GridBagConstraints.WEST;
+            gbc.insets = new Insets(0, 4, 0, 0);
+            tarjeta.add(datos, gbc);
+            return tarjeta;
+        }
 
         JLabel estado = new JLabel(oferta.getEstadoOferta().toString());
         estado.setFont(new Font("SansSerif", Font.BOLD, 16));
@@ -510,6 +571,99 @@ public class PanelPerfil extends JPanel {
         tarjeta.add(intercambio_visual, BorderLayout.CENTER);
 
         return tarjeta;
+    }
+
+    private JPanel crearResumenProductoIntercambio(ProductoSegundaMano producto) {
+        JPanel panel = new JPanel(new BorderLayout(0, 6));
+        panel.setOpaque(false);
+        panel.setPreferredSize(new Dimension(132, 140));
+        panel.add(crearImagenSegundaMano(producto, 112, 96), BorderLayout.CENTER);
+
+        JLabel nombre = new JLabel("<html><center>" + producto.getNombre() + "</center></html>", SwingConstants.CENTER);
+        nombre.setFont(new Font("SansSerif", Font.BOLD, 12));
+        nombre.setForeground(UiStyle.COLOR_TEXTO);
+        panel.add(nombre, BorderLayout.SOUTH);
+        return panel;
+    }
+
+    private JLabel crearImagenSegundaMano(ProductoSegundaMano producto, int ancho, int alto) {
+        JLabel imagen = new JLabel("SIN IMAGEN", SwingConstants.CENTER);
+        imagen.setPreferredSize(new Dimension(ancho, alto));
+        imagen.setMinimumSize(new Dimension(ancho, alto));
+        imagen.setOpaque(true);
+        imagen.setBackground(UiStyle.COLOR_CABECERA);
+        imagen.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        imagen.setFont(new Font("SansSerif", Font.BOLD, 11));
+        imagen.setBorder(BorderFactory.createLineBorder(UiStyle.COLOR_BORDE, 2));
+
+        String ruta = producto.getImagen();
+        if (ruta != null && !ruta.isBlank()) {
+            ImageIcon icono = new ImageIcon(ruta);
+            Image escalada = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+            imagen.setText("");
+            imagen.setIcon(new ImageIcon(escalada));
+        }
+        return imagen;
+    }
+
+    private void mostrarDetalleIntercambio(Intercambio intercambio) {
+        Oferta oferta = intercambio.getOferta();
+        JPanel panel = new JPanel(new BorderLayout(16, 14));
+        panel.setBorder(new EmptyBorder(12, 12, 12, 12));
+
+        JPanel productos = new JPanel(new GridLayout(1, 2, 16, 0));
+        productos.add(crearDetalleProductoIntercambio("Producto ofrecido", oferta.getProductoOfertado()));
+        productos.add(crearDetalleProductoIntercambio("Producto deseado", oferta.getProductoDeseado()));
+        panel.add(productos, BorderLayout.CENTER);
+
+        JPanel datos = new JPanel(new GridLayout(0, 1, 4, 4));
+        datos.add(new JLabel("Estado: " + estadoIntercambio(intercambio)));
+        datos.add(new JLabel("Cliente lanzador: " + nombreCliente(oferta.getUsuarioLanzador())));
+        datos.add(new JLabel("Cliente receptor: " + nombreCliente(oferta.getUsuarioReceptor())));
+        datos.add(new JLabel("Fecha de oferta: " + formatoFecha.format(intercambio.getFechaOferta())));
+        datos.add(new JLabel("Fecha limite: " + formatoFecha.format(intercambio.getFechaLimite())));
+        datos.add(new JLabel("Fecha aceptada: " + formatoFechaNullable(intercambio.getFechaAceptada())));
+        datos.add(new JLabel("Intercambio materializado: " + (intercambio.getIntercambiado() ? "Si" : "No")));
+        panel.add(datos, BorderLayout.SOUTH);
+
+        JOptionPane.showMessageDialog(mainFrame, panel, "Detalle del intercambio", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private JPanel crearDetalleProductoIntercambio(String titulo, ProductoSegundaMano producto) {
+        JPanel panel = new JPanel(new BorderLayout(0, 8));
+        panel.setBorder(new EmptyBorder(8, 8, 8, 8));
+        panel.add(crearImagenSegundaMano(producto, 170, 130), BorderLayout.NORTH);
+
+        JLabel datos = new JLabel("<html><b>" + titulo + "</b><br>"
+                + producto.getNombre()
+                + "<br>Propietario: " + nombreCliente(producto.getPropietario())
+                + "<br>Estado producto: " + producto.getEstadoProducto()
+                + "<br>Conservacion: " + textoDato(producto.getEstadoConservacion())
+                + "<br>Valor estimado: " + String.format("%.2f EUR", producto.getValorEstimado())
+                + "<br>Descripcion: " + textoDato(producto.getDescripcion()) + "</html>");
+        datos.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        datos.setForeground(UiStyle.COLOR_TEXTO);
+        panel.add(datos, BorderLayout.CENTER);
+        return panel;
+    }
+
+    private String estadoIntercambio(Intercambio intercambio) {
+        if (intercambio.getIntercambiado()) {
+            return "INTERCAMBIADO";
+        }
+        return intercambio.getOferta().getEstadoOferta().toString();
+    }
+
+    private String nombreCliente(usuarios.ClienteRegistrado cliente) {
+        return cliente == null ? "Sin cliente" : "@" + cliente.getNombre();
+    }
+
+    private String formatoFechaNullable(Date fecha) {
+        return fecha == null ? "Sin aceptar" : formatoFecha.format(fecha);
+    }
+
+    private String textoDato(Object dato) {
+        return dato == null ? "Sin dato" : dato.toString();
     }
 
     private JPanel crearVistaConfig() {
