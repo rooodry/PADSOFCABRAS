@@ -136,10 +136,12 @@ public class PanelCesta extends JPanel {
 
             total += precioTotal;
 
-            listaProductos.add(
-                    crearTarjetaProducto(producto, cantidad, precioTotal),
-                    gbc
-            );
+            Pack packAsociado = mainFrame.getPackAsociadoEnCesta(producto);
+            JPanel tarjeta = packAsociado == null
+                    ? crearTarjetaProducto(producto, cantidad, precioTotal)
+                    : crearTarjetaPack(packAsociado, cantidad, precioTotal, producto);
+
+            listaProductos.add(tarjeta, gbc);
             gbc.gridy++;
         }
 
@@ -151,7 +153,7 @@ public class PanelCesta extends JPanel {
             total += precioTotal;
 
             listaProductos.add(
-                    crearTarjetaPack(pack, cantidad, precioTotal),
+                    crearTarjetaPack(pack, cantidad, precioTotal, null),
                     gbc
             );
             gbc.gridy++;
@@ -214,110 +216,122 @@ public class PanelCesta extends JPanel {
         return tarjeta;
     }
 
-    private JPanel crearTarjetaPack(Pack pack, int cantidad, double precioTotal) {
-    JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 12);
+    private JPanel crearTarjetaPack(Pack pack, int cantidad, double precioTotal, ProductoTienda lineaCesta) {
+        JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 12);
 
-    tarjeta.setLayout(new BorderLayout(12, 0));
-    tarjeta.setBorder(new EmptyBorder(10, 10, 10, 10));
-    tarjeta.setPreferredSize(new Dimension(300, 100));
+        tarjeta.setLayout(new BorderLayout(12, 0));
+        tarjeta.setBorder(new EmptyBorder(10, 10, 10, 10));
+        tarjeta.setPreferredSize(new Dimension(300, 100));
 
-    JLabel iconoPack = new JLabel("PACK", SwingConstants.CENTER);
-    iconoPack.setPreferredSize(new Dimension(80, 80));
-    iconoPack.setFont(new Font("SansSerif", Font.BOLD, 13));
-    iconoPack.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-    iconoPack.setOpaque(true);
-    iconoPack.setBackground(UiStyle.COLOR_MARRON_MEDIO);
-    tarjeta.add(iconoPack, BorderLayout.WEST);
+        JLabel iconoPack = new JLabel("PACK", SwingConstants.CENTER);
+        iconoPack.setPreferredSize(new Dimension(80, 80));
+        iconoPack.setFont(new Font("SansSerif", Font.BOLD, 13));
+        iconoPack.setForeground(UiStyle.COLOR_TEXTO_CLARO);
+        iconoPack.setOpaque(true);
+        iconoPack.setBackground(UiStyle.COLOR_MARRON_MEDIO);
+        tarjeta.add(iconoPack, BorderLayout.WEST);
 
-    JPanel infoPanel = new JPanel(new BorderLayout(0, 4));
-    infoPanel.setOpaque(false);
+        JPanel infoPanel = new JPanel(new BorderLayout(0, 4));
+        infoPanel.setOpaque(false);
 
-    JLabel nombre = new JLabel(pack.getNombre());
-    nombre.setFont(new Font("SansSerif", Font.BOLD, 13));
-    nombre.setForeground(UiStyle.COLOR_TEXTO);
-    infoPanel.add(nombre, BorderLayout.NORTH);
+        JLabel nombre = new JLabel(pack.getNombre());
+        nombre.setFont(new Font("SansSerif", Font.BOLD, 13));
+        nombre.setForeground(UiStyle.COLOR_TEXTO);
+        infoPanel.add(nombre, BorderLayout.NORTH);
 
-    JLabel cantidadLabel = new JLabel(cantidad + " ud.");
-    cantidadLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
-    cantidadLabel.setForeground(new Color(100, 100, 100));
-    infoPanel.add(cantidadLabel, BorderLayout.CENTER);
+        JLabel cantidadLabel = new JLabel(cantidad + " ud.");
+        cantidadLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        cantidadLabel.setForeground(new Color(100, 100, 100));
+        infoPanel.add(cantidadLabel, BorderLayout.CENTER);
 
-    JPanel panelInferior = new JPanel(new BorderLayout(8, 0));
-    panelInferior.setOpaque(false);
+        JPanel panelInferior = new JPanel(new BorderLayout(8, 0));
+        panelInferior.setOpaque(false);
 
-    JLabel precioLabel = new JLabel(String.format("%.2f€", precioTotal));
-    precioLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
-    precioLabel.setForeground(UiStyle.COLOR_MARRON_MEDIO);
-    panelInferior.add(precioLabel, BorderLayout.WEST);
+        JLabel precioLabel = new JLabel(String.format("%.2f€", precioTotal));
+        precioLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        precioLabel.setForeground(UiStyle.COLOR_MARRON_MEDIO);
+        panelInferior.add(precioLabel, BorderLayout.WEST);
 
-    JButton botonVerPack = new JButton("Ver pack");
-    botonVerPack.setFocusPainted(false);
-    botonVerPack.setFont(new Font("SansSerif", Font.BOLD, 11));
-    botonVerPack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-    botonVerPack.addActionListener(e -> verPack(pack));
-    panelInferior.add(botonVerPack, BorderLayout.EAST);
+        JButton botonVerPack = new UiStyle.RoundedButton("Ver pack", UiStyle.COLOR_TEXTO,
+                UiStyle.COLOR_MARRON_MEDIO, 12);
+        botonVerPack.setFocusPainted(false);
+        botonVerPack.setPreferredSize(new Dimension(92, 30));
+        botonVerPack.setFont(new Font("SansSerif", Font.BOLD, 11));
+        botonVerPack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        botonVerPack.addActionListener(e -> verPack(pack));
+        panelInferior.add(botonVerPack, BorderLayout.EAST);
 
-    infoPanel.add(panelInferior, BorderLayout.SOUTH);
+        infoPanel.add(panelInferior, BorderLayout.SOUTH);
 
-    tarjeta.add(infoPanel, BorderLayout.CENTER);
+        tarjeta.add(infoPanel, BorderLayout.CENTER);
 
-    JButton retirar = new UiStyle.RoundedButton("✕", UiStyle.COLOR_TEXTO,
-            UiStyle.COLOR_MARRON_MEDIO, 14);
+        JButton retirar = new UiStyle.RoundedButton("✕", UiStyle.COLOR_TEXTO,
+                UiStyle.COLOR_MARRON_MEDIO, 14);
 
-    retirar.setFocusPainted(false);
-    retirar.setPreferredSize(new Dimension(38, 38));
-    retirar.setFont(new Font("SansSerif", Font.BOLD, 14));
-    retirar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        retirar.setFocusPainted(false);
+        retirar.setPreferredSize(new Dimension(38, 38));
+        retirar.setFont(new Font("SansSerif", Font.BOLD, 14));
+        retirar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-    /*
-     * Necesitas tener este método en Main.
-     * Si tu método se llama de otra forma, cambia esta línea.
-     */
-    retirar.addActionListener(e -> mainFrame.retirarPackDeCesta(pack));
+        retirar.addActionListener(e -> {
+            if (lineaCesta == null) {
+                mainFrame.retirarPackDeCesta(pack);
+            } else {
+                mainFrame.retirarProductoDeCesta(lineaCesta);
+            }
+        });
 
-    tarjeta.add(retirar, BorderLayout.EAST);
+        tarjeta.add(retirar, BorderLayout.EAST);
 
-    return tarjeta;
-}
-
-    private void verPack(Pack pack) {
-    JPanel panelPack = new JPanel(new GridBagLayout());
-    panelPack.setBackground(UiStyle.COLOR_FONDO);
-    panelPack.setBorder(new EmptyBorder(12, 12, 12, 12));
-
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.weightx = 1;
-    gbc.fill = GridBagConstraints.HORIZONTAL;
-    gbc.insets = new Insets(0, 0, 10, 0);
-
-    List<ProductoTienda> productos = pack.getProductos();
-
-    if (productos.isEmpty()) {
-        JLabel vacio = new JLabel("Este pack no contiene productos.");
-        vacio.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        vacio.setForeground(UiStyle.COLOR_TEXTO);
-        panelPack.add(vacio, gbc);
-    } else {
-        for (ProductoTienda producto : productos) {
-            panelPack.add(crearLineaProductoPack(producto), gbc);
-            gbc.gridy++;
-        }
+        return tarjeta;
     }
 
-    JScrollPane scroll = new JScrollPane(panelPack);
-    scroll.setBorder(null);
-    scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
-    scroll.setPreferredSize(new Dimension(360, 300));
+    private void verPack(Pack pack) {
+        JPanel panelPack = new JPanel(new GridBagLayout());
+        panelPack.setBackground(UiStyle.COLOR_FONDO);
+        panelPack.setBorder(new EmptyBorder(12, 12, 12, 12));
 
-    JOptionPane.showMessageDialog(
-            this,
-            scroll,
-            pack.getNombre(),
-            JOptionPane.PLAIN_MESSAGE
-    );
-}
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 0, 10, 0);
+
+        if (pack.getProductos().isEmpty() && pack.getSubpacks().isEmpty()) {
+            JLabel vacio = new JLabel("Este pack no contiene productos.");
+            vacio.setFont(new Font("SansSerif", Font.PLAIN, 14));
+            vacio.setForeground(UiStyle.COLOR_TEXTO);
+            panelPack.add(vacio, gbc);
+        } else {
+            gbc.gridy = agregarLineasPack(pack, panelPack, gbc, 0);
+        }
+
+        JScrollPane scroll = new JScrollPane(panelPack);
+        scroll.setBorder(null);
+        scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
+        scroll.setPreferredSize(new Dimension(360, 300));
+
+        JOptionPane.showMessageDialog(
+                this,
+                scroll,
+                pack.getNombre(),
+                JOptionPane.PLAIN_MESSAGE
+        );
+    }
+
+    private int agregarLineasPack(Pack pack, JPanel panelPack, GridBagConstraints gbc, int fila) {
+        for (ProductoTienda producto : pack.getProductos()) {
+            gbc.gridy = fila++;
+            panelPack.add(crearLineaProductoPack(producto), gbc);
+        }
+
+        for (Pack subpack : pack.getSubpacks()) {
+            fila = agregarLineasPack(subpack, panelPack, gbc, fila);
+        }
+
+        return fila;
+    }
 
 private JPanel crearLineaProductoPack(ProductoTienda producto) {
     JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 12);
