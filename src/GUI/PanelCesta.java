@@ -203,13 +203,7 @@ public class PanelCesta extends JPanel {
 
         tarjeta.add(infoPanel, BorderLayout.CENTER);
 
-        // Botón retirar
-        JButton retirar = new UiStyle.RoundedButton("✕", UiStyle.COLOR_TEXTO,
-                UiStyle.COLOR_MARRON_MEDIO, 14);
-        retirar.setFocusPainted(false);
-        retirar.setPreferredSize(new Dimension(38, 38));
-        retirar.setFont(new Font("SansSerif", Font.BOLD, 14));
-        retirar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        JButton retirar = crearBotonRetirar();
         retirar.addActionListener(e -> mainFrame.retirarProductoDeCesta(producto));
         tarjeta.add(retirar, BorderLayout.EAST);
 
@@ -265,14 +259,7 @@ public class PanelCesta extends JPanel {
 
         tarjeta.add(infoPanel, BorderLayout.CENTER);
 
-        JButton retirar = new UiStyle.RoundedButton("✕", UiStyle.COLOR_TEXTO,
-                UiStyle.COLOR_MARRON_MEDIO, 14);
-
-        retirar.setFocusPainted(false);
-        retirar.setPreferredSize(new Dimension(38, 38));
-        retirar.setFont(new Font("SansSerif", Font.BOLD, 14));
-        retirar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
+        JButton retirar = crearBotonRetirar();
         retirar.addActionListener(e -> {
             if (lineaCesta == null) {
                 mainFrame.retirarPackDeCesta(pack);
@@ -284,6 +271,18 @@ public class PanelCesta extends JPanel {
         tarjeta.add(retirar, BorderLayout.EAST);
 
         return tarjeta;
+    }
+
+    private JButton crearBotonRetirar() {
+        JButton retirar = new UiStyle.RoundedButton("X", UiStyle.COLOR_TEXTO,
+                UiStyle.COLOR_MARRON_MEDIO, 18);
+        retirar.setFocusPainted(false);
+        retirar.setPreferredSize(new Dimension(52, 52));
+        retirar.setMinimumSize(new Dimension(52, 52));
+        retirar.setFont(new Font("SansSerif", Font.BOLD, 24));
+        retirar.setMargin(new Insets(0, 0, 0, 0));
+        retirar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return retirar;
     }
 
     private void verPack(Pack pack) {
