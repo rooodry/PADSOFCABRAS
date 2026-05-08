@@ -1,6 +1,7 @@
 package notificaciones;
 
 import java.io.Serializable;
+import java.util.Date;
 import utilidades.TipoNotificacion;
 
 /**
@@ -15,6 +16,7 @@ public class Notificacion implements Serializable {
     private String mensaje;
     private boolean leida;
     private boolean borrada;
+    private Date fechaCreacion;
 
     /**
      * Constructor de la clase Notificacion.
@@ -28,6 +30,7 @@ public class Notificacion implements Serializable {
         this.mensaje = mensaje;
         this.leida = false;
         this.borrada = false;
+        this.fechaCreacion = new Date();
     } 
 
     /**
@@ -51,6 +54,14 @@ public class Notificacion implements Serializable {
      * @return Texto de la notificación.
      */
     public String getMensaje() {return this.mensaje;}
+
+    /**
+     * Obtiene la fecha en la que se genero la notificacion.
+     * @return Copia de la fecha de creacion, o una fecha antigua para datos previos.
+     */
+    public Date getFechaCreacion() {
+        return fechaCreacion != null ? new Date(fechaCreacion.getTime()) : new Date(0);
+    }
 
     /**
      * Comprueba si el usuario ha leído la notificación.
