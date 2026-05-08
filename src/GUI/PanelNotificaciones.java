@@ -11,7 +11,9 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.Box;
@@ -24,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import notificaciones.Notificacion;
@@ -46,6 +49,7 @@ public class PanelNotificaciones extends JPanel {
     private final Main mainFrame;
     private final JPanel lista;
     private final JButton[] botonesFiltro;
+    private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     private Filtro filtroActivo = Filtro.TODAS;
 
     /**
@@ -211,6 +215,7 @@ public class PanelNotificaciones extends JPanel {
             }
             resultado.add(notificacion);
         }
+        resultado.sort(Comparator.comparing(Notificacion::getFechaCreacion).reversed());
         return resultado;
     }
 
@@ -222,6 +227,13 @@ public class PanelNotificaciones extends JPanel {
         fila.setMinimumSize(new Dimension(620, 86));
         fila.setPreferredSize(new Dimension(620, 86));
         fila.setAlignmentX(Component.LEFT_ALIGNMENT);
+        fila.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        fila.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                mostrarDetalleNotificacion(notificacion);
+            }
+        });
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -268,6 +280,44 @@ public class PanelNotificaciones extends JPanel {
         fila.add(borrar, gbc);
 
         return fila;
+    }
+
+    private void mostrarDetalleNotificacion(Notificacion notificacion) {
+        if (notificacion == null) {
+            return;
+        }
+        mainFrame.marcarNotificacionLeida(notificacion);
+
+        JPanel panel = new JPanel(new BorderLayout(0, 12));
+        panel.setBorder(new EmptyBorder(12, 12, 12, 12));
+
+        JLabel titulo = new JLabel(tituloNotificacion(notificacion.getTipoNotificacion()), SwingConstants.LEFT);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 18));
+        titulo.setForeground(UiStyle.COLOR_TEXTO);
+        panel.add(titulo, BorderLayout.NORTH);
+
+        JTextArea mensaje = new JTextArea(notificacion.getMensaje());
+        mensaje.setEditable(false);
+        mensaje.setLineWrap(true);
+        mensaje.setWrapStyleWord(true);
+        mensaje.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        mensaje.setForeground(UiStyle.COLOR_TEXTO);
+        mensaje.setBackground(UiStyle.COLOR_FONDO);
+        mensaje.setBorder(new EmptyBorder(8, 8, 8, 8));
+        JScrollPane scroll = new JScrollPane(mensaje,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setPreferredSize(new Dimension(440, 170));
+        panel.add(scroll, BorderLayout.CENTER);
+
+        JLabel detalle = new JLabel("<html>Fecha: " + formatoFecha.format(notificacion.getFechaCreacion())
+                + "<br>Estado: " + (notificacion.getLeida() ? "Vista" : "Pendiente") + "</html>");
+        detalle.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        detalle.setForeground(UiStyle.COLOR_TEXTO);
+        panel.add(detalle, BorderLayout.SOUTH);
+
+        JOptionPane.showMessageDialog(this, panel, "Detalle de notificacion", JOptionPane.INFORMATION_MESSAGE);
+        refrescar();
     }
 
     private JLabel crearIconoTipo(TipoNotificacion tipo) {
