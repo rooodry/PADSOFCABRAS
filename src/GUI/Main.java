@@ -289,6 +289,10 @@ public class Main extends JFrame {
         return new ArrayList<>(packs);
     }
 
+    public Pack getPackAsociadoEnCesta(ProductoTienda producto) {
+        return packsEnCesta.get(producto);
+    }
+
     /**
      * Returns exchange proposals shown in the GUI.
      *
@@ -2193,9 +2197,9 @@ public class Main extends JFrame {
     }
 
     public void retirarPackDeCesta(Pack pack) {
-    clienteActual.getCesta().retirarPack(pack);
-    panelCesta.refrescar();
-}
+        clienteActual.getCesta().retirarPack(pack);
+        panelCesta.refrescar();
+    }
 
     /**
      * Application entry point.
