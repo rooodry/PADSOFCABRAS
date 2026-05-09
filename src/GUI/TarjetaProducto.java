@@ -22,9 +22,7 @@ import javax.swing.border.EmptyBorder;
 
 import productos.ProductoTienda;
 
-/**
- * Rounded catalogue card for a shop product.
- */
+
 public class TarjetaProducto extends JPanel {
 
     private static final long serialVersionUID = 1L;

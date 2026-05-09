@@ -45,9 +45,7 @@ import productos.ProductoTienda;
 import utilidades.EstadoPedido;
 import utilidades.EstadoOferta;
 
-/**
- * Profile panel with tabbed navigation: Recommended, Orders, Exchanges, Settings.
- */
+
 public class PanelPerfil extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -203,7 +201,7 @@ public class PanelPerfil extends JPanel {
     private void construirVista() {
         contenidoCentral.removeAll();
         actualizarBotonesTabs();
-        
+
         if (TAB_RECOMENDADOS.equals(tabActivo)) {
             contenidoCentral.add(crearVistaRecomendados(), BorderLayout.CENTER);
         } else if (TAB_PEDIDOS.equals(tabActivo)) {
@@ -213,7 +211,7 @@ public class PanelPerfil extends JPanel {
         } else if (TAB_CONFIG.equals(tabActivo)) {
             contenidoCentral.add(crearVistaConfig(), BorderLayout.CENTER);
         }
-        
+
         contenidoCentral.revalidate();
         contenidoCentral.repaint();
     }
@@ -822,7 +820,7 @@ public class PanelPerfil extends JPanel {
 
         mostrarBotonGuardarSiHayCambios();
         }
-    
+
 
     private boolean hayCambiosPendientes() {
     return nuevoNombrePendiente != null || nuevaContrasenaPendiente != null;
@@ -856,7 +854,7 @@ public class PanelPerfil extends JPanel {
     }
 
     private void actualizarAvatarPreview(String rutaFoto) {
-        
+
         if (rutaFoto == null || rutaFoto.isBlank()) {
             lblAvatar.setIcon(null);
             lblAvatar.setText("👤");
@@ -872,7 +870,6 @@ public class PanelPerfil extends JPanel {
             return;
         }
 
-    
 
         ImageIcon original = new ImageIcon(rutaFoto);
         Icon escalado = new ImageIcon(original.getImage().getScaledInstance(AVATAR_SIZE, AVATAR_SIZE,

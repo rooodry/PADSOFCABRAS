@@ -1,24 +1,15 @@
 package productos.categoria;
 
-/**
- * Categoría que representa una figura de colección dentro del catálogo.
- *
- * <p>Extiende {@link Categoria} añadiendo los atributos físicos y
- * comerciales propios de una figura: altura, marca y material.
- * El nombre de la categoría se construye con el prefijo {@code "Figura:"}
- * seguido del nombre de la figura.</p>
- *
- * <p>Todos los atributos son inmutables (declarados {@code final}).</p>
- */
+
 public class Figura extends Categoria {
 
-    /** Altura de la figura en centímetros. */
+
     private final double altura;
 
-    /** Marca fabricante de la figura. */
+
     private final String marca;
 
-    /** Material principal con el que está fabricada la figura. */
+
     private final String material;
 
     /**

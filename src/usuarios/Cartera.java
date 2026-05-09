@@ -5,22 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import productos.ProductoSegundaMano;
 
-/**
- * Representa la cartera virtual de un {@link ClienteRegistrado} donde se
- * almacenan sus productos de segunda mano.
- *
- * <p>La cartera actúa como contenedor de los {@link ProductoSegundaMano}
- * que el cliente ha subido al sistema para vender o intercambiar. Permite
- * añadir y retirar productos, así como consultar el contenido actual.</p>
- *
- * <p>El accesor {@link #getProductos()} devuelve una copia defensiva para
- * evitar modificaciones externas de la lista interna.</p>
- */
+
 public class Cartera implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /** Lista de productos de segunda mano del cliente. */
+
     private List<ProductoSegundaMano> productos;
 
     /**
@@ -30,9 +20,6 @@ public class Cartera implements Serializable {
         this.productos = new ArrayList<>();
     }
 
-    // -------------------------------------------------------------------------
-    // Modificadores
-    // -------------------------------------------------------------------------
 
     /**
      * Añade un producto de segunda mano a la cartera.
@@ -54,9 +41,6 @@ public class Cartera implements Serializable {
         this.productos.remove(productoSegundaMano);
     }
 
-    // -------------------------------------------------------------------------
-    // Accesores
-    // -------------------------------------------------------------------------
 
     /**
      * Devuelve la lista de productos de segunda mano de la cartera.

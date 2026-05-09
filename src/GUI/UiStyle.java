@@ -13,36 +13,34 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-/**
- * Shared visual constants and rounded Swing helpers for GOAT & GET.
- */
+
 final class UiStyle {
 
-    /** Main white background used in the mockups. */
+
     static final Color COLOR_FONDO = Color.WHITE;
 
-    /** Warm taupe header tone from the mockups. */
+
     static final Color COLOR_CABECERA = new Color(165, 143, 122);
 
-    /** Dark coffee tone used for active actions and text. */
+
     static final Color COLOR_TEXTO = new Color(72, 55, 42);
 
-    /** Medium brown used for hover and secondary blocks. */
+
     static final Color COLOR_MARRON_MEDIO = new Color(137, 113, 88);
 
-    /** Light card tone. */
+
     static final Color COLOR_TARJETA = new Color(213, 193, 168);
 
-    /** Soft border tone. */
+
     static final Color COLOR_BORDE = new Color(123, 99, 76);
 
-    /** Text on dark backgrounds. */
+
     static final Color COLOR_TEXTO_CLARO = Color.WHITE;
 
-    /** Goat profile icon used in navigation buttons. */
+
     static final String ICONO_PERFIL_CABRA = "lib/fotos/icono_perfil_cabra.png";
 
-    /** Bell icon used in notification buttons. */
+
     static final String ICONO_NOTIFICACIONES = "lib/fotos/icono_notificaciones_campana.png";
 
     private UiStyle() {
@@ -68,9 +66,7 @@ final class UiStyle {
         return boton;
     }
 
-    /**
-     * Button with rounded background painted manually.
-     */
+
     static class RoundedButton extends JButton {
 
         private static final long serialVersionUID = 1L;
@@ -122,9 +118,7 @@ final class UiStyle {
         }
     }
 
-    /**
-     * Panel with rounded painted background.
-     */
+
     static class RoundedPanel extends JPanel {
 
         private static final long serialVersionUID = 1L;

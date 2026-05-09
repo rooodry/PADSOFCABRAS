@@ -1,32 +1,21 @@
 package productos.categoria;
 
-/**
- * Categoría que representa un cómic dentro del catálogo de productos.
- *
- * <p>Extiende {@link Categoria} añadiendo los atributos propios de un cómic:
- * número de páginas, autor, editorial, género literario y año de publicación.
- * El nombre de la categoría se construye con el prefijo {@code "Comic:"} seguido
- * del título.</p>
- *
- * <p>Todos los atributos son inmutables (declarados {@code final}).</p>
- *
- * @see Genero
- */
+
 public class Comic extends Categoria {
 
-    /** Número total de páginas del cómic. */
+
     private final int numPaginas;
 
-    /** Autor o autores del cómic. */
+
     private final String autor;
 
-    /** Editorial que publicó el cómic. */
+
     private final String editorial;
 
-    /** Género literario del cómic ({@link Genero#AVENTURA}, {@link Genero#ROMANCE} o {@link Genero#COMEDIA}). */
+
     private final Genero genero;
 
-    /** Año de publicación del cómic. */
+
     private final int año;
 
     /**

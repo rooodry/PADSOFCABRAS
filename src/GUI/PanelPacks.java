@@ -19,9 +19,7 @@ import javax.swing.border.EmptyBorder;
 import productos.Pack;
 import productos.Producto;
 
-/**
- * Screen that lists available product packs.
- */
+
 public class PanelPacks extends JPanel {
 
     private static final long serialVersionUID = 1L;

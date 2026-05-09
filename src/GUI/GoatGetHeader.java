@@ -9,9 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-/**
- * Simple branded header used by the login and registration screens.
- */
+
 public class GoatGetHeader extends JPanel {
 
     private static final long serialVersionUID = 1L;

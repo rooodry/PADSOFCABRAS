@@ -4,35 +4,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Representa un producto vendido directamente por la tienda.
- *
- * <p>Extiende {@link Producto} añadiendo precio, promociones (2×1, rebaja
- * porcentual y rebaja fija) y una lista de comentarios de usuarios.</p>
- */
+
 public class ProductoTienda extends Producto {
 
-    /** Precio base del producto en euros. */
+
     private double precio;
 
-    /** {@code true} si el producto tiene activa la promoción 2×1. */
+
     private boolean tiene2x1 = false;
 
-    /** Porcentaje de descuento sobre el precio base (0–100). */
+
     private double rebajaPorcentaje = 0;
 
-    /** Descuento fijo en euros que se resta al precio base. */
+
     private double rebajaFija = 0;
 
-    /**
-     * Lista de comentarios de usuarios.
-     * Cada elemento es un array {@code [nombreUsuario, texto]}.
-     */
+
     private final List<String[]> comentarios = new ArrayList<>();
 
-    // ------------------------------------------------------------------ //
-    //  Constructor                                                       //
-    // ------------------------------------------------------------------ //
 
     /**
      * Crea un producto de tienda con los datos básicos heredados de {@link Producto}.
@@ -45,9 +34,6 @@ public class ProductoTienda extends Producto {
         super(nombre, descripcion, imagen);
     }
 
-    // ------------------------------------------------------------------ //
-    //  Getters y setters                                                 //
-    // ------------------------------------------------------------------ //
 
     /**
      * Devuelve el precio base del producto.
@@ -133,9 +119,6 @@ public class ProductoTienda extends Producto {
         super.setValoracion(valoracion);
     }
 
-    // ------------------------------------------------------------------ //
-    //  Comentarios                                                       //
-    // ------------------------------------------------------------------ //
 
     /**
      * Añade un comentario de usuario al producto.

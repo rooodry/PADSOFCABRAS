@@ -32,12 +32,7 @@ import productos.categoria.Figura;
 import productos.categoria.Juego;
 import productos.ProductoTienda;
 
-/**
- * Pantalla principal del cliente registrado con catalogo de productos de tienda.
- *
- * <p>Obtiene siempre los productos desde {@link Main}, por lo que las acciones
- * de detalle y cesta operan sobre el modelo real de la aplicacion.</p>
- */
+
 public class HomePanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -338,9 +333,7 @@ public class HomePanel extends JPanel {
         dialogo.setVisible(true);
     }
 
-    /**
-     * Barra superior de navegacion comun para las pantallas de cliente.
-     */
+
     static class PanelNavegacionCliente extends JPanel {
 
         private static final long serialVersionUID = 1L;

@@ -65,9 +65,7 @@ import utilidades.EstadoOferta;
 import utilidades.EstadoPedido;
 import utilidades.TiposEmpleado;
 
-/**
- * Manager workspace for administration, stock, discounts, packs and reports.
- */
+
 public class PanelGestor extends JPanel {
 
     private static final long serialVersionUID = 1L;

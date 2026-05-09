@@ -19,9 +19,7 @@ import compras.Pedido;
 import productos.ProductoTienda;
 import utilidades.EstadoPedido;
 
-/**
- * Basic management panel for employee and manager tasks.
- */
+
 public class PanelGestion extends JPanel {
 
     private static final long serialVersionUID = 1L;

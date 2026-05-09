@@ -4,25 +4,10 @@ import estadisticas.Estadistica;
 import utilidades.TiposEmpleado;
 import java.util.*;
 
-/**
- * Representa al gestor (administrador) del sistema con privilegios para
- * gestionar empleados y acceder a estadísticas.
- *
- * <p>Extiende {@link Usuario} y es el único rol autorizado para realizar
- * operaciones de administración a través de {@code Sistema}, tales como
- * dar de alta/baja empleados, modificar permisos o actualizar el stock.</p>
- *
- * <p>Además, mantiene una lista de {@link Estadistica estadísticas} que
- * ha generado o tiene asignadas.</p>
- *
- * <p>Los accesores devuelven copias defensivas de las colecciones internas.</p>
- *
- * @see sistema.Sistema#darAltaEmpleado
- * @see sistema.Sistema#modificarPermisos
- */
+
 public class Gestor extends Usuario {
 
-    /** Lista de estadísticas generadas o asignadas al gestor. */
+
     private List<Estadistica> estadisticas;
 
     /**

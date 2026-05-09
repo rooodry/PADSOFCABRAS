@@ -37,9 +37,7 @@ import javax.swing.border.EmptyBorder;
 import notificaciones.Notificacion;
 import utilidades.TipoNotificacion;
 
-/**
- * Pantalla completa de notificaciones del cliente registrado.
- */
+
 public class PanelNotificaciones extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -382,6 +380,8 @@ public class PanelNotificaciones extends JPanel {
                 return "NUEVO DESCUENTO DISPONIBLE";
             case INTERCAMBIO_REALIZADO:
                 return "INTERCAMBIO REALIZADO";
+            case PRODUCTO_SUBIDO:
+                return "Producto subido";
             case VALORACION_REALIZADA:
                 return "VALORACION REALIZADA";
             default:

@@ -4,31 +4,21 @@ import notificaciones.Notificacion;
 import java.io.Serializable;
 import java.util.*;
 
-/**
- * Clase base que representa a cualquier usuario del sistema.
- *
- * <p>Almacena las credenciales de acceso (nombre de usuario y contraseña)
- * y la lista de notificaciones recibidas. Es la raíz de la jerarquía de
- * usuarios: de ella heredan {@link Cliente}, {@link Empleado} y
- * {@link Gestor}.</p>
- *
- * <p>El accesor de notificaciones devuelve una copia defensiva para
- * evitar modificaciones externas de la lista interna.</p>
- */
+
 public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /** Nombre de usuario utilizado para identificarse en el sistema. */
+
     private String nombreUsuario;
 
-    /** Contraseña de acceso del usuario. */
+
     private String contraseña;
 
-    /** Lista de notificaciones recibidas por el usuario. */
+
     private List<Notificacion> notificaciones;
 
-    /** Ruta local a la foto de perfil del usuario. */
+
     private String fotoPerfil;
 
 

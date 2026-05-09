@@ -3,24 +3,13 @@ package descuentos;
 import java.util.Date;
 import compras.Pedido;
 
-/**
- * Descuento por porcentaje que se activa cuando el total del pedido supera
- * una cantidad mínima de gasto.
- *
- * <p>Combina una condición de aplicabilidad (importe mínimo) con una
- * reducción porcentual sobre el precio base. Solo se aplica si el total
- * calculado del pedido es igual o superior a {@code cantidadMinima}.</p>
- *
- * <p>Ejemplo: con {@code cantidadMinima = 50.0} y {@code porcentaje = 10.0},
- * el descuento se activará en pedidos de 50 € o más y reducirá el precio
- * un 10 %.</p>
- */
+
 public class DescuentoCantidadGastada extends Descuento {
 
-    /** Importe mínimo que debe alcanzar el pedido para que el descuento sea aplicable. */
+
     private final double cantidadMinima;
 
-    /** Porcentaje de reducción a aplicar cuando se cumple la condición, en el rango [0, 100]. */
+
     private final double porcentaje;
 
     /**

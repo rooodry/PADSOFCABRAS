@@ -18,13 +18,13 @@ public class PanelSubirProducto extends JPanel {
 
         add(crearCabecera("SUBIR NUEVO PRODUCTO"), BorderLayout.NORTH);
 
-        // Bordes Redondeados
+
         JPanel contenedorForm = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(165, 143, 122)); // Color café de la maqueta
+                g2.setColor(new Color(165, 143, 122));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
             }
         };
@@ -32,7 +32,7 @@ public class PanelSubirProducto extends JPanel {
         contenedorForm.setLayout(new BoxLayout(contenedorForm, BoxLayout.Y_AXIS));
         contenedorForm.setBorder(new EmptyBorder(30, 40, 30, 40));
 
-        // Campos del Formulario
+
         txtNombre = crearCampo("NOMBRE DEL PRODUCTO");
 
         JLabel lblImagen = new JLabel("FOTO DEL PRODUCTO");
@@ -50,24 +50,24 @@ public class PanelSubirProducto extends JPanel {
         JLabel lblDesc = new JLabel("DESCRIPCIÓN");
         lblDesc.setForeground(Color.WHITE);
         lblDesc.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         txtDescripcion = new JTextArea(5, 20);
         txtDescripcion.setLineWrap(true);
         txtDescripcion.setWrapStyleWord(true);
         JScrollPane scrollDesc = new JScrollPane(txtDescripcion);
 
-        // Botones de Acción
+
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         panelBotones.setOpaque(false);
-        
+
         JButton btnGuardar = crearBotonForm("GUARDAR", new Color(102, 80, 61));
         JButton btnCancelar = crearBotonForm("CANCELAR", new Color(181, 86, 68));
 
-        // Listeners para navegar
+
         btnCancelar.addActionListener(e -> mainFrame.cambiarPantalla("PANTALLA_MIS_PRODUCTOS"));
         btnGuardar.addActionListener(e -> guardarProducto());
 
-        // Ensamblar
+
         contenedorForm.add(new JLabel("<html><center><h2 style='color:white;'>NUEVO PRODUCTO</h2></center></html>"));
         contenedorForm.add(Box.createVerticalStrut(20));
         contenedorForm.add(txtNombre);
@@ -82,7 +82,7 @@ public class PanelSubirProducto extends JPanel {
         panelBotones.add(btnGuardar);
         contenedorForm.add(panelBotones);
 
-        // Centrar el formulario en la pantalla
+
         JPanel centrado = new JPanel(new GridBagLayout());
         centrado.setBackground(Color.WHITE);
         centrado.add(contenedorForm);

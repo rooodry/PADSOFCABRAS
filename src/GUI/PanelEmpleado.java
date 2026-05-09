@@ -46,9 +46,7 @@ import utilidades.EstadoOferta;
 import utilidades.EstadoPedido;
 import utilidades.TiposEmpleado;
 
-/**
- * Employee workspace. Visible actions depend on permissions assigned by the manager.
- */
+
 public class PanelEmpleado extends JPanel {
 
     private static final long serialVersionUID = 1L;

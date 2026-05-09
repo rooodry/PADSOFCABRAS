@@ -5,34 +5,16 @@ import utilidades.TiposEmpleado;
 import intercambios.Intercambio;
 import productos.ProductoSegundaMano;
 
-/**
- * Representa a un empleado de la tienda con un conjunto configurable de permisos.
- *
- * <p>Extiende {@link Usuario} añadiendo:</p>
- * <ul>
- *   <li>Un conjunto de {@link TiposEmpleado permisos} que determinan las
- *       operaciones que el empleado puede realizar (p. ej. gestión de intercambios).</li>
- *   <li>Una lista de {@link ProductoSegundaMano productos de segunda mano}
- *       pendientes de valorar asignados a este empleado.</li>
- *   <li>Una lista de {@link Intercambio intercambios} que gestiona este empleado.</li>
- * </ul>
- *
- * <p>Los permisos se exponen a través de una vista no modificable mediante
- * {@link Collections#unmodifiableSet(Set)}. Los accesores de listas devuelven
- * copias defensivas.</p>
- *
- * @see Gestor#configurarPermisos(Empleado, Set)
- * @see TiposEmpleado
- */
+
 public class Empleado extends Usuario {
 
-    /** Conjunto de permisos asignados al empleado. */
+
     private Set<TiposEmpleado> permisos;
 
-    /** Productos de segunda mano pendientes de valoración asignados a este empleado. */
+
     private List<ProductoSegundaMano> productosParaValorar;
 
-    /** Intercambios de segunda mano asignados a este empleado para su gestión. */
+
     private List<Intercambio> intercambios;
 
     /**
@@ -48,9 +30,6 @@ public class Empleado extends Usuario {
         this.intercambios          = new ArrayList<>();
     }
 
-    // -------------------------------------------------------------------------
-    // Gestión de permisos
-    // -------------------------------------------------------------------------
 
     /**
      * Añade un permiso al conjunto del empleado.
@@ -101,9 +80,6 @@ public class Empleado extends Usuario {
         return Collections.unmodifiableSet(permisos);
     }
 
-    // -------------------------------------------------------------------------
-    // Gestión de valoraciones e intercambios
-    // -------------------------------------------------------------------------
 
     /**
      * Asigna un producto de segunda mano a este empleado para su valoración.

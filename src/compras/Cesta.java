@@ -72,7 +72,7 @@ public class Cesta implements Serializable {
         this.productos.clear();
         this.packs.clear();
     }
-   
+
     /**
      * Elimina por completo un producto de la cesta, independientemente de su cantidad.
      * * @param producto Objeto ProductoTienda a eliminar.

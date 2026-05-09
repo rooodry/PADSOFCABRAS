@@ -23,9 +23,7 @@ import compras.Pedido;
 import productos.ProductoTienda;
 import utilidades.EstadoPedido;
 
-/**
- * Pantalla de historial y seguimiento de pedidos del cliente registrado.
- */
+
 public class PanelPedidos extends JPanel {
 
     private static final long serialVersionUID = 1L;

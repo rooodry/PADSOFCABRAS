@@ -6,15 +6,12 @@ import java.util.Map;
 
 import utilidades.Status;
 
-/**
- * Gestiona el inventario de los productos de la tienda, 
- * controlando las existencias disponibles de cada uno.
- */
+
 public class Stock implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private Map<ProductoTienda, Integer> productos;
-    
+
     /**
      * Constructor que inicializa el inventario vacío.
      */

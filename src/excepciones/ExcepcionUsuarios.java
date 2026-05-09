@@ -1,8 +1,6 @@
 package excepciones;
 
-/**
- * Excepción personalizada base para manejar errores relacionados con los usuarios del sistema.
- */
+
 public class ExcepcionUsuarios extends Exception {
 
     private String nombre;

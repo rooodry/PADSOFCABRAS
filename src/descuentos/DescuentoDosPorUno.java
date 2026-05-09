@@ -3,18 +3,7 @@ package descuentos;
 import java.util.Date;
 import compras.Pedido;
 
-/**
- * Descuento de tipo "2×1" aplicable a cualquier pedido.
- *
- * <p>Este descuento representa una promoción dos por uno. La lógica de
- * reducción del precio (seleccionar el producto más barato como gratuito,
- * dividir el total a la mitad, etc.) <strong>no está implementada</strong>
- * en la versión actual: {@link #aplicarDescuento(double)} devuelve el
- * precio base sin modificar.</p>
- *
- * <p>Al igual que {@link DescuentoPorcentaje}, no impone ninguna condición
- * sobre el pedido y siempre se considera aplicable.</p>
- */
+
 public class DescuentoDosPorUno extends Descuento {
 
     /**

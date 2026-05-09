@@ -1,26 +1,15 @@
 package productos.categoria;
 
-/**
- * Categoría que representa un juego de mesa dentro del catálogo de productos.
- *
- * <p>Extiende {@link Categoria} añadiendo los atributos propios de un juego:
- * número de jugadores, edad mínima recomendada y tipo de juego.
- * El nombre de la categoría se construye con el prefijo {@code "Juego:"}
- * seguido del nombre del juego.</p>
- *
- * <p>Todos los atributos son inmutables (declarados {@code final}).</p>
- *
- * @see TipoJuego
- */
+
 public class Juego extends Categoria {
 
-    /** Número máximo (o recomendado) de jugadores. */
+
     private final int numJugadores;
 
-    /** Edad mínima recomendada para jugar. */
+
     private final int edadMinima;
 
-    /** Tipo de juego de mesa ({@link TipoJuego#JUEGO_MESA}, {@link TipoJuego#CARTAS} o {@link TipoJuego#DADOS}). */
+
     private final TipoJuego tipoJuego;
 
     /**

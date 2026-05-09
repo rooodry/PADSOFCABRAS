@@ -3,19 +3,10 @@ package descuentos;
 import compras.Pedido;
 import java.util.Date;
 
-/**
- * Descuento que reduce el precio base en un porcentaje fijo.
- *
- * <p>Este tipo de descuento es siempre aplicable a cualquier pedido,
- * independientemente de su importe o contenido. El porcentaje se
- * almacena como un valor entre 0 y 100 y se convierte a decimal
- * en el momento de aplicar el descuento.</p>
- *
- * <p>Ejemplo: un porcentaje de {@code 20.0} reduce el precio un 20 %.</p>
- */
+
 public class DescuentoPorcentaje extends Descuento {
 
-    /** Porcentaje de reducción, expresado en el rango [0, 100]. */
+
     private final double porcentaje;
 
     /**

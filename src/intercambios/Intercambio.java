@@ -5,10 +5,7 @@ import java.util.Date;
 import java.io.Serializable;
 import utilidades.EstadoOferta;
 
-/**
- * Clase que gestiona el ciclo de vida, los plazos temporales 
- * y la ejecución final de una oferta.
- */
+
 public class Intercambio implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,7 +41,7 @@ public class Intercambio implements Serializable {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(this.fechaOferta);
         calendar.add(Calendar.HOUR_OF_DAY, Math.max(1, plazoHoras));
-        
+
         this.fechaLimite = calendar.getTime();
         this.fechaAceptada = null;
         this.intercambiado = false;

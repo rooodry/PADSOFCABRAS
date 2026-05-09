@@ -5,17 +5,14 @@ import productos.ProductoSegundaMano;
 import usuarios.ClienteRegistrado;
 import utilidades.EstadoOferta;
 
-/**
- * Representa una propuesta de intercambio de productos de segunda mano 
- * lanzada por un usuario hacia otro.
- */
+
 public class Oferta implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private EstadoOferta estadoOferta;
-    private final ProductoSegundaMano productoOfertado;  
-    private final ProductoSegundaMano productoDeseado;     
+    private final ProductoSegundaMano productoOfertado;
+    private final ProductoSegundaMano productoDeseado;
     private ClienteRegistrado usuarioReceptor;
     private ClienteRegistrado usuarioLanzador;
 
@@ -30,12 +27,12 @@ public class Oferta implements Serializable {
      */
     public Oferta(ProductoSegundaMano productoOfertado, ProductoSegundaMano productoDeseado, ClienteRegistrado uRec, ClienteRegistrado uLanz) {
         this.productoOfertado = productoOfertado;
-        this.productoDeseado  = productoDeseado;        
+        this.productoDeseado  = productoDeseado;
         this.estadoOferta = EstadoOferta.PENDIENTE;
         this.usuarioReceptor = uRec;
         this.usuarioLanzador = uLanz;
     }
-    
+
     /**
      * Cambia el estado en el que se encuentra la oferta.
      * @param e Nuevo estado de la oferta.

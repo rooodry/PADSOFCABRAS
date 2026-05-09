@@ -7,33 +7,18 @@ import java.util.List;
 
 import productos.ProductoTienda;
 
-/**
- * Panel que muestra el catálogo de productos de la tienda en forma de cuadrícula.
- *
- * <p>Cada producto se representa como una tarjeta ({@link TarjetaProducto}) que
- * muestra su nombre, precio y valoración. Al hacer clic en una tarjeta se abre
- * un {@link JDialog} con el {@link PanelDeProducto} completo.</p>
- *
- * <p>El panel usa un {@link GridLayout} de tres columnas y se envuelve en un
- * {@link JScrollPane} para soportar catálogos grandes.</p>
- *
- * @see PanelDeProducto
- * @see TarjetaProducto
- */
+
 public class PanelProductos extends JPanel {
 
-    /** Color de fondo principal (beige arena). */
+
     private static final Color COLOR_FONDO  = new Color(0xC4, 0xA8, 0x82);
 
-    /** Color de cabecera (marrón oscuro). */
+
     private static final Color COLOR_OSCURO = new Color(0x2B, 0x1F, 0x0E);
 
-    /** Color del texto sobre fondo oscuro. */
+
     private static final Color COLOR_CLARO  = new Color(0xE8, 0xD5, 0xB0);
 
-    // ------------------------------------------------------------------ //
-    //  Constructor                                                       //
-    // ------------------------------------------------------------------ //
 
     /**
      * Crea el panel de catálogo con el título y la lista de productos indicados.
@@ -50,9 +35,6 @@ public class PanelProductos extends JPanel {
         add(crearGridProductos(productos), BorderLayout.CENTER);
     }
 
-    // ------------------------------------------------------------------ //
-    //  Cabecera                                                          //
-    // ------------------------------------------------------------------ //
 
     /**
      * Crea la barra superior con el logotipo "GOAT &amp; GET" y el título del
@@ -103,9 +85,6 @@ public class PanelProductos extends JPanel {
         return btn;
     }
 
-    // ------------------------------------------------------------------ //
-    //  Cuadrícula de productos                                           //
-    // ------------------------------------------------------------------ //
 
     /**
      * Crea el área de cuadrícula con una {@link TarjetaProducto} por cada
@@ -134,7 +113,7 @@ public class PanelProductos extends JPanel {
             grid.add(tarjeta);
         }
 
-        // Rellena las celdas sobrantes con paneles vacíos
+
         int restantes = filas * columnas - productos.size();
         for (int i = 0; i < restantes; i++) {
             JPanel vacio = new JPanel();
@@ -165,7 +144,7 @@ public class PanelProductos extends JPanel {
 
         PanelDeProducto detalle = new PanelDeProducto(producto);
 
-        // Acción del botón "Añadir a la cesta"
+
         detalle.addListenerCesta(e ->
                 JOptionPane.showMessageDialog(
                         dialogo,

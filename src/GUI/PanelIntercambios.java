@@ -38,9 +38,7 @@ import productos.ProductoSegundaMano;
 import utilidades.EstadoOferta;
 import utilidades.EstadoProducto;
 
-/**
- * Pantalla de intercambio más gráfica para clientes.
- */
+
 public class PanelIntercambios extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -430,45 +428,6 @@ public class PanelIntercambios extends JPanel {
         return pantalla;
     }
 
-    /*private JPanel crearTarjetaMercado(ProductoSegundaMano producto) {
-        JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 24);
-        tarjeta.setLayout(new BorderLayout(0, 14));
-        LineBorder resaltado = new LineBorder(UiStyle.COLOR_MARRON_MEDIO, 2, true);
-        tarjeta.setBorder(new CompoundBorder(producto.equals(productoSeleccionado) ? resaltado : BorderFactory.createEmptyBorder(14, 14, 14, 14),
-                new EmptyBorder(14, 14, 14, 14)));
-
-        JLabel imagen = crearMiniatura(producto.getImagen(), 180, 160);
-        tarjeta.add(imagen, BorderLayout.NORTH);
-
-        JPanel centro = new JPanel();
-        centro.setOpaque(false);
-        centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
-        JLabel nombre = new JLabel("<html><b>" + producto.getNombre() + "</b></html>");
-        nombre.setFont(new Font("SansSerif", Font.BOLD, 14));
-        nombre.setForeground(UiStyle.COLOR_TEXTO);
-        nombre.setAlignmentX(Component.LEFT_ALIGNMENT);
-        centro.add(nombre);
-        centro.add(Box.createVerticalStrut(8));
-        centro.add(crearEstrellas(producto.getValoracion()));
-        centro.add(Box.createVerticalStrut(8));
-        centro.add(crearEtiquetaEstado(producto));
-        tarjeta.add(centro, BorderLayout.CENTER);
-
-        JButton detalles = new UiStyle.RoundedButton("Ver detalles", UiStyle.COLOR_MARRON_MEDIO, UiStyle.COLOR_CABECERA, 18);
-        detalles.setPreferredSize(new Dimension(160, 34));
-        detalles.addActionListener(e -> {
-            productoSeleccionado = producto;
-            eligiendoProductoPropio = false;
-            construirVista();
-        });
-        JPanel botonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        botonPanel.setOpaque(false);
-        botonPanel.add(detalles);
-        tarjeta.add(botonPanel, BorderLayout.SOUTH);
-
-        return tarjeta;
-    }
-        */
 
     private JPanel crearEstrellas(int valoracion) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
@@ -484,16 +443,6 @@ public class PanelIntercambios extends JPanel {
         return panel;
     }
 
-    /*private JLabel crearEtiquetaEstado(ProductoSegundaMano producto) {
-        String estado = producto.getEstadoConservacion() == null
-                ? "Sin valorar" : producto.getEstadoConservacion().toString();
-        JLabel label = new JLabel("Estado: " + estado);
-        label.setFont(new Font("SansSerif", Font.BOLD, 13));
-        label.setForeground(UiStyle.COLOR_TEXTO);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return label;
-    }
-        */
 
     private JLabel crearMiniatura(String ruta, int ancho, int alto) {
         JLabel label = new JLabel();
@@ -562,13 +511,6 @@ public class PanelIntercambios extends JPanel {
         return label;
     }
 
-    /*private JLabel crearEtiquetaNormal(String texto) {
-        JLabel label = new JLabel("<html>" + texto + "</html>");
-        label.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        label.setForeground(UiStyle.COLOR_TEXTO);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return label;
-    }*/
 
     private JLabel crearImagenGrande(ProductoSegundaMano producto) {
         JLabel imagen = new JLabel();
@@ -733,5 +675,5 @@ public class PanelIntercambios extends JPanel {
         return "Caduca en " + Math.max(1, minutos) + "min";
     }
 
-    
+
 }

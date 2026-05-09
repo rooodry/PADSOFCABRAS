@@ -1,9 +1,6 @@
 package excepciones;
 
-/**
- * Excepción personalizada para manejar errores de permisos relacionados 
- * con operaciones exclusivas para administradores.
- */
+
 public class ExcepcionUsuariosAdmin extends ExcepcionUsuarios {
 
     /**

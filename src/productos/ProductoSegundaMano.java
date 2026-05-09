@@ -5,10 +5,7 @@ import java.util.*;
 import usuarios.ClienteRegistrado;
 import utilidades.*;
 
-/**
- * Representa un producto subido por un usuario registrado para ser intercambiado o vendido.
- * Incluye estados de conservación, valoraciones por empleados y detalles del propietario.
- */
+
 public class ProductoSegundaMano extends Producto {
     private boolean disponibilidad;
     private final ClienteRegistrado propietario;

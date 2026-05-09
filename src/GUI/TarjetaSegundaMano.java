@@ -26,9 +26,7 @@ import productos.ProductoSegundaMano;
 import utilidades.EstadoConservacion;
 import utilidades.EstadoProducto;
 
-/**
- * Tarjeta grafica para un producto de segunda mano del cliente.
- */
+
 public class TarjetaSegundaMano extends JPanel {
 
     private static final long serialVersionUID = 1L;

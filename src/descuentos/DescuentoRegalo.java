@@ -6,25 +6,13 @@ import java.util.List;
 import compras.Pedido;
 import productos.ProductoTienda;
 
-/**
- * Descuento que incluye un producto de regalo cuando el pedido supera un
- * gasto mínimo.
- *
- * <p>A diferencia de los descuentos numéricos, este tipo no reduce el precio
- * monetario del pedido: {@link #aplicarDescuento(double)} devuelve el precio
- * base sin modificar. El beneficio consiste en añadir uno de los productos
- * de la lista {@code productos} como regalo, lógica que debe gestionarse
- * externamente (por ejemplo, en {@code Sistema.registrarPedido}).</p>
- *
- * <p>Los accesores devuelven copias defensivas de la lista de productos para
- * evitar modificaciones externas.</p>
- */
+
 public class DescuentoRegalo extends Descuento {
 
-    /** Importe mínimo que debe alcanzar el pedido para activar el regalo. */
+
     private final double gastoMinimo;
 
-    /** Lista de productos candidatos a ser entregados como regalo. */
+
     private final List<ProductoTienda> productos;
 
     /**

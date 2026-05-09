@@ -26,13 +26,7 @@ import productos.ProductoSegundaMano;
 import usuarios.ClienteRegistrado;
 import utilidades.EstadoProducto;
 
-/**
- * Panel de cartera del cliente registrado.
- *
- * <p>Permite consultar productos subidos, valorados y publicados. Las acciones
- * de subir, solicitar valoracion y publicar se exponen mediante listeners para
- * que {@link Main} las conecte con el modelo.</p>
- */
+
 public class PanelMisProductos extends JPanel {
 
     private static final long serialVersionUID = 1L;

@@ -62,54 +62,49 @@ import utilidades.EstadoProducto;
 import utilidades.TipoNotificacion;
 import utilidades.TiposEmpleado;
 
-/**
- * Main Swing window for the registered-customer flow.
- *
- * <p>This class works as a small GUI controller. It owns the active customer,
- * the system, the shop stock and the screens shown in the card layout.</p>
- */
+
 public class Main extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private static final String FICHERO_DATOS = "goatget-data.dat";
 
-    /** Customer login screen. */
+
     public static final String PANTALLA_CLIENTE = "PANTALLA_CLIENTE";
 
-    /** Customer registration screen. */
+
     public static final String PANTALLA_REGISTRO = "PANTALLA_REGISTRO";
 
-    /** Shop catalogue screen. */
+
     public static final String PANTALLA_HOME = "PANTALLA_HOME";
 
-    /** Customer basket screen. */
+
     public static final String PANTALLA_CESTA = "PANTALLA_CESTA";
 
-    /** Second-hand product wallet screen. */
+
     public static final String PANTALLA_MIS_PRODUCTOS = "PANTALLA_MIS_PRODUCTOS";
 
-    /** Second-hand product upload form. */
+
     public static final String PANTALLA_SUBIR = "PANTALLA_SUBIR";
 
-    /** Customer profile screen. */
+
     public static final String PANTALLA_PERFIL = "PANTALLA_PERFIL";
 
-    /** Product pack screen. */
+
     public static final String PANTALLA_PACKS = "PANTALLA_PACKS";
 
-    /** Exchange screen. */
+
     public static final String PANTALLA_INTERCAMBIOS = "PANTALLA_INTERCAMBIOS";
 
-    /** Notification inbox screen. */
+
     public static final String PANTALLA_NOTIFICACIONES = "PANTALLA_NOTIFICACIONES";
 
-    /** Basic employee/manager management screen. */
+
     public static final String PANTALLA_GESTION = "PANTALLA_GESTION";
 
-    /** Employee dashboard screen. */
+
     public static final String PANTALLA_EMPLEADO = "PANTALLA_EMPLEADO";
 
-    /** Manager dashboard screen. */
+
     public static final String PANTALLA_GESTOR = "PANTALLA_GESTOR";
 
     private final Sistema sistema;
@@ -564,13 +559,13 @@ public class Main extends JFrame {
                 "Introduce el numero de tarjeta (16 digitos):",
                 "Pago - Numero de Tarjeta",
                 JOptionPane.PLAIN_MESSAGE);
-        
+
         if (numeroTarjeta == null) {
             return;
         }
-        
+
         numeroTarjeta = numeroTarjeta.replaceAll("\\s+", "");
-        
+
         if (!numeroTarjeta.matches("\\d{16}")) {
             JOptionPane.showMessageDialog(this,
                     "El numero de tarjeta debe tener exactamente 16 digitos.",
@@ -578,7 +573,7 @@ public class Main extends JFrame {
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         if (clienteActual.comprar().name().equals("OK")) {
             Pedido pedido = obtenerUltimoPedido();
             if (pedido != null) {
@@ -587,7 +582,7 @@ public class Main extends JFrame {
                 sistema.registrarPedido(pedido);
             }
             clienteActual.addNotificacion(new Notificacion(TipoNotificacion.PAGO_REALIZADO,
-                    "Pago realizado. Tu pedido se ha creado correctamente."));
+                    "Tu pedido se ha pagado correctamente."));
             JOptionPane.showMessageDialog(this, "Pago realizado. Pedido creado correctamente.");
             refrescarPantallasConDatos();
             cambiarPantalla(PANTALLA_HOME);
@@ -608,8 +603,7 @@ public class Main extends JFrame {
         pedido.setEstadoPedido(EstadoPedido.EN_PREPARACION);
         clienteActual.addCodigo(pedido.getCodigo());
         notificarCambioEstadoPedido(pedido, TipoNotificacion.PAGO_REALIZADO,
-                "Pago realizado. Codigo de recogida: " + pedido.getCodigo().getCodigo()
-                        + ". Documento: " + clienteActual.getDNI());
+                "Tu pedido se ha pagado correctamente.");
         JOptionPane.showMessageDialog(this, "Pago realizado. Codigo: " + pedido.getCodigo().getCodigo());
         refrescarPantallasConDatos();
     }
@@ -966,8 +960,8 @@ public class Main extends JFrame {
             nuevo.setEstadoConservacion(estado);
         }
         clienteActual.subirProducto(nuevo);
-        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.VALORACION_REALIZADA,
-                "Producto subido. Puedes solicitar su valoracion desde cartera."));
+        clienteActual.addNotificacion(new Notificacion(TipoNotificacion.PRODUCTO_SUBIDO,
+                "Puedes solicitar su valoración desde cartera."));
         panelMisProductos.refrescar();
         guardarEstadoPersistente();
     }
@@ -1794,7 +1788,7 @@ public class Main extends JFrame {
         clienteActual.addNotificacion(new Notificacion(TipoNotificacion.NUEVO_DESCUENTO,
                 "Hay nuevos descuentos disponibles en comics y figuras."));
         clienteActual.addNotificacion(new Notificacion(TipoNotificacion.PAGO_REALIZADO,
-                "El pedido de EAN-1467 ha sido entregado."));
+                "Tu pedido se ha pagado correctamente."));
         clienteActual.addNotificacion(new Notificacion(TipoNotificacion.NUEVA_OFERTA,
                 "@luciaga16 te ha propuesto un intercambio."));
         clienteActual.addNotificacion(new Notificacion(TipoNotificacion.OFERTA_ACEPTADA,

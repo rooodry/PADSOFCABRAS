@@ -7,13 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-/**
- * Compatibility panel for the old {@link VentanaPrincipal} prototype.
- *
- * <p>The functional registration screen used by the application is
- * {@link RegistroPanel}. This class remains only so older prototype code keeps
- * compiling while the real application runs from {@link Main}.</p>
- */
+
 public class PanelRegistro extends JPanel {
 
     private static final long serialVersionUID = 1L;

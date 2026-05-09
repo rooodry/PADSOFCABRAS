@@ -1,37 +1,19 @@
-// ============================================================
-// Categoria.java
-// ============================================================
+
+
+
 package productos.categoria;
 
 import java.io.Serializable;
 
-/**
- * Clase abstracta que representa la categoría de un producto.
- *
- * <p>Cada producto del catálogo pertenece a una categoría principal
- * ({@link Comic}, {@link Juego} o {@link Figura}) que puede tener a su
- * vez una subcategoría anidada ({@code subCategoria}).</p>
- *
- * <p>En la implementación actual la subcategoría se usa para almacenar
- * el género ({@link Genero}) o tipo de juego ({@link TipoJuego}) de forma
- * polimórfica, aunque estos valores son enums y no instancias de
- * {@code Categoria}. El campo {@code subCategoria} se inicializa a
- * {@code null}.</p>
- */
+
 public abstract class Categoria implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /** Nombre identificador de la categoría. */
+
     private String nombre;
 
-    /**
-     * Subcategoría anidada; puede ser {@code null} si no aplica.
-     *
-     * <p>En la práctica se utiliza para almacenar referencias a
-     * {@link Genero} o {@link TipoJuego}, aunque el tipo declarado
-     * es {@code Categoria}.</p>
-     */
+
     private Categoria subCategoria;
 
     /**

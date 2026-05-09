@@ -320,7 +320,7 @@ public class Sistema {
 
         for (ProductoTienda p : productos) {
             Categoria cat = p.getCategoria();
-            
+
             if (cat instanceof Comic) {
                 Genero genero = ((Comic) cat).getGenero();
                 if (genero == Genero.AVENTURA) {
@@ -682,7 +682,7 @@ public class Sistema {
             String[] elementos;
             while ((linea = br.readLine()) != null) {
                 elementos = linea.split("\\;");
-                
+
                 if(elementos[0].equals("C")) {
                     ClienteRegistrado c = new ClienteRegistrado(elementos[1], elementos[2], elementos[3]);
                     this.usuarios.add(c);

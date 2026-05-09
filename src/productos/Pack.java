@@ -4,10 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Representa una agrupación de productos o de otros packs (subpacks)
- * vendidos en conjunto bajo un precio específico.
- */
+
 public class Pack implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -32,7 +29,7 @@ public class Pack implements Serializable {
         this.nombre = nombre;
         this.categoria = categoria == null ? "" : categoria.trim();
         this.precio = precio;
-        this.productos = new ArrayList<>(productos); 
+        this.productos = new ArrayList<>(productos);
         this.subpacks = new ArrayList<>();
     }
 

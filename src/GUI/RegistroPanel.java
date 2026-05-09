@@ -17,9 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-/**
- * Formulario de registro de clientes.
- */
+
 public class RegistroPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;

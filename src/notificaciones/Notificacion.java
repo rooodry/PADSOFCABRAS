@@ -4,10 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import utilidades.TipoNotificacion;
 
-/**
- * Representa un aviso o alerta dirigida a un usuario del sistema.
- * Contiene el estado de lectura, visibilidad y el tipo de mensaje.
- */
+
 public class Notificacion implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,7 +28,7 @@ public class Notificacion implements Serializable {
         this.leida = false;
         this.borrada = false;
         this.fechaCreacion = new Date();
-    } 
+    }
 
     /**
      * Marca la notificación como leída por el usuario.
@@ -47,7 +44,7 @@ public class Notificacion implements Serializable {
      * Obtiene el tipo o categoría de la notificación.
      * @return Enum TipoNotificacion.
      */
-    public TipoNotificacion getTipoNotificacion() {return this.tipoNotificacion;} 
+    public TipoNotificacion getTipoNotificacion() {return this.tipoNotificacion;}
 
     /**
      * Obtiene el contenido del mensaje.

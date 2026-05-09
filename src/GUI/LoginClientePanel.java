@@ -30,9 +30,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.Box;
 
-/**
- * Login screen for registered customers.
- */
+
 public class LoginClientePanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -57,7 +55,7 @@ public class LoginClientePanel extends JPanel {
         gbc.fill = GridBagConstraints.CENTER;
         gbc.insets = new Insets(40, 0, 20, 0);
 
-        // Logo
+
         JLabel logo = new JLabel();
         try {
             BufferedImage logoImage = ImageIO.read(new File("lib/fotos/GOAT&GET.png"));
@@ -73,8 +71,8 @@ public class LoginClientePanel extends JPanel {
         gbc.gridy = 1;
         gbc.weighty = 1;
         gbc.insets = new Insets(20, 0, 40, 0);
-        
-        // Panel de formulario
+
+
         JPanel formContainer = new UiStyle.RoundedPanel(UiStyle.COLOR_CABECERA, 20);
         formContainer.setLayout(new GridBagLayout());
         formContainer.setBorder(new EmptyBorder(28, 40, 28, 40));
@@ -86,14 +84,14 @@ public class LoginClientePanel extends JPanel {
         fbgc.gridwidth = 2;
         fbgc.insets = new Insets(0, 0, 16, 0);
 
-        // Título
+
         JLabel titleLabel = new JLabel("Log in:");
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
         titleLabel.setForeground(UiStyle.COLOR_TEXTO_CLARO);
         fbgc.gridy = 0;
         formContainer.add(titleLabel, fbgc);
 
-        // Identificación
+
         fbgc.gridy = 1;
         fbgc.insets = new Insets(0, 0, 4, 0);
         JLabel lblIdentificacion = new JLabel("Identificación");
@@ -108,7 +106,7 @@ public class LoginClientePanel extends JPanel {
         idField.setPreferredSize(new Dimension(230, 28));
         formContainer.add(idField, fbgc);
 
-        // Contraseña
+
         fbgc.gridy = 3;
         fbgc.insets = new Insets(0, 0, 4, 0);
         JLabel lblContrasena = new JLabel("Contraseña");
@@ -123,7 +121,7 @@ public class LoginClientePanel extends JPanel {
         passField.setPreferredSize(new Dimension(230, 28));
         formContainer.add(passField, fbgc);
 
-        // Botón Login
+
         fbgc.gridy = 5;
         fbgc.insets = new Insets(0, 0, 8, 0);
         fbgc.gridwidth = 2;
@@ -141,7 +139,7 @@ public class LoginClientePanel extends JPanel {
                 }
             }
             String rol = selectedRadio != null ? selectedRadio.getText() : "Cliente";
-            
+
             if ("Empleado".equals(rol)) {
                 mainFrame.iniciarSesionGestion("Empleado", identificacion, contrasena);
             } else if ("Gestor".equals(rol)) {
@@ -156,38 +154,38 @@ public class LoginClientePanel extends JPanel {
         });
         formContainer.add(loginButton, fbgc);
 
-        // Crear cuenta y continuar
+
         fbgc.gridy = 6;
         fbgc.insets = new Insets(12, 0, 0, 0);
         fbgc.gridwidth = 2;
         fbgc.fill = GridBagConstraints.NONE;
         fbgc.anchor = GridBagConstraints.CENTER;
-        
-        // Panel con pregunta y botón "Crear cuenta"
+
+
         JPanel panelCrearCuenta = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
         panelCrearCuenta.setOpaque(false);
-        
+
         JLabel pregunta = new JLabel("¿No tienes cuenta?");
         pregunta.setFont(new Font("SansSerif", Font.PLAIN, 10));
         pregunta.setForeground(UiStyle.COLOR_TEXTO_CLARO);
         panelCrearCuenta.add(pregunta);
-        
+
         JButton crearButton = crearBoton("Crear cuenta", 102);
         crearButton.addActionListener(e -> mainFrame.cambiarPantalla(Main.PANTALLA_REGISTRO));
         panelCrearCuenta.add(crearButton);
-        
+
         formContainer.add(panelCrearCuenta, fbgc);
 
-        // Botón continuar sin registrarse
+
         fbgc.gridy = 7;
         fbgc.insets = new Insets(6, 0, 0, 0);
         fbgc.fill = GridBagConstraints.HORIZONTAL;
-        
+
         JButton continuarButton = crearBoton("Continuar sin registrarse", 200);
         continuarButton.addActionListener(e -> mainFrame.iniciarSesionInvitado());
         formContainer.add(continuarButton, fbgc);
 
-        // Radio buttons de rol
+
         JRadioButton clienteRadio = new JRadioButton("Cliente", true);
         JRadioButton empleadoRadio = new JRadioButton("Empleado");
         JRadioButton gestorRadio = new JRadioButton("Gestor");

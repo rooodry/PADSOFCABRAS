@@ -6,12 +6,9 @@ import java.util.*;
 import productos.*;
 import usuarios.ClienteRegistrado;
 import utilidades.EstadoPedido;
-import descuentos.*; 
+import descuentos.*;
 
-/**
- * Representa un pedido formalizado por un cliente en el sistema.
- * Gestiona el ciclo de vida del pedido, sus productos, descuentos aplicables y el cálculo del importe.
- */
+
 public class Pedido implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,7 +22,7 @@ public class Pedido implements Serializable {
     private Map<ProductoTienda, Integer> productos;
     private Map<ProductoTienda, Integer> valoraciones;
     private Descuento descuento;
-    private ProductoTienda regalo; 
+    private ProductoTienda regalo;
 
     /**
      * Constructor de la clase Pedido.
@@ -43,7 +40,7 @@ public class Pedido implements Serializable {
         this.fechaRecogida = null;
         this.estadoPedido = EstadoPedido.EN_CARRITO;
         this.valoraciones = new HashMap<ProductoTienda, Integer>();
-        this.descuento = null; 
+        this.descuento = null;
     }
 
     /**
@@ -64,7 +61,7 @@ public class Pedido implements Serializable {
             }
         }
     }
-    
+
     /**
      * Establece manualmente la fecha en la que el pedido fue recogido.
      * * @param fecha Fecha de recogida.
@@ -95,8 +92,8 @@ public class Pedido implements Serializable {
      * Asigna un producto adicional como regalo dentro del pedido.
      * * @param regalo Objeto ProductoTienda entregado como regalo.
      */
-    public void setRegalo(ProductoTienda regalo) { 
-        this.regalo = regalo; 
+    public void setRegalo(ProductoTienda regalo) {
+        this.regalo = regalo;
     }
 
     /**
@@ -167,7 +164,7 @@ public class Pedido implements Serializable {
     }
 
     /**
-     * Calcula el importe total del pedido teniendo en cuenta los precios base, 
+     * Calcula el importe total del pedido teniendo en cuenta los precios base,
      * las rebajas individuales de los productos y el descuento global aplicado.
      * * @return Valor double con el precio total a pagar.
      */
@@ -177,14 +174,14 @@ public class Pedido implements Serializable {
         for (Map.Entry<ProductoTienda, Integer> entry : productos.entrySet()) {
             ProductoTienda p = entry.getKey();
             int cantidad = entry.getValue();
-            
+
             double precioUnitario = p.getPrecio();
             if (p.getRebajaPorcentaje() > 0) {
                 precioUnitario -= precioUnitario * (p.getRebajaPorcentaje() / 100.0);
             } else if (p.getRebajaFija() > 0) {
                 precioUnitario -= p.getRebajaFija();
             }
-            
+
             int unidadesAPagar = p.isTiene2x1() ? cantidad - (cantidad / 2) : cantidad;
             subtotal += unidadesAPagar * precioUnitario;
         }

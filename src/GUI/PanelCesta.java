@@ -26,13 +26,7 @@ import javax.swing.border.EmptyBorder;
 
 import productos.*;
 
-/**
- * Pantalla de cesta del cliente registrado.
- *
- * <p>Muestra los productos actualmente contenidos en la {@code Cesta} del
- * cliente y permite retirar lineas o formalizar el pedido usando los metodos
- * del modelo.</p>
- */
+
 public class PanelCesta extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -60,13 +54,13 @@ public class PanelCesta extends JPanel {
         JPanel contenedorCentral = new JPanel(new BorderLayout(20, 0));
         contenedorCentral.setBackground(UiStyle.COLOR_FONDO);
         contenedorCentral.setBorder(new EmptyBorder(20, 20, 20, 20));
-        
+
         JPanel izquierda = crearPanelIzquierda();
         contenedorCentral.add(izquierda, BorderLayout.WEST);
-        
+
         JPanel derecha = crearPanelDerecha();
         contenedorCentral.add(derecha, BorderLayout.CENTER);
-        
+
         add(contenedorCentral, BorderLayout.CENTER);
         add(crearResumen(), BorderLayout.SOUTH);
         refrescar();
@@ -77,25 +71,25 @@ public class PanelCesta extends JPanel {
         panel.setLayout(new BorderLayout());
         panel.setBackground(UiStyle.COLOR_FONDO);
         panel.setPreferredSize(new Dimension(380, 400));
-        
+
         JLabel vacio = new JLabel("(Métodos de pago)");
         vacio.setFont(new Font("SansSerif", Font.ITALIC, 12));
         vacio.setForeground(new Color(150, 150, 150));
         vacio.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(vacio, BorderLayout.CENTER);
-        
+
         return panel;
     }
 
     private JPanel crearPanelDerecha() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(UiStyle.COLOR_FONDO);
-        
+
         JScrollPane scroll = new JScrollPane(listaProductos);
         scroll.setBorder(null);
         scroll.getViewport().setBackground(UiStyle.COLOR_FONDO);
         panel.add(scroll, BorderLayout.CENTER);
-        
+
         return panel;
     }
 
@@ -173,7 +167,7 @@ public class PanelCesta extends JPanel {
         tarjeta.setBorder(new EmptyBorder(10, 10, 10, 10));
         tarjeta.setPreferredSize(new Dimension(300, 100));
 
-        // Imagen miniatura
+
         JLabel imagenLabel = new JLabel();
         imagenLabel.setPreferredSize(new Dimension(80, 80));
         imagenLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -181,7 +175,7 @@ public class PanelCesta extends JPanel {
         cargarImagenMiniatura(imagenLabel, producto.getImagen());
         tarjeta.add(imagenLabel, BorderLayout.WEST);
 
-        // Panel central: nombre, cantidad, precio
+
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BorderLayout(0, 4));
         infoPanel.setBackground(UiStyle.COLOR_TARJETA);
@@ -406,7 +400,7 @@ private JPanel crearLineaProductoPack(ProductoTienda producto, int cantidad) {
                 }
             }
         } catch (IOException e) {
-            // Ignorar y mostrar texto por defecto
+
         }
         label.setText("SIN IMAGEN");
         label.setFont(new Font("SansSerif", Font.PLAIN, 10));

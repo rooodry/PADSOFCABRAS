@@ -41,12 +41,7 @@ import javax.swing.border.EmptyBorder;
 
 import productos.ProductoTienda;
 
-/**
- * Product detail panel shown when the customer opens a catalogue card.
- *
- * <p>The layout shows product summary on the left, description and comments on
- * the right, with a side scrollbar to avoid needing a larger window.</p>
- */
+
 public class PanelDeProducto extends JPanel {
 
     private static final long serialVersionUID = 1L;

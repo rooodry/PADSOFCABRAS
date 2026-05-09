@@ -4,30 +4,15 @@ import java.io.Serializable;
 import java.util.Date;
 import compras.Pedido;
 
-/**
- * Clase abstracta que representa un descuento aplicable a un pedido.
- *
- * <p>Define el período de vigencia del descuento (fecha de inicio y fin)
- * y declara los métodos abstractos que cada tipo concreto de descuento
- * debe implementar: la comprobación de aplicabilidad y el cálculo del
- * precio resultante.</p>
- *
- * <p>Las fechas se almacenan como copias defensivas para evitar mutaciones
- * externas.</p>
- *
- * @see DescuentoPorcentaje
- * @see DescuentoCantidadGastada
- * @see DescuentoRegalo
- * @see DescuentoDosPorUno
- */
+
 public abstract class Descuento implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /** Fecha a partir de la cual el descuento es válido. */
+
     private final Date fechaInicio;
 
-    /** Fecha a partir de la cual el descuento deja de ser válido. */
+
     private final Date fechaFin;
 
     /**

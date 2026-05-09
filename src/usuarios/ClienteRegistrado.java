@@ -6,7 +6,7 @@ import compras.*;
 import intercambios.*;
 import utilidades.*;
 import notificaciones.Notificacion;
-/*import es.uam.eps.padsof.telecard.*;*/
+
 
 public class ClienteRegistrado extends Cliente {
     private final String DNI;
@@ -58,7 +58,7 @@ public class ClienteRegistrado extends Cliente {
             return Status.ERROR;
         }
 
-        Pedido nuevoPedido = new Pedido(this, productosPedidoDesdeCesta()); 
+        Pedido nuevoPedido = new Pedido(this, productosPedidoDesdeCesta());
         this.pedidos.add(nuevoPedido);
         this.cesta.limpiarCesta();
 
@@ -94,74 +94,7 @@ public class ClienteRegistrado extends Cliente {
         }
         return texto.toString();
     }
-    /* 
-    public Status pagarPedido(Pedido pedido, String numeroTarjeta) {
-        if(!this.pedidos.contains(pedido)) {
-            return Status.ERROR;
-        }
 
-        try {
-            if(!TeleChargeAndPaySystem.isValidCardNumber(numeroTarjeta)) {
-                System.out.println("El número de tarjeta no es válido.");
-                return Status.ERROR;
-            }
-
-            TeleChargeAndPaySystem.charge(
-                numeroTarjeta, 
-                "Pago de pedido", 
-                pedido.calcularPrecioTotal(), 
-                true 
-            );
-
-            pedido.setEstadoPedido(EstadoPedido.EN_PREPARACION);
-            return Status.OK;
-
-        } catch (InvalidCardNumberException e) {
-            System.err.println("Error: El número de tarjeta es inválido.");
-            return Status.ERROR;
-        } catch (FailedInternetConnectionException e) {
-            System.err.println("Error: Fallo de conexión a internet al pagar.");
-            return Status.ERROR;
-        } catch (OrderRejectedException e) {
-            System.err.println("Error: El pago del pedido ha sido rechazado.");
-            return Status.ERROR;
-        }
-    }
-
-    public Status pagarValoracion(ProductoSegundaMano p, String numeroTarjeta) {
-        if(!this.cartera.getProductos().contains(p)) {
-            return Status.ERROR;
-        }
-
-        try {
-            if(!TeleChargeAndPaySystem.isValidCardNumber(numeroTarjeta)) {
-                System.out.println("El número de tarjeta no es válido.");
-                return Status.ERROR;
-            }
-
-            TeleChargeAndPaySystem.charge(
-                numeroTarjeta, 
-                "Pago por tasacion de producto", 
-                10.0, 
-                true 
-            );
-
-            p.pedirValoracion();
-            return Status.OK;
-
-        } catch (InvalidCardNumberException e) {
-            System.err.println("Error: El número de tarjeta es inválido.");
-            return Status.ERROR;
-        } catch (FailedInternetConnectionException e) {
-            System.err.println("Error: Fallo de conexión a internet al pagar.");
-            return Status.ERROR;
-        } catch (OrderRejectedException e) {
-            System.err.println("Error: El pago de la tasación ha sido rechazado.");
-            return Status.ERROR;
-        }
-    }
-
-    */
 
     public void leerNotificacion(Notificacion notificacion) {
         if (this.getNotificaciones().contains(notificacion)) {

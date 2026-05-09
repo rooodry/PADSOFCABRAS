@@ -11,26 +11,12 @@ import usuarios.*;
 import utilidades.EstadoPedido;
 import intercambios.*;
 
-/**
- * Proporciona métodos para generar informes estadísticos del sistema y
- * volcarlos a ficheros de texto.
- *
- * <p>Cada instancia está asociada a un fichero de salida identificado por
- * su ruta ({@code fichero}). Los distintos métodos de estadística escriben
- * sus resultados en ese fichero, sobreescribiéndolo cada vez.</p>
- *
- * <p>Los métodos que requieren privilegios de administrador comprueban que
- * el usuario sea una instancia de {@link Gestor} y lanzan
- * {@link ExcepcionUsuariosAdmin} en caso contrario.</p>
- *
- * <p>Todos los métodos de escritura capturan {@link IOException} internamente
- * y muestran el error por {@code System.err} sin propagarlo.</p>
- */
+
 public class Estadistica implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /** Ruta al fichero donde se escriben los resultados del informe. */
+
     private String fichero;
 
     /**
