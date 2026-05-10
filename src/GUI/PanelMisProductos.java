@@ -27,28 +27,44 @@ import usuarios.ClienteRegistrado;
 import utilidades.EstadoProducto;
 
 
+/**
+ * Representa el componente PanelMisProductos de la interfaz grafica.
+ */
 public class PanelMisProductos extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
+    /**      * Estado interno de TAB_SUBIDOS.      */
     private static final int TAB_SUBIDOS = 0;
+    /**      * Estado interno de TAB_VALORADOS.      */
     private static final int TAB_VALORADOS = 1;
+    /**      * Estado interno de TAB_PUBLICADOS.      */
     private static final int TAB_PUBLICADOS = 2;
 
+    /**      * Estado interno de mainFrame.      */
     private final Main mainFrame;
+    /**      * Estado interno de cliente.      */
     private ClienteRegistrado cliente;
+    /**      * Estado interno de panelGrid.      */
     private final JPanel panelGrid;
+    /**      * Estado interno de JButton.      */
     private final JButton[] botonesTab;
 
+    /**      * Estado interno de tabActivo.      */
     private int tabActivo = TAB_SUBIDOS;
+    /**      * Estado interno de listenerSubir.      */
     private ActionListener listenerSubir;
+    /**      * Estado interno de listenerPedirValoracion.      */
     private ActionListener listenerPedirValoracion;
+    /**      * Estado interno de listenerPublicar.      */
     private ActionListener listenerPublicar;
+    /**      * Estado interno de listenerEliminar.      */
     private ActionListener listenerEliminar;
 
     /**
      * Crea el panel de cartera para el cliente indicado.
      *
+     * @param mainFrame controlador principal de la aplicacion
      * @param cliente cliente propietario de la cartera
      */
     public PanelMisProductos(Main mainFrame, ClienteRegistrado cliente) {
@@ -99,6 +115,10 @@ public class PanelMisProductos extends JPanel {
         this.listenerPublicar = listener;
     }
 
+    /**
+     * Ejecuta la operacion publica addListenerEliminarProducto.
+     * @param listener parametro utilizado por la operacion
+     */
     public void addListenerEliminarProducto(ActionListener listener) {
         this.listenerEliminar = listener;
     }
@@ -223,6 +243,10 @@ public class PanelMisProductos extends JPanel {
                     e -> confirmarEliminacion(producto));
             tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
+                /**
+                 * Ejecuta la operacion publica mouseClicked.
+                 * @param e parametro utilizado por la operacion
+                 */
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     mostrarDetalleProducto(producto);
                 }

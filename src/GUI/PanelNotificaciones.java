@@ -38,21 +38,31 @@ import notificaciones.Notificacion;
 import utilidades.TipoNotificacion;
 
 
+/**
+ * Representa el componente PanelNotificaciones de la interfaz grafica.
+ */
 public class PanelNotificaciones extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
+    /**      * Estado interno de campo.      */
     private enum Filtro {
         TODAS, PENDIENTES, VISTAS
     }
 
     private static final Color COLOR_PAPELERA = new Color(154, 76, 60);
+    /**      * Estado interno de AVATAR_SIZE.      */
     private static final int AVATAR_SIZE = 150;
 
+    /**      * Estado interno de mainFrame.      */
     private final Main mainFrame;
+    /**      * Estado interno de lista.      */
     private final JPanel lista;
+    /**      * Estado interno de JButton.      */
     private final JButton[] botonesFiltro;
+    /** Formatea las fechas mostradas en las notificaciones. */
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    /**      * Estado interno de filtroActivo.      */
     private Filtro filtroActivo = Filtro.TODAS;
 
     /**
@@ -233,6 +243,10 @@ public class PanelNotificaciones extends JPanel {
         fila.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         fila.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
+            /**
+             * Ejecuta la operacion publica mouseClicked.
+             * @param e parametro utilizado por la operacion
+             */
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 mostrarDetalleNotificacion(notificacion);
             }
@@ -400,8 +414,11 @@ public class PanelNotificaciones extends JPanel {
         return boton;
     }
 
+    /**      * Estado interno de campo.      */
     private static final class IconoTic implements Icon {
+        /**          * Estado interno de SIZE.          */
         private static final int SIZE = 24;
+        /**          * Estado interno de color.          */
         private final Color color;
 
         private IconoTic(Color color) {
@@ -409,16 +426,31 @@ public class PanelNotificaciones extends JPanel {
         }
 
         @Override
+        /**
+         * Ejecuta la operacion publica getIconWidth.
+         * @return resultado de la operacion
+         */
         public int getIconWidth() {
             return SIZE;
         }
 
         @Override
+        /**
+         * Ejecuta la operacion publica getIconHeight.
+         * @return resultado de la operacion
+         */
         public int getIconHeight() {
             return SIZE;
         }
 
         @Override
+        /**
+         * Ejecuta la operacion publica paintIcon.
+         * @param c parametro utilizado por la operacion
+         * @param g parametro utilizado por la operacion
+         * @param x parametro utilizado por la operacion
+         * @param y parametro utilizado por la operacion
+         */
         public void paintIcon(Component c, Graphics g, int x, int y) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -430,8 +462,11 @@ public class PanelNotificaciones extends JPanel {
         }
     }
 
+    /**      * Estado interno de campo.      */
     private static final class IconoPapelera implements Icon {
+        /**          * Estado interno de SIZE.          */
         private static final int SIZE = 24;
+        /**          * Estado interno de color.          */
         private final Color color;
 
         private IconoPapelera(Color color) {
@@ -439,16 +474,31 @@ public class PanelNotificaciones extends JPanel {
         }
 
         @Override
+        /**
+         * Ejecuta la operacion publica getIconWidth.
+         * @return resultado de la operacion
+         */
         public int getIconWidth() {
             return SIZE;
         }
 
         @Override
+        /**
+         * Ejecuta la operacion publica getIconHeight.
+         * @return resultado de la operacion
+         */
         public int getIconHeight() {
             return SIZE;
         }
 
         @Override
+        /**
+         * Ejecuta la operacion publica paintIcon.
+         * @param c parametro utilizado por la operacion
+         * @param g parametro utilizado por la operacion
+         * @param x parametro utilizado por la operacion
+         * @param y parametro utilizado por la operacion
+         */
         public void paintIcon(Component c, Graphics g, int x, int y) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

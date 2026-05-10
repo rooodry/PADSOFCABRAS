@@ -10,12 +10,15 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 
+/**
+ * Representa el componente GoatGetHeader de la interfaz grafica.
+ */
 public class GoatGetHeader extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Builds the GOAT & GET header with the same tone as the app toolbar.
+     * Builds the GOAT &amp; GET header with the same tone as the app toolbar.
      */
     public GoatGetHeader() {
         setLayout(new BorderLayout());

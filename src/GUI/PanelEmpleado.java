@@ -47,17 +47,30 @@ import utilidades.EstadoPedido;
 import utilidades.TiposEmpleado;
 
 
+/**
+ * Representa el componente PanelEmpleado de la interfaz grafica.
+ */
 public class PanelEmpleado extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
+    /**      * Estado interno de mainFrame.      */
     private final Main mainFrame;
+    /**      * Estado interno de contenido.      */
     private final JPanel contenido;
+    /**      * Estado interno de seccionActiva.      */
     private String seccionActiva;
+    /**      * Estado interno de productoSeleccionado.      */
     private ProductoTienda productoSeleccionado;
+    /**      * Estado interno de editandoProducto.      */
     private boolean editandoProducto;
+    /**      * Estado interno de seccionAnteriorProductos.      */
     private String seccionAnteriorProductos;
 
+    /**
+     * Construye una instancia de PanelEmpleado.
+     * @param mainFrame parametro utilizado por la operacion
+     */
     public PanelEmpleado(Main mainFrame) {
         this.mainFrame = mainFrame;
         this.contenido = new JPanel();
@@ -71,6 +84,9 @@ public class PanelEmpleado extends JPanel {
         refrescar();
     }
 
+    /**
+     * Ejecuta la operacion publica refrescar.
+     */
     public void refrescar() {
         contenido.removeAll();
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
@@ -211,6 +227,10 @@ public class PanelEmpleado extends JPanel {
         TarjetaProducto vistaCliente = new TarjetaProducto(producto);
         vistaCliente.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
+            /**
+             * Ejecuta la operacion publica mouseClicked.
+             * @param e parametro utilizado por la operacion
+             */
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 abrirDetalleProducto(producto, false);
             }
@@ -406,6 +426,10 @@ public class PanelEmpleado extends JPanel {
             TarjetaProducto vistaCliente = new TarjetaProducto(producto);
             vistaCliente.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
+                /**
+                 * Ejecuta la operacion publica mouseClicked.
+                 * @param e parametro utilizado por la operacion
+                 */
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     abrirDetalleProducto(producto, false);
                 }
@@ -556,6 +580,10 @@ public class PanelEmpleado extends JPanel {
         detalle.setAlignmentX(Component.CENTER_ALIGNMENT);
         detalle.setListenerEdicion(new PanelDeProducto.ListenerEdicion() {
             @Override
+            /**
+             * Ejecuta la operacion publica confirmar.
+             * @param datos parametro utilizado por la operacion
+             */
             public void confirmar(PanelDeProducto.DatosEdicion datos) {
                 mainFrame.editarProductoTienda(productoSeleccionado,
                         datos.nombre,
@@ -569,6 +597,9 @@ public class PanelEmpleado extends JPanel {
             }
 
             @Override
+            /**
+             * Ejecuta la operacion publica cancelar.
+             */
             public void cancelar() {
                 editandoProducto = false;
                 refrescar();

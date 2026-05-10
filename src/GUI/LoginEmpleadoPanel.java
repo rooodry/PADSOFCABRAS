@@ -4,10 +4,18 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * Representa el componente LoginEmpleadoPanel de la interfaz grafica.
+ */
 public class LoginEmpleadoPanel extends JPanel {
 
+    /**      * Estado interno de mainFrame.      */
     private Main mainFrame;
 
+    /**
+     * Construye una instancia de LoginEmpleadoPanel.
+     * @param mainFrame parametro utilizado por la operacion
+     */
     public LoginEmpleadoPanel(Main mainFrame) {
         this.mainFrame = mainFrame;
 

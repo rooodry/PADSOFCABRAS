@@ -42,26 +42,44 @@ import javax.swing.border.EmptyBorder;
 import productos.ProductoTienda;
 
 
+/**
+ * Representa el componente PanelDeProducto de la interfaz grafica.
+ */
 public class PanelDeProducto extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
+    /**      * Estado interno de MAX_ESTRELLAS.      */
     private static final int MAX_ESTRELLAS = 5;
+    /**      * Estado interno de ANCHO_IZQUIERDA.      */
     private static final int ANCHO_IZQUIERDA = 270;
     private static final Color COLOR_COMENTARIO = new Color(145, 124, 101);
 
+    /**      * Estado interno de producto.      */
     private final ProductoTienda producto;
+    /**      * Estado interno de mainFrame.      */
     private final Main mainFrame;
+    /** Formatea las acciones registradas para añadir productos a la cesta. */
     private final List<ActionListener> listenersCesta = new ArrayList<>();
+    /**      * Estado interno de editable.      */
     private final boolean editable;
+    /**      * Estado interno de botonCesta.      */
     private JButton botonCesta;
+    /**      * Estado interno de campoNombre.      */
     private JTextField campoNombre;
+    /**      * Estado interno de campoPrecio.      */
     private JTextField campoPrecio;
+    /**      * Estado interno de campoStock.      */
     private JSpinner campoStock;
+    /**      * Estado interno de campoImagen.      */
     private JTextField campoImagen;
+    /**      * Estado interno de campoCategorias.      */
     private JTextField campoCategorias;
+    /**      * Estado interno de campoDescripcion.      */
     private JTextArea campoDescripcion;
+    /**      * Estado interno de scrollComentarios.      */
     private JScrollPane scrollComentarios;
+    /**      * Estado interno de listenerEdicion.      */
     private ListenerEdicion listenerEdicion;
 
     /**
@@ -122,6 +140,10 @@ public class PanelDeProducto extends JPanel {
         }
     }
 
+    /**
+     * Ejecuta la operacion publica setListenerEdicion.
+     * @param listenerEdicion parametro utilizado por la operacion
+     */
     public void setListenerEdicion(ListenerEdicion listenerEdicion) {
         this.listenerEdicion = listenerEdicion;
     }

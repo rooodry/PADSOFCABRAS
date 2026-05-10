@@ -24,12 +24,18 @@ import productos.ProductoTienda;
 import utilidades.EstadoPedido;
 
 
+/**
+ * Representa el componente PanelPedidos de la interfaz grafica.
+ */
 public class PanelPedidos extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
+    /**      * Estado interno de mainFrame.      */
     private final Main mainFrame;
+    /**      * Estado interno de lista.      */
     private final JPanel lista;
+    /** Formatea las fechas mostradas en el historial de pedidos. */
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     /**

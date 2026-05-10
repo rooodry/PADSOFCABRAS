@@ -27,13 +27,20 @@ import javax.swing.border.EmptyBorder;
 import productos.*;
 
 
+/**
+ * Representa el componente PanelCesta de la interfaz grafica.
+ */
 public class PanelCesta extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
+    /**      * Estado interno de mainFrame.      */
     private final Main mainFrame;
+    /**      * Estado interno de listaProductos.      */
     private final JPanel listaProductos;
+    /**      * Estado interno de listaPacks.      */
     private final JPanel listaPacks;
+    /**      * Estado interno de lblTotal.      */
     private final JLabel lblTotal;
 
     /**

@@ -3,13 +3,29 @@ package GUI;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Representa el componente VentanaPrincipal de la interfaz grafica.
+ */
 public class VentanaPrincipal {
 
+    /**
+     * Construye la ventana principal auxiliar.
+     */
+    public VentanaPrincipal() {
+    }
+
+    /**
+     * Punto de entrada de la aplicacion.
+     * @param args parametro utilizado por la operacion
+     */
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> new VentanaPrincipal().iniciar());
     }
 
+    /**
+     * Ejecuta la operacion publica iniciar.
+     */
     public void iniciar() {
         JFrame ventana = new JFrame("GOAT & GET");
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

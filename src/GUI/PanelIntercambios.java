@@ -39,25 +39,45 @@ import utilidades.EstadoOferta;
 import utilidades.EstadoProducto;
 
 
+/**
+ * Representa el componente PanelIntercambios de la interfaz grafica.
+ */
 public class PanelIntercambios extends JPanel {
 
     private static final long serialVersionUID = 1L;
+    /**      * Estado interno de TAB_LANZAR.      */
     private static final String TAB_LANZAR = "LANZAR OFERTA";
+    /**      * Estado interno de TAB_OFERTAS.      */
     private static final String TAB_OFERTAS = "OFERTAS";
 
+    /**      * Estado interno de mainFrame.      */
     private final Main mainFrame;
+    /**      * Estado interno de panelContenido.      */
     private final JPanel panelContenido;
+    /**      * Estado interno de btnLanzarOferta.      */
     private final JButton btnLanzarOferta;
+    /**      * Estado interno de btnOfertas.      */
     private final JButton btnOfertas;
+    /**      * Estado interno de txtBuscar.      */
     private final JTextField txtBuscar;
+    /** Formatea las fechas mostradas en los intercambios. */
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
 
+    /**      * Estado interno de tabActivo.      */
     private String tabActivo = TAB_LANZAR;
+    /**      * Estado interno de terminoBusqueda.      */
     private String terminoBusqueda = "";
+    /**      * Estado interno de mercado.      */
     private List<ProductoSegundaMano> mercado;
+    /**      * Estado interno de productoSeleccionado.      */
     private ProductoSegundaMano productoSeleccionado;
+    /**      * Estado interno de eligiendoProductoPropio.      */
     private boolean eligiendoProductoPropio = false;
 
+    /**
+     * Construye una instancia de PanelIntercambios.
+     * @param mainFrame parametro utilizado por la operacion
+     */
     public PanelIntercambios(Main mainFrame) {
         this.mainFrame = mainFrame;
         this.panelContenido = new JPanel(new BorderLayout());
@@ -66,16 +86,28 @@ public class PanelIntercambios extends JPanel {
         this.txtBuscar = new JTextField(18);
         this.txtBuscar.getDocument().addDocumentListener(new DocumentListener() {
             @Override
+            /**
+             * Ejecuta la operacion publica insertUpdate.
+             * @param e parametro utilizado por la operacion
+             */
             public void insertUpdate(DocumentEvent e) {
                 actualizarBusqueda();
             }
 
             @Override
+            /**
+             * Ejecuta la operacion publica removeUpdate.
+             * @param e parametro utilizado por la operacion
+             */
             public void removeUpdate(DocumentEvent e) {
                 actualizarBusqueda();
             }
 
             @Override
+            /**
+             * Ejecuta la operacion publica changedUpdate.
+             * @param e parametro utilizado por la operacion
+             */
             public void changedUpdate(DocumentEvent e) {
                 actualizarBusqueda();
             }
@@ -88,6 +120,9 @@ public class PanelIntercambios extends JPanel {
         refrescar();
     }
 
+    /**
+     * Ejecuta la operacion publica refrescar.
+     */
     public void refrescar() {
         mainFrame.actualizarIntercambiosCaducados();
         actualizarFiltro();

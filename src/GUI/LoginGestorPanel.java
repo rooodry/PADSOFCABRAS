@@ -5,11 +5,19 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/**
+ * Representa el componente LoginGestorPanel de la interfaz grafica.
+ */
 public class LoginGestorPanel extends JPanel {
 
+    /**      * Estado interno de mainFrame.      */
     private Main mainFrame;
 
 
+    /**
+     * Construye una instancia de LoginGestorPanel.
+     * @param mainFrame parametro utilizado por la operacion
+     */
     public LoginGestorPanel(Main mainFrame) {
         this.mainFrame = mainFrame;
 

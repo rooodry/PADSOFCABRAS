@@ -63,78 +63,149 @@ import utilidades.TipoNotificacion;
 import utilidades.TiposEmpleado;
 
 
+/**
+ * Representa el componente Main de la interfaz grafica.
+ */
 public class Main extends JFrame {
 
     private static final long serialVersionUID = 1L;
+    /**      * Estado interno de FICHERO_DATOS.      */
     private static final String FICHERO_DATOS = "goatget-data.dat";
 
 
+    /**
+     * Identificador de pantalla PANTALLA_CLIENTE.
+     */
     public static final String PANTALLA_CLIENTE = "PANTALLA_CLIENTE";
 
 
+    /**
+     * Identificador de pantalla PANTALLA_REGISTRO.
+     */
     public static final String PANTALLA_REGISTRO = "PANTALLA_REGISTRO";
 
 
+    /**
+     * Identificador de pantalla PANTALLA_HOME.
+     */
     public static final String PANTALLA_HOME = "PANTALLA_HOME";
 
 
+    /**
+     * Identificador de pantalla PANTALLA_CESTA.
+     */
     public static final String PANTALLA_CESTA = "PANTALLA_CESTA";
 
 
+    /**
+     * Identificador de pantalla PANTALLA_MIS_PRODUCTOS.
+     */
     public static final String PANTALLA_MIS_PRODUCTOS = "PANTALLA_MIS_PRODUCTOS";
 
 
+    /**
+     * Identificador de pantalla PANTALLA_SUBIR.
+     */
     public static final String PANTALLA_SUBIR = "PANTALLA_SUBIR";
 
 
+    /**
+     * Identificador de pantalla PANTALLA_PERFIL.
+     */
     public static final String PANTALLA_PERFIL = "PANTALLA_PERFIL";
 
 
+    /**
+     * Identificador de pantalla PANTALLA_PACKS.
+     */
     public static final String PANTALLA_PACKS = "PANTALLA_PACKS";
 
 
+    /**
+     * Identificador de pantalla PANTALLA_INTERCAMBIOS.
+     */
     public static final String PANTALLA_INTERCAMBIOS = "PANTALLA_INTERCAMBIOS";
 
 
+    /**
+     * Identificador de pantalla PANTALLA_NOTIFICACIONES.
+     */
     public static final String PANTALLA_NOTIFICACIONES = "PANTALLA_NOTIFICACIONES";
 
 
+    /**
+     * Identificador de pantalla PANTALLA_GESTION.
+     */
     public static final String PANTALLA_GESTION = "PANTALLA_GESTION";
 
 
+    /**
+     * Identificador de pantalla PANTALLA_EMPLEADO.
+     */
     public static final String PANTALLA_EMPLEADO = "PANTALLA_EMPLEADO";
 
 
+    /**
+     * Identificador de pantalla PANTALLA_GESTOR.
+     */
     public static final String PANTALLA_GESTOR = "PANTALLA_GESTOR";
 
+    /**      * Estado interno de sistema.      */
     private final Sistema sistema;
+    /**      * Estado interno de stock.      */
     private final Stock stock;
+    /**      * Estado interno de productosTienda.      */
     private final List<ProductoTienda> productosTienda;
+    /**      * Estado interno de packs.      */
     private final List<Pack> packs;
+    /**      * Estado interno de intercambios.      */
     private final List<Intercambio> intercambios;
+    /**      * Estado interno de productosSegundaMano.      */
     private final List<ProductoSegundaMano> productosSegundaMano;
+    /**      * Estado interno de packsEnCesta.      */
     private final Map<ProductoTienda, Pack> packsEnCesta;
+    /**      * Estado interno de cardLayout.      */
     private final CardLayout cardLayout;
+    /**      * Estado interno de panelContenedor.      */
     private final JPanel panelContenedor;
 
+    /**      * Estado interno de clienteActual.      */
     private ClienteRegistrado clienteActual;
+    /**      * Estado interno de homePanel.      */
     private HomePanel homePanel;
+    /**      * Estado interno de panelCesta.      */
     private PanelCesta panelCesta;
+    /**      * Estado interno de panelMisProductos.      */
     private PanelMisProductos panelMisProductos;
+    /**      * Estado interno de panelPerfil.      */
     private PanelPerfil panelPerfil;
+    /**      * Estado interno de panelPacks.      */
     private PanelPacks panelPacks;
+    /**      * Estado interno de panelIntercambios.      */
     private PanelIntercambios panelIntercambios;
+    /**      * Estado interno de panelNotificaciones.      */
     private PanelNotificaciones panelNotificaciones;
+    /**      * Estado interno de panelGestion.      */
     private PanelGestion panelGestion;
+    /**      * Estado interno de panelEmpleado.      */
     private PanelEmpleado panelEmpleado;
+    /**      * Estado interno de panelGestor.      */
     private PanelGestor panelGestor;
+    /**      * Estado interno de clienteInvitado.      */
     private ClienteNoRegistrado clienteInvitado;
+    /**      * Estado interno de empleadoActual.      */
     private Empleado empleadoActual;
+    /**      * Estado interno de gestorPrincipal.      */
     private Gestor gestorPrincipal;
+    /**      * Estado interno de sesionRegistrada.      */
     private boolean sesionRegistrada;
+    /**      * Estado interno de sesionEmpleado.      */
     private boolean sesionEmpleado;
+    /**      * Estado interno de sesionGestor.      */
     private boolean sesionGestor;
+    /**      * Estado interno de persistenciaActiva.      */
     private boolean persistenciaActiva;
+    /**      * Estado interno de plazoOfertasHoras.      */
     private int plazoOfertasHoras;
 
     /**
@@ -165,6 +236,10 @@ public class Main extends JFrame {
         this.persistenciaActiva = true;
         addWindowListener(new WindowAdapter() {
         @Override
+        /**
+         * Ejecuta la operacion publica windowClosing.
+         * @param e parametro utilizado por la operacion
+         */
         public void windowClosing(WindowEvent e) {
             try {
                 guardarEstadoPersistente();
@@ -222,10 +297,18 @@ public class Main extends JFrame {
         return sesionRegistrada;
     }
 
+    /**
+     * Ejecuta la operacion publica isSesionEmpleado.
+     * @return resultado de la operacion
+     */
     public boolean isSesionEmpleado() {
         return sesionEmpleado;
     }
 
+    /**
+     * Ejecuta la operacion publica isSesionGestor.
+     * @return resultado de la operacion
+     */
     public boolean isSesionGestor() {
         return sesionGestor;
     }
@@ -239,14 +322,26 @@ public class Main extends JFrame {
         return clienteActual;
     }
 
+    /**
+     * Ejecuta la operacion publica getEmpleadoActual.
+     * @return resultado de la operacion
+     */
     public Empleado getEmpleadoActual() {
         return empleadoActual;
     }
 
+    /**
+     * Ejecuta la operacion publica getGestorPrincipal.
+     * @return resultado de la operacion
+     */
     public Gestor getGestorPrincipal() {
         return gestorPrincipal;
     }
 
+    /**
+     * Ejecuta la operacion publica getEmpleados.
+     * @return resultado de la operacion
+     */
     public List<Empleado> getEmpleados() {
         List<Empleado> empleados = new ArrayList<>();
         for (Usuario usuario : sistema.getUsuarios()) {
@@ -257,6 +352,11 @@ public class Main extends JFrame {
         return empleados;
     }
 
+    /**
+     * Ejecuta la operacion publica getVentasEmpleado.
+     * @param empleado parametro utilizado por la operacion
+     * @return resultado de la operacion
+     */
     public List<Pedido> getVentasEmpleado(Empleado empleado) {
         List<Pedido> ventas = new ArrayList<>();
         if (empleado == null) {
@@ -271,6 +371,11 @@ public class Main extends JFrame {
         return ventas;
     }
 
+    /**
+     * Ejecuta la operacion publica getTotalVentasEmpleado.
+     * @param empleado parametro utilizado por la operacion
+     * @return resultado de la operacion
+     */
     public double getTotalVentasEmpleado(Empleado empleado) {
         double total = 0.0;
         for (Pedido pedido : getVentasEmpleado(empleado)) {
@@ -306,6 +411,11 @@ public class Main extends JFrame {
         return new ArrayList<>(packs);
     }
 
+    /**
+     * Ejecuta la operacion publica getPackAsociadoEnCesta.
+     * @param producto parametro utilizado por la operacion
+     * @return resultado de la operacion
+     */
     public Pack getPackAsociadoEnCesta(ProductoTienda producto) {
         Pack pack = packsEnCesta.get(producto);
         if (pack != null) {
@@ -328,6 +438,10 @@ public class Main extends JFrame {
         return new ArrayList<>(intercambios);
     }
 
+    /**
+     * Ejecuta la operacion publica getIntercambiosClienteActual.
+     * @return resultado de la operacion
+     */
     public List<Intercambio> getIntercambiosClienteActual() {
         List<Intercambio> resultado = new ArrayList<>();
         if (clienteActual == null) {
@@ -342,14 +456,26 @@ public class Main extends JFrame {
         return resultado;
     }
 
+    /**
+     * Ejecuta la operacion publica getPedidosGestion.
+     * @return resultado de la operacion
+     */
     public List<Pedido> getPedidosGestion() {
         return sistema.getPedidos();
     }
 
+    /**
+     * Ejecuta la operacion publica getDescuentosGestion.
+     * @return resultado de la operacion
+     */
     public List<Descuento> getDescuentosGestion() {
         return sistema.getDescuentos();
     }
 
+    /**
+     * Ejecuta la operacion publica getClientesRegistrados.
+     * @return resultado de la operacion
+     */
     public List<ClienteRegistrado> getClientesRegistrados() {
         List<ClienteRegistrado> clientes = new ArrayList<>();
         for (Usuario usuario : sistema.getUsuarios()) {
@@ -360,10 +486,18 @@ public class Main extends JFrame {
         return clientes;
     }
 
+    /**
+     * Ejecuta la operacion publica getProductosSegundaManoGestion.
+     * @return resultado de la operacion
+     */
     public List<ProductoSegundaMano> getProductosSegundaManoGestion() {
         return getTodosProductosSegundaMano();
     }
 
+    /**
+     * Ejecuta la operacion publica getProductosPendientesValoracion.
+     * @return resultado de la operacion
+     */
     public List<ProductoSegundaMano> getProductosPendientesValoracion() {
         List<ProductoSegundaMano> pendientes = new ArrayList<>();
         for (ProductoSegundaMano producto : getTodosProductosSegundaMano()) {
@@ -412,6 +546,8 @@ public class Main extends JFrame {
      * Starts a customer session.
      *
      * @param identificacion user name entered in the form
+     * @param contrasena password entered in the form
+     * @return true if the customer session starts correctly
      */
     public boolean iniciarSesionCliente(String identificacion, String contrasena) {
         ClienteRegistrado cliente = buscarCliente(identificacion, contrasena);
@@ -447,6 +583,9 @@ public class Main extends JFrame {
      * Starts a basic employee or manager session.
      *
      * @param rol selected role name
+     * @param identificacion user name entered in the form
+     * @param contrasena password entered in the form
+     * @return true if the management session starts correctly
      */
     public boolean iniciarSesionGestion(String rol, String identificacion, String contrasena) {
         if ("Empleado".equalsIgnoreCase(rol)) {
@@ -508,6 +647,7 @@ public class Main extends JFrame {
      * @param nombre user name
      * @param contrasena password
      * @param dni identity document
+     * @return true if the customer is registered
      */
     public boolean registrarCliente(String nombre, String contrasena, String dni) {
         if (existeClienteConIdentificacion(nombre)) {
@@ -761,6 +901,9 @@ public class Main extends JFrame {
         }
     }
 
+    /**
+     * Ejecuta la operacion publica actualizarIntercambiosCaducados.
+     */
     public void actualizarIntercambiosCaducados() {
         enviarRecordatorioOfertasCaducidad();
     }
@@ -878,6 +1021,11 @@ public class Main extends JFrame {
         proponerIntercambio(deseado, ofertado);
     }
 
+    /**
+     * Ejecuta la operacion publica proponerIntercambio.
+     * @param deseado parametro utilizado por la operacion
+     * @param ofertado parametro utilizado por la operacion
+     */
     public void proponerIntercambio(ProductoSegundaMano deseado, ProductoSegundaMano ofertado) {
         if (deseado == null || ofertado == null) {
             return;
@@ -992,6 +1140,7 @@ public class Main extends JFrame {
      * @param nombre product name
      * @param descripcion product description
      * @param imagen optional image path
+     * @param estado optional conservation state
      */
     public void anadirProductoALaCartera(String nombre, String descripcion, String imagen, EstadoConservacion estado) {
         ProductoSegundaMano nuevo = new ProductoSegundaMano(nombre, descripcion, imagen, clienteActual);
@@ -1005,6 +1154,12 @@ public class Main extends JFrame {
         guardarEstadoPersistente();
     }
 
+    /**
+     * Ejecuta la operacion publica anadirProductoALaCartera.
+     * @param nombre parametro utilizado por la operacion
+     * @param descripcion parametro utilizado por la operacion
+     * @param imagen parametro utilizado por la operacion
+     */
     public void anadirProductoALaCartera(String nombre, String descripcion, String imagen) {
         anadirProductoALaCartera(nombre, descripcion, imagen, null);
     }
@@ -1038,6 +1193,10 @@ public class Main extends JFrame {
         guardarEstadoPersistente();
     }
 
+    /**
+     * Ejecuta la operacion publica eliminarProductoDeCartera.
+     * @param producto parametro utilizado por la operacion
+     */
     public void eliminarProductoDeCartera(ProductoSegundaMano producto) {
         if (clienteActual == null || producto == null
                 || !clienteActual.getCartera().getProductos().contains(producto)) {
@@ -1062,6 +1221,12 @@ public class Main extends JFrame {
         }
     }
 
+    /**
+     * Ejecuta la operacion publica cambiarContrasenaCliente.
+     * @param contrasenaActual parametro utilizado por la operacion
+     * @param nuevaContrasena parametro utilizado por la operacion
+     * @return resultado de la operacion
+     */
     public boolean cambiarContrasenaCliente(String contrasenaActual, String nuevaContrasena) {
         if (clienteActual == null || contrasenaActual == null || nuevaContrasena == null
                 || nuevaContrasena.isBlank()) {
@@ -1089,6 +1254,11 @@ public class Main extends JFrame {
         }
     }
 
+    /**
+     * Ejecuta la operacion publica fijarStockProducto.
+     * @param producto parametro utilizado por la operacion
+     * @param unidades parametro utilizado por la operacion
+     */
     public void fijarStockProducto(ProductoTienda producto, int unidades) {
         if (producto == null || unidades < 0) {
             return;
@@ -1102,6 +1272,15 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
+    /**
+     * Ejecuta la operacion publica editarProductoTienda.
+     * @param producto parametro utilizado por la operacion
+     * @param precio parametro utilizado por la operacion
+     * @param unidades parametro utilizado por la operacion
+     * @param descripcion parametro utilizado por la operacion
+     * @param imagen parametro utilizado por la operacion
+     * @param categorias parametro utilizado por la operacion
+     */
     public void editarProductoTienda(ProductoTienda producto, double precio, int unidades,
             String descripcion, String imagen, List<String> categorias) {
         if (producto == null) {
@@ -1114,6 +1293,16 @@ public class Main extends JFrame {
         fijarStockProducto(producto, Math.max(0, unidades));
     }
 
+    /**
+     * Ejecuta la operacion publica editarProductoTienda.
+     * @param producto parametro utilizado por la operacion
+     * @param nombre parametro utilizado por la operacion
+     * @param precio parametro utilizado por la operacion
+     * @param unidades parametro utilizado por la operacion
+     * @param descripcion parametro utilizado por la operacion
+     * @param imagen parametro utilizado por la operacion
+     * @param categorias parametro utilizado por la operacion
+     */
     public void editarProductoTienda(ProductoTienda producto, String nombre, double precio, int unidades,
             String descripcion, String imagen, List<String> categorias) {
         if (producto == null) {
@@ -1125,6 +1314,10 @@ public class Main extends JFrame {
         editarProductoTienda(producto, precio, unidades, descripcion, imagen, categorias);
     }
 
+    /**
+     * Ejecuta la operacion publica eliminarProductoTiendaGestion.
+     * @param producto parametro utilizado por la operacion
+     */
     public void eliminarProductoTiendaGestion(ProductoTienda producto) {
         if (!sesionGestor || producto == null) {
             return;
@@ -1155,6 +1348,31 @@ public class Main extends JFrame {
         }
     }
 
+    /**
+     * Ejecuta la operacion publica crearProductoTiendaGestion.
+     * @param tipo parametro utilizado por la operacion
+     * @param nombre parametro utilizado por la operacion
+     * @param precio parametro utilizado por la operacion
+     * @param unidades parametro utilizado por la operacion
+     * @param valoracion parametro utilizado por la operacion
+     * @param descripcion parametro utilizado por la operacion
+     * @param imagen parametro utilizado por la operacion
+     * @param categorias parametro utilizado por la operacion
+     * @param tiene2x1 parametro utilizado por la operacion
+     * @param rebajaPorcentaje parametro utilizado por la operacion
+     * @param rebajaFija parametro utilizado por la operacion
+     * @param comicPaginas parametro utilizado por la operacion
+     * @param comicAutor parametro utilizado por la operacion
+     * @param comicEditorial parametro utilizado por la operacion
+     * @param comicGenero parametro utilizado por la operacion
+     * @param comicAnio parametro utilizado por la operacion
+     * @param juegoJugadores parametro utilizado por la operacion
+     * @param juegoEdadMinima parametro utilizado por la operacion
+     * @param tipoJuego parametro utilizado por la operacion
+     * @param figuraAltura parametro utilizado por la operacion
+     * @param figuraMarca parametro utilizado por la operacion
+     * @param figuraMaterial parametro utilizado por la operacion
+     */
     public void crearProductoTiendaGestion(String tipo, String nombre, double precio, int unidades,
             int valoracion, String descripcion, String imagen, List<String> categorias,
             boolean tiene2x1, double rebajaPorcentaje, double rebajaFija,
@@ -1208,6 +1426,10 @@ public class Main extends JFrame {
         return texto == null || texto.isBlank() ? defecto : texto.trim();
     }
 
+    /**
+     * Ejecuta la operacion publica recargarCatalogoDesdeFichero.
+     * @param ruta parametro utilizado por la operacion
+     */
     public void recargarCatalogoDesdeFichero(String ruta) {
         if (ruta == null || ruta.isBlank()) {
             return;
@@ -1218,10 +1440,23 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
+    /**
+     * Ejecuta la operacion publica crearPackGestion.
+     * @param nombre parametro utilizado por la operacion
+     * @param precio parametro utilizado por la operacion
+     * @param productos parametro utilizado por la operacion
+     */
     public void crearPackGestion(String nombre, double precio, List<ProductoTienda> productos) {
         crearPackGestion(nombre, "", precio, productos);
     }
 
+    /**
+     * Ejecuta la operacion publica crearPackGestion.
+     * @param nombre parametro utilizado por la operacion
+     * @param categoria parametro utilizado por la operacion
+     * @param precio parametro utilizado por la operacion
+     * @param productos parametro utilizado por la operacion
+     */
     public void crearPackGestion(String nombre, String categoria, double precio, List<ProductoTienda> productos) {
         if (nombre == null || nombre.isBlank()) {
             JOptionPane.showMessageDialog(this, "El pack necesita nombre.", "Pack", JOptionPane.WARNING_MESSAGE);
@@ -1232,10 +1467,23 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
+    /**
+     * Ejecuta la operacion publica modificarPackGestion.
+     * @param pack parametro utilizado por la operacion
+     * @param precio parametro utilizado por la operacion
+     * @param productos parametro utilizado por la operacion
+     */
     public void modificarPackGestion(Pack pack, double precio, List<ProductoTienda> productos) {
         modificarPackGestion(pack, pack == null ? "" : pack.getCategoria(), precio, productos);
     }
 
+    /**
+     * Ejecuta la operacion publica modificarPackGestion.
+     * @param pack parametro utilizado por la operacion
+     * @param categoria parametro utilizado por la operacion
+     * @param precio parametro utilizado por la operacion
+     * @param productos parametro utilizado por la operacion
+     */
     public void modificarPackGestion(Pack pack, String categoria, double precio, List<ProductoTienda> productos) {
         if (pack == null) {
             return;
@@ -1253,6 +1501,13 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
+    /**
+     * Ejecuta la operacion publica valorarProductoSegundaMano.
+     * @param producto parametro utilizado por la operacion
+     * @param valoracion parametro utilizado por la operacion
+     * @param valorEstimado parametro utilizado por la operacion
+     * @param conservacion parametro utilizado por la operacion
+     */
     public void valorarProductoSegundaMano(ProductoSegundaMano producto, int valoracion,
             double valorEstimado, EstadoConservacion conservacion) {
         if (producto == null) {
@@ -1271,6 +1526,12 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
+    /**
+     * Ejecuta la operacion publica valorarProductoSegundaMano.
+     * @param producto parametro utilizado por la operacion
+     * @param valorEstimado parametro utilizado por la operacion
+     * @param conservacion parametro utilizado por la operacion
+     */
     public void valorarProductoSegundaMano(ProductoSegundaMano producto,
             double valorEstimado, EstadoConservacion conservacion) {
         if (producto == null) {
@@ -1289,6 +1550,10 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
+    /**
+     * Ejecuta la operacion publica marcarIntercambioRealizado.
+     * @param intercambio parametro utilizado por la operacion
+     */
     public void marcarIntercambioRealizado(Intercambio intercambio) {
         if (intercambio == null) {
             return;
@@ -1310,10 +1575,18 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
+    /**
+     * Ejecuta la operacion publica getPlazoOfertasHoras.
+     * @return resultado de la operacion
+     */
     public int getPlazoOfertasHoras() {
         return plazoOfertasHoras;
     }
 
+    /**
+     * Ejecuta la operacion publica setPlazoOfertasHoras.
+     * @param plazoOfertasHoras parametro utilizado por la operacion
+     */
     public void setPlazoOfertasHoras(int plazoOfertasHoras) {
         if (!sesionGestor) {
             return;
@@ -1322,6 +1595,12 @@ public class Main extends JFrame {
         guardarEstadoPersistente();
     }
 
+    /**
+     * Ejecuta la operacion publica crearEmpleadoDesdeGestor.
+     * @param nombre parametro utilizado por la operacion
+     * @param contrasena parametro utilizado por la operacion
+     * @param permisos parametro utilizado por la operacion
+     */
     public void crearEmpleadoDesdeGestor(String nombre, String contrasena, Set<TiposEmpleado> permisos) {
         if (!sesionGestor || nombre == null || nombre.isBlank() || contrasena == null || contrasena.isBlank()) {
             JOptionPane.showMessageDialog(this,
@@ -1345,6 +1624,10 @@ public class Main extends JFrame {
         guardarEstadoPersistente();
     }
 
+    /**
+     * Ejecuta la operacion publica eliminarEmpleadoDesdeGestor.
+     * @param empleado parametro utilizado por la operacion
+     */
     public void eliminarEmpleadoDesdeGestor(Empleado empleado) {
         if (!sesionGestor || empleado == null) {
             return;
@@ -1357,6 +1640,11 @@ public class Main extends JFrame {
         guardarEstadoPersistente();
     }
 
+    /**
+     * Ejecuta la operacion publica configurarPermisosEmpleado.
+     * @param empleado parametro utilizado por la operacion
+     * @param permisos parametro utilizado por la operacion
+     */
     public void configurarPermisosEmpleado(Empleado empleado, Set<TiposEmpleado> permisos) {
         if (!sesionGestor || empleado == null || permisos == null) {
             return;
@@ -1366,6 +1654,12 @@ public class Main extends JFrame {
         guardarEstadoPersistente();
     }
 
+    /**
+     * Ejecuta la operacion publica aplicarDescuentoProducto.
+     * @param producto parametro utilizado por la operacion
+     * @param tipoDescuento parametro utilizado por la operacion
+     * @param valor parametro utilizado por la operacion
+     */
     public void aplicarDescuentoProducto(ProductoTienda producto, String tipoDescuento, double valor) {
         if (!sesionGestor || producto == null) {
             return;
@@ -1383,6 +1677,13 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
+    /**
+     * Ejecuta la operacion publica aplicarDescuentoCategoria.
+     * @param categoria parametro utilizado por la operacion
+     * @param tipoDescuento parametro utilizado por la operacion
+     * @param valor parametro utilizado por la operacion
+     * @return resultado de la operacion
+     */
     public int aplicarDescuentoCategoria(String categoria, String tipoDescuento, double valor) {
         if (!sesionGestor || categoria == null || categoria.isBlank()) {
             return 0;
@@ -1403,6 +1704,10 @@ public class Main extends JFrame {
         return actualizados;
     }
 
+    /**
+     * Ejecuta la operacion publica limpiarDescuentoProducto.
+     * @param producto parametro utilizado por la operacion
+     */
     public void limpiarDescuentoProducto(ProductoTienda producto) {
         if (!sesionGestor || producto == null) {
             return;
@@ -1413,6 +1718,11 @@ public class Main extends JFrame {
         refrescarPantallasConDatos();
     }
 
+    /**
+     * Ejecuta la operacion publica getTipoDescuentoProducto.
+     * @param producto parametro utilizado por la operacion
+     * @return resultado de la operacion
+     */
     public String getTipoDescuentoProducto(ProductoTienda producto) {
         return tipoDescuentoActivo(producto);
     }
@@ -1510,6 +1820,9 @@ public class Main extends JFrame {
         }
     }
 
+    /**
+     * Ejecuta la operacion publica cerrarSesion.
+     */
     public void cerrarSesion() {
         guardarEstadoPersistente();
         sesionRegistrada = false;
@@ -1840,18 +2153,30 @@ public class Main extends JFrame {
         return null;
     }
 
+    /**      * Estado interno de campo.      */
     private static class EstadoAplicacion implements Serializable {
         private static final long serialVersionUID = 1L;
+        /**          * Estado interno de usuarios.          */
         private List<Usuario> usuarios;
+        /**          * Estado interno de pedidos.          */
         private List<Pedido> pedidos;
+        /**          * Estado interno de descuentos.          */
         private List<Descuento> descuentos;
+        /**          * Estado interno de productosTienda.          */
         private List<ProductoTienda> productosTienda;
+        /**          * Estado interno de packs.          */
         private List<Pack> packs;
+        /**          * Estado interno de intercambios.          */
         private List<Intercambio> intercambios;
+        /**          * Estado interno de productosSegundaMano.          */
         private List<ProductoSegundaMano> productosSegundaMano;
+        /**          * Estado interno de stock.          */
         private Map<ProductoTienda, Integer> stock;
+        /**          * Estado interno de nombreClienteActual.          */
         private String nombreClienteActual;
+        /**          * Estado interno de nombreGestorPrincipal.          */
         private String nombreGestorPrincipal;
+        /**          * Estado interno de plazoOfertasHoras.          */
         private int plazoOfertasHoras;
     }
 
@@ -2335,6 +2660,10 @@ public class Main extends JFrame {
         }
     }
 
+    /**
+     * Ejecuta la operacion publica cambiarFotoPerfilCliente.
+     * @param nuevaRutaFoto parametro utilizado por la operacion
+     */
     public void cambiarFotoPerfilCliente(String nuevaRutaFoto) {
         if (nuevaRutaFoto == null || nuevaRutaFoto.isBlank()) {
             return;
@@ -2345,6 +2674,10 @@ public class Main extends JFrame {
         guardarEstadoPersistente();
     }
 
+    /**
+     * Ejecuta la operacion publica retirarPackDeCesta.
+     * @param pack parametro utilizado por la operacion
+     */
     public void retirarPackDeCesta(Pack pack) {
         if (!clienteActual.getCesta().getPacks().containsKey(pack)) {
             return;

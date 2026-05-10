@@ -5,12 +5,23 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 
+/**
+ * Representa el componente PanelSubirProducto de la interfaz grafica.
+ */
 public class PanelSubirProducto extends JPanel {
+    /**      * Estado interno de mainFrame.      */
     private Main mainFrame;
+    /**      * Estado interno de txtNombre.      */
     private JTextField txtNombre;
+    /**      * Estado interno de txtDescripcion.      */
     private JTextArea txtDescripcion;
+    /**      * Estado interno de txtImagen.      */
     private JTextField txtImagen;
 
+    /**
+     * Construye una instancia de PanelSubirProducto.
+     * @param mainFrame parametro utilizado por la operacion
+     */
     public PanelSubirProducto(Main mainFrame) {
         this.mainFrame = mainFrame;
         setLayout(new BorderLayout());

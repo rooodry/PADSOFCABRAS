@@ -8,6 +8,9 @@ import java.util.List;
 import productos.ProductoTienda;
 
 
+/**
+ * Representa el componente PanelProductos de la interfaz grafica.
+ */
 public class PanelProductos extends JPanel {
 
 
@@ -106,6 +109,10 @@ public class PanelProductos extends JPanel {
             TarjetaProducto tarjeta = new TarjetaProducto(p);
             tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
+                /**
+                 * Ejecuta la operacion publica mouseClicked.
+                 * @param e parametro utilizado por la operacion
+                 */
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     abrirDetalle(p);
                 }

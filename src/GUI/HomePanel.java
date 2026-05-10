@@ -33,17 +33,28 @@ import productos.categoria.Juego;
 import productos.ProductoTienda;
 
 
+/**
+ * Representa el componente HomePanel de la interfaz grafica.
+ */
 public class HomePanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
+    /**      * Estado interno de mainFrame.      */
     private final Main mainFrame;
+    /**      * Estado interno de gridProductos.      */
     private final JPanel gridProductos;
+    /**      * Estado interno de panelRecomendados.      */
     private final JPanel panelRecomendados;
+    /**      * Estado interno de campoBusqueda.      */
     private final JTextField campoBusqueda;
+    /**      * Estado interno de campoPrecioMaximo.      */
     private final JTextField campoPrecioMaximo;
+    /**      * Estado interno de comboCategoria.      */
     private final JComboBox<String> comboCategoria;
+    /**      * Estado interno de comboValoracion.      */
     private final JComboBox<String> comboValoracion;
+    /**      * Estado interno de comboOrden.      */
     private final JComboBox<String> comboOrden;
 
     /**
@@ -90,6 +101,10 @@ public class HomePanel extends JPanel {
             tarjeta.setToolTipText("Ver detalle");
             tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
+                /**
+                 * Ejecuta la operacion publica mouseClicked.
+                 * @param e parametro utilizado por la operacion
+                 */
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     abrirDetalle(producto);
                 }
@@ -192,16 +207,28 @@ public class HomePanel extends JPanel {
 
         DocumentListener listenerTexto = new DocumentListener() {
             @Override
+            /**
+             * Ejecuta la operacion publica insertUpdate.
+             * @param e parametro utilizado por la operacion
+             */
             public void insertUpdate(DocumentEvent e) {
                 refrescar();
             }
 
             @Override
+            /**
+             * Ejecuta la operacion publica removeUpdate.
+             * @param e parametro utilizado por la operacion
+             */
             public void removeUpdate(DocumentEvent e) {
                 refrescar();
             }
 
             @Override
+            /**
+             * Ejecuta la operacion publica changedUpdate.
+             * @param e parametro utilizado por la operacion
+             */
             public void changedUpdate(DocumentEvent e) {
                 refrescar();
             }

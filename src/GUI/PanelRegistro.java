@@ -8,6 +8,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 
+/**
+ * Representa el componente PanelRegistro de la interfaz grafica.
+ */
 public class PanelRegistro extends JPanel {
 
     private static final long serialVersionUID = 1L;

@@ -23,9 +23,13 @@ import javax.swing.border.EmptyBorder;
 import productos.ProductoTienda;
 
 
+/**
+ * Representa el componente TarjetaProducto de la interfaz grafica.
+ */
 public class TarjetaProducto extends JPanel {
 
     private static final long serialVersionUID = 1L;
+    /**      * Estado interno de MAX_ESTRELLAS.      */
     private static final int MAX_ESTRELLAS = 5;
 
     /**

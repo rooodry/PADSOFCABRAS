@@ -46,32 +46,57 @@ import utilidades.EstadoPedido;
 import utilidades.EstadoOferta;
 
 
+/**
+ * Representa el componente PanelPerfil de la interfaz grafica.
+ */
 public class PanelPerfil extends JPanel {
 
     private static final long serialVersionUID = 1L;
+    /**      * Estado interno de TAB_RECOMENDADOS.      */
     private static final String TAB_RECOMENDADOS = "Productos recomendados";
+    /**      * Estado interno de TAB_PEDIDOS.      */
     private static final String TAB_PEDIDOS = "Historial de pedidos";
+    /**      * Estado interno de TAB_INTERCAMBIOS.      */
     private static final String TAB_INTERCAMBIOS = "Historial de intercambios";
+    /**      * Estado interno de TAB_CONFIG.      */
     private static final String TAB_CONFIG = "Configuración";
+    /**      * Estado interno de AVATAR_SIZE.      */
     private static final int AVATAR_SIZE = 150;
 
+    /**      * Estado interno de mainFrame.      */
     private final Main mainFrame;
+    /**      * Estado interno de contenidoCentral.      */
     private final JPanel contenidoCentral;
+    /**      * Estado interno de btnRecomendados.      */
     private final JButton btnRecomendados;
+    /**      * Estado interno de btnPedidos.      */
     private final JButton btnPedidos;
+    /**      * Estado interno de btnIntercambios.      */
     private final JButton btnIntercambios;
+    /**      * Estado interno de btnConfig.      */
     private final JButton btnConfig;
+    /** Formatea las fechas mostradas en el perfil del cliente. */
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+    /**      * Estado interno de txtNuevoNombre.      */
     private final JTextField txtNuevoNombre;
+    /**      * Estado interno de lblUsuario.      */
     private final JLabel lblUsuario;
+    /**      * Estado interno de lblDni.      */
     private final JLabel lblDni;
+    /**      * Estado interno de lblAvatar.      */
     private final JLabel lblAvatar;
+    /**      * Estado interno de btnGuardarCambios.      */
     private JButton btnGuardarCambios;
+    /**      * Estado interno de nuevoNombrePendiente.      */
     private String nuevoNombrePendiente = null;
+    /**      * Estado interno de contrasenaActualPendiente.      */
     private String contrasenaActualPendiente = null;
+    /**      * Estado interno de nuevaContrasenaPendiente.      */
     private String nuevaContrasenaPendiente = null;
+    /**      * Estado interno de nuevaFotoPendiente.      */
     private String nuevaFotoPendiente = null;
 
+    /**      * Estado interno de tabActivo.      */
     private String tabActivo = TAB_RECOMENDADOS;
 
     /**
@@ -481,6 +506,10 @@ public class PanelPerfil extends JPanel {
         tarjeta.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
+            /**
+             * Ejecuta la operacion publica mouseClicked.
+             * @param e parametro utilizado por la operacion
+             */
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 mostrarDetalleIntercambio(intercambio);
             }

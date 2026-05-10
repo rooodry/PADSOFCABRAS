@@ -31,6 +31,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.Box;
 
 
+/**
+ * Representa el componente LoginClientePanel de la interfaz grafica.
+ */
 public class LoginClientePanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -229,6 +232,7 @@ public class LoginClientePanel extends JPanel {
         add(panelCentral, BorderLayout.CENTER);
     }
 
+    /**      * Estado interno de rbGroup.      */
     private ButtonGroup rbGroup;
 
     private JButton crearBoton(String texto, int ancho) {

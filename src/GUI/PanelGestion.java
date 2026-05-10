@@ -20,11 +20,16 @@ import productos.ProductoTienda;
 import utilidades.EstadoPedido;
 
 
+/**
+ * Representa el componente PanelGestion de la interfaz grafica.
+ */
 public class PanelGestion extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
+    /**      * Estado interno de mainFrame.      */
     private final Main mainFrame;
+    /**      * Estado interno de contenido.      */
     private final JPanel contenido;
 
     /**

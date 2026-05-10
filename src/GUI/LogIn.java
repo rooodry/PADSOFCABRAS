@@ -5,13 +5,22 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Representa el componente LogIn de la interfaz grafica.
+ */
 public class LogIn {
 
 
+    /**      * Estado interno de ventana.      */
     private JFrame ventana;
+    /**      * Estado interno de panelContenedor.      */
     private JPanel panelContenedor;
+    /**      * Estado interno de cardLayout.      */
     private CardLayout cardLayout;
 
+    /**
+     * Construye una instancia de LogIn.
+     */
     public LogIn() {
 
         ventana = new JFrame("GOAT & GET");
@@ -112,6 +121,10 @@ public class LogIn {
 
         btnCrearCuenta.addActionListener(new ActionListener() {
             @Override
+            /**
+             * Ejecuta la operacion publica actionPerformed.
+             * @param e parametro utilizado por la operacion
+             */
             public void actionPerformed(ActionEvent e) {
 
                 cardLayout.show(panelContenedor, "PANTALLA_REGISTRO");
@@ -176,6 +189,10 @@ public class LogIn {
 
         btnCancelar.addActionListener(new ActionListener() {
             @Override
+            /**
+             * Ejecuta la operacion publica actionPerformed.
+             * @param e parametro utilizado por la operacion
+             */
             public void actionPerformed(ActionEvent e) {
 
                 cardLayout.show(panelContenedor, "PANTALLA_LOGIN");
@@ -194,9 +211,16 @@ public class LogIn {
     }
 
 
+    /**
+     * Punto de entrada de la aplicacion.
+     * @param args parametro utilizado por la operacion
+     */
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(new Runnable() {
+            /**
+             * Ejecuta la operacion publica run.
+             */
             public void run() {
                 new LogIn();
             }

@@ -5,11 +5,19 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Representa el componente LoginPanel de la interfaz grafica.
+ */
 public class LoginPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
 
+    /**
+     * Construye una instancia de LoginPanel.
+     * @param contenedorPrincipal parametro utilizado por la operacion
+     * @param baraja parametro utilizado por la operacion
+     */
     public LoginPanel(JPanel contenedorPrincipal, CardLayout baraja) {
         this.setLayout(new BorderLayout());
         this.setBackground(Color.WHITE);
@@ -59,6 +67,10 @@ public class LoginPanel extends JPanel {
 
         btnCrearCuenta.addActionListener(new ActionListener() {
             @Override
+            /**
+             * Ejecuta la operacion publica actionPerformed.
+             * @param e parametro utilizado por la operacion
+             */
             public void actionPerformed(ActionEvent e) {
 
                 baraja.show(contenedorPrincipal, "REGISTRO");

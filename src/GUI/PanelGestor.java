@@ -66,27 +66,49 @@ import utilidades.EstadoPedido;
 import utilidades.TiposEmpleado;
 
 
+/**
+ * Representa el componente PanelGestor de la interfaz grafica.
+ */
 public class PanelGestor extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
+    /**      * Estado interno de DASHBOARD.      */
     private static final String DASHBOARD = "DASHBOARD";
+    /**      * Estado interno de EMPLEADOS.      */
     private static final String EMPLEADOS = "EMPLEADOS";
+    /**      * Estado interno de INVENTARIO.      */
     private static final String INVENTARIO = "INVENTARIO";
+    /**      * Estado interno de DESCUENTOS.      */
     private static final String DESCUENTOS = "DESCUENTOS";
+    /**      * Estado interno de SEGUNDA_MANO.      */
     private static final String SEGUNDA_MANO = "SEGUNDA_MANO";
+    /**      * Estado interno de PACKS.      */
     private static final String PACKS = "PACKS";
+    /**      * Estado interno de OPERATIVA.      */
     private static final String OPERATIVA = "OPERATIVA";
+    /**      * Estado interno de ESTADISTICAS.      */
     private static final String ESTADISTICAS = "ESTADISTICAS";
+    /**      * Estado interno de DETALLE_PRODUCTO.      */
     private static final String DETALLE_PRODUCTO = "DETALLE_PRODUCTO";
 
+    /**      * Estado interno de mainFrame.      */
     private final Main mainFrame;
+    /**      * Estado interno de contenido.      */
     private final JPanel contenido;
+    /** Formatea fechas de pedidos, ventas e intercambios. */
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+    /**      * Estado interno de seccionActiva.      */
     private String seccionActiva;
+    /**      * Estado interno de productoSeleccionado.      */
     private ProductoTienda productoSeleccionado;
+    /**      * Estado interno de editandoProducto.      */
     private boolean editandoProducto;
 
+    /**
+     * Construye una instancia de PanelGestor.
+     * @param mainFrame parametro utilizado por la operacion
+     */
     public PanelGestor(Main mainFrame) {
         this.mainFrame = mainFrame;
         this.contenido = new JPanel();
@@ -99,6 +121,9 @@ public class PanelGestor extends JPanel {
         refrescar();
     }
 
+    /**
+     * Ejecuta la operacion publica refrescar.
+     */
     public void refrescar() {
         contenido.removeAll();
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
@@ -333,6 +358,10 @@ public class PanelGestor extends JPanel {
         TarjetaProducto vistaCliente = new TarjetaProducto(producto);
         vistaCliente.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
+            /**
+             * Ejecuta la operacion publica mouseClicked.
+             * @param e parametro utilizado por la operacion
+             */
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 abrirDetalleProducto(producto, false);
             }
@@ -425,6 +454,10 @@ public class PanelGestor extends JPanel {
         detalle.setAlignmentX(Component.CENTER_ALIGNMENT);
         detalle.setListenerEdicion(new PanelDeProducto.ListenerEdicion() {
             @Override
+            /**
+             * Ejecuta la operacion publica confirmar.
+             * @param datos parametro utilizado por la operacion
+             */
             public void confirmar(PanelDeProducto.DatosEdicion datos) {
                 mainFrame.editarProductoTienda(productoSeleccionado,
                         datos.nombre,
@@ -438,6 +471,9 @@ public class PanelGestor extends JPanel {
             }
 
             @Override
+            /**
+             * Ejecuta la operacion publica cancelar.
+             */
             public void cancelar() {
                 editandoProducto = false;
                 refrescar();
@@ -1714,10 +1750,12 @@ public class PanelGestor extends JPanel {
         return boton;
     }
 
+    /**      * Estado interno de campo.      */
     private static class GraficaVentasMensuales extends JPanel {
 
         private static final long serialVersionUID = 1L;
 
+        /**          * Estado interno de ventas.          */
         private final Map<String, Double> ventas;
 
         GraficaVentasMensuales(Map<String, Double> ventas) {
@@ -1788,12 +1826,16 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**      * Estado interno de campo.      */
     private static class BarraProgreso extends JPanel {
 
         private static final long serialVersionUID = 1L;
 
+        /**          * Estado interno de valor.          */
         private final int valor;
+        /**          * Estado interno de max.          */
         private final int max;
+        /**          * Estado interno de color.          */
         private final Color color;
 
         BarraProgreso(int valor, int max, Color color) {
