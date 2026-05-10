@@ -187,7 +187,7 @@ public class Main extends JFrame {
     public void cambiarPantalla(String nombrePantalla) {
         if (!sesionRegistrada && esPantallaSoloRegistrado(nombrePantalla)) {
             JOptionPane.showMessageDialog(this,
-                    "Para acceder a esta seccion necesitas iniciar sesion o crear una cuenta.",
+                    "Para acceder a esta sección necesitas iniciar sesión o crear una cuenta.",
                     "Cliente no registrado", JOptionPane.INFORMATION_MESSAGE);
             cardLayout.show(panelContenedor, PANTALLA_CLIENTE);
             return;
@@ -195,7 +195,7 @@ public class Main extends JFrame {
 
         if (esPantallaSoloGestion(nombrePantalla) && !(sesionEmpleado || sesionGestor)) {
             JOptionPane.showMessageDialog(this,
-                    "Solo empleados y gestores pueden acceder a la gestion de stock.",
+                    "Solo empleados y gestores pueden acceder a la gestión de stock.",
                     "Acceso denegado", JOptionPane.WARNING_MESSAGE);
             cardLayout.show(panelContenedor, PANTALLA_HOME);
             return;
@@ -487,20 +487,27 @@ public class Main extends JFrame {
      * @param contrasena password
      * @param dni identity document
      */
-    public void registrarCliente(String nombre, String contrasena, String dni) {
+    public boolean registrarCliente(String nombre, String contrasena, String dni) {
+        if (existeClienteConIdentificacion(nombre)) {
+            JOptionPane.showMessageDialog(this,
+                    "Ya existe una cuenta registrada con ese correo.",
+                    "Registro", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
         sesionRegistrada = true;
         sesionEmpleado = false;
         sesionGestor = false;
         clienteActual = new ClienteRegistrado(nombre, contrasena, dni);
         sistema.addUsuario(clienteActual);
         clienteActual.addNotificacion(new Notificacion(TipoNotificacion.NUEVO_DESCUENTO,
-                "Bienvenido a GOAT & GET. Ya puedes revisar el catalogo."));
+                "Bienvenido a GOAT & GET. Ya puedes revisar el catálogo."));
         if (panelMisProductos != null) {
             panelMisProductos.setCliente(clienteActual);
         }
         refrescarPantallasConDatos();
         guardarEstadoPersistente();
         cambiarPantalla(PANTALLA_HOME);
+        return true;
     }
 
     /**
@@ -511,7 +518,7 @@ public class Main extends JFrame {
     public void anadirProductoACesta(ProductoTienda producto) {
         if (!sesionRegistrada) {
             JOptionPane.showMessageDialog(this,
-                    "Los clientes no registrados solo pueden consultar productos. Inicia sesion para comprar.",
+                    "Los clientes no registrados solo pueden consultar productos. Inicia sesión para comprar.",
                     "Cliente no registrado", JOptionPane.INFORMATION_MESSAGE);
             cambiarPantalla(PANTALLA_CLIENTE);
             return;
@@ -556,8 +563,8 @@ public class Main extends JFrame {
      */
     public void finalizarCompra() {
         String numeroTarjeta = JOptionPane.showInputDialog(this,
-                "Introduce el numero de tarjeta (16 digitos):",
-                "Pago - Numero de Tarjeta",
+                "Introduce el número de tarjeta (16 dígitos):",
+                "Pago - número de tarjeta",
                 JOptionPane.PLAIN_MESSAGE);
 
         if (numeroTarjeta == null) {
@@ -568,8 +575,8 @@ public class Main extends JFrame {
 
         if (!numeroTarjeta.matches("\\d{16}")) {
             JOptionPane.showMessageDialog(this,
-                    "El numero de tarjeta debe tener exactamente 16 digitos.",
-                    "Numero de tarjeta invalido",
+                    "El número de tarjeta debe tener exactamente 16 dígitos.",
+                    "Número de tarjeta inválido",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -638,7 +645,7 @@ public class Main extends JFrame {
         pedido.setEstadoPedido(EstadoPedido.LISTO);
         notificarCambioEstadoPedido(pedido, TipoNotificacion.PEDIDO_LISTO,
                 "Tu pedido esta listo para recoger con DNI " + pedido.getCliente().getDNI()
-                        + " y codigo " + pedido.getCodigo().getCodigo() + ".");
+                        + " y código " + pedido.getCodigo().getCodigo() + ".");
         refrescarPantallasConDatos();
     }
 
@@ -753,7 +760,7 @@ public class Main extends JFrame {
     public void anadirPackACesta(Pack pack) {
         if (!sesionRegistrada) {
             JOptionPane.showMessageDialog(this,
-                    "Los clientes no registrados solo pueden consultar packs. Inicia sesion para comprar.",
+                    "Los clientes no registrados solo pueden consultar packs. Inicia sesión para comprar.",
                     "Cliente no registrado", JOptionPane.INFORMATION_MESSAGE);
             cambiarPantalla(PANTALLA_CLIENTE);
             return;
@@ -1011,8 +1018,12 @@ public class Main extends JFrame {
         }
     }
 
-    public boolean cambiarContrasenaCliente(String nuevaContrasena) {
-        if (nuevaContrasena == null || nuevaContrasena.isBlank()) {
+    public boolean cambiarContrasenaCliente(String contrasenaActual, String nuevaContrasena) {
+        if (clienteActual == null || contrasenaActual == null || nuevaContrasena == null
+                || nuevaContrasena.isBlank()) {
+            return false;
+        }
+        if (!clienteActual.getContraseña().equals(contrasenaActual)) {
             return false;
         }
 
@@ -1068,6 +1079,36 @@ public class Main extends JFrame {
             producto.setNombre(nombre.trim());
         }
         editarProductoTienda(producto, precio, unidades, descripcion, imagen, categorias);
+    }
+
+    public void eliminarProductoTiendaGestion(ProductoTienda producto) {
+        if (!sesionGestor || producto == null) {
+            return;
+        }
+        productosTienda.remove(producto);
+        stock.retirarProducto(producto);
+        for (Pack pack : packs) {
+            eliminarProductoDePack(pack, producto);
+        }
+
+        List<Producto> productosSistema = new ArrayList<>();
+        productosSistema.addAll(productosTienda);
+        productosSistema.addAll(productosSegundaMano);
+        sistema.reemplazarEstado(productosSistema, sistema.getUsuarios(), sistema.getPedidos(),
+                sistema.getDescuentos(), stock);
+        refrescarPantallasConDatos();
+    }
+
+    private void eliminarProductoDePack(Pack pack, ProductoTienda producto) {
+        if (pack == null || producto == null) {
+            return;
+        }
+        while (pack.getProductos().contains(producto)) {
+            pack.removeProducto(producto);
+        }
+        for (Pack subpack : pack.getSubpacks()) {
+            eliminarProductoDePack(subpack, producto);
+        }
     }
 
     public void crearProductoTiendaGestion(String tipo, String nombre, double precio, int unidades,
@@ -1176,7 +1217,7 @@ public class Main extends JFrame {
         if (producto.getEstaValorado()) {
             JOptionPane.showMessageDialog(this,
                     "Este producto ya fue valorado y no puede modificarse.",
-                    "Valoracion bloqueada", JOptionPane.WARNING_MESSAGE);
+                    "Valoración bloqueada", JOptionPane.WARNING_MESSAGE);
             return;
         }
         producto.setValoracion(valoracion, valorEstimado, conservacion);
@@ -1194,7 +1235,7 @@ public class Main extends JFrame {
         if (producto.getEstaValorado()) {
             JOptionPane.showMessageDialog(this,
                     "Este producto ya fue valorado y no puede modificarse.",
-                    "Valoracion bloqueada", JOptionPane.WARNING_MESSAGE);
+                    "Valoración bloqueada", JOptionPane.WARNING_MESSAGE);
             return;
         }
         producto.setValoracion(valorEstimado, conservacion);
@@ -1240,7 +1281,7 @@ public class Main extends JFrame {
     public void crearEmpleadoDesdeGestor(String nombre, String contrasena, Set<TiposEmpleado> permisos) {
         if (!sesionGestor || nombre == null || nombre.isBlank() || contrasena == null || contrasena.isBlank()) {
             JOptionPane.showMessageDialog(this,
-                    "Solo el gestor puede crear empleados con nombre y contrasena validos.",
+                    "Solo el gestor puede crear empleados con nombre y contraseña válidos.",
                     "Empleado", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -1547,6 +1588,20 @@ public class Main extends JFrame {
         return null;
     }
 
+    private boolean existeClienteConIdentificacion(String identificacion) {
+        if (identificacion == null) {
+            return false;
+        }
+        String normalizada = identificacion.trim();
+        for (Usuario usuario : sistema.getUsuarios()) {
+            if (usuario instanceof ClienteRegistrado
+                    && usuario.getNombre().equalsIgnoreCase(normalizada)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private Empleado buscarEmpleado(String identificacion, String contrasena) {
         for (Empleado empleado : getEmpleados()) {
             if (credencialesValidas(empleado, identificacion, contrasena)) {
@@ -1798,7 +1853,7 @@ public class Main extends JFrame {
         clienteActual.addNotificacion(new Notificacion(TipoNotificacion.INTERCAMBIO_REALIZADO,
                 "El intercambio con @luciaga16 se ha realizado."));
 
-        ProductoSegundaMano valorado = new ProductoSegundaMano("Comic Avengers 1963",
+        ProductoSegundaMano valorado = new ProductoSegundaMano("Cómic Avengers 1963",
                 "Ejemplar conservado en funda desde la compra.", null, clienteActual);
         valorado.setValoracion(4, 18.50, EstadoConservacion.MUY_BUENO);
         valorado.subirProducto();
@@ -1815,14 +1870,14 @@ public class Main extends JFrame {
 
         ClienteRegistrado otroCliente = new ClienteRegistrado("laura67", "1234", "11111111H");
         sistema.addUsuario(otroCliente);
-        ProductoSegundaMano deseado = new ProductoSegundaMano("Comic X-Men 1992",
-                "Comic valorado por otro usuario.", null, otroCliente);
+        ProductoSegundaMano deseado = new ProductoSegundaMano("Cómic X-Men 1992",
+                "Cómic valorado por otro usuario.", null, otroCliente);
         deseado.setValoracion(4, 21.00, EstadoConservacion.MUY_BUENO);
         deseado.subirProducto();
         otroCliente.getCartera().a\u00f1adirProducto(deseado);
         productosSegundaMano.add(deseado);
         ProductoSegundaMano juegoRetro = new ProductoSegundaMano("Caja Zelda coleccionista",
-                "Edicion de segunda mano valorada, con caja y manual. Disponible para intercambio.", null, otroCliente);
+                "Edición de segunda mano valorada, con caja y manual. Disponible para intercambio.", null, otroCliente);
         juegoRetro.setValoracion(5, 35.00, EstadoConservacion.PERFECTO);
         juegoRetro.subirProducto();
         otroCliente.getCartera().a\u00f1adirProducto(juegoRetro);
@@ -1871,7 +1926,7 @@ public class Main extends JFrame {
             }
         }
         clienteActual.addNotificacion(new Notificacion(TipoNotificacion.NUEVO_DESCUENTO,
-                "Nuevos descuentos configurados en comics, juegos y figuras del catalogo."));
+                "Nuevos descuentos configurados en cómics, juegos y figuras del catálogo."));
     }
 
     private void cargarCatalogoDesdeCsv() {
@@ -1910,13 +1965,13 @@ public class Main extends JFrame {
                         indice++;
                     }
                 } catch (RuntimeException e) {
-                    System.err.println("Linea de producto omitida por formato invalido: " + linea);
+                    System.err.println("Línea de producto omitida por formato inválido: " + linea);
             }
         }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this,
                     "No se ha podido cargar " + archivo.getPath() + ".",
-                    "Catalogo", JOptionPane.WARNING_MESSAGE);
+                    "Catálogo", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -1967,11 +2022,11 @@ public class Main extends JFrame {
             producto.setImagen(crearPortadaParaProducto(producto));
         }
         producto.addComentario("juan15",
-                "Un producto muy interesante para ampliar la coleccion y revisar con calma en la ficha.");
+                "Un producto muy interesante para ampliar la colección y revisar con calma en la ficha.");
         producto.addComentario("laura67",
-                "La descripcion es completa y ayuda bastante a decidir si encaja con lo que buscas.");
+                "La descripción es completa y ayuda bastante a decidir si encaja con lo que buscas.");
         producto.addComentario("alex",
-                "Buena relacion entre precio, presentacion y disponibilidad en tienda.");
+                "Buena relación entre precio, presentación y disponibilidad en tienda.");
         return producto;
     }
 
@@ -2075,7 +2130,7 @@ public class Main extends JFrame {
                     listaProductos(productosTienda.get(1), productosTienda.get(2), productosTienda.get(3))));
         }
         if (productosTienda.size() >= 6) {
-            packs.add(new Pack("Pack coleccion GOAT", 89.90,
+            packs.add(new Pack("Pack colección GOAT", 89.90,
                     listaProductos(productosTienda.get(0), productosTienda.get(4), productosTienda.get(5))));
         }
         if (productosTienda.size() >= 9) {
@@ -2117,9 +2172,9 @@ public class Main extends JFrame {
         producto.setPrecio(precio);
         producto.setValoracion(valoracion);
         producto.setCategoria(new Comic(nombre, 192, "Autor", "Editorial", genero, 2024));
-        producto.addComentario("marta", "Muy buena edicion para coleccion.");
+        producto.addComentario("marta", "Muy buena edición para colección.");
         producto.addComentario("juan15", "Me ha sorprendido el nivel de detalle y lo bien que queda expuesto.");
-        producto.addComentario("laura67", "Una compra recomendable si buscas algo vistoso y con buena presentacion.");
+        producto.addComentario("laura67", "Una compra recomendable si buscas algo vistoso y con buena presentación.");
         return producto;
     }
 

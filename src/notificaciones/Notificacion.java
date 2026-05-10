@@ -53,7 +53,7 @@ public class Notificacion implements Serializable {
     public String getMensaje() {return this.mensaje;}
 
     /**
-     * Obtiene la fecha en la que se genero la notificacion.
+     * Obtiene la fecha en la que se generó la notificación.
      * @return Copia de la fecha de creacion, o una fecha antigua para datos previos.
      */
     public Date getFechaCreacion() {

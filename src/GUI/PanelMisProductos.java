@@ -197,7 +197,7 @@ public class PanelMisProductos extends JPanel {
         panelGrid.setLayout(new GridLayout(filas, columnas, 12, 18));
 
         if (total == 0) {
-            JLabel vacio = new JLabel("No hay productos en esta seccion.", SwingConstants.CENTER);
+            JLabel vacio = new JLabel("No hay productos en esta sección.", SwingConstants.CENTER);
             vacio.setFont(new Font("SansSerif", Font.PLAIN, 16));
             vacio.setForeground(UiStyle.COLOR_TEXTO);
             panelGrid.add(vacio);
@@ -253,7 +253,7 @@ public class PanelMisProductos extends JPanel {
                 ? String.format("%.2f EUR", producto.getValorEstimado()) : "Sin tasar";
         JOptionPane.showMessageDialog(this,
                 "Producto: " + producto.getNombre()
-                        + "\nDescripcion: " + producto.getDescripcion()
+                        + "\nDescripción: " + producto.getDescripcion()
                         + "\nEstado: " + estado
                         + "\nPrecio estimado: " + precio
                         + "\nSituacion: " + producto.getEstadoProducto(),

@@ -68,8 +68,8 @@ public class PanelGestion extends JPanel {
         }
         contenido.add(pedidos);
 
-        contenido.add(crearTitulo("Estadisticas rapidas"));
-        contenido.add(crearEtiqueta("Productos catalogo: " + mainFrame.getProductosTienda().size()
+        contenido.add(crearTitulo("Estadísticas rápidas"));
+        contenido.add(crearEtiqueta("Productos del catálogo: " + mainFrame.getProductosTienda().size()
                 + " | Pedidos: " + mainFrame.getClienteActual().getPedidos().size()
                 + " | Intercambios: " + mainFrame.getIntercambios().size()));
 

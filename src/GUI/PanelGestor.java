@@ -147,11 +147,6 @@ public class PanelGestor extends JPanel {
         titulo.setForeground(UiStyle.COLOR_TEXTO_CLARO);
         cabecera.add(titulo, BorderLayout.CENTER);
 
-        JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
-        derecha.setOpaque(false);
-        derecha.add(UiStyle.crearBotonImagen(UiStyle.ICONO_NOTIFICACIONES, "", "Notificaciones", 42, 40, 30));
-        derecha.add(UiStyle.crearBotonImagen(UiStyle.ICONO_PERFIL_CABRA, "", "Gestor", 42, 40, 32));
-        cabecera.add(derecha, BorderLayout.EAST);
         return cabecera;
     }
 
@@ -183,7 +178,7 @@ public class PanelGestor extends JPanel {
         menu.add(crearItemMenu("PEDIDOS E INTERC.", OPERATIVA));
         menu.add(crearItemMenu("ESTADISTICAS", ESTADISTICAS));
         menu.addSeparator();
-        JMenuItem salir = crearItemMenu("CERRAR SESION", DASHBOARD);
+        JMenuItem salir = crearItemMenu("CERRAR SESIÓN", DASHBOARD);
         salir.addActionListener(e -> mainFrame.cerrarSesion());
         menu.add(salir);
         menu.show(origen, 0, origen.getHeight() + 6);
@@ -212,26 +207,26 @@ public class PanelGestor extends JPanel {
     }
 
     private void pintarDashboard() {
-        contenido.add(crearTitulo("Resumen de gestion"));
+        contenido.add(crearTitulo("Resumen de gestión"));
         JPanel grid = new JPanel(new GridLayout(0, 4, 14, 14));
         grid.setOpaque(false);
-        grid.add(crearMetrica("Catalogo", String.valueOf(mainFrame.getProductosTienda().size()), "productos"));
+        grid.add(crearMetrica("Catálogo", String.valueOf(mainFrame.getProductosTienda().size()), "productos"));
         grid.add(crearMetrica("Stock", String.valueOf(totalUnidadesStock()), "unidades"));
         grid.add(crearMetrica("Pedidos", String.valueOf(mainFrame.getPedidosGestion().size()), "registrados"));
         grid.add(crearMetrica("Empleados", String.valueOf(mainFrame.getEmpleados().size()), "activos"));
         contenido.add(grid);
 
-        contenido.add(crearTitulo("Accesos rapidos"));
+        contenido.add(crearTitulo("Accesos rápidos"));
         JPanel acciones = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
         acciones.setOpaque(false);
         acciones.add(crearAcceso("Nuevo empleado", EMPLEADOS));
         acciones.add(crearAcceso("Editar descuentos", DESCUENTOS));
         acciones.add(crearAcceso("Gestionar packs", PACKS));
-        acciones.add(crearAcceso("Ver estadisticas", ESTADISTICAS));
+        acciones.add(crearAcceso("Ver estadísticas", ESTADISTICAS));
         contenido.add(acciones);
 
         contenido.add(crearTitulo("Actividad pendiente"));
-        contenido.add(crearEtiqueta("Pedidos en preparacion: " + contarPedidos(EstadoPedido.EN_PREPARACION)));
+        contenido.add(crearEtiqueta("Pedidos en preparación: " + contarPedidos(EstadoPedido.EN_PREPARACION)));
         contenido.add(crearEtiqueta("Pedidos listos para entregar: " + contarPedidos(EstadoPedido.LISTO)));
         contenido.add(crearEtiqueta("Productos pendientes de valorar: "
                 + mainFrame.getProductosPendientesValoracion().size()));
@@ -261,7 +256,7 @@ public class PanelGestor extends JPanel {
     }
 
     private void pintarEmpleados() {
-        contenido.add(crearTitulo("Gestion de empleados"));
+        contenido.add(crearTitulo("Gestión de empleados"));
         contenido.add(crearSubtitulo("El gestor da de alta empleados, asigna permisos y puede darlos de baja."));
         JButton nuevo = crearBoton("Nuevo empleado", 160);
         nuevo.addActionListener(e -> mostrarDialogoEmpleado(null));
@@ -339,13 +334,45 @@ public class PanelGestor extends JPanel {
             }
         });
         tarjeta.add(vistaCliente, BorderLayout.CENTER);
+        JPanel acciones = new JPanel(new GridLayout(1, 2, 8, 0));
+        acciones.setOpaque(false);
+
         JButton editar = new UiStyle.RoundedButton("Editar", new Color(94, 75, 57),
                 UiStyle.COLOR_MARRON_MEDIO, 12);
         editar.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        editar.setPreferredSize(new Dimension(200, 28));
+        editar.setPreferredSize(new Dimension(96, 28));
         editar.addActionListener(e -> abrirDetalleProducto(producto, true));
-        tarjeta.add(editar, BorderLayout.SOUTH);
+        acciones.add(editar);
+
+        JButton eliminar = new UiStyle.RoundedButton("Eliminar", new Color(120, 55, 45),
+                UiStyle.COLOR_MARRON_MEDIO, 12);
+        eliminar.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        eliminar.setPreferredSize(new Dimension(96, 28));
+        eliminar.addActionListener(e -> confirmarEliminacionProducto(producto));
+        acciones.add(eliminar);
+
+        tarjeta.add(acciones, BorderLayout.SOUTH);
         return tarjeta;
+    }
+
+    private void confirmarEliminacionProducto(ProductoTienda producto) {
+        if (producto == null) {
+            return;
+        }
+        int respuesta = JOptionPane.showConfirmDialog(this,
+                "Vas a eliminar " + producto.getNombre()
+                        + " del catálogo, del stock y de los packs que lo incluyan.\n"
+                        + "El historial de pedidos se conservará.\n\n¿Seguro que quieres eliminarlo?",
+                "Eliminar producto",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+        if (respuesta == JOptionPane.YES_OPTION) {
+            mainFrame.eliminarProductoTiendaGestion(producto);
+            productoSeleccionado = null;
+            editandoProducto = false;
+            seccionActiva = INVENTARIO;
+            refrescar();
+        }
     }
 
     private void abrirDetalleProducto(ProductoTienda producto, boolean editar) {
@@ -401,7 +428,7 @@ public class PanelGestor extends JPanel {
                         datos.stock,
                         datos.descripcion,
                         datos.imagen,
-                        parseCategorias(datos.categorias));
+                        parseCategorías(datos.categorias));
                 editandoProducto = false;
                 refrescar();
             }
@@ -479,7 +506,7 @@ public class PanelGestor extends JPanel {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setOpaque(false);
-        panel.add(crearTituloDetalle("Descripcion"));
+        panel.add(crearTituloDetalle("Descripción"));
         JTextArea descripcion = new JTextArea(producto.getDescripcion());
         descripcion.setFont(new Font("SansSerif", Font.PLAIN, 17));
         descripcion.setForeground(Color.BLACK);
@@ -530,11 +557,11 @@ public class PanelGestor extends JPanel {
 
     private void pintarDescuentos() {
         contenido.add(crearTitulo("Descuentos"));
-        contenido.add(crearSubtitulo("Configura rebajas por producto o por categoria."));
+        contenido.add(crearSubtitulo("Configura rebajas por producto o por categoría."));
         contenido.add(crearPanelDescuentoProducto());
         contenido.add(Box.createVerticalStrut(16));
         contenido.add(crearPanelDescuentoCategoria());
-        contenido.add(crearTitulo("Promociones activas"));
+        contenido.add(crearTitulo("Promociónes activas"));
         for (ProductoTienda producto : mainFrame.getProductosTienda()) {
             if (tieneDescuento(producto)) {
                 contenido.add(crearEtiqueta(producto.getNombre() + ": " + textoDescuento(producto)));
@@ -576,18 +603,18 @@ public class PanelGestor extends JPanel {
 
     private JPanel crearPanelDescuentoCategoria() {
         JPanel panel = crearTarjeta();
-        panel.add(crearEtiqueta("<b>Aplicar a categoria</b>"));
+        panel.add(crearEtiqueta("<b>Aplicar a categoría</b>"));
         JTextField categoria = new JTextField();
         categoria.setMaximumSize(new Dimension(360, 30));
         JComboBox<String> tipo = new JComboBox<>(new String[] {"Porcentaje", "Rebaja fija", "2x1"});
         JSpinner porcentaje = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 100.0, 1.0));
         JSpinner fija = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 999.0, 1.0));
         tipo.addActionListener(e -> actualizarCamposDescuento(tipo, porcentaje, fija));
-        panel.add(crearEtiqueta("Categoria o texto de categoria"));
+        panel.add(crearEtiqueta("Categoría o texto de categoría"));
         panel.add(categoria);
         panel.add(crearPanelSeleccionDescuento(tipo, porcentaje, fija));
         actualizarCamposDescuento(tipo, porcentaje, fija);
-        JButton aplicar = crearBoton("Aplicar a categoria", 180);
+        JButton aplicar = crearBoton("Aplicar a categoría", 180);
         aplicar.addActionListener(e -> {
             int total = mainFrame.aplicarDescuentoCategoria(categoria.getText(),
                     tipoDescuentoSeleccionado(tipo),
@@ -659,7 +686,7 @@ public class PanelGestor extends JPanel {
 
     private void pintarSegundaMano() {
         contenido.add(crearTitulo("Productos de segunda mano"));
-        contenido.add(crearSubtitulo("Valora los productos subidos por clientes: precio estimado y estado de conservacion."));
+        contenido.add(crearSubtitulo("Valora los productos subidos por clientes: precio estimado y estado de conservación."));
         List<ProductoSegundaMano> productos = mainFrame.getProductosSegundaManoGestion();
         if (productos.isEmpty()) {
             contenido.add(crearEtiqueta("No hay productos de segunda mano."));
@@ -701,7 +728,7 @@ public class PanelGestor extends JPanel {
             fila.setMinimumSize(new Dimension(0, 86));
             fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
             fila.add(crearEtiqueta("<b>" + pack.getNombre() + "</b><br>"
-                    + "Categoria: " + categoriaPack(pack) + "<br>"
+                    + "Categoría: " + categoriaPack(pack) + "<br>"
                     + resumenPack(pack) + "<br>" + String.format("%.2f EUR", pack.getPrecio())),
                     BorderLayout.CENTER);
             JButton editar = crearBoton("Modificar", 125);
@@ -790,7 +817,7 @@ public class PanelGestor extends JPanel {
     }
 
     private void pintarEstadisticas() {
-        contenido.add(crearTitulo("Estadisticas"));
+        contenido.add(crearTitulo("Estadísticas"));
         JPanel grid = new JPanel(new GridLayout(0, 4, 14, 14));
         grid.setOpaque(false);
         grid.add(crearMetrica("Ventas", String.format("%.2f", totalVentasEntregadas()), "EUR entregados"));
@@ -800,13 +827,13 @@ public class PanelGestor extends JPanel {
         contenido.add(grid);
 
         contenido.add(crearTitulo("Ventas por mes"));
-        contenido.add(crearSubtitulo("Importe de pedidos entregados durante los ultimos 12 meses."));
+        contenido.add(crearSubtitulo("Importe de pedidos entregados durante los últimos 12 meses."));
         contenido.add(new GraficaVentasMensuales(ventasEntregadasPorMes()));
 
         contenido.add(crearTitulo("Pedidos por estado"));
         contenido.add(crearPanelPedidosPorEstado());
 
-        contenido.add(crearTitulo("Usuarios con mas compras"));
+        contenido.add(crearTitulo("Usuarios con más compras"));
         List<ClienteRegistrado> clientes = new ArrayList<>(mainFrame.getClientesRegistrados());
         clientes.sort(Comparator.comparingInt((ClienteRegistrado c) -> c.getPedidos().size()).reversed());
         int maxCompras = 1;
@@ -823,7 +850,7 @@ public class PanelGestor extends JPanel {
         JTextField nombre = new JTextField(empleado == null ? "" : empleado.getNombre());
         nombre.setEnabled(empleado == null);
         JPasswordField contrasena = new JPasswordField(empleado == null ? "" : empleado.getContrase\u00f1a());
-        JCheckBox producto = new JCheckBox("Productos, stock, categorias y packs");
+        JCheckBox producto = new JCheckBox("Productos, stock, categorías y packs");
         JCheckBox pedido = new JCheckBox("Pedidos");
         JCheckBox intercambio = new JCheckBox("Intercambios y valoraciones");
         if (empleado != null) {
@@ -835,7 +862,7 @@ public class PanelGestor extends JPanel {
         JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
         panel.add(new JLabel("Nombre"));
         panel.add(nombre);
-        panel.add(new JLabel("Contrasena asignada por gestor"));
+        panel.add(new JLabel("Contraseña asignada por gestor"));
         panel.add(contrasena);
         panel.add(producto);
         panel.add(pedido);
@@ -913,7 +940,7 @@ public class PanelGestor extends JPanel {
         JTextField comicEditorial = new JTextField();
         JComboBox<Genero> comicGenero = new JComboBox<>(Genero.values());
         JSpinner comicAnio = new JSpinner(new SpinnerNumberModel(2026, 1900, 2100, 1));
-        JTextField comicIdioma = new JTextField("Espanol");
+        JTextField comicIdioma = new JTextField("Español");
         JTextField comicFormato = new JTextField("Tapa blanda");
         JTextField comicIsbn = new JTextField();
 
@@ -921,9 +948,9 @@ public class PanelGestor extends JPanel {
         JSpinner juegoJugadoresMax = new JSpinner(new SpinnerNumberModel(4, 1, 99, 1));
         JSpinner juegoEdad = new JSpinner(new SpinnerNumberModel(8, 0, 99, 1));
         JComboBox<TipoJuego> tipoJuego = new JComboBox<>(TipoJuego.values());
-        JSpinner juegoDuracion = new JSpinner(new SpinnerNumberModel(30, 1, 999, 5));
+        JSpinner juegoDuración = new JSpinner(new SpinnerNumberModel(30, 1, 999, 5));
         JTextField juegoEditorial = new JTextField();
-        JTextField juegoIdioma = new JTextField("Espanol");
+        JTextField juegoIdioma = new JTextField("Español");
         JTextArea juegoComponentes = new JTextArea(3, 20);
         juegoComponentes.setLineWrap(true);
         juegoComponentes.setWrapStyleWord(true);
@@ -937,30 +964,30 @@ public class PanelGestor extends JPanel {
         JCheckBox figuraArticulada = new JCheckBox("Figura articulada");
 
         JTabbedPane detalles = new JTabbedPane();
-        detalles.addTab("Comic", crearPanelComic(comicPaginas, comicAutor, comicEditorial,
+        detalles.addTab("Cómic", crearPanelComic(comicPaginas, comicAutor, comicEditorial,
                 comicGenero, comicAnio, comicIdioma, comicFormato, comicIsbn));
         detalles.addTab("Juego", crearPanelJuego(juegoJugadoresMin, juegoJugadoresMax,
-                juegoEdad, tipoJuego, juegoDuracion, juegoEditorial, juegoIdioma, juegoComponentes));
+                juegoEdad, tipoJuego, juegoDuración, juegoEditorial, juegoIdioma, juegoComponentes));
         detalles.addTab("Figura", crearPanelFigura(figuraAltura, figuraMarca, figuraMaterial,
                 figuraEscala, figuraPersonaje, figuraFranquicia, figuraArticulada));
 
         JComboBox<String> promocion = new JComboBox<>(new String[] {
-                "Sin promocion", "2x1", "Rebaja porcentaje", "Rebaja fija"
+                "Sin promoción", "2x1", "Rebaja porcentaje", "Rebaja fija"
         });
         JSpinner rebajaPorcentaje = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 100.0, 1.0));
         JSpinner rebajaFija = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 9999.0, 1.0));
 
         JPanel basicos = crearPanelFormulario();
-        basicos.add(crearTituloFormulario("Datos basicos"));
+        basicos.add(crearTituloFormulario("Datos básicos"));
         basicos.add(crearFilaFormulario("Nombre", nombre));
         basicos.add(crearFilaFormulario("Precio", precio));
         basicos.add(crearFilaFormulario("Stock inicial", stock));
-        basicos.add(crearFilaFormulario("Valoracion inicial", valoracion));
-        basicos.add(crearFilaFormulario("Categorias", categorias));
-        basicos.add(crearFilaFormulario("Promocion", promocion));
+        basicos.add(crearFilaFormulario("Valoración inicial", valoracion));
+        basicos.add(crearFilaFormulario("Categorías", categorias));
+        basicos.add(crearFilaFormulario("Promoción", promocion));
         basicos.add(crearFilaFormulario("Porcentaje", rebajaPorcentaje));
         basicos.add(crearFilaFormulario("Rebaja fija", rebajaFija));
-        basicos.add(crearTituloFormulario("Descripcion"));
+        basicos.add(crearTituloFormulario("Descripción"));
         basicos.add(new JScrollPane(descripcion));
 
         JPanel imagenPanel = crearPanelFormulario();
@@ -997,7 +1024,7 @@ public class PanelGestor extends JPanel {
         String tipoSeleccionado = detalles.getTitleAt(detalles.getSelectedIndex()).toUpperCase();
         String descripcionCompleta = descripcionConDetalles(tipoSeleccionado, descripcion.getText(),
                 comicPaginas, comicAutor, comicEditorial, comicGenero, comicAnio, comicIdioma, comicFormato, comicIsbn,
-                juegoJugadoresMin, juegoJugadoresMax, juegoEdad, tipoJuego, juegoDuracion,
+                juegoJugadoresMin, juegoJugadoresMax, juegoEdad, tipoJuego, juegoDuración,
                 juegoEditorial, juegoIdioma, juegoComponentes,
                 figuraAltura, figuraMarca, figuraMaterial, figuraEscala, figuraPersonaje,
                 figuraFranquicia, figuraArticulada);
@@ -1008,7 +1035,7 @@ public class PanelGestor extends JPanel {
                 ((Integer) valoracion.getValue()).intValue(),
                 descripcionCompleta,
                 imagen.getText(),
-                parseCategorias(categorias.getText()),
+                parseCategorías(categorias.getText()),
                 "2x1".equals(promo),
                 "Rebaja porcentaje".equals(promo) ? ((Double) rebajaPorcentaje.getValue()).doubleValue() : 0.0,
                 "Rebaja fija".equals(promo) ? ((Double) rebajaFija.getValue()).doubleValue() : 0.0,
@@ -1031,12 +1058,12 @@ public class PanelGestor extends JPanel {
             JTextField formato, JTextField isbn) {
         JPanel panel = crearPanelFormulario();
         panel.setPreferredSize(new Dimension(330, 0));
-        panel.add(crearTituloFormulario("Detalles de comic"));
-        panel.add(crearFilaFormulario("Paginas", paginas));
+        panel.add(crearTituloFormulario("Detalles de cómic"));
+        panel.add(crearFilaFormulario("Páginas", paginas));
         panel.add(crearFilaFormulario("Autor", autor));
         panel.add(crearFilaFormulario("Editorial", editorial));
-        panel.add(crearFilaFormulario("Genero", genero));
-        panel.add(crearFilaFormulario("Anio", anio));
+        panel.add(crearFilaFormulario("Género", genero));
+        panel.add(crearFilaFormulario("Año", anio));
         panel.add(crearFilaFormulario("Idioma", idioma));
         panel.add(crearFilaFormulario("Formato", formato));
         panel.add(crearFilaFormulario("ISBN", isbn));
@@ -1053,9 +1080,9 @@ public class PanelGestor extends JPanel {
         panel.add(crearTituloFormulario("Detalles de juego"));
         panel.add(crearFilaFormulario("Jugadores min.", jugadoresMin));
         panel.add(crearFilaFormulario("Jugadores max.", jugadoresMax));
-        panel.add(crearFilaFormulario("Edad minima", edad));
+        panel.add(crearFilaFormulario("Edad mínima", edad));
         panel.add(crearFilaFormulario("Tipo", tipoJuego));
-        panel.add(crearFilaFormulario("Duracion min.", duracion));
+        panel.add(crearFilaFormulario("Duración min.", duracion));
         panel.add(crearFilaFormulario("Editorial", editorial));
         panel.add(crearFilaFormulario("Idioma", idioma));
         panel.add(crearTituloFormulario("Componentes"));
@@ -1108,7 +1135,7 @@ public class PanelGestor extends JPanel {
 
     private void seleccionarImagenProducto(JTextField campoImagen, JLabel preview) {
         JFileChooser chooser = new JFileChooser(".");
-        chooser.setFileFilter(new FileNameExtensionFilter("Imagenes", "png", "jpg", "jpeg", "gif"));
+        chooser.setFileFilter(new FileNameExtensionFilter("Imágenes", "png", "jpg", "jpeg", "gif"));
         int respuesta = chooser.showOpenDialog(this);
         if (respuesta != JFileChooser.APPROVE_OPTION) {
             return;
@@ -1126,7 +1153,7 @@ public class PanelGestor extends JPanel {
             JComboBox<Genero> comicGenero, JSpinner comicAnio, JTextField comicIdioma,
             JTextField comicFormato, JTextField comicIsbn,
             JSpinner juegoJugadoresMin, JSpinner juegoJugadoresMax, JSpinner juegoEdad,
-            JComboBox<TipoJuego> tipoJuego, JSpinner juegoDuracion, JTextField juegoEditorial,
+            JComboBox<TipoJuego> tipoJuego, JSpinner juegoDuración, JTextField juegoEditorial,
             JTextField juegoIdioma, JTextArea juegoComponentes,
             JSpinner figuraAltura, JTextField figuraMarca, JTextField figuraMaterial,
             JTextField figuraEscala, JTextField figuraPersonaje, JTextField figuraFranquicia,
@@ -1137,20 +1164,20 @@ public class PanelGestor extends JPanel {
         }
         texto.append("Detalles del producto:\n");
         if ("COMIC".equals(tipo)) {
-            texto.append("Paginas: ").append(comicPaginas.getValue()).append('\n');
+            texto.append("Páginas: ").append(comicPaginas.getValue()).append('\n');
             texto.append("Autor: ").append(textoCampo(comicAutor)).append('\n');
             texto.append("Editorial: ").append(textoCampo(comicEditorial)).append('\n');
-            texto.append("Genero: ").append(comicGenero.getSelectedItem()).append('\n');
-            texto.append("Anio: ").append(comicAnio.getValue()).append('\n');
+            texto.append("Género: ").append(comicGenero.getSelectedItem()).append('\n');
+            texto.append("Año: ").append(comicAnio.getValue()).append('\n');
             texto.append("Idioma: ").append(textoCampo(comicIdioma)).append('\n');
             texto.append("Formato: ").append(textoCampo(comicFormato)).append('\n');
             texto.append("ISBN: ").append(textoCampo(comicIsbn));
         } else if ("JUEGO".equals(tipo)) {
             texto.append("Jugadores: ").append(juegoJugadoresMin.getValue()).append("-")
                     .append(juegoJugadoresMax.getValue()).append('\n');
-            texto.append("Edad minima: ").append(juegoEdad.getValue()).append('\n');
+            texto.append("Edad mínima: ").append(juegoEdad.getValue()).append('\n');
             texto.append("Tipo: ").append(tipoJuego.getSelectedItem()).append('\n');
-            texto.append("Duracion: ").append(juegoDuracion.getValue()).append(" min\n");
+            texto.append("Duración: ").append(juegoDuración.getValue()).append(" min\n");
             texto.append("Editorial: ").append(textoCampo(juegoEditorial)).append('\n');
             texto.append("Idioma: ").append(textoCampo(juegoIdioma)).append('\n');
             texto.append("Componentes: ").append(textoArea(juegoComponentes));
@@ -1161,7 +1188,7 @@ public class PanelGestor extends JPanel {
             texto.append("Escala: ").append(textoCampo(figuraEscala)).append('\n');
             texto.append("Personaje: ").append(textoCampo(figuraPersonaje)).append('\n');
             texto.append("Franquicia: ").append(textoCampo(figuraFranquicia)).append('\n');
-            texto.append("Articulada: ").append(figuraArticulada.isSelected() ? "si" : "no");
+            texto.append("Articulada: ").append(figuraArticulada.isSelected() ? "sí" : "no");
         }
         return texto.toString();
     }
@@ -1186,11 +1213,11 @@ public class PanelGestor extends JPanel {
         panel.add(precio);
         panel.add(new JLabel("Unidades de stock"));
         panel.add(stock);
-        panel.add(new JLabel("Descripcion"));
+        panel.add(new JLabel("Descripción"));
         panel.add(new JScrollPane(descripcion));
         panel.add(new JLabel("Imagen"));
         panel.add(imagen);
-        panel.add(new JLabel("Categorias separadas por coma"));
+        panel.add(new JLabel("Categorías separadas por coma"));
         panel.add(categorias);
 
         int respuesta = JOptionPane.showConfirmDialog(this, panel,
@@ -1201,7 +1228,7 @@ public class PanelGestor extends JPanel {
                     ((Integer) stock.getValue()).intValue(),
                     descripcion.getText(),
                     imagen.getText(),
-                    parseCategorias(categorias.getText()));
+                    parseCategorías(categorias.getText()));
         }
     }
 
@@ -1296,7 +1323,7 @@ public class PanelGestor extends JPanel {
         if (producto.getEstaValorado()) {
             JOptionPane.showMessageDialog(this,
                     "Este producto ya fue valorado y no puede modificarse.",
-                    "Valoracion bloqueada", JOptionPane.WARNING_MESSAGE);
+                    "Valoración bloqueada", JOptionPane.WARNING_MESSAGE);
             return;
         }
         double precioInicial = producto.getEstaValorado() ? producto.getValorEstimado() : 10.0;
@@ -1309,7 +1336,7 @@ public class PanelGestor extends JPanel {
         JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
         panel.add(new JLabel("Precio estimado"));
         panel.add(precio);
-        panel.add(new JLabel("Estado de conservacion"));
+        panel.add(new JLabel("Estado de conservación"));
         panel.add(conservacion);
 
         int respuesta = JOptionPane.showConfirmDialog(this, panel,
@@ -1515,12 +1542,12 @@ public class PanelGestor extends JPanel {
         return partes.isEmpty() ? "sin descuento" : String.join(", ", partes);
     }
 
-    private String textoCategorias(ProductoTienda producto) {
+    private String textoCategorías(ProductoTienda producto) {
         List<String> categorias = producto.getCategoriasTexto();
         if (!categorias.isEmpty()) {
             return String.join(", ", categorias);
         }
-        return producto.getCategoria() == null ? "sin categorias" : producto.getCategoria().getNombre();
+        return producto.getCategoria() == null ? "sin categorías" : producto.getCategoria().getNombre();
     }
 
     private String textoPermisos(Empleado empleado) {
@@ -1572,14 +1599,14 @@ public class PanelGestor extends JPanel {
 
     private String categoriaPack(Pack pack) {
         String categoria = pack.getCategoria();
-        return categoria == null || categoria.isBlank() ? "sin categoria" : categoria;
+        return categoria == null || categoria.isBlank() ? "sin categoría" : categoria;
     }
 
     private String categoriaProducto(ProductoTienda producto) {
-        return textoCategorias(producto);
+        return textoCategorías(producto);
     }
 
-    private List<String> parseCategorias(String texto) {
+    private List<String> parseCategorías(String texto) {
         List<String> categorias = new ArrayList<>();
         if (texto == null || texto.isBlank()) {
             return categorias;

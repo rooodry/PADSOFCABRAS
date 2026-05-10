@@ -298,7 +298,7 @@ public class PanelCesta extends JPanel {
             vacio.setForeground(UiStyle.COLOR_TEXTO);
             panelPack.add(vacio, gbc);
         } else {
-            JLabel categoria = new JLabel("Categoria del pack: " + categoriaPack(pack));
+            JLabel categoria = new JLabel("Categoría del pack: " + categoriaPack(pack));
             categoria.setFont(new Font("SansSerif", Font.BOLD, 14));
             categoria.setForeground(UiStyle.COLOR_TEXTO);
             panelPack.add(categoria, gbc);
@@ -360,7 +360,7 @@ private JPanel crearLineaProductoPack(ProductoTienda producto, int cantidad) {
     JLabel precio = new JLabel(String.format("%.2f€", precioUnitarioFinal(producto)));
     precio.setFont(new Font("SansSerif", Font.BOLD, 14));
     precio.setForeground(UiStyle.COLOR_MARRON_MEDIO);
-    JLabel categoria = new JLabel("Categoria: " + categoriaProducto(producto));
+    JLabel categoria = new JLabel("Categoría: " + categoriaProducto(producto));
     categoria.setFont(new Font("SansSerif", Font.PLAIN, 12));
     categoria.setForeground(new Color(100, 100, 100));
     infoPanel.add(categoria, BorderLayout.CENTER);
@@ -376,12 +376,12 @@ private JPanel crearLineaProductoPack(ProductoTienda producto, int cantidad) {
         if (!categorias.isEmpty()) {
             return String.join(", ", categorias);
         }
-        return producto.getCategoria() == null ? "sin categoria" : producto.getCategoria().getNombre();
+        return producto.getCategoria() == null ? "sin categoría" : producto.getCategoria().getNombre();
     }
 
     private String categoriaPack(Pack pack) {
         String categoria = pack.getCategoria();
-        return categoria == null || categoria.isBlank() ? "sin categoria" : categoria;
+        return categoria == null || categoria.isBlank() ? "sin categoría" : categoria;
     }
 
     private void cargarImagenMiniatura(JLabel label, String rutaImagen) {

@@ -74,7 +74,7 @@ public class TarjetaSegundaMano extends JPanel {
         if (estado == EstadoProducto.VALORADO) {
             return "Publicar";
         }
-        return "Pedir valoracion";
+        return "Pedir valoración";
     }
 
     private JLabel crearImagen(String ruta) {

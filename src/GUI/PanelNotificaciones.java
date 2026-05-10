@@ -82,7 +82,7 @@ public class PanelNotificaciones extends JPanel {
 
         List<Notificacion> visibles = filtrarNotificaciones();
         if (visibles.isEmpty()) {
-            JLabel vacio = new JLabel("No hay notificaciones en esta seccion.", SwingConstants.CENTER);
+            JLabel vacio = new JLabel("No hay notificaciones en esta sección.", SwingConstants.CENTER);
             vacio.setFont(new Font("SansSerif", Font.BOLD, 16));
             vacio.setForeground(UiStyle.COLOR_TEXTO);
             vacio.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -278,7 +278,7 @@ public class PanelNotificaciones extends JPanel {
 
         gbc.gridx = 3;
         JButton borrar = crearBotonIcono(new IconoPapelera(COLOR_PAPELERA));
-        borrar.setToolTipText("Eliminar notificacion");
+        borrar.setToolTipText("Eliminar notificación");
         borrar.addActionListener(e -> mostrarConfirmacionBorrado(notificacion));
         fila.add(borrar, gbc);
 
@@ -319,7 +319,7 @@ public class PanelNotificaciones extends JPanel {
         detalle.setForeground(UiStyle.COLOR_TEXTO);
         panel.add(detalle, BorderLayout.SOUTH);
 
-        JOptionPane.showMessageDialog(this, panel, "Detalle de notificacion", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, panel, "Detalle de notificación", JOptionPane.INFORMATION_MESSAGE);
         refrescar();
     }
 
@@ -471,8 +471,8 @@ public class PanelNotificaciones extends JPanel {
     private void mostrarConfirmacionBorrado(Notificacion notificacion) {
         int opcion = JOptionPane.showConfirmDialog(
                 this,
-                "Vas a eliminar una notificacion.\n¿Seguro que quieres borrarla?",
-                "Eliminar notificacion",
+                "Vas a eliminar una notificación.\n¿Seguro que quieres borrarla?",
+                "Eliminar notificación",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
 

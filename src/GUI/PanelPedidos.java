@@ -58,7 +58,7 @@ public class PanelPedidos extends JPanel {
         lista.setBorder(new EmptyBorder(22, 34, 22, 34));
 
         if (mainFrame.getClienteActual().getPedidos().isEmpty()) {
-            JLabel vacio = new JLabel("Todavia no tienes pedidos.", SwingConstants.CENTER);
+            JLabel vacio = new JLabel("Todavía no tienes pedidos.", SwingConstants.CENTER);
             vacio.setFont(new Font("SansSerif", Font.PLAIN, 16));
             vacio.setForeground(UiStyle.COLOR_TEXTO);
             lista.add(vacio);

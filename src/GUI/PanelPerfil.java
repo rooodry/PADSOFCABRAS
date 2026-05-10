@@ -68,6 +68,7 @@ public class PanelPerfil extends JPanel {
     private final JLabel lblAvatar;
     private JButton btnGuardarCambios;
     private String nuevoNombrePendiente = null;
+    private String contrasenaActualPendiente = null;
     private String nuevaContrasenaPendiente = null;
     private String nuevaFotoPendiente = null;
 
@@ -148,7 +149,7 @@ public class PanelPerfil extends JPanel {
     }
 
     private JButton crearBotonCerrarSesion() {
-        JButton boton = new UiStyle.RoundedButton("Cerrar sesion",
+        JButton boton = new UiStyle.RoundedButton("Cerrar sesión",
                 UiStyle.COLOR_MARRON_MEDIO, UiStyle.COLOR_CABECERA, 16);
         boton.setForeground(UiStyle.COLOR_TEXTO_CLARO);
         boton.setPreferredSize(new Dimension(268, 40));
@@ -273,7 +274,7 @@ public class PanelPerfil extends JPanel {
         nombre.setForeground(UiStyle.COLOR_TEXTO);
         tarjeta.add(nombre, BorderLayout.CENTER);
 
-        JLabel precio = new JLabel(String.format("%.2f€", producto.getPrecio()));
+        JLabel precio = new JLabel(String.format("%.2f EUR", producto.getPrecio()));
         precio.setFont(new Font("SansSerif", Font.BOLD, 14));
         precio.setForeground(UiStyle.COLOR_TEXTO);
         tarjeta.add(precio, BorderLayout.SOUTH);
@@ -297,7 +298,7 @@ public class PanelPerfil extends JPanel {
 
         List<Pedido> pedidos = mainFrame.getClienteActual().getPedidos();
         if (pedidos.isEmpty()) {
-            JLabel vacio = new JLabel("Todavia no tienes pedidos.");
+            JLabel vacio = new JLabel("Todavía no tienes pedidos.");
             vacio.setFont(new Font("SansSerif", Font.PLAIN, 16));
             vacio.setForeground(UiStyle.COLOR_TEXTO);
             lista.add(vacio);
@@ -448,7 +449,7 @@ public class PanelPerfil extends JPanel {
 
         List<Intercambio> intercambios = mainFrame.getIntercambiosClienteActual();
         if (intercambios.isEmpty()) {
-            JLabel vacio = new JLabel("Aun no tienes intercambios.");
+            JLabel vacio = new JLabel("Aún no tienes intercambios.");
             vacio.setFont(new Font("SansSerif", Font.PLAIN, 16));
             vacio.setForeground(UiStyle.COLOR_TEXTO);
             lista.add(vacio);
@@ -553,16 +554,16 @@ public class PanelPerfil extends JPanel {
         JPanel intercambio_visual = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
         intercambio_visual.setOpaque(false);
 
-        JLabel prodOfrecido = new JLabel("📦");
+        JLabel prodOfrecido = new JLabel("\uD83D\uDCE6");
         prodOfrecido.setFont(new Font("SansSerif", Font.PLAIN, 24));
         intercambio_visual.add(prodOfrecido);
 
-        JLabel flecha = new JLabel("↔");
+        JLabel flecha = new JLabel("\u2194");
         flecha.setFont(new Font("SansSerif", Font.PLAIN, 18));
         flecha.setForeground(UiStyle.COLOR_TEXTO);
         intercambio_visual.add(flecha);
 
-        JLabel prodDeseado = new JLabel("📦");
+        JLabel prodDeseado = new JLabel("\uD83D\uDCE6");
         prodDeseado.setFont(new Font("SansSerif", Font.PLAIN, 24));
         intercambio_visual.add(prodDeseado);
 
@@ -619,9 +620,9 @@ public class PanelPerfil extends JPanel {
         datos.add(new JLabel("Cliente lanzador: " + nombreCliente(oferta.getUsuarioLanzador())));
         datos.add(new JLabel("Cliente receptor: " + nombreCliente(oferta.getUsuarioReceptor())));
         datos.add(new JLabel("Fecha de oferta: " + formatoFecha.format(intercambio.getFechaOferta())));
-        datos.add(new JLabel("Fecha limite: " + formatoFecha.format(intercambio.getFechaLimite())));
+        datos.add(new JLabel("Fecha límite: " + formatoFecha.format(intercambio.getFechaLimite())));
         datos.add(new JLabel("Fecha aceptada: " + formatoFechaNullable(intercambio.getFechaAceptada())));
-        datos.add(new JLabel("Intercambio materializado: " + (intercambio.getIntercambiado() ? "Si" : "No")));
+        datos.add(new JLabel("Intercambio materializado: " + (intercambio.getIntercambiado() ? "Sí" : "No")));
         panel.add(datos, BorderLayout.SOUTH);
 
         JOptionPane.showMessageDialog(mainFrame, panel, "Detalle del intercambio", JOptionPane.PLAIN_MESSAGE);
@@ -636,9 +637,9 @@ public class PanelPerfil extends JPanel {
                 + producto.getNombre()
                 + "<br>Propietario: " + nombreCliente(producto.getPropietario())
                 + "<br>Estado producto: " + producto.getEstadoProducto()
-                + "<br>Conservacion: " + textoDato(producto.getEstadoConservacion())
+                + "<br>Conservación: " + textoDato(producto.getEstadoConservacion())
                 + "<br>Valor estimado: " + String.format("%.2f EUR", producto.getValorEstimado())
-                + "<br>Descripcion: " + textoDato(producto.getDescripcion()) + "</html>");
+                + "<br>Descripción: " + textoDato(producto.getDescripcion()) + "</html>");
         datos.setFont(new Font("SansSerif", Font.PLAIN, 12));
         datos.setForeground(UiStyle.COLOR_TEXTO);
         panel.add(datos, BorderLayout.CENTER);
@@ -775,10 +776,12 @@ public class PanelPerfil extends JPanel {
     }
 
     private void abrirDialogoCambiarContraseña() {
+        javax.swing.JPasswordField campoActual = new javax.swing.JPasswordField();
         javax.swing.JPasswordField campoNueva = new javax.swing.JPasswordField();
         javax.swing.JPasswordField campoConfirmacion = new javax.swing.JPasswordField();
 
         Object[] mensaje = {
+                "Contraseña actual:", campoActual,
                 "Nueva contraseña:", campoNueva,
                 "Confirmar contraseña:", campoConfirmacion
         };
@@ -792,8 +795,25 @@ public class PanelPerfil extends JPanel {
             return;
         }
 
+        String actual = new String(campoActual.getPassword()).trim();
         String nueva = new String(campoNueva.getPassword()).trim();
         String confirmacion = new String(campoConfirmacion.getPassword()).trim();
+
+        if (actual.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(mainFrame,
+                    "Debes introducir tu contraseña actual.",
+                    "Error",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!mainFrame.getClienteActual().getContraseña().equals(actual)) {
+            javax.swing.JOptionPane.showMessageDialog(mainFrame,
+                    "La contraseña actual no es correcta.",
+                    "Error",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         if (nueva.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(mainFrame,
@@ -811,6 +831,7 @@ public class PanelPerfil extends JPanel {
             return;
         }
 
+        contrasenaActualPendiente = actual;
         nuevaContrasenaPendiente = nueva;
 
         javax.swing.JOptionPane.showMessageDialog(mainFrame,
@@ -841,9 +862,15 @@ public class PanelPerfil extends JPanel {
         }
 
         if (nuevaContrasenaPendiente != null) {
-            boolean cambiada = mainFrame.cambiarContrasenaCliente(nuevaContrasenaPendiente);
+            boolean cambiada = mainFrame.cambiarContrasenaCliente(contrasenaActualPendiente, nuevaContrasenaPendiente);
             if (cambiada) {
+                contrasenaActualPendiente = null;
                 nuevaContrasenaPendiente = null;
+            } else {
+                JOptionPane.showMessageDialog(mainFrame,
+                        "No se ha podido cambiar la contraseña. Vuelve a introducir tu contraseña actual.",
+                        "Cambiar contraseña",
+                        JOptionPane.WARNING_MESSAGE);
             }
         }
 
@@ -857,7 +884,7 @@ public class PanelPerfil extends JPanel {
 
         if (rutaFoto == null || rutaFoto.isBlank()) {
             lblAvatar.setIcon(null);
-            lblAvatar.setText("👤");
+            lblAvatar.setText("\uD83D\uDC64");
             lblAvatar.setFont(new Font("SansSerif", Font.PLAIN, 92));
             return;
         }
@@ -865,7 +892,7 @@ public class PanelPerfil extends JPanel {
         File archivo = new File(rutaFoto);
         if (!archivo.exists()) {
             lblAvatar.setIcon(null);
-            lblAvatar.setText("👤");
+            lblAvatar.setText("\uD83D\uDC64");
             lblAvatar.setFont(new Font("SansSerif", Font.PLAIN, 92));
             return;
         }

@@ -53,12 +53,12 @@ public class RegistroPanel extends JPanel {
         formContainer.add(titleLabel, gbc);
 
         gbc.gridy = 1;
-        formContainer.add(crearEtiqueta("Identificacion"), gbc);
+        formContainer.add(crearEtiqueta("Identificación"), gbc);
         gbc.gridy = 2;
         formContainer.add(idField, gbc);
 
         gbc.gridy = 3;
-        formContainer.add(crearEtiqueta("Contrasena"), gbc);
+        formContainer.add(crearEtiqueta("Contraseña"), gbc);
         gbc.gridy = 4;
         formContainer.add(passField, gbc);
 

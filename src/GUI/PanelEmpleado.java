@@ -80,7 +80,7 @@ public class PanelEmpleado extends JPanel {
         Empleado empleado = mainFrame.getEmpleadoActual();
         if (empleado == null) {
             contenido.add(crearTitulo("Panel empleado"));
-            contenido.add(crearEtiqueta("Inicia sesion con un empleado creado por el gestor."));
+            contenido.add(crearEtiqueta("Inicia sesión con un empleado creado por el gestor."));
             actualizar();
             return;
         }
@@ -173,7 +173,7 @@ public class PanelEmpleado extends JPanel {
         menu.add(crearItemMenu("GEST. INTERCAMBIOS", "INTERCAMBIOS",
                 empleado == null || empleado.tienePermiso(TiposEmpleado.EMPLEADOS_INTERCAMBIO)));
         menu.addSeparator();
-        JMenuItem salir = crearItemMenu("CERRAR SESION", seccionActiva, true);
+        JMenuItem salir = crearItemMenu("CERRAR SESIÓN", seccionActiva, true);
         salir.addActionListener(e -> mainFrame.cerrarSesion());
         menu.add(salir);
 
@@ -349,7 +349,7 @@ public class PanelEmpleado extends JPanel {
         fila.setBorder(new EmptyBorder(12, 14, 12, 14));
         fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 62));
 
-        JLabel estado = new JLabel(activo ? "✓" : "–", SwingConstants.CENTER);
+        JLabel estado = new JLabel(activo ? "\u2713" : "\u2013", SwingConstants.CENTER);
         estado.setFont(new Font("SansSerif", Font.BOLD, 22));
         estado.setForeground(activo ? UiStyle.COLOR_TEXTO : new Color(138, 122, 106));
         estado.setPreferredSize(new Dimension(34, 34));
@@ -365,7 +365,7 @@ public class PanelEmpleado extends JPanel {
     private String textoPermiso(TiposEmpleado permiso) {
         switch (permiso) {
             case EMPLEADOS_PRODUCTO:
-                return "Gestion de productos, stock, packs y segunda mano";
+                return "Gestión de productos, stock, packs y segunda mano";
             case EMPLEADOS_PEDIDO:
                 return "Gestion de pedidos";
             case EMPLEADOS_INTERCAMBIO:
@@ -438,7 +438,7 @@ public class PanelEmpleado extends JPanel {
 
     private void pintarSegundaMano() {
         contenido.add(crearTitulo("SEGUNDA MANO"));
-        contenido.add(crearSubtitulo("Productos de clientes pendientes de valoracion o ya valorados."));
+        contenido.add(crearSubtitulo("Productos de clientes pendientes de valoración o ya valorados."));
         List<ProductoSegundaMano> productos = mainFrame.getProductosSegundaManoGestion();
         if (productos.isEmpty()) {
             contenido.add(crearEtiqueta("No hay productos de segunda mano."));
@@ -452,7 +452,7 @@ public class PanelEmpleado extends JPanel {
 
     private void pintarPedidos() {
         contenido.add(crearTitulo("GEST. PEDIDOS"));
-        contenido.add(crearSubtitulo("Pedidos en preparacion"));
+        contenido.add(crearSubtitulo("Pedidos en preparación"));
         for (Pedido pedido : mainFrame.getPedidosGestion()) {
             if (pedido.getEstadoPedido() == EstadoPedido.EN_PREPARACION) {
                 contenido.add(crearFilaPedido(pedido, "Cambiar a listo"));
@@ -530,7 +530,7 @@ public class PanelEmpleado extends JPanel {
             fila.setPreferredSize(new Dimension(0, 86));
             fila.setMinimumSize(new Dimension(0, 86));
             fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
-            fila.add(crearEtiqueta(pack.getNombre() + " | Categoria: " + categoriaPack(pack) + " | " + resumenPack(pack)
+            fila.add(crearEtiqueta(pack.getNombre() + " | Categoría: " + categoriaPack(pack) + " | " + resumenPack(pack)
                     + " = " + String.format("%.2f EUR", pack.getPrecio())), BorderLayout.CENTER);
             JButton editar = crearBoton("Modificar", 120);
             editar.addActionListener(e -> editarPack(pack));
@@ -563,7 +563,7 @@ public class PanelEmpleado extends JPanel {
                         datos.stock,
                         datos.descripcion,
                         datos.imagen,
-                        parseCategorias(datos.categorias));
+                        parseCategorías(datos.categorias));
                 editandoProducto = false;
                 refrescar();
             }
@@ -675,11 +675,11 @@ public class PanelEmpleado extends JPanel {
         campos.setBorder(new EmptyBorder(16, 18, 16, 18));
         campos.add(crearCampoFormulario("Nombre", nombre));
         campos.add(crearCampoFormulario("Tipo de producto", tipo));
-        campos.add(crearCampoFormulario("Categorias", categorias));
+        campos.add(crearCampoFormulario("Categorías", categorias));
         campos.add(crearCampoFormulario("Precio", precio));
         campos.add(crearCampoFormulario("Stock inicial", stock));
         campos.add(crearCampoFormulario("Estrellas", valoracion));
-        campos.add(crearEtiquetaFormulario("Descripcion"));
+        campos.add(crearEtiquetaFormulario("Descripción"));
         campos.add(new JScrollPane(descripcion));
 
         JPanel imagenPanel = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
@@ -715,7 +715,7 @@ public class PanelEmpleado extends JPanel {
                 ((Integer) valoracion.getValue()).intValue(),
                 descripcion.getText(),
                 imagen.getText(),
-                parseCategorias(categorias.getText()),
+                parseCategorías(categorias.getText()),
                 false, 0.0, 0.0,
                 120, "", "", null, 2026,
                 4, 8, null,
@@ -851,7 +851,7 @@ public class PanelEmpleado extends JPanel {
         if (producto.getEstaValorado()) {
             JOptionPane.showMessageDialog(this,
                     "Este producto ya fue valorado y no puede modificarse.",
-                    "Valoracion bloqueada", JOptionPane.WARNING_MESSAGE);
+                    "Valoración bloqueada", JOptionPane.WARNING_MESSAGE);
             return;
         }
         double precioInicial = producto.getEstaValorado() ? producto.getValorEstimado() : 10.0;
@@ -865,7 +865,7 @@ public class PanelEmpleado extends JPanel {
         JPanel campos = new JPanel(new GridLayout(0, 1, 6, 6));
         campos.add(new JLabel("Precio estimado"));
         campos.add(precio);
-        campos.add(new JLabel("Estado de conservacion"));
+        campos.add(new JLabel("Estado de conservación"));
         campos.add(conservacion);
         panel.add(campos, BorderLayout.CENTER);
         int respuesta = JOptionPane.showConfirmDialog(this, panel,
@@ -941,7 +941,7 @@ public class PanelEmpleado extends JPanel {
 
     private String categoriaPack(Pack pack) {
         String categoria = pack.getCategoria();
-        return categoria == null || categoria.isBlank() ? "sin categoria" : categoria;
+        return categoria == null || categoria.isBlank() ? "sin categoría" : categoria;
     }
 
     private String categoriaProducto(ProductoTienda producto) {
@@ -949,15 +949,15 @@ public class PanelEmpleado extends JPanel {
         if (!categorias.isEmpty()) {
             return String.join(", ", categorias);
         }
-        return producto.getCategoria() == null ? "sin categoria" : producto.getCategoria().getNombre();
+        return producto.getCategoria() == null ? "sin categoría" : producto.getCategoria().getNombre();
     }
 
-    private String textoCategorias(ProductoTienda producto) {
+    private String textoCategorías(ProductoTienda producto) {
         List<String> categorias = producto.getCategoriasTexto();
-        return categorias.isEmpty() ? "sin categorias" : String.join(", ", categorias);
+        return categorias.isEmpty() ? "sin categorías" : String.join(", ", categorias);
     }
 
-    private List<String> parseCategorias(String texto) {
+    private List<String> parseCategorías(String texto) {
         List<String> categorias = new ArrayList<>();
         if (texto == null || texto.isBlank()) {
             return categorias;

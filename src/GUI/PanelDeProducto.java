@@ -268,7 +268,7 @@ public class PanelDeProducto extends JPanel {
         campoCategorias = new JTextField(String.join(", ", producto.getCategoriasTexto()));
         campos.add(crearFilaEdicion("Stock", campoStock));
         campos.add(crearFilaEdicion("Imagen", campoImagen));
-        campos.add(crearFilaEdicion("Categorias", campoCategorias));
+        campos.add(crearFilaEdicion("Categorías", campoCategorias));
         return campos;
     }
 
@@ -361,7 +361,7 @@ public class PanelDeProducto extends JPanel {
 
         List<String[]> comentarios = producto.getComentarios();
         if (comentarios.isEmpty()) {
-            panel.add(crearComentario("GO", "Aun no hay comentarios."));
+            panel.add(crearComentario("GO", "Aún no hay comentarios."));
         } else {
             for (String[] comentario : comentarios) {
                 panel.add(crearComentario(comentario[0], comentario[1]));

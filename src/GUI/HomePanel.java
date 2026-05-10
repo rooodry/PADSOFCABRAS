@@ -47,7 +47,7 @@ public class HomePanel extends JPanel {
     private final JComboBox<String> comboOrden;
 
     /**
-     * Crea el panel de catalogo para el controlador indicado.
+     * Crea el panel de catálogo para el controlador indicado.
      *
      * @param mainFrame ventana principal de la aplicacion
      */
@@ -57,10 +57,10 @@ public class HomePanel extends JPanel {
         this.panelRecomendados = new JPanel();
         this.campoBusqueda = new JTextField();
         this.campoPrecioMaximo = new JTextField();
-        this.comboCategoria = new JComboBox<>(new String[] {"Todas", "Comics", "Juegos", "Figuras"});
+        this.comboCategoria = new JComboBox<>(new String[] {"Todas", "Cómics", "Juegos", "Figuras"});
         this.comboValoracion = new JComboBox<>(new String[] {"Cualquiera", "1+", "2+", "3+", "4+", "5"});
         this.comboOrden = new JComboBox<>(new String[] {
-                "Nombre A-Z", "Nombre Z-A", "Precio menor", "Precio mayor", "Valoracion mayor", "Valoracion menor"});
+                "Nombre A-Z", "Nombre Z-A", "Precio menor", "Precio mayor", "Valoración mayor", "Valoración menor"});
 
         setLayout(new BorderLayout());
         setBackground(UiStyle.COLOR_FONDO);
@@ -115,7 +115,7 @@ public class HomePanel extends JPanel {
         JPanel cabecera = new JPanel(new BorderLayout());
         cabecera.setBackground(UiStyle.COLOR_FONDO);
 
-        JLabel titulo = new JLabel("Catalogo", SwingConstants.CENTER);
+        JLabel titulo = new JLabel("Catálogo", SwingConstants.CENTER);
         titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
         titulo.setForeground(UiStyle.COLOR_TEXTO);
         titulo.setBorder(new EmptyBorder(14, 0, 6, 0));
@@ -175,7 +175,7 @@ public class HomePanel extends JPanel {
         filtros.setBorder(new EmptyBorder(0, 18, 8, 18));
 
         campoBusqueda.setPreferredSize(new Dimension(220, 30));
-        campoBusqueda.setToolTipText("Buscar por nombre o descripcion");
+        campoBusqueda.setToolTipText("Buscar por nombre o descripción");
         campoPrecioMaximo.setPreferredSize(new Dimension(82, 30));
         campoPrecioMaximo.setToolTipText("Precio maximo");
 
@@ -251,7 +251,7 @@ public class HomePanel extends JPanel {
     }
 
     private boolean coincideCategoria(ProductoTienda producto, String categoria) {
-        if ("Comics".equals(categoria)) {
+        if ("Cómics".equals(categoria)) {
             return producto.getCategoria() instanceof Comic;
         }
         if ("Juegos".equals(categoria)) {
@@ -294,10 +294,10 @@ public class HomePanel extends JPanel {
         if ("Precio mayor".equals(orden)) {
             return Comparator.comparingDouble(ProductoTienda::getPrecio).reversed();
         }
-        if ("Valoracion mayor".equals(orden)) {
+        if ("Valoración mayor".equals(orden)) {
             return Comparator.comparingInt(ProductoTienda::getValoracion).reversed();
         }
-        if ("Valoracion menor".equals(orden)) {
+        if ("Valoración menor".equals(orden)) {
             return Comparator.comparingInt(ProductoTienda::getValoracion);
         }
         return Comparator.comparing(ProductoTienda::getNombre, String.CASE_INSENSITIVE_ORDER);
@@ -317,7 +317,7 @@ public class HomePanel extends JPanel {
                 java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         PanelDeProducto detalle = new PanelDeProducto(producto, mainFrame);
         if (!mainFrame.isSesionRegistrada()) {
-            detalle.configurarBotonCesta("Inicia sesion para comprar", true);
+            detalle.configurarBotonCesta("Inicia sesión para comprar", true);
         }
         detalle.addListenerCesta(e -> {
             mainFrame.anadirProductoACesta(producto);
@@ -426,7 +426,7 @@ public class HomePanel extends JPanel {
         }
 
         private JMenuItem crearItemCerrarSesion(Main mainFrame) {
-            JMenuItem item = new JMenuItem("CERRAR SESION");
+            JMenuItem item = new JMenuItem("CERRAR SESIÓN");
             item.setOpaque(true);
             item.setBackground(UiStyle.COLOR_CABECERA);
             item.setForeground(UiStyle.COLOR_TEXTO_CLARO);

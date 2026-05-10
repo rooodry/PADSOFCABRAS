@@ -521,7 +521,7 @@ public class Sistema {
 
     /**
      * Carga productos de tienda desde el CSV del proyecto de forma tolerante a
-     * cabeceras, campos vacios y valores con texto como {@code ">8 anos"}.
+     * cabeceras, campos vacíos y valores con texto como {@code ">8 años"}.
      *
      * @param archivo ruta del fichero CSV separado por punto y coma
      */
