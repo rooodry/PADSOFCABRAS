@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -32,15 +31,19 @@ public class TarjetaSegundaMano extends JPanel {
     private static final long serialVersionUID = 1L;
 
     private static final int ANCHO = 200;
-    private static final int ALTO = 280;
+    private static final int ALTO = 330;
 
     /**
-     * Crea una tarjeta con datos y accion opcional.
+     * Crea una tarjeta con datos y acción opcional.
      *
      * @param producto producto que se representa
-     * @param listener accion del boton; puede ser {@code null}
+     * @param listener acción del botón; puede ser {@code null}
      */
     public TarjetaSegundaMano(ProductoSegundaMano producto, ActionListener listener) {
+        this(producto, listener, null);
+    }
+
+    public TarjetaSegundaMano(ProductoSegundaMano producto, ActionListener listener, ActionListener listenerEliminar) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setOpaque(false);
         setBorder(new EmptyBorder(15, 15, 15, 15));
@@ -56,9 +59,22 @@ public class TarjetaSegundaMano extends JPanel {
         add(Box.createVerticalStrut(5));
         add(crearPrecio(producto.getValorEstimado()));
 
-        if (listener != null) {
+        if (listener != null || listenerEliminar != null) {
             add(Box.createVerticalGlue());
-            add(crearBoton(etiquetaBoton(producto.getEstadoProducto()), listener));
+            JPanel botones = new JPanel();
+            botones.setLayout(new BoxLayout(botones, BoxLayout.Y_AXIS));
+            botones.setOpaque(false);
+            botones.setAlignmentX(Component.CENTER_ALIGNMENT);
+            if (listener != null) {
+                botones.add(crearBoton(etiquetaBoton(producto.getEstadoProducto()), listener));
+            }
+            if (listenerEliminar != null) {
+                if (listener != null) {
+                    botones.add(Box.createVerticalStrut(6));
+                }
+                botones.add(crearBotonEliminar(listenerEliminar));
+            }
+            add(botones);
         }
     }
 
@@ -134,6 +150,13 @@ public class TarjetaSegundaMano extends JPanel {
         boton.setMaximumSize(new Dimension(160, 30));
         boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         boton.addActionListener(listener);
+        return boton;
+    }
+
+    private JButton crearBotonEliminar(ActionListener listener) {
+        JButton boton = crearBoton("Eliminar", listener);
+        boton.setBackground(new Color(145, 62, 52));
+        boton.setBorder(BorderFactory.createStrokeBorder(new BasicStroke(1.0f), new Color(145, 62, 52)));
         return boton;
     }
 }

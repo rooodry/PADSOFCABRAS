@@ -44,6 +44,7 @@ public class PanelMisProductos extends JPanel {
     private ActionListener listenerSubir;
     private ActionListener listenerPedirValoracion;
     private ActionListener listenerPublicar;
+    private ActionListener listenerEliminar;
 
     /**
      * Crea el panel de cartera para el cliente indicado.
@@ -96,6 +97,10 @@ public class PanelMisProductos extends JPanel {
      */
     public void addListenerPublicar(ActionListener listener) {
         this.listenerPublicar = listener;
+    }
+
+    public void addListenerEliminarProducto(ActionListener listener) {
+        this.listenerEliminar = listener;
     }
 
     /**
@@ -214,7 +219,8 @@ public class PanelMisProductos extends JPanel {
         for (ProductoSegundaMano producto : filtrados) {
             JPanel envoltura = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
             envoltura.setBackground(UiStyle.COLOR_FONDO);
-            TarjetaSegundaMano tarjeta = new TarjetaSegundaMano(producto, resolverListener(producto));
+            TarjetaSegundaMano tarjeta = new TarjetaSegundaMano(producto, resolverListener(producto),
+                    e -> confirmarEliminacion(producto));
             tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -289,5 +295,14 @@ public class PanelMisProductos extends JPanel {
                         new ActionEvent(producto, ActionEvent.ACTION_PERFORMED, "valorar"));
             }
         };
+    }
+
+    private void confirmarEliminacion(ProductoSegundaMano producto) {
+        int respuesta = JOptionPane.showConfirmDialog(this,
+                "¿Quieres eliminar este producto de tu cartera?",
+                "Eliminar producto", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (respuesta == JOptionPane.YES_OPTION && listenerEliminar != null) {
+            listenerEliminar.actionPerformed(new ActionEvent(producto, ActionEvent.ACTION_PERFORMED, "eliminar"));
+        }
     }
 }

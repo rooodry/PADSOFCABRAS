@@ -490,7 +490,13 @@ public class Main extends JFrame {
     public boolean registrarCliente(String nombre, String contrasena, String dni) {
         if (existeClienteConIdentificacion(nombre)) {
             JOptionPane.showMessageDialog(this,
-                    "Ya existe una cuenta registrada con ese correo.",
+                    "Ya existe una cuenta registrada con esa identificación.",
+                    "Registro", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (existeClienteConDni(dni)) {
+            JOptionPane.showMessageDialog(this,
+                    "Ya existe una cuenta registrada con ese DNI.",
                     "Registro", JOptionPane.WARNING_MESSAGE);
             return false;
         }
@@ -984,7 +990,7 @@ public class Main extends JFrame {
      */
     public void solicitarValoracion(ProductoSegundaMano producto) {
         producto.pedirValoracion();
-        JOptionPane.showMessageDialog(this, "Solicitud enviada. Un empleado debera valorar el producto.");
+        JOptionPane.showMessageDialog(this, "Solicitud enviada. Un empleado deberá valorar el producto.");
         panelMisProductos.refrescar();
         guardarEstadoPersistente();
     }
@@ -1003,6 +1009,18 @@ public class Main extends JFrame {
                     "No publicado", JOptionPane.WARNING_MESSAGE);
         }
         panelMisProductos.refrescar();
+        guardarEstadoPersistente();
+    }
+
+    public void eliminarProductoDeCartera(ProductoSegundaMano producto) {
+        if (clienteActual == null || producto == null
+                || !clienteActual.getCartera().getProductos().contains(producto)) {
+            return;
+        }
+        producto.borrarProducto();
+        clienteActual.getCartera().retirarProducto(producto);
+        productosSegundaMano.remove(producto);
+        refrescarPantallasConDatos();
         guardarEstadoPersistente();
     }
 
@@ -1500,6 +1518,12 @@ public class Main extends JFrame {
                 publicarProducto((ProductoSegundaMano) origen);
             }
         });
+        panelMisProductos.addListenerEliminarProducto(e -> {
+            Object origen = e.getSource();
+            if (origen instanceof ProductoSegundaMano) {
+                eliminarProductoDeCartera((ProductoSegundaMano) origen);
+            }
+        });
 
         panelContenedor.add(homePanel, PANTALLA_HOME);
         panelContenedor.add(panelCesta, PANTALLA_CESTA);
@@ -1596,6 +1620,20 @@ public class Main extends JFrame {
         for (Usuario usuario : sistema.getUsuarios()) {
             if (usuario instanceof ClienteRegistrado
                     && usuario.getNombre().equalsIgnoreCase(normalizada)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean existeClienteConDni(String dni) {
+        if (dni == null) {
+            return false;
+        }
+        String normalizado = dni.trim();
+        for (Usuario usuario : sistema.getUsuarios()) {
+            if (usuario instanceof ClienteRegistrado
+                    && ((ClienteRegistrado) usuario).getDNI().equalsIgnoreCase(normalizado)) {
                 return true;
             }
         }
@@ -2274,6 +2312,7 @@ public class Main extends JFrame {
 
         clienteActual.setFotoPerfil(nuevaRutaFoto.trim());
         refrescarPantallasConDatos();
+        guardarEstadoPersistente();
     }
 
     public void retirarPackDeCesta(Pack pack) {

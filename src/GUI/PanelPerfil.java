@@ -844,8 +844,8 @@ public class PanelPerfil extends JPanel {
 
 
     private boolean hayCambiosPendientes() {
-    return nuevoNombrePendiente != null || nuevaContrasenaPendiente != null;
-}
+        return nuevoNombrePendiente != null || nuevaContrasenaPendiente != null || nuevaFotoPendiente != null;
+    }
 
     private void mostrarBotonGuardarSiHayCambios() {
         if (btnGuardarCambios != null) {
@@ -870,8 +870,13 @@ public class PanelPerfil extends JPanel {
                 JOptionPane.showMessageDialog(mainFrame,
                         "No se ha podido cambiar la contraseña. Vuelve a introducir tu contraseña actual.",
                         "Cambiar contraseña",
-                        JOptionPane.WARNING_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
             }
+        }
+
+        if (nuevaFotoPendiente != null) {
+            mainFrame.cambiarFotoPerfilCliente(nuevaFotoPendiente);
+            nuevaFotoPendiente = null;
         }
 
         JOptionPane.showMessageDialog(mainFrame, "Cambios guardados correctamente");
