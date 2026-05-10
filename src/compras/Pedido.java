@@ -5,6 +5,7 @@ import java.util.*;
 
 import productos.*;
 import usuarios.ClienteRegistrado;
+import usuarios.Empleado;
 import utilidades.EstadoPedido;
 import descuentos.*;
 
@@ -23,6 +24,7 @@ public class Pedido implements Serializable {
     private Map<ProductoTienda, Integer> valoraciones;
     private Descuento descuento;
     private ProductoTienda regalo;
+    private Empleado empleadoVenta;
 
     /**
      * Constructor de la clase Pedido.
@@ -41,6 +43,7 @@ public class Pedido implements Serializable {
         this.estadoPedido = EstadoPedido.EN_CARRITO;
         this.valoraciones = new HashMap<ProductoTienda, Integer>();
         this.descuento = null;
+        this.empleadoVenta = null;
     }
 
     /**
@@ -94,6 +97,14 @@ public class Pedido implements Serializable {
      */
     public void setRegalo(ProductoTienda regalo) {
         this.regalo = regalo;
+    }
+
+    /**
+     * Registra el empleado que ha entregado la venta.
+     * * @param empleado empleado responsable de la entrega
+     */
+    public void setEmpleadoVenta(Empleado empleado) {
+        this.empleadoVenta = empleado;
     }
 
     /**
@@ -155,6 +166,12 @@ public class Pedido implements Serializable {
      * * @return Objeto ProductoTienda o null.
      */
     public ProductoTienda getRegalo() { return this.regalo; }
+
+    /**
+     * Obtiene el empleado que entregó la venta.
+     * * @return empleado responsable, o null si no está asignado
+     */
+    public Empleado getEmpleadoVenta() { return this.empleadoVenta; }
 
     /**
      * Cancela el pedido, modificando su estado a CANCELADO.

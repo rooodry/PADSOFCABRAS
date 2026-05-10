@@ -257,6 +257,28 @@ public class Main extends JFrame {
         return empleados;
     }
 
+    public List<Pedido> getVentasEmpleado(Empleado empleado) {
+        List<Pedido> ventas = new ArrayList<>();
+        if (empleado == null) {
+            return ventas;
+        }
+        for (Pedido pedido : getPedidosGestion()) {
+            if (pedido.getEstadoPedido() == EstadoPedido.ENTREGADO
+                    && pedido.getEmpleadoVenta() == empleado) {
+                ventas.add(pedido);
+            }
+        }
+        return ventas;
+    }
+
+    public double getTotalVentasEmpleado(Empleado empleado) {
+        double total = 0.0;
+        for (Pedido pedido : getVentasEmpleado(empleado)) {
+            total += pedido.calcularPrecioTotal();
+        }
+        return total;
+    }
+
     /**
      * Returns a copy of the products shown in the shop catalogue.
      *
@@ -664,10 +686,14 @@ public class Main extends JFrame {
         if (pedido == null || pedido.getEstadoPedido() != EstadoPedido.LISTO) {
             return;
         }
+        if (sesionEmpleado && empleadoActual != null) {
+            pedido.setEmpleadoVenta(empleadoActual);
+        }
         pedido.setEstadoPedido(EstadoPedido.ENTREGADO);
         notificarCambioEstadoPedido(pedido, TipoNotificacion.PEDIDO_ENTREGADO,
                 "Tu pedido se ha entregado correctamente.");
         refrescarPantallasConDatos();
+        guardarEstadoPersistente();
     }
 
     private void notificarCambioEstadoPedido(Pedido pedido, TipoNotificacion tipo, String mensaje) {
@@ -1307,6 +1333,7 @@ public class Main extends JFrame {
         if (existente != null) {
             configurarPermisosEmpleado(existente, permisos);
             existente.setContrase\u00f1a(contrasena);
+            guardarEstadoPersistente();
             return;
         }
         Empleado nuevo = new Empleado(nombre.trim(), contrasena);
@@ -1315,6 +1342,7 @@ public class Main extends JFrame {
         }
         sistema.addUsuario(nuevo);
         refrescarPantallasConDatos();
+        guardarEstadoPersistente();
     }
 
     public void eliminarEmpleadoDesdeGestor(Empleado empleado) {
@@ -1326,6 +1354,7 @@ public class Main extends JFrame {
             empleadoActual = null;
         }
         refrescarPantallasConDatos();
+        guardarEstadoPersistente();
     }
 
     public void configurarPermisosEmpleado(Empleado empleado, Set<TiposEmpleado> permisos) {
@@ -1334,6 +1363,7 @@ public class Main extends JFrame {
         }
         gestorPrincipal.configurarPermisos(empleado, permisos);
         refrescarPantallasConDatos();
+        guardarEstadoPersistente();
     }
 
     public void aplicarDescuentoProducto(ProductoTienda producto, String tipoDescuento, double valor) {

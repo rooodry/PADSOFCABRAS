@@ -273,17 +273,21 @@ public class PanelGestor extends JPanel {
         JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
         fila.setLayout(new BorderLayout(12, 0));
         fila.setBorder(new EmptyBorder(22, 16, 22, 16));
-        fila.setPreferredSize(new Dimension(0, 86));
-        fila.setMinimumSize(new Dimension(0, 86));
-        fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 86));
+        fila.setPreferredSize(new Dimension(0, 104));
+        fila.setMinimumSize(new Dimension(0, 104));
+        fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 104));
         fila.add(crearEtiqueta("<b>" + empleado.getNombre() + "</b><br>Permisos: "
-                + textoPermisos(empleado)), BorderLayout.CENTER);
+                + textoPermisos(empleado) + "<br>"
+                + resumenVentasEmpleado(empleado)), BorderLayout.CENTER);
 
         JPanel acciones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         acciones.setOpaque(false);
-        JButton permisos = crearBoton("Permisos", 120);
+        JButton permisos = crearBoton("Editar", 90);
         permisos.addActionListener(e -> mostrarDialogoEmpleado(empleado));
         acciones.add(permisos);
+        JButton ventas = crearBoton("Ventas", 90);
+        ventas.addActionListener(e -> mostrarVentasEmpleado(empleado));
+        acciones.add(ventas);
         JButton baja = crearBoton("Baja", 86);
         baja.addActionListener(e -> confirmarBajaEmpleado(empleado));
         acciones.add(baja);
@@ -862,7 +866,7 @@ public class PanelGestor extends JPanel {
         JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
         panel.add(new JLabel("Nombre"));
         panel.add(nombre);
-        panel.add(new JLabel("Contraseña asignada por gestor"));
+        panel.add(new JLabel(empleado == null ? "Contraseña asignada por gestor" : "Nueva clave de inicio de sesión"));
         panel.add(contrasena);
         panel.add(producto);
         panel.add(pedido);
@@ -889,10 +893,49 @@ public class PanelGestor extends JPanel {
         if (empleado == null) {
             mainFrame.crearEmpleadoDesdeGestor(nombre.getText(), new String(contrasena.getPassword()), permisos);
         } else {
-            empleado.setContrase\u00f1a(new String(contrasena.getPassword()));
+            String nuevaClave = new String(contrasena.getPassword()).trim();
+            if (nuevaClave.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "La clave de inicio de sesión no puede estar vacía.",
+                        "Empleado", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            empleado.setContrase\u00f1a(nuevaClave);
             mainFrame.configurarPermisosEmpleado(empleado, permisos);
         }
         refrescar();
+    }
+
+    private String resumenVentasEmpleado(Empleado empleado) {
+        List<Pedido> ventas = mainFrame.getVentasEmpleado(empleado);
+        return "Ventas realizadas: " + ventas.size()
+                + " | " + String.format("%.2f EUR", mainFrame.getTotalVentasEmpleado(empleado));
+    }
+
+    private void mostrarVentasEmpleado(Empleado empleado) {
+        List<Pedido> ventas = mainFrame.getVentasEmpleado(empleado);
+        JTextArea detalle = new JTextArea(12, 46);
+        detalle.setEditable(false);
+        detalle.setLineWrap(true);
+        detalle.setWrapStyleWord(true);
+        if (ventas.isEmpty()) {
+            detalle.setText("Este empleado todavía no tiene ventas entregadas registradas.");
+        } else {
+            StringBuilder texto = new StringBuilder();
+            for (Pedido pedido : ventas) {
+                texto.append("Pedido ").append(pedido.getCodigo().getCodigo())
+                        .append(" | Cliente: ").append(pedido.getCliente().getNombre())
+                        .append(" | Fecha: ").append(formatoFecha.format(fechaEstadisticaPedido(pedido)))
+                        .append(" | Total: ").append(String.format("%.2f EUR", pedido.calcularPrecioTotal()))
+                        .append('\n')
+                        .append(resumenProductosPedido(pedido))
+                        .append("\n\n");
+            }
+            detalle.setText(texto.toString());
+            detalle.setCaretPosition(0);
+        }
+        JOptionPane.showMessageDialog(this, new JScrollPane(detalle),
+                "Ventas de " + empleado.getNombre(), JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void confirmarBajaEmpleado(Empleado empleado) {
