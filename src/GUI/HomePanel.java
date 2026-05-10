@@ -106,8 +106,7 @@ public class HomePanel extends JPanel {
         }
 
         gridProductos.revalidate();
-        gridProductos.repaint();
-    }
+      }
 
     private JPanel crearContenido() {
         JPanel contenido = new JPanel(new BorderLayout());
