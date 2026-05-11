@@ -71,6 +71,7 @@ public class Main extends JFrame {
     private static final long serialVersionUID = 1L;
     /**      * Estado interno de FICHERO_DATOS.      */
     private static final String FICHERO_DATOS = "goatget-data.dat";
+    private static final String NOMBRE_CLIENTE_DEMO = "alex53";
 
 
     /**
@@ -2099,6 +2100,7 @@ public class Main extends JFrame {
         if (clienteActual == null) {
             clienteActual = buscarPrimerClienteRegistrado();
         }
+        normalizarNombresClientesDemo();
         gestorPrincipal = buscarGestorPorNombre(estado.nombreGestorPrincipal);
         if (gestorPrincipal == null) {
             gestorPrincipal = buscarPrimerGestor();
@@ -2121,6 +2123,16 @@ public class Main extends JFrame {
             }
         }
         return null;
+    }
+
+    private void normalizarNombresClientesDemo() {
+        ClienteRegistrado clienteDemo = buscarClientePorNombre("cliente");
+        if (clienteDemo != null && buscarClientePorNombre(NOMBRE_CLIENTE_DEMO) == null) {
+            clienteDemo.editarPerfil(NOMBRE_CLIENTE_DEMO, clienteDemo.getContrase\u00f1a());
+            if (clienteActual == clienteDemo) {
+                clienteActual = clienteDemo;
+            }
+        }
     }
 
     private ClienteRegistrado buscarPrimerClienteRegistrado() {
@@ -2219,7 +2231,7 @@ public class Main extends JFrame {
     }
 
     private void inicializarDatos() {
-        clienteActual = new ClienteRegistrado("cliente", "1234", "00000000T");
+        clienteActual = new ClienteRegistrado(NOMBRE_CLIENTE_DEMO, "1234", "00000000T");
         sistema.addUsuario(clienteActual);
         gestorPrincipal = new Gestor("gestor", "1234");
         sistema.addUsuario(gestorPrincipal);
@@ -2418,7 +2430,7 @@ public class Main extends JFrame {
                 "Un producto muy interesante para ampliar la colección y revisar con calma en la ficha.");
         producto.addComentario("laura67",
                 "La descripción es completa y ayuda bastante a decidir si encaja con lo que buscas.");
-        producto.addComentario("alex",
+        producto.addComentario("alex53",
                 "Buena relación entre precio, presentación y disponibilidad en tienda.");
         return producto;
     }
@@ -2577,7 +2589,7 @@ public class Main extends JFrame {
         producto.setPrecio(precio);
         producto.setValoracion(valoracion);
         producto.setCategoria(new Juego(nombre, 4, 8, tipo));
-        producto.addComentario("alex", "Perfecto para partidas largas.");
+        producto.addComentario("alex53", "Perfecto para partidas largas.");
         producto.addComentario("lucia16", "Las reglas entran rapido y tiene suficiente profundidad para repetir.");
         producto.addComentario("diego", "Buen ritmo en mesa y componentes resistentes.");
         return producto;
@@ -2589,7 +2601,7 @@ public class Main extends JFrame {
         producto.setPrecio(precio);
         producto.setValoracion(valoracion);
         producto.setCategoria(new Figura(nombre, 15.0, "GOAT", "PVC"));
-        producto.addComentario("laura", "Llego en buen estado y bien protegida.");
+        producto.addComentario("laura67", "Llego en buen estado y bien protegida.");
         producto.addComentario("mario", "La figura tiene presencia y se sostiene bastante bien.");
         producto.addComentario("nerea", "El color se ve mejor en persona que en la ficha.");
         return producto;
