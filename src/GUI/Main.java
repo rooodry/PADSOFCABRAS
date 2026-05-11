@@ -206,6 +206,8 @@ public class Main extends JFrame {
     private boolean sesionGestor;
     /**      * Estado interno de persistenciaActiva.      */
     private boolean persistenciaActiva;
+    /**      * Indica si se ha actualizado un .dat antiguo durante la carga.      */
+    private boolean estadoPersistenteMigrado;
     /**      * Estado interno de plazoOfertasHoras.      */
     private int plazoOfertasHoras;
 
@@ -230,11 +232,15 @@ public class Main extends JFrame {
         this.sesionRegistrada = false;
         this.plazoOfertasHoras = 168;
         this.persistenciaActiva = false;
+        this.estadoPersistenteMigrado = false;
 
         inicializarDatos();
         cargarEstadoPersistente();
         construirPantallas();
         this.persistenciaActiva = true;
+        if (estadoPersistenteMigrado) {
+            guardarEstadoPersistente();
+        }
         addWindowListener(new WindowAdapter() {
         @Override
         /**
@@ -2129,10 +2135,62 @@ public class Main extends JFrame {
         ClienteRegistrado clienteDemo = buscarClientePorNombre("cliente");
         if (clienteDemo != null && buscarClientePorNombre(NOMBRE_CLIENTE_DEMO) == null) {
             clienteDemo.editarPerfil(NOMBRE_CLIENTE_DEMO, clienteDemo.getContrase\u00f1a());
+            estadoPersistenteMigrado = true;
             if (clienteActual == clienteDemo) {
                 clienteActual = clienteDemo;
             }
         }
+
+        for (Usuario usuario : sistema.getUsuarios()) {
+            if (usuario instanceof ClienteRegistrado && usuario.getNombre().startsWith("cliente_demo_")) {
+                ClienteRegistrado cliente = (ClienteRegistrado) usuario;
+                String nombreNormalizado = nombreNormalCliente(cliente.getNombre());
+                if (nombreNormalizado != null) {
+                    cliente.editarPerfil(nombreClienteDisponible(nombreNormalizado), cliente.getContrase\u00f1a());
+                    estadoPersistenteMigrado = true;
+                }
+            }
+        }
+    }
+
+    private String nombreClienteDisponible(String nombreBase) {
+        String candidato = nombreBase;
+        int sufijo = 10;
+        while (buscarClientePorNombre(candidato) != null) {
+            candidato = nombreBase.replaceAll("\\d+$", "") + sufijo;
+            sufijo++;
+        }
+        return candidato;
+    }
+
+    private String nombreNormalCliente(String nombreActual) {
+        switch (nombreActual) {
+            case "cliente_demo_elena_combo":
+                return "elena42";
+            case "cliente_demo_oscar_vault":
+                return "oscar18";
+            case "cliente_demo_nora_pixel":
+                return "nora29";
+            case "cliente_demo_ivan_arcade":
+                return "ivan64";
+            case "cliente_demo_adrian_token":
+                return "adrian31";
+            case "cliente_demo_dario_sol":
+                return "dario77";
+            default:
+                break;
+        }
+
+        String base = nombreActual.replaceFirst("^cliente_demo_", "");
+        int separador = base.indexOf('_');
+        if (separador >= 0) {
+            base = base.substring(0, separador);
+        }
+        if (base.isBlank()) {
+            return null;
+        }
+        int numero = Math.abs(nombreActual.hashCode() % 90) + 10;
+        return base.toLowerCase() + numero;
     }
 
     private ClienteRegistrado buscarPrimerClienteRegistrado() {
