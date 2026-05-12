@@ -686,11 +686,21 @@ public class Main extends JFrame {
     }
 
     /**
-     * Adds one shop product unit to the customer's basket and reduces stock.
+     * Añade una unidad de producto de tienda a la cesta y reduce el stock.
      *
-     * @param producto selected shop product
+     * @param producto producto seleccionado
      */
     public void anadirProductoACesta(ProductoTienda producto) {
+        anadirCantidadProductoACesta(producto, 1);
+    }
+
+    /**
+     * Añade varias unidades de un producto de tienda a la cesta y reduce el stock.
+     *
+     * @param producto producto seleccionado
+     * @param cantidad número de unidades que se añaden
+     */
+    public void anadirCantidadProductoACesta(ProductoTienda producto, int cantidad) {
         if (!sesionRegistrada) {
             JOptionPane.showMessageDialog(this,
                     "Los clientes no registrados solo pueden consultar productos. Inicia sesión para comprar.",
@@ -698,13 +708,17 @@ public class Main extends JFrame {
             cambiarPantalla(PANTALLA_CLIENTE);
             return;
         }
-        if (stock.getNumProductos(producto) <= 0) {
+        if (cantidad <= 0) {
+            return;
+        }
+        if (stock.getNumProductos(producto) < cantidad) {
             JOptionPane.showMessageDialog(this, "No queda stock de este producto.", "Stock agotado",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        clienteActual.a\u00f1adirALaCesta(producto, stock);
+        clienteActual.getCesta().añadirProducto(producto, cantidad);
+        stock.reducirStock(producto, cantidad);
         panelCesta.refrescar();
         homePanel.refrescar();
         guardarEstadoPersistente();
@@ -765,7 +779,7 @@ public class Main extends JFrame {
             }
             clienteActual.addNotificacion(new Notificacion(TipoNotificacion.PAGO_REALIZADO,
                     "Tu pedido se ha pagado correctamente."));
-            JOptionPane.showMessageDialog(this, "Pago realizado. Pedido creado correctamente.");
+            JOptionPane.showMessageDialog(this, "Pago realizado correctamente");
             refrescarPantallasConDatos();
             cambiarPantalla(PANTALLA_HOME);
         } else {
@@ -786,7 +800,7 @@ public class Main extends JFrame {
         clienteActual.addCodigo(pedido.getCodigo());
         notificarCambioEstadoPedido(pedido, TipoNotificacion.PAGO_REALIZADO,
                 "Tu pedido se ha pagado correctamente.");
-        JOptionPane.showMessageDialog(this, "Pago realizado. Codigo: " + pedido.getCodigo().getCodigo());
+        JOptionPane.showMessageDialog(this, "Pago realizado correctamente");
         refrescarPantallasConDatos();
     }
 

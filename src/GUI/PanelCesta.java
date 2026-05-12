@@ -38,8 +38,6 @@ public class PanelCesta extends JPanel {
     private final Main mainFrame;
     /**      * Estado interno de listaProductos.      */
     private final JPanel listaProductos;
-    /**      * Estado interno de listaPacks.      */
-    private final JPanel listaPacks;
     /**      * Estado interno de lblTotal.      */
     private final JLabel lblTotal;
 
@@ -51,19 +49,15 @@ public class PanelCesta extends JPanel {
     public PanelCesta(Main mainFrame) {
         this.mainFrame = mainFrame;
         this.listaProductos = new JPanel(new GridBagLayout());
-        this.listaPacks = new JPanel(new GridBagLayout());
         this.lblTotal = new JLabel();
 
         setLayout(new BorderLayout());
         setBackground(UiStyle.COLOR_FONDO);
         add(new HomePanel.PanelNavegacionCliente(mainFrame, "CESTA"), BorderLayout.NORTH);
 
-        JPanel contenedorCentral = new JPanel(new BorderLayout(20, 0));
+        JPanel contenedorCentral = new JPanel(new BorderLayout());
         contenedorCentral.setBackground(UiStyle.COLOR_FONDO);
         contenedorCentral.setBorder(new EmptyBorder(20, 20, 20, 20));
-
-        JPanel izquierda = crearPanelIzquierda();
-        contenedorCentral.add(izquierda, BorderLayout.WEST);
 
         JPanel derecha = crearPanelDerecha();
         contenedorCentral.add(derecha, BorderLayout.CENTER);
@@ -71,21 +65,6 @@ public class PanelCesta extends JPanel {
         add(contenedorCentral, BorderLayout.CENTER);
         add(crearResumen(), BorderLayout.SOUTH);
         refrescar();
-    }
-
-    private JPanel crearPanelIzquierda() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.setBackground(UiStyle.COLOR_FONDO);
-        panel.setPreferredSize(new Dimension(380, 400));
-
-        JLabel vacio = new JLabel("(Métodos de pago)");
-        vacio.setFont(new Font("SansSerif", Font.ITALIC, 12));
-        vacio.setForeground(new Color(150, 150, 150));
-        vacio.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(vacio, BorderLayout.CENTER);
-
-        return panel;
     }
 
     private JPanel crearPanelDerecha() {
@@ -117,8 +96,9 @@ public class PanelCesta extends JPanel {
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.gridx = 0;
     gbc.gridy = 0;
-    gbc.weightx = 1;
-    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.weightx = 0;
+    gbc.anchor = GridBagConstraints.NORTHWEST;
+    gbc.fill = GridBagConstraints.NONE;
     gbc.insets = new Insets(0, 0, 12, 0);
 
     double total = 0.0;
@@ -161,6 +141,16 @@ public class PanelCesta extends JPanel {
             gbc.gridy++;
         }
     }
+
+    GridBagConstraints relleno = new GridBagConstraints();
+    relleno.gridx = 0;
+    relleno.gridy = gbc.gridy;
+    relleno.weightx = 1;
+    relleno.weighty = 1;
+    relleno.fill = GridBagConstraints.BOTH;
+    JPanel espacio = new JPanel();
+    espacio.setBackground(UiStyle.COLOR_FONDO);
+    listaProductos.add(espacio, relleno);
 
     lblTotal.setText(String.format("Total  %.2f€", total));
 

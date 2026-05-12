@@ -59,7 +59,7 @@ public class PanelDeProducto extends JPanel {
     private final ProductoTienda producto;
     /**      * Estado interno de mainFrame.      */
     private final Main mainFrame;
-    /** Formatea las acciones registradas para añadir productos a la cesta. */
+    /** Lista de acciones registradas para añadir productos a la cesta. */
     private final List<ActionListener> listenersCesta = new ArrayList<>();
     /**      * Estado interno de editable.      */
     private final boolean editable;
@@ -71,6 +71,8 @@ public class PanelDeProducto extends JPanel {
     private JTextField campoPrecio;
     /**      * Estado interno de campoStock.      */
     private JSpinner campoStock;
+    /**      * Estado interno de campoCantidadCesta.      */
+    private JSpinner campoCantidadCesta;
     /**      * Estado interno de campoImagen.      */
     private JTextField campoImagen;
     /**      * Estado interno de campoCategorias.      */
@@ -83,30 +85,30 @@ public class PanelDeProducto extends JPanel {
     private ListenerEdicion listenerEdicion;
 
     /**
-     * Creates a detail panel for the given shop product.
+     * Crea un panel de detalle para el producto indicado.
      *
-     * @param producto product to show
+     * @param producto producto que se muestra
      */
     public PanelDeProducto(ProductoTienda producto) {
         this(producto, null);
     }
 
     /**
-     * Creates a detail panel connected to the main frame.
+     * Crea un panel de detalle conectado a la ventana principal.
      *
-     * @param producto product to show
-     * @param mainFrame optional main GUI controller
+     * @param producto producto que se muestra
+     * @param mainFrame controlador principal de la interfaz
      */
     public PanelDeProducto(ProductoTienda producto, Main mainFrame) {
         this(producto, mainFrame, false);
     }
 
     /**
-     * Creates a detail panel that can optionally edit the product inline.
+     * Crea un panel de detalle que puede permitir la edición del producto.
      *
-     * @param producto product to show
-     * @param mainFrame optional main GUI controller
-     * @param editable true to show inline fields and confirm/cancel buttons
+     * @param producto producto que se muestra
+     * @param mainFrame controlador principal de la interfaz
+     * @param editable true si se deben mostrar campos editables
      */
     public PanelDeProducto(ProductoTienda producto, Main mainFrame, boolean editable) {
         if (producto == null) {
@@ -119,25 +121,37 @@ public class PanelDeProducto extends JPanel {
     }
 
     /**
-     * Registers a listener for the add-to-basket button.
+     * Registra una acción para el botón de añadir a la cesta.
      *
-     * @param listener listener to notify
+     * @param listener acción que se ejecuta al pulsar el botón
      */
     public void addListenerCesta(ActionListener listener) {
         listenersCesta.add(listener);
     }
 
     /**
-     * Changes the add-to-basket button text and enabled state.
+     * Cambia el texto y el estado del botón de añadir a la cesta.
      *
-     * @param texto button text
-     * @param activo true if the button can be pressed
+     * @param texto texto del botón
+     * @param activo true si el botón puede pulsarse
      */
     public void configurarBotonCesta(String texto, boolean activo) {
         if (botonCesta != null) {
             botonCesta.setText(texto);
             botonCesta.setEnabled(activo);
         }
+    }
+
+    /**
+     * Devuelve la cantidad seleccionada para añadir a la cesta.
+     *
+     * @return cantidad seleccionada
+     */
+    public int getCantidadCestaSeleccionada() {
+        if (campoCantidadCesta == null) {
+            return 1;
+        }
+        return (Integer) campoCantidadCesta.getValue();
     }
 
     /**
@@ -187,6 +201,10 @@ public class PanelDeProducto extends JPanel {
         panel.add(crearEstrellas(producto.getValoracion()));
         panel.add(Box.createVerticalStrut(8));
         panel.add(crearPrecio());
+        if (!editable) {
+            panel.add(Box.createVerticalStrut(8));
+            panel.add(crearSelectorCantidad());
+        }
         if (editable) {
             panel.add(Box.createVerticalStrut(8));
             panel.add(crearCamposProducto());
@@ -260,11 +278,27 @@ public class PanelDeProducto extends JPanel {
             campoPrecio.setMaximumSize(new Dimension(150, 34));
             return envoltorioCampo(campoPrecio, 150, 34);
         }
-        JLabel label = new JLabel(String.format("%.2f\u20ac", producto.getPrecio()).replace('.', ','));
+        JLabel label = new JLabel(String.format("%.2f\u20ac", precioFinal(producto)).replace('.', ','));
         label.setFont(new Font("SansSerif", Font.BOLD, 32));
         label.setForeground(Color.BLACK);
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         return label;
+    }
+
+    /**
+     * Calcula el precio unitario mostrado al cliente.
+     *
+     * @param producto producto consultado
+     * @return precio final con descuento aplicado
+     */
+    private double precioFinal(ProductoTienda producto) {
+        double precio = producto.getPrecio();
+        if (producto.getRebajaPorcentaje() > 0) {
+            precio -= precio * (producto.getRebajaPorcentaje() / 100.0);
+        } else if (producto.getRebajaFija() > 0) {
+            precio -= producto.getRebajaFija();
+        }
+        return Math.max(0, precio);
     }
 
     private JLabel envoltorioCampo(JComponent campo, int ancho, int alto) {
@@ -276,6 +310,32 @@ public class PanelDeProducto extends JPanel {
         envoltorio.setMaximumSize(new Dimension(ancho, alto));
         envoltorio.add(campo, BorderLayout.CENTER);
         return envoltorio;
+    }
+
+    /**
+     * Crea el selector de unidades que el cliente quiere añadir a la cesta.
+     *
+     * @return panel con la etiqueta y el selector de cantidad
+     */
+    private JPanel crearSelectorCantidad() {
+        JPanel fila = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
+        fila.setOpaque(false);
+        fila.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fila.setMaximumSize(new Dimension(ANCHO_IZQUIERDA - 8, 32));
+
+        JLabel etiqueta = new JLabel("Cantidad");
+        etiqueta.setFont(new Font("SansSerif", Font.BOLD, 12));
+        etiqueta.setForeground(Color.BLACK);
+
+        int stockDisponible = mainFrame == null ? 99 : mainFrame.getStock().getNumProductos(producto);
+        int maximo = Math.max(1, stockDisponible);
+        campoCantidadCesta = new JSpinner(new SpinnerNumberModel(1, 1, maximo, 1));
+        campoCantidadCesta.setPreferredSize(new Dimension(62, 28));
+        campoCantidadCesta.setEnabled(stockDisponible > 0);
+
+        fila.add(etiqueta);
+        fila.add(campoCantidadCesta);
+        return fila;
     }
 
     private JPanel crearCamposProducto() {

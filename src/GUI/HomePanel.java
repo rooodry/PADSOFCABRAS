@@ -97,7 +97,7 @@ public class HomePanel extends JPanel {
         for (ProductoTienda producto : productos) {
             JPanel envoltura = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
             envoltura.setBackground(UiStyle.COLOR_FONDO);
-            TarjetaProducto tarjeta = new TarjetaProducto(producto);
+            TarjetaProducto tarjeta = new TarjetaProducto(producto, mainFrame.getStock().getNumProductos(producto));
             tarjeta.setToolTipText("Ver detalle");
             tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
@@ -345,9 +345,11 @@ public class HomePanel extends JPanel {
         PanelDeProducto detalle = new PanelDeProducto(producto, mainFrame);
         if (!mainFrame.isSesionRegistrada()) {
             detalle.configurarBotonCesta("Inicia sesión para comprar", true);
+        } else if (mainFrame.getStock().getNumProductos(producto) <= 0) {
+            detalle.configurarBotonCesta("Sin stock", false);
         }
         detalle.addListenerCesta(e -> {
-            mainFrame.anadirProductoACesta(producto);
+            mainFrame.anadirCantidadProductoACesta(producto, detalle.getCantidadCestaSeleccionada());
             dialogo.dispose();
         });
 
