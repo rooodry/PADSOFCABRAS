@@ -25,27 +25,29 @@ import utilidades.EstadoPedido;
 
 
 /**
- * Panel de historial de pedidos del cliente actual.
- *
- * <p>Muestra cada pedido con su estado, fecha, productos, total y las acciones
- * disponibles segun el estado del pedido.</p>
+ * Representa el componente PanelPedidos de la interfaz gráfica.
+ * Este panel se encarga de mostrar el historial detallado de los pedidos
+ * realizados por el cliente actual.
  */
 public class PanelPedidos extends JPanel {
 
+    /** Identificador de versión para la serialización. */
     private static final long serialVersionUID = 1L;
 
-    /** Controlador principal que aporta el cliente activo y las operaciones de pedidos. */
+    /** Referencia al marco principal de la aplicación que actúa como controlador. */
     private final Main mainFrame;
-    /** Contenedor vertical donde se insertan las tarjetas de pedido. */
+    
+    /** Contenedor interno donde se listan las tarjetas de los pedidos. */
     private final JPanel lista;
-    /** Formatea las fechas mostradas en el historial de pedidos. */
+    
+    /** Formatea las fechas mostradas en el historial de pedidos al formato dd/MM/yyyy HH:mm. */
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     /**
-     * Construye el panel de historial de pedidos con cabecera de navegacion y
-     * area desplazable.
+     * Construye el panel del historial de pedidos.
+     * Inicializa la vista principal y carga los pedidos del cliente.
      *
-     * @param mainFrame controlador principal de la interfaz
+     * @param mainFrame el controlador principal de la interfaz gráfica
      */
     public PanelPedidos(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -59,8 +61,9 @@ public class PanelPedidos extends JPanel {
     }
 
     /**
-     * Reconstruye la lista de pedidos a partir del cliente que tiene la sesion
-     * activa.
+     * Reconstruye y actualiza la lista de pedidos del cliente activo en la interfaz.
+     * Limpia el panel actual y vuelve a generar las tarjetas de pedido o muestra
+     * un mensaje si no hay pedidos.
      */
     public void refrescar() {
         lista.removeAll();
@@ -84,6 +87,11 @@ public class PanelPedidos extends JPanel {
         lista.repaint();
     }
 
+    /**
+     * Crea el panel de desplazamiento (scroll) que envuelve la lista de pedidos.
+     *
+     * @return un JScrollPane configurado para contener el historial de pedidos
+     */
     private JScrollPane crearContenido() {
         JScrollPane scroll = new JScrollPane(lista);
         scroll.setBorder(null);
@@ -92,6 +100,12 @@ public class PanelPedidos extends JPanel {
         return scroll;
     }
 
+    /**
+     * Crea una tarjeta visual estructurada con la información de un pedido específico.
+     *
+     * @param pedido el pedido del cual se mostrarán los datos (estado, fecha, productos, precio)
+     * @return un JPanel con diseño de tarjeta que representa el pedido
+     */
     private JPanel crearTarjetaPedido(Pedido pedido) {
         JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 24);
         tarjeta.setLayout(new GridBagLayout());
@@ -130,6 +144,12 @@ public class PanelPedidos extends JPanel {
         return tarjeta;
     }
 
+    /**
+     * Crea una etiqueta de texto formateada para mostrar una línea de detalle en la tarjeta del pedido.
+     *
+     * @param texto el texto HTML o plano que mostrará la etiqueta
+     * @return un JLabel configurado con la fuente y color del sistema
+     */
     private JLabel crearLinea(String texto) {
         JLabel label = new JLabel("<html>" + texto + "</html>");
         label.setFont(new Font("SansSerif", Font.PLAIN, 13));
@@ -137,6 +157,13 @@ public class PanelPedidos extends JPanel {
         return label;
     }
 
+    /**
+     * Genera un texto descriptivo listando todos los productos incluidos en un pedido
+     * junto con la cantidad comprada de cada uno.
+     *
+     * @param pedido el pedido del cual se extraerá el mapa de productos
+     * @return una cadena de texto con el formato "Productos: Nombre xCant, Nombre xCant..."
+     */
     private String productosPedido(Pedido pedido) {
         StringBuilder builder = new StringBuilder("Productos: ");
         boolean primero = true;
@@ -150,6 +177,14 @@ public class PanelPedidos extends JPanel {
         return builder.toString();
     }
 
+    /**
+     * Construye un panel con los botones de acciones aplicables a un pedido.
+     * La disponibilidad de los botones (habilitado/deshabilitado) depende del
+     * estado actual en el que se encuentre el pedido.
+     *
+     * @param pedido el pedido sobre el cual se aplicarán las acciones
+     * @return un JPanel que contiene los botones de acción correspondientes
+     */
     private JPanel crearBotonera(Pedido pedido) {
         JPanel botones = new JPanel();
         botones.setOpaque(false);
@@ -177,6 +212,12 @@ public class PanelPedidos extends JPanel {
         return botones;
     }
 
+    /**
+     * Crea un botón de interfaz con las proporciones y estilos definidos en UiStyle.
+     *
+     * @param texto el texto que se mostrará en el botón
+     * @return un JButton estilizado y con el cursor de mano
+     */
     private JButton crearBoton(String texto) {
         JButton boton = new UiStyle.RoundedButton(texto, UiStyle.COLOR_TEXTO, UiStyle.COLOR_MARRON_MEDIO, 18);
         boton.setPreferredSize(new Dimension(118, 34));
