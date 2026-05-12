@@ -27,19 +27,28 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-
-
 /**
- * Componente Swing de la interfaz grafica correspondiente a LoginClientePanel.
+ * Representa el panel de inicio de sesión de la interfaz gráfica.
+ * Permite a los usuarios autenticarse indicando sus credenciales y su rol 
+ * (Cliente, Empleado o Gestor), además de ofrecer opciones para registrarse 
+ * o continuar como invitado.
  */
 public class LoginClientePanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
+    /** 
+     * Grupo de botones que gestiona la selección exclusiva del rol de usuario 
+     * (Cliente, Empleado, Gestor) en el formulario de inicio de sesión. 
+     */
+    private ButtonGroup rbGroup;
+
     /**
-     * Builds the customer login form.
+     * Construye el panel de inicio de sesión.
+     * Inicializa y organiza los componentes visuales como campos de texto, botones,
+     * imágenes y selectores de rol dentro de un diseño contenedor.
      *
-     * @param mainFrame main GUI controller
+     * @param mainFrame Controlador principal de la interfaz gráfica que gestiona el estado y la navegación.
      */
     public LoginClientePanel(Main mainFrame) {
         setLayout(new BorderLayout());
@@ -55,7 +64,6 @@ public class LoginClientePanel extends JPanel {
         gbc.weighty = 0;
         gbc.fill = GridBagConstraints.CENTER;
         gbc.insets = new Insets(40, 0, 20, 0);
-
 
         JLabel logo = new JLabel();
         try {
@@ -73,7 +81,6 @@ public class LoginClientePanel extends JPanel {
         gbc.weighty = 1;
         gbc.insets = new Insets(20, 0, 40, 0);
 
-
         JPanel formContainer = new UiStyle.RoundedPanel(UiStyle.COLOR_CABECERA, 20);
         formContainer.setLayout(new GridBagLayout());
         formContainer.setBorder(new EmptyBorder(28, 40, 28, 40));
@@ -85,13 +92,11 @@ public class LoginClientePanel extends JPanel {
         fbgc.gridwidth = 2;
         fbgc.insets = new Insets(0, 0, 16, 0);
 
-
         JLabel titleLabel = new JLabel("Log in:");
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
         titleLabel.setForeground(UiStyle.COLOR_TEXTO_CLARO);
         fbgc.gridy = 0;
         formContainer.add(titleLabel, fbgc);
-
 
         fbgc.gridy = 1;
         fbgc.insets = new Insets(0, 0, 4, 0);
@@ -107,7 +112,6 @@ public class LoginClientePanel extends JPanel {
         idField.setPreferredSize(new Dimension(230, 28));
         formContainer.add(idField, fbgc);
 
-
         fbgc.gridy = 3;
         fbgc.insets = new Insets(0, 0, 4, 0);
         JLabel lblContrasena = new JLabel("Contraseña");
@@ -121,7 +125,6 @@ public class LoginClientePanel extends JPanel {
         passField.setFont(new Font("SansSerif", Font.PLAIN, 12));
         passField.setPreferredSize(new Dimension(230, 28));
         formContainer.add(passField, fbgc);
-
 
         fbgc.gridy = 5;
         fbgc.insets = new Insets(0, 0, 8, 0);
@@ -155,13 +158,11 @@ public class LoginClientePanel extends JPanel {
         });
         formContainer.add(loginButton, fbgc);
 
-
         fbgc.gridy = 6;
         fbgc.insets = new Insets(12, 0, 0, 0);
         fbgc.gridwidth = 2;
         fbgc.fill = GridBagConstraints.NONE;
         fbgc.anchor = GridBagConstraints.CENTER;
-
 
         JPanel panelCrearCuenta = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
         panelCrearCuenta.setOpaque(false);
@@ -177,7 +178,6 @@ public class LoginClientePanel extends JPanel {
 
         formContainer.add(panelCrearCuenta, fbgc);
 
-
         fbgc.gridy = 7;
         fbgc.insets = new Insets(6, 0, 0, 0);
         fbgc.fill = GridBagConstraints.HORIZONTAL;
@@ -185,7 +185,6 @@ public class LoginClientePanel extends JPanel {
         JButton continuarButton = crearBoton("Continuar sin registrarse", 200);
         continuarButton.addActionListener(e -> mainFrame.iniciarSesionInvitado());
         formContainer.add(continuarButton, fbgc);
-
 
         JRadioButton clienteRadio = new JRadioButton("Cliente", true);
         JRadioButton empleadoRadio = new JRadioButton("Empleado");
@@ -230,9 +229,14 @@ public class LoginClientePanel extends JPanel {
         add(panelCentral, BorderLayout.CENTER);
     }
 
-    /** Dato interno asociado a rbGroup. */
-    private ButtonGroup rbGroup;
-
+    /**
+     * Crea y configura un botón estilizado con el estilo visual por defecto 
+     * utilizado en los formularios.
+     *
+     * @param texto El texto que se mostrará en el botón.
+     * @param ancho La anchura preferida del botón en píxeles.
+     * @return El botón ({@link JButton}) configurado con bordes redondeados y estilo unificado.
+     */
     private JButton crearBoton(String texto, int ancho) {
         JButton boton = new UiStyle.RoundedButton(texto, UiStyle.COLOR_TEXTO, UiStyle.COLOR_MARRON_MEDIO, 14);
         boton.setFocusPainted(false);
@@ -240,6 +244,4 @@ public class LoginClientePanel extends JPanel {
         boton.setFont(new Font("SansSerif", Font.PLAIN, 11));
         return boton;
     }
-
-
 }

@@ -43,45 +43,64 @@ import productos.ProductoTienda;
 
 
 /**
- * Componente Swing de la interfaz grafica correspondiente a PanelDeProducto.
+ * Representa el componente PanelDeProducto de la interfaz grafica.
+ * Muestra la información detallada de un producto, sus comentarios, y permite
+ * la interacción como añadir a la cesta o editar sus datos si se tiene el permiso.
  */
 public class PanelDeProducto extends JPanel {
 
+    /** Número de serie para la serialización de la clase. */
     private static final long serialVersionUID = 1L;
 
-    /** Dato interno asociado a MAX_ESTRELLAS. */
+    /** Número máximo de estrellas para la valoración del producto. */
     private static final int MAX_ESTRELLAS = 5;
-    /** Dato interno asociado a ANCHO_IZQUIERDA. */
+    
+    /** Ancho predeterminado para el panel lateral izquierdo. */
     private static final int ANCHO_IZQUIERDA = 270;
+    
+    /** Color de fondo utilizado para las tarjetas de comentarios. */
     private static final Color COLOR_COMENTARIO = new Color(145, 124, 101);
 
-    /** Dato interno asociado a producto. */
+    /** Producto cuyos detalles se están visualizando o editando. */
     private final ProductoTienda producto;
-    /** Dato interno asociado a mainFrame. */
+    
+    /** Referencia al controlador principal de la interfaz. */
     private final Main mainFrame;
+    
     /** Lista de acciones registradas para añadir productos a la cesta. */
     private final List<ActionListener> listenersCesta = new ArrayList<>();
-    /** Dato interno asociado a editable. */
+    
+    /** Indica si el panel está en modo edición. */
     private final boolean editable;
-    /** Dato interno asociado a botonCesta. */
+    
+    /** Botón para añadir el producto a la cesta de la compra. */
     private JButton botonCesta;
-    /** Dato interno asociado a campoNombre. */
+    
+    /** Campo de texto para el nombre del producto (visible en modo edición). */
     private JTextField campoNombre;
-    /** Dato interno asociado a campoPrecio. */
+    
+    /** Campo de texto para el precio del producto (visible en modo edición). */
     private JTextField campoPrecio;
-    /** Dato interno asociado a campoStock. */
+    
+    /** Selector numérico para establecer el stock del producto (visible en modo edición). */
     private JSpinner campoStock;
-    /** Dato interno asociado a campoCantidadCesta. */
+    
+    /** Selector numérico para elegir la cantidad de unidades a añadir a la cesta. */
     private JSpinner campoCantidadCesta;
-    /** Dato interno asociado a campoImagen. */
+    
+    /** Campo de texto para la ruta de la imagen del producto (visible en modo edición). */
     private JTextField campoImagen;
-    /** Dato interno asociado a campoCategorias. */
+    
+    /** Campo de texto para las categorías del producto (visible en modo edición). */
     private JTextField campoCategorias;
-    /** Dato interno asociado a campoDescripcion. */
+    
+    /** Área de texto para la descripción del producto. */
     private JTextArea campoDescripcion;
-    /** Dato interno asociado a scrollComentarios. */
+    
+    /** Panel con barras de desplazamiento que contiene la lista de comentarios. */
     private JScrollPane scrollComentarios;
-    /** Dato interno asociado a listenerEdicion. */
+    
+    /** Listener para gestionar los eventos de confirmación o cancelación en la edición. */
     private ListenerEdicion listenerEdicion;
 
     /**
@@ -155,13 +174,18 @@ public class PanelDeProducto extends JPanel {
     }
 
     /**
-     * Gestiona la accion de setListenerEdicion.
-     * @param listenerEdicion valor recibido por el metodo
+     * Ejecuta la operacion publica setListenerEdicion.
+     * Asigna el listener que manejará las acciones de edición (confirmar/cancelar).
+     * 
+     * @param listenerEdicion parametro utilizado por la operacion
      */
     public void setListenerEdicion(ListenerEdicion listenerEdicion) {
         this.listenerEdicion = listenerEdicion;
     }
 
+    /**
+     * Construye y organiza la interfaz de usuario principal del panel.
+     */
     private void construirUI() {
         setLayout(new BorderLayout());
         setBackground(UiStyle.COLOR_FONDO);
@@ -178,6 +202,11 @@ public class PanelDeProducto extends JPanel {
         }
     }
 
+    /**
+     * Crea el cuerpo central de la interfaz que contiene los paneles izquierdo y derecho.
+     *
+     * @return JPanel con el cuerpo estructurado del producto.
+     */
     private JPanel crearCuerpo() {
         JPanel cuerpo = new JPanel(new BorderLayout(14, 0));
         cuerpo.setBackground(UiStyle.COLOR_FONDO);
@@ -187,6 +216,12 @@ public class PanelDeProducto extends JPanel {
         return cuerpo;
     }
 
+    /**
+     * Crea el panel lateral izquierdo que contiene la imagen, nombre, precio, 
+     * valoración y campos de edición si corresponde.
+     *
+     * @return JPanel correspondiente al lado izquierdo.
+     */
     private JPanel crearPanelIzquierdo() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -216,6 +251,12 @@ public class PanelDeProducto extends JPanel {
         return panel;
     }
 
+    /**
+     * Crea la etiqueta que muestra la imagen del producto.
+     * Si no hay imagen, muestra un texto alternativo.
+     *
+     * @return JLabel configurado con la imagen del producto.
+     */
     private JLabel crearImagen() {
         JLabel label = new JLabel();
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -239,7 +280,13 @@ public class PanelDeProducto extends JPanel {
         return label;
     }
 
-    private JLabel crearNombre() {
+    /**
+     * Crea el componente visual para el nombre del producto.
+     * En modo edición será un JTextField, de lo contrario un JLabel.
+     *
+     * @return JComponent que representa el nombre del producto.
+     */
+    private JComponent crearNombre() {
         if (editable) {
             campoNombre = new JTextField(producto.getNombre());
             campoNombre.setFont(new Font("SansSerif", Font.BOLD, 16));
@@ -256,6 +303,12 @@ public class PanelDeProducto extends JPanel {
         return label;
     }
 
+    /**
+     * Genera un panel con iconos de estrellas representando la valoración del producto.
+     *
+     * @param valoracion número de estrellas activas.
+     * @return JPanel con las estrellas dibujadas.
+     */
     private JPanel crearEstrellas(int valoracion) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 1, 0));
         panel.setOpaque(false);
@@ -269,7 +322,13 @@ public class PanelDeProducto extends JPanel {
         return panel;
     }
 
-    private JLabel crearPrecio() {
+    /**
+     * Crea el componente visual para el precio del producto.
+     * En modo edición será un JTextField, de lo contrario un JLabel formateado.
+     *
+     * @return JComponent que representa el precio del producto.
+     */
+    private JComponent crearPrecio() {
         if (editable) {
             campoPrecio = new JTextField(String.format("%.2f", producto.getPrecio()).replace(',', '.'));
             campoPrecio.setFont(new Font("SansSerif", Font.BOLD, 24));
@@ -301,6 +360,14 @@ public class PanelDeProducto extends JPanel {
         return Math.max(0, precio);
     }
 
+    /**
+     * Envuelve un campo de edición en un JLabel para forzar unas dimensiones estrictas.
+     *
+     * @param campo el campo a envolver.
+     * @param ancho ancho deseado.
+     * @param alto alto deseado.
+     * @return JLabel que actúa como contenedor con dimensiones fijas.
+     */
     private JLabel envoltorioCampo(JComponent campo, int ancho, int alto) {
         JLabel envoltorio = new JLabel();
         envoltorio.setLayout(new BorderLayout());
@@ -338,6 +405,12 @@ public class PanelDeProducto extends JPanel {
         return fila;
     }
 
+    /**
+     * Crea el panel con los campos editables adicionales del producto
+     * (Stock, Imagen y Categorías).
+     *
+     * @return JPanel con los campos de edición.
+     */
     private JPanel crearCamposProducto() {
         JPanel campos = new JPanel(new GridLayout(0, 1, 4, 4));
         campos.setOpaque(false);
@@ -354,6 +427,13 @@ public class PanelDeProducto extends JPanel {
         return campos;
     }
 
+    /**
+     * Crea una fila estandarizada para los formularios de edición.
+     *
+     * @param etiqueta texto a mostrar junto al campo.
+     * @param campo componente interactivo de entrada de datos.
+     * @return JPanel organizado con BorderLayout.
+     */
     private JPanel crearFilaEdicion(String etiqueta, JComponent campo) {
         JPanel fila = new JPanel(new BorderLayout(6, 0));
         fila.setOpaque(false);
@@ -365,6 +445,11 @@ public class PanelDeProducto extends JPanel {
         return fila;
     }
 
+    /**
+     * Instancia y configura el botón principal de añadir a la cesta.
+     *
+     * @return JButton configurado.
+     */
     private JButton crearBotonCesta() {
         JButton boton = new UiStyle.RoundedButton("A\u00f1adir a la cesta", new Color(94, 75, 57),
                 UiStyle.COLOR_MARRON_MEDIO, 12);
@@ -378,6 +463,12 @@ public class PanelDeProducto extends JPanel {
         return boton;
     }
 
+    /**
+     * Crea el panel lateral derecho, que contiene la descripción del producto 
+     * y la sección de comentarios, organizado mediante GridBagLayout.
+     *
+     * @return JPanel correspondiente al lado derecho.
+     */
     private JPanel crearPanelDerecho() {
         JPanel derecho = new JPanel(new GridBagLayout());
         derecho.setBackground(UiStyle.COLOR_FONDO);
@@ -398,6 +489,12 @@ public class PanelDeProducto extends JPanel {
         return derecho;
     }
 
+    /**
+     * Construye la sección visual que alberga la descripción del producto.
+     * Puede comportarse como un área editable si el modo edición está activo.
+     *
+     * @return JPanel con el título y texto de descripción.
+     */
     private JPanel crearSeccionDescripcion() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -426,6 +523,11 @@ public class PanelDeProducto extends JPanel {
         return panel;
     }
 
+    /**
+     * Crea un scroll pane que contiene el panel de comentarios.
+     *
+     * @return JScrollPane configurado para desplazar comentarios.
+     */
     private JScrollPane crearSeccionComentarios() {
         scrollComentarios = new JScrollPane(crearPanelComentarios(), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -434,6 +536,12 @@ public class PanelDeProducto extends JPanel {
         return scrollComentarios;
     }
 
+    /**
+     * Genera la lista completa de comentarios y valoraciones del producto.
+     * Si procede, también añade el formulario para crear nuevas reseñas.
+     *
+     * @return JPanel con todos los comentarios iterados.
+     */
     private JPanel crearPanelComentarios() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -459,12 +567,21 @@ public class PanelDeProducto extends JPanel {
         return panel;
     }
 
+    /**
+     * Actualiza la vista de los comentarios forzando un repintado en el JScrollPane.
+     */
     private void refrescarComentarios() {
         if (scrollComentarios != null) {
             scrollComentarios.setViewportView(crearPanelComentarios());
         }
     }
 
+    /**
+     * Crea un formulario que permite al usuario actual publicar una reseña
+     * (puntuación y comentario) si ha adquirido previamente el producto.
+     *
+     * @return JPanel con los controles necesarios para publicar una reseña.
+     */
     private JPanel crearFormularioResena() {
         JPanel formulario = new UiStyle.RoundedPanel(new Color(231, 219, 203), 12);
         formulario.setLayout(new BorderLayout(6, 6));
@@ -509,6 +626,12 @@ public class PanelDeProducto extends JPanel {
         return formulario;
     }
 
+    /**
+     * Construye un panel inferior con los botones "Confirmar" y "Cancelar"
+     * utilizados exclusivamente en el modo de edición de producto.
+     *
+     * @return JPanel con los botones de control de edición.
+     */
     private JPanel crearBotoneraEdicion() {
         JPanel botonera = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         botonera.setBackground(UiStyle.COLOR_FONDO);
@@ -543,6 +666,12 @@ public class PanelDeProducto extends JPanel {
         return botonera;
     }
 
+    /**
+     * Crea un JLabel con el formato estandarizado para los títulos de sección.
+     *
+     * @param texto texto del título.
+     * @return JLabel formateado.
+     */
     private JLabel crearTitulo(String texto) {
         JLabel label = new JLabel(texto);
         label.setFont(new Font("SansSerif", Font.BOLD, 17));
@@ -551,6 +680,13 @@ public class PanelDeProducto extends JPanel {
         return label;
     }
 
+    /**
+     * Dibuja un comentario individual con el nombre del usuario y su avatar.
+     *
+     * @param usuario nombre del usuario que hace el comentario.
+     * @param texto cuerpo del mensaje publicado.
+     * @return JPanel formateado con los datos del comentario.
+     */
     private JPanel crearComentario(String usuario, String texto) {
         JPanel tarjeta = new UiStyle.RoundedPanel(COLOR_COMENTARIO, 14);
         tarjeta.setLayout(new BorderLayout(8, 2));
@@ -581,6 +717,13 @@ public class PanelDeProducto extends JPanel {
         return tarjeta;
     }
 
+    /**
+     * Genera un círculo decorativo con las iniciales del usuario
+     * a modo de avatar gráfico.
+     *
+     * @param usuario nombre completo o username del que extraer las iniciales.
+     * @return JComponent pintado a medida como avatar circular.
+     */
     private JComponent crearAvatar(String usuario) {
         String iniciales = usuario.length() >= 2 ? usuario.substring(0, 2).toUpperCase() : usuario.toUpperCase();
         JPanel avatar = new JPanel() {
@@ -609,14 +752,40 @@ public class PanelDeProducto extends JPanel {
         return avatar;
     }
 
+    /**
+     * Estructura de datos inmutable que encapsula toda la información extraída
+     * del formulario de edición cuando se confirma la modificación de un producto.
+     */
     static class DatosEdicion {
+        
+        /** Nombre modificado del producto. */
         final String nombre;
+        
+        /** Precio modificado en formato de texto. */
         final String precio;
+        
+        /** Cantidad en stock disponible. */
         final int stock;
+        
+        /** Texto con la descripción actualizada. */
         final String descripcion;
+        
+        /** Ruta o URL de la imagen. */
         final String imagen;
+        
+        /** Cadena de texto con las categorías separadas por coma. */
         final String categorias;
 
+        /**
+         * Constructor que inicializa los datos editados.
+         * 
+         * @param nombre nuevo nombre.
+         * @param precio nuevo precio.
+         * @param stock nuevo stock.
+         * @param descripcion nueva descripción.
+         * @param imagen nueva imagen.
+         * @param categorias nuevas categorías.
+         */
         DatosEdicion(String nombre, String precio, int stock, String descripcion, String imagen, String categorias) {
             this.nombre = nombre;
             this.precio = precio;
@@ -627,9 +796,22 @@ public class PanelDeProducto extends JPanel {
         }
     }
 
+    /**
+     * Interfaz para delegar la responsabilidad de manejar
+     * la confirmación o cancelación del formulario de edición.
+     */
     interface ListenerEdicion {
+        
+        /**
+         * Método invocado cuando el usuario hace clic en Confirmar.
+         *
+         * @param datos objeto que contiene toda la información de los campos del formulario.
+         */
         void confirmar(DatosEdicion datos);
 
+        /**
+         * Método invocado cuando el usuario hace clic en Cancelar.
+         */
         void cancelar();
     }
 }
