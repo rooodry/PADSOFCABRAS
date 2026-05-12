@@ -39,36 +39,52 @@ import utilidades.TipoNotificacion;
 
 
 /**
- * Componente Swing de la interfaz grafica correspondiente a PanelNotificaciones.
+ * Representa el componente PanelNotificaciones de la interfaz grafica.
+ * Muestra una lista de notificaciones del usuario con opciones para filtrar,
+ * marcar como leídas, ver detalles y eliminarlas.
  */
 public class PanelNotificaciones extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /** Dato interno asociado a campo. */
+    /**
+     * Enumeración que define los diferentes filtros de visualización para las notificaciones.
+     */
     private enum Filtro {
-        TODAS, PENDIENTES, VISTAS
+        /** Muestra todas las notificaciones (leídas y no leídas). */
+        TODAS, 
+        /** Muestra únicamente las notificaciones no leídas. */
+        PENDIENTES, 
+        /** Muestra únicamente las notificaciones ya leídas. */
+        VISTAS
     }
 
+    /** Color personalizado para el icono del botón de borrar (papelera). */
     private static final Color COLOR_PAPELERA = new Color(154, 76, 60);
-    /** Dato interno asociado a AVATAR_SIZE. */
+    
+    /** Tamaño en píxeles (ancho y alto) para la imagen del avatar del usuario. */
     private static final int AVATAR_SIZE = 150;
 
-    /** Dato interno asociado a mainFrame. */
+    /** Referencia al controlador de la ventana principal de la aplicación. */
     private final Main mainFrame;
-    /** Dato interno asociado a lista. */
+    
+    /** Panel contenedor que agrupa y muestra visualmente las filas de notificaciones. */
     private final JPanel lista;
-    /** Dato interno asociado a JButton. */
+    
+    /** Arreglo que almacena los botones utilizados para cambiar de filtro. */
     private final JButton[] botonesFiltro;
-    /** Formatea las fechas mostradas en las notificaciones. */
+    
+    /** Formatea las fechas mostradas en las notificaciones con el patrón dd/MM/yyyy HH:mm. */
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-    /** Dato interno asociado a filtroActivo. */
+    
+    /** Filtro de visualización activo actualmente en el panel. Por defecto es TODAS. */
     private Filtro filtroActivo = Filtro.TODAS;
 
     /**
-     * Construye la pantalla de notificaciones.
+     * Construye la pantalla de notificaciones, inicializando sus componentes
+     * e integrando la barra de navegación superior.
      *
-     * @param mainFrame controlador principal
+     * @param mainFrame controlador principal de la interfaz
      */
     public PanelNotificaciones(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -83,7 +99,9 @@ public class PanelNotificaciones extends JPanel {
     }
 
     /**
-     * Reconstruye la lista segun el filtro activo.
+     * Reconstruye la lista de notificaciones visuales según el filtro activo.
+     * Limpia el panel, filtra los datos, crea los componentes de cada notificación
+     * y repinta la interfaz.
      */
     public void refrescar() {
         lista.removeAll();
@@ -110,6 +128,12 @@ public class PanelNotificaciones extends JPanel {
         lista.repaint();
     }
 
+    /**
+     * Crea y ensambla la sección central del panel, compuesta por un menú lateral
+     * y el área principal de contenido con desplazamiento (scroll).
+     *
+     * @return un {@code JPanel} que representa el cuerpo de la vista
+     */
     private JPanel crearCuerpo() {
         JPanel cuerpo = new JPanel(new BorderLayout(20, 0));
         cuerpo.setBackground(UiStyle.COLOR_FONDO);
@@ -134,6 +158,12 @@ public class PanelNotificaciones extends JPanel {
         return cuerpo;
     }
 
+    /**
+     * Construye el panel lateral izquierdo que contiene el avatar del usuario
+     * y los botones de filtrado (TODAS, PENDIENTES, VISTAS).
+     *
+     * @return un {@code JPanel} con el menú lateral
+     */
     private JPanel crearLateral() {
         JPanel lateral = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 24);
         lateral.setLayout(new BoxLayout(lateral, BoxLayout.Y_AXIS));
@@ -151,6 +181,12 @@ public class PanelNotificaciones extends JPanel {
         return lateral;
     }
 
+    /**
+     * Crea un {@code JLabel} con el avatar del usuario cargado o un icono por defecto
+     * si no se encuentra disponible ninguna imagen de perfil.
+     *
+     * @return un {@code JLabel} configurado como avatar
+     */
     private JLabel crearAvatarGrande() {
         JLabel avatar = new JLabel("\uD83D\uDC64", SwingConstants.CENTER);
         avatar.setOpaque(false);
@@ -164,6 +200,14 @@ public class PanelNotificaciones extends JPanel {
         return avatar;
     }
 
+    /**
+     * Crea un botón de estilo redondeado para seleccionar un filtro en específico.
+     *
+     * @param texto el texto que se mostrará en el botón
+     * @param filtro el estado del enum {@code Filtro} que aplicará el botón al pulsarse
+     * @param indice el índice dentro del arreglo {@code botonesFiltro} donde se guardará
+     * @return un {@code JButton} configurado y con su respectivo evento añadido
+     */
     private JButton crearBotonFiltro(String texto, Filtro filtro, int indice) {
         JButton boton = new UiStyle.RoundedButton(texto, UiStyle.COLOR_TARJETA, UiStyle.COLOR_MARRON_MEDIO, 16);
         boton.setForeground(UiStyle.COLOR_TEXTO);
@@ -179,6 +223,10 @@ public class PanelNotificaciones extends JPanel {
         return boton;
     }
 
+    /**
+     * Actualiza los colores de fondo y texto de los botones de filtrado
+     * para reflejar visualmente cuál es el que está activo en ese momento.
+     */
     private void actualizarFiltros() {
         for (JButton boton : botonesFiltro) {
             if (boton != null) {
@@ -190,6 +238,11 @@ public class PanelNotificaciones extends JPanel {
         botonesFiltro[filtroActivo.ordinal()].setForeground(UiStyle.COLOR_TEXTO_CLARO);
     }
 
+    /**
+     * Crea un pequeño separador horizontal estilizado entre los botones de filtro.
+     *
+     * @return un {@code JPanel} configurado como línea separadora
+     */
     private JPanel crearSeparadorFiltro() {
         JPanel separador = new JPanel();
         separador.setBackground(UiStyle.COLOR_BORDE);
@@ -199,6 +252,11 @@ public class PanelNotificaciones extends JPanel {
         return separador;
     }
 
+    /**
+     * Carga e inserta la imagen de perfil del usuario en el componente proporcionado.
+     *
+     * @param avatar el componente {@code JLabel} donde se establecerá la imagen de perfil
+     */
     private void cargarAvatar(JLabel avatar) {
         String rutaFoto = mainFrame.getClienteActual().getFotoPerfil();
         if (rutaFoto == null || rutaFoto.isBlank()) {
@@ -214,6 +272,13 @@ public class PanelNotificaciones extends JPanel {
         avatar.setText("");
     }
 
+    /**
+     * Filtra la lista de notificaciones del cliente actual omitiendo las borradas y 
+     * aplicando el filtro activo (Todas, Pendientes, Vistas). Además, ordena
+     * el resultado del más reciente al más antiguo.
+     *
+     * @return una lista de {@code Notificacion} filtrada y ordenada
+     */
     private List<Notificacion> filtrarNotificaciones() {
         List<Notificacion> resultado = new ArrayList<>();
         for (Notificacion notificacion : mainFrame.getClienteActual().getNotificaciones()) {
@@ -232,6 +297,13 @@ public class PanelNotificaciones extends JPanel {
         return resultado;
     }
 
+    /**
+     * Crea un componente de panel (fila) que representa visualmente una notificación en la lista.
+     * Contiene su icono de tipo, título, descripción corta, y los controles para marcar como vista o borrar.
+     *
+     * @param notificacion el objeto de datos de la notificación a renderizar
+     * @return un {@code JPanel} estilizado para la notificación indicada
+     */
     private JPanel crearFila(Notificacion notificacion) {
         JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 20);
         fila.setLayout(new GridBagLayout());
@@ -244,8 +316,10 @@ public class PanelNotificaciones extends JPanel {
         fila.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             /**
-             * Gestiona la accion de mouseClicked.
-             * @param e valor recibido por el metodo
+             * Muestra el cuadro de diálogo con los detalles de la notificación
+             * al detectar un clic sobre el panel de la fila.
+             * 
+             * @param e objeto que contiene los detalles del evento del ratón
              */
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 mostrarDetalleNotificacion(notificacion);
@@ -299,6 +373,12 @@ public class PanelNotificaciones extends JPanel {
         return fila;
     }
 
+    /**
+     * Muestra una ventana de diálogo modal (JOptionPane) que presenta todos los detalles
+     * de la notificación dada e implícitamente la marca como leída.
+     *
+     * @param notificacion la notificación a expandir y mostrar
+     */
     private void mostrarDetalleNotificacion(Notificacion notificacion) {
         if (notificacion == null) {
             return;
@@ -337,6 +417,13 @@ public class PanelNotificaciones extends JPanel {
         refrescar();
     }
 
+    /**
+     * Genera un {@code JLabel} con un texto/emoji representativo basado en el
+     * tipo de notificación proporcionado.
+     *
+     * @param tipo el enumerado {@code TipoNotificacion} a evaluar
+     * @return un {@code JLabel} configurado para usarse como icono
+     */
     private JLabel crearIconoTipo(TipoNotificacion tipo) {
         String texto;
         switch (tipo) {
@@ -372,6 +459,13 @@ public class PanelNotificaciones extends JPanel {
         return icono;
     }
 
+    /**
+     * Retorna una cadena de texto descriptiva amigable orientada al usuario en función
+     * del tipo de notificación proporcionado.
+     *
+     * @param tipo el enumerado {@code TipoNotificacion} a evaluar
+     * @return el texto que servirá como título de la notificación
+     */
     private String tituloNotificacion(TipoNotificacion tipo) {
         switch (tipo) {
             case PAGO_REALIZADO:
@@ -403,6 +497,12 @@ public class PanelNotificaciones extends JPanel {
         }
     }
 
+    /**
+     * Crea un botón transparente y sin bordes destinado a alojar un icono de acción.
+     *
+     * @param icono la interfaz {@code Icon} que se desea mostrar en el botón
+     * @return un {@code JButton} configurado para presentar solo el icono
+     */
     private JButton crearBotonIcono(Icon icono) {
         JButton boton = new JButton(icono);
         boton.setBorderPainted(false);
@@ -414,21 +514,31 @@ public class PanelNotificaciones extends JPanel {
         return boton;
     }
 
-    /** Dato interno asociado a campo. */
+    /**
+     * Implementación de la interfaz {@code Icon} que dibuja un símbolo de 'tic' o verificación (check)
+     * mediante la clase {@code Graphics2D}.
+     */
     private static final class IconoTic implements Icon {
-        /** Dato interno asociado a SIZE. */
+        /** Tamaño de ancho y alto del icono de tic en píxeles. */
         private static final int SIZE = 24;
-        /** Dato interno asociado a color. */
+        
+        /** Color del trazado con el que se dibujará el tic. */
         private final Color color;
 
+        /**
+         * Constructor para inicializar el color del tic.
+         *
+         * @param color el color que tendrá el dibujo
+         */
         private IconoTic(Color color) {
             this.color = color;
         }
 
         @Override
         /**
-         * Gestiona la accion de getIconWidth.
-         * @return resultado de la operacion
+         * Obtiene el ancho del icono.
+         * 
+         * @return la anchura del icono de verificación
          */
         public int getIconWidth() {
             return SIZE;
@@ -436,8 +546,9 @@ public class PanelNotificaciones extends JPanel {
 
         @Override
         /**
-         * Gestiona la accion de getIconHeight.
-         * @return resultado de la operacion
+         * Obtiene la altura del icono.
+         * 
+         * @return la altura del icono de verificación
          */
         public int getIconHeight() {
             return SIZE;
@@ -445,11 +556,12 @@ public class PanelNotificaciones extends JPanel {
 
         @Override
         /**
-         * Gestiona la accion de paintIcon.
-         * @param c valor recibido por el metodo
-         * @param g valor recibido por el metodo
-         * @param x valor recibido por el metodo
-         * @param y valor recibido por el metodo
+         * Dibuja los trazos del icono de verificación en el componente gráfico.
+         * 
+         * @param c el componente en el que se pinta el icono
+         * @param g el contexto gráfico utilizado para dibujar
+         * @param x la coordenada X inicial del icono
+         * @param y la coordenada Y inicial del icono
          */
         public void paintIcon(Component c, Graphics g, int x, int y) {
             Graphics2D g2 = (Graphics2D) g.create();
@@ -462,21 +574,31 @@ public class PanelNotificaciones extends JPanel {
         }
     }
 
-    /** Dato interno asociado a campo. */
+    /**
+     * Implementación de la interfaz {@code Icon} que dibuja un símbolo de papelera de reciclaje
+     * mediante la clase {@code Graphics2D}.
+     */
     private static final class IconoPapelera implements Icon {
-        /** Dato interno asociado a SIZE. */
+        /** Tamaño de ancho y alto del icono de papelera en píxeles. */
         private static final int SIZE = 24;
-        /** Dato interno asociado a color. */
+        
+        /** Color del trazado con el que se dibujará la papelera. */
         private final Color color;
 
+        /**
+         * Constructor para inicializar el color de la papelera.
+         *
+         * @param color el color que tendrá el dibujo
+         */
         private IconoPapelera(Color color) {
             this.color = color;
         }
 
         @Override
         /**
-         * Gestiona la accion de getIconWidth.
-         * @return resultado de la operacion
+         * Obtiene el ancho del icono.
+         * 
+         * @return la anchura del icono de la papelera
          */
         public int getIconWidth() {
             return SIZE;
@@ -484,8 +606,9 @@ public class PanelNotificaciones extends JPanel {
 
         @Override
         /**
-         * Gestiona la accion de getIconHeight.
-         * @return resultado de la operacion
+         * Obtiene la altura del icono.
+         * 
+         * @return la altura del icono de la papelera
          */
         public int getIconHeight() {
             return SIZE;
@@ -493,11 +616,12 @@ public class PanelNotificaciones extends JPanel {
 
         @Override
         /**
-         * Gestiona la accion de paintIcon.
-         * @param c valor recibido por el metodo
-         * @param g valor recibido por el metodo
-         * @param x valor recibido por el metodo
-         * @param y valor recibido por el metodo
+         * Dibuja los trazos que forman una papelera en el componente gráfico.
+         * 
+         * @param c el componente en el que se pinta el icono
+         * @param g el contexto gráfico utilizado para dibujar
+         * @param x la coordenada X inicial del icono
+         * @param y la coordenada Y inicial del icono
          */
         public void paintIcon(Component c, Graphics g, int x, int y) {
             Graphics2D g2 = (Graphics2D) g.create();
@@ -518,6 +642,13 @@ public class PanelNotificaciones extends JPanel {
         }
     }
 
+    /**
+     * Muestra un cuadro de diálogo de confirmación preguntando al usuario
+     * si realmente desea borrar la notificación seleccionada.
+     * En caso afirmativo, se procede con la eliminación.
+     *
+     * @param notificacion la notificación que el usuario intenta eliminar
+     */
     private void mostrarConfirmacionBorrado(Notificacion notificacion) {
         int opcion = JOptionPane.showConfirmDialog(
                 this,
@@ -531,6 +662,14 @@ public class PanelNotificaciones extends JPanel {
         }
     }
 
+    /**
+     * Recorta una cadena de texto para que no exceda una longitud máxima,
+     * añadiendo puntos suspensivos ("...") al final si resulta acortada.
+     *
+     * @param texto el texto original que se evaluará
+     * @param maximo el número máximo de caracteres permitidos antes de aplicar recorte
+     * @return el texto truncado con puntos suspensivos si excedió la longitud, de lo contrario devuelve el texto intacto
+     */
     private String acortar(String texto, int maximo) {
         if (texto == null || texto.length() <= maximo) {
             return texto;

@@ -28,44 +28,55 @@ import utilidades.EstadoProducto;
 
 
 /**
- * Componente Swing de la interfaz grafica correspondiente a PanelMisProductos.
+ * Representa el componente PanelMisProductos de la interfaz gráfica.
+ * Este panel permite al cliente visualizar y gestionar los productos de su cartera,
+ * divididos en diferentes estados: subidos, valorados y publicados.
  */
 public class PanelMisProductos extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /** Dato interno asociado a TAB_SUBIDOS. */
+    /** Índice que representa la pestaña de productos subidos y pendientes de valorar. */
     private static final int TAB_SUBIDOS = 0;
-    /** Dato interno asociado a TAB_VALORADOS. */
+    
+    /** Índice que representa la pestaña de productos que ya han sido valorados por un administrador. */
     private static final int TAB_VALORADOS = 1;
-    /** Dato interno asociado a TAB_PUBLICADOS. */
+    
+    /** Índice que representa la pestaña de productos que están actualmente publicados para su intercambio. */
     private static final int TAB_PUBLICADOS = 2;
 
-    /** Dato interno asociado a mainFrame. */
+    /** Referencia al controlador principal de la ventana y de la aplicación. */
     private final Main mainFrame;
-    /** Dato interno asociado a cliente. */
+    
+    /** El cliente registrado que es propietario de los productos mostrados en este panel. */
     private ClienteRegistrado cliente;
-    /** Dato interno asociado a panelGrid. */
+    
+    /** Contenedor principal que organiza las tarjetas de los productos en formato de cuadrícula. */
     private final JPanel panelGrid;
-    /** Dato interno asociado a JButton. */
+    
+    /** Arreglo que almacena los botones de navegación entre las pestañas (Subidos, Valorados, Publicados). */
     private final JButton[] botonesTab;
 
-    /** Dato interno asociado a tabActivo. */
+    /** Almacena el índice de la pestaña que se encuentra actualmente visible. Por defecto es TAB_SUBIDOS. */
     private int tabActivo = TAB_SUBIDOS;
-    /** Dato interno asociado a listenerSubir. */
+    
+    /** Escuchador para manejar el evento de subir un nuevo producto. */
     private ActionListener listenerSubir;
-    /** Dato interno asociado a listenerPedirValoracion. */
+    
+    /** Escuchador para manejar el evento de solicitar la valoración de un producto subido. */
     private ActionListener listenerPedirValoracion;
-    /** Dato interno asociado a listenerPublicar. */
+    
+    /** Escuchador para manejar el evento de publicar un producto que ya ha sido valorado. */
     private ActionListener listenerPublicar;
-    /** Dato interno asociado a listenerEliminar. */
+    
+    /** Escuchador para manejar el evento de eliminar un producto de la cartera del usuario. */
     private ActionListener listenerEliminar;
 
     /**
-     * Crea el panel de cartera para el cliente indicado.
+     * Crea el panel de cartera para el cliente indicado, integrándolo con el flujo principal.
      *
-     * @param mainFrame controlador principal de la aplicacion
-     * @param cliente cliente propietario de la cartera
+     * @param mainFrame controlador principal de la aplicación que gestiona las vistas generales.
+     * @param cliente   cliente propietario de la cartera cuyos productos se van a visualizar.
      */
     public PanelMisProductos(Main mainFrame, ClienteRegistrado cliente) {
         this.mainFrame = mainFrame;
@@ -80,66 +91,74 @@ public class PanelMisProductos extends JPanel {
     }
 
     /**
-     * Constructor de compatibilidad para pruebas visuales aisladas.
+     * Constructor de compatibilidad para pruebas visuales aisladas, sin depender del controlador principal.
      *
-     * @param cliente cliente propietario de la cartera
+     * @param cliente cliente propietario de la cartera cuyos productos se van a visualizar.
      */
     public PanelMisProductos(ClienteRegistrado cliente) {
         this(null, cliente);
     }
 
     /**
-     * Registra el listener del boton de subida.
+     * Registra el listener que se ejecutará al pulsar el botón de subir un nuevo producto.
      *
-     * @param listener listener a ejecutar
+     * @param listener escuchador que define la acción a ejecutar.
      */
     public void addListenerSubirProducto(ActionListener listener) {
         this.listenerSubir = listener;
     }
 
     /**
-     * Registra el listener para solicitar valoracion.
+     * Registra el listener que se ejecutará para solicitar la valoración de un producto.
      *
-     * @param listener listener a ejecutar con el producto como source
+     * @param listener escuchador que recibirá el evento con el producto correspondiente como origen (source).
      */
     public void addListenerPedirValoracion(ActionListener listener) {
         this.listenerPedirValoracion = listener;
     }
 
     /**
-     * Registra el listener para publicar un producto valorado.
+     * Registra el listener que se ejecutará para publicar un producto previamente valorado en el mercado.
      *
-     * @param listener listener a ejecutar con el producto como source
+     * @param listener escuchador que recibirá el evento con el producto correspondiente como origen (source).
      */
     public void addListenerPublicar(ActionListener listener) {
         this.listenerPublicar = listener;
     }
 
     /**
-     * Gestiona la accion de addListenerEliminarProducto.
-     * @param listener valor recibido por el metodo
+     * Registra el listener que se ejecutará para confirmar y proceder con la eliminación de un producto.
+     * 
+     * @param listener escuchador que define la acción de eliminación a aplicar sobre un producto.
      */
     public void addListenerEliminarProducto(ActionListener listener) {
         this.listenerEliminar = listener;
     }
 
     /**
-     * Actualiza el grid de productos.
+     * Actualiza y repinta la cuadrícula (grid) de productos, reflejando cualquier
+     * cambio en los datos subyacentes o un cambio de pestaña.
      */
     public void refrescar() {
         actualizarGrid();
     }
 
     /**
-     * Cambia el cliente cuyas tarjetas se muestran.
+     * Cambia el cliente activo en el panel y actualiza la vista para mostrar los productos del nuevo cliente.
      *
-     * @param cliente nuevo cliente activo
+     * @param cliente el nuevo cliente cuyos productos deben mostrarse.
      */
     public void setCliente(ClienteRegistrado cliente) {
         this.cliente = cliente;
         refrescar();
     }
 
+    /**
+     * Construye la parte superior del panel, que puede incluir un componente de navegación general
+     * o un título simple si se utiliza en modo aislado.
+     * 
+     * @return un {@code JPanel} configurado que actúa como cabecera.
+     */
     private JPanel crearCabeceraSimple() {
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBackground(UiStyle.COLOR_FONDO);
@@ -155,6 +174,12 @@ public class PanelMisProductos extends JPanel {
         return contenedor;
     }
 
+    /**
+     * Construye el cuerpo central del panel, agregando la barra de pestañas en la parte superior
+     * y un panel desplazable (scroll) para la cuadrícula de productos.
+     * 
+     * @return un {@code JPanel} con el diseño del cuerpo central completo.
+     */
     private JPanel crearCuerpo() {
         JPanel cuerpo = new JPanel(new BorderLayout());
         cuerpo.setBackground(UiStyle.COLOR_FONDO);
@@ -171,6 +196,11 @@ public class PanelMisProductos extends JPanel {
         return cuerpo;
     }
 
+    /**
+     * Crea la barra de navegación entre las categorías de los productos (Subidos, Valorados, Publicados).
+     * 
+     * @return un {@code JPanel} que contiene los botones de las pestañas configurados con sus eventos.
+     */
     private JPanel crearBarraTabs() {
         JPanel barra = new JPanel(new FlowLayout(FlowLayout.CENTER, 16, 14));
         barra.setBackground(UiStyle.COLOR_FONDO);
@@ -195,6 +225,10 @@ public class PanelMisProductos extends JPanel {
         return barra;
     }
 
+    /**
+     * Refresca el aspecto visual de los botones que forman las pestañas, aplicando estilos
+     * distintos al botón que corresponde con la pestaña activa actualmente.
+     */
     private void actualizarTabs() {
         for (int i = 0; i < botonesTab.length; i++) {
             JButton boton = botonesTab[i];
@@ -210,6 +244,11 @@ public class PanelMisProductos extends JPanel {
         }
     }
 
+    /**
+     * Vacía el contenedor de productos y lo vuelve a rellenar de manera dinámica
+     * con las tarjetas de los productos que corresponden a la pestaña activa en ese momento.
+     * También añade una tarjeta especial para subir nuevos productos si se está en la primera pestaña.
+     */
     private void actualizarGrid() {
         panelGrid.removeAll();
         panelGrid.setBackground(UiStyle.COLOR_FONDO);
@@ -244,8 +283,9 @@ public class PanelMisProductos extends JPanel {
             tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 /**
-                 * Gestiona la accion de mouseClicked.
-                 * @param e valor recibido por el metodo
+                 * Intercepta los clics del ratón sobre la tarjeta para mostrar los detalles del producto.
+                 * 
+                 * @param e objeto MouseEvent que contiene los detalles de la acción del usuario.
                  */
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     mostrarDetalleProducto(producto);
@@ -276,6 +316,12 @@ public class PanelMisProductos extends JPanel {
         panelGrid.repaint();
     }
 
+    /**
+     * Muestra una ventana emergente de diálogo con la información detallada
+     * del producto seleccionado, incluyendo su estado, descripción y valor estimado.
+     * 
+     * @param producto el producto de segunda mano del cual se van a extraer los detalles a mostrar.
+     */
     private void mostrarDetalleProducto(ProductoSegundaMano producto) {
         String estado = producto.getEstadoConservacion() == null
                 ? "Pendiente de valorar" : producto.getEstadoConservacion().toString();
@@ -290,6 +336,13 @@ public class PanelMisProductos extends JPanel {
                 "Producto de segunda mano", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Filtra la lista completa de productos del usuario, devolviendo únicamente aquellos
+     * que se corresponden con los requisitos de la pestaña activa en ese instante.
+     * 
+     * @param productos la lista original completa de productos asociados al cliente.
+     * @return una sublista que contiene solo los productos aplicables a la vista actual.
+     */
     private List<ProductoSegundaMano> filtrarPorTab(List<ProductoSegundaMano> productos) {
         if (tabActivo == TAB_VALORADOS) {
             return productos.stream()
@@ -302,6 +355,13 @@ public class PanelMisProductos extends JPanel {
         return productos;
     }
 
+    /**
+     * Determina y devuelve el listener principal adecuado para el botón de acción de
+     * una tarjeta de producto, de acuerdo con el estado del producto y la pestaña actual.
+     * 
+     * @param producto el producto a evaluar para asociarle un comportamiento.
+     * @return el {@code ActionListener} que debe dispararse (pedir valoración, publicar, etc.) o {@code null}.
+     */
     private ActionListener resolverListener(ProductoSegundaMano producto) {
         if (tabActivo == TAB_PUBLICADOS) {
             return null;
@@ -321,6 +381,12 @@ public class PanelMisProductos extends JPanel {
         };
     }
 
+    /**
+     * Solicita confirmación al usuario antes de proceder a la eliminación de un producto
+     * y notifica al listener correspondiente en caso afirmativo.
+     * 
+     * @param producto el producto que el usuario ha solicitado eliminar.
+     */
     private void confirmarEliminacion(ProductoSegundaMano producto) {
         int respuesta = JOptionPane.showConfirmDialog(this,
                 "¿Quieres eliminar este producto de tu cartera?",

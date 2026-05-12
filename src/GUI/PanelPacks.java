@@ -21,21 +21,26 @@ import productos.Producto;
 
 
 /**
- * Componente Swing de la interfaz grafica correspondiente a PanelPacks.
+ * Representa el componente PanelPacks de la interfaz gráfica.
+ * Este panel se encarga de mostrar al usuario una cuadrícula con todos los packs
+ * de productos disponibles, permitiendo añadirlos a la cesta de la compra.
  */
 public class PanelPacks extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /** Dato interno asociado a mainFrame. */
+    /** Referencia al controlador de la ventana principal de la aplicación. */
     private final Main mainFrame;
-    /** Dato interno asociado a grid. */
+    
+    /** Panel contenedor que agrupa y muestra las tarjetas de los packs usando un diseño de cuadrícula. */
     private final JPanel grid;
 
     /**
-     * Builds the pack screen.
+     * Construye la pantalla de visualización de los packs.
+     * Inicializa los componentes, establece el layout principal y añade
+     * la barra de navegación superior y el área de contenido.
      *
-     * @param mainFrame main GUI controller
+     * @param mainFrame controlador principal de la interfaz gráfica
      */
     public PanelPacks(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -48,7 +53,9 @@ public class PanelPacks extends JPanel {
     }
 
     /**
-     * Rebuilds the pack cards.
+     * Reconstruye dinámicamente las tarjetas de los packs.
+     * Limpia la cuadrícula actual, obtiene la lista actualizada de packs desde
+     * el controlador principal y genera una nueva tarjeta visual para cada uno de ellos.
      */
     public void refrescar() {
         grid.removeAll();
@@ -64,6 +71,12 @@ public class PanelPacks extends JPanel {
         grid.repaint();
     }
 
+    /**
+     * Crea un panel de desplazamiento (scroll) que envuelve a la cuadrícula de packs.
+     * Esto permite navegar por los packs si hay demasiados para caber en la pantalla.
+     *
+     * @return un {@code JScrollPane} configurado que contiene la cuadrícula principal
+     */
     private JScrollPane crearContenido() {
         JScrollPane scroll = new JScrollPane(grid);
         scroll.setBorder(null);
@@ -71,6 +84,14 @@ public class PanelPacks extends JPanel {
         return scroll;
     }
 
+    /**
+     * Crea un componente visual (tarjeta) para representar un pack individual.
+     * La tarjeta muestra el nombre del pack, la lista de productos que incluye,
+     * el precio total y un botón para añadir el pack a la cesta de la compra.
+     *
+     * @param pack el objeto de datos {@code Pack} que se va a representar visualmente
+     * @return un {@code JPanel} formateado y estilizado como una tarjeta de producto
+     */
     private JPanel crearTarjetaPack(Pack pack) {
         JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_CABECERA, 28);
         tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
