@@ -6,26 +6,30 @@ import java.awt.*;
 import java.io.File;
 
 /**
- * Formulario de alta de productos de segunda mano del cliente.
- *
- * <p>Permite introducir nombre, descripcion e imagen del producto antes de
- * incorporarlo a la cartera del usuario registrado.</p>
+ * Representa el componente PanelSubirProducto de la interfaz gráfica.
+ * Este panel proporciona un formulario para que el usuario pueda introducir
+ * los datos de un nuevo producto (nombre, descripción e imagen) y darlo de alta en el sistema.
  */
 public class PanelSubirProducto extends JPanel {
-    /** Controlador principal usado para guardar el producto y navegar entre pantallas. */
+    
+    /** Referencia al marco principal de la aplicación para gestionar la navegación y la lógica de negocio. */
     private Main mainFrame;
-    /** Campo donde el usuario escribe el nombre del producto. */
+    
+    /** Campo de texto para introducir el nombre del producto. */
     private JTextField txtNombre;
-    /** Area de texto donde se describe el estado y detalles del producto. */
+    
+    /** Área de texto para introducir la descripción detallada del producto. */
     private JTextArea txtDescripcion;
-    /** Campo con la ruta de la imagen seleccionada para el producto. */
+    
+    /** Campo de texto que almacena y muestra la ruta del archivo de imagen seleccionado. */
     private JTextField txtImagen;
 
     /**
-     * Construye el formulario de subida y enlaza las acciones de guardar,
-     * cancelar y seleccionar imagen.
-     *
-     * @param mainFrame controlador principal de la aplicacion
+     * Construye una instancia de PanelSubirProducto.
+     * Configura el diseño visual del formulario, incluyendo campos de texto, 
+     * selectores de archivos y botones de acción.
+     * 
+     * @param mainFrame el controlador principal de la interfaz gráfica
      */
     public PanelSubirProducto(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -34,7 +38,9 @@ public class PanelSubirProducto extends JPanel {
 
         add(crearCabecera("SUBIR NUEVO PRODUCTO"), BorderLayout.NORTH);
 
-
+        /**
+         * Panel personalizado con bordes redondeados para contener el formulario.
+         */
         JPanel contenedorForm = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -105,6 +111,12 @@ public class PanelSubirProducto extends JPanel {
         add(centrado, BorderLayout.CENTER);
     }
 
+    /**
+     * Crea el panel superior que contiene el título de la sección.
+     * 
+     * @param titulo texto que se mostrará en la cabecera
+     * @return un JPanel configurado como cabecera estilizada
+     */
     private JPanel crearCabecera(String titulo) {
         JPanel cabecera = new JPanel(new BorderLayout());
         cabecera.setBackground(new Color(165, 143, 122));
@@ -118,12 +130,25 @@ public class PanelSubirProducto extends JPanel {
         return cabecera;
     }
 
+    /**
+     * Crea un campo de texto con un texto de sugerencia inicial.
+     * 
+     * @param placeholder el texto inicial que indica el propósito del campo
+     * @return un JTextField configurado con dimensiones máximas
+     */
     private JTextField crearCampo(String placeholder) {
         JTextField tf = new JTextField(placeholder);
         tf.setMaximumSize(new Dimension(400, 35));
         return tf;
     }
 
+    /**
+     * Crea un botón estilizado para el formulario con colores específicos.
+     * 
+     * @param texto el texto que mostrará el botón
+     * @param color el color de fondo y del borde del botón
+     * @return un JButton configurado estéticamente
+     */
     private JButton crearBotonForm(String texto, Color color) {
         JButton btn = new JButton(texto);
         btn.setBackground(color);
@@ -134,6 +159,10 @@ public class PanelSubirProducto extends JPanel {
         return btn;
     }
 
+    /**
+     * Abre un selector de archivos (JFileChooser) para que el usuario elija una imagen.
+     * Filtra los archivos para mostrar únicamente formatos de imagen comunes.
+     */
     private void seleccionarImagen() {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
@@ -145,6 +174,11 @@ public class PanelSubirProducto extends JPanel {
         }
     }
 
+    /**
+     * Valida los datos introducidos en el formulario y, si son correctos,
+     * solicita al frame principal la creación del nuevo producto.
+     * Muestra mensajes de error si faltan campos obligatorios o de éxito tras guardar.
+     */
     private void guardarProducto() {
         String nombre = txtNombre.getText().trim();
         String descripcion = txtDescripcion.getText().trim();
