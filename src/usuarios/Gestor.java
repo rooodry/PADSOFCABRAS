@@ -4,7 +4,9 @@ import estadisticas.Estadistica;
 import utilidades.TiposEmpleado;
 import java.util.*;
 
-
+/**
+ * Usuario administrador capaz de consultar estadisticas y configurar empleados.
+ */
 public class Gestor extends Usuario {
 
 

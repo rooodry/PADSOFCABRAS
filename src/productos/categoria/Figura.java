@@ -1,6 +1,8 @@
 package productos.categoria;
 
-
+/**
+ * Categoria especializada para figuras coleccionables.
+ */
 public class Figura extends Categoria {
 
 

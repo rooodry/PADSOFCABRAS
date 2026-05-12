@@ -3,7 +3,9 @@ package descuentos;
 import compras.Pedido;
 import java.util.Date;
 
-
+/**
+ * Descuento que reduce el precio base mediante un porcentaje fijo.
+ */
 public class DescuentoPorcentaje extends Descuento {
 
 

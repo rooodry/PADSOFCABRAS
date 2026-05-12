@@ -6,7 +6,9 @@ import java.util.Map;
 
 import utilidades.Status;
 
-
+/**
+ * Inventario de productos de tienda y unidades disponibles.
+ */
 public class Stock implements Serializable {
 
     private static final long serialVersionUID = 1L;

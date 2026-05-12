@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 import utilidades.TipoNotificacion;
 
-
+/**
+ * Aviso persistente enviado a un usuario sobre un evento del sistema.
+ */
 public class Notificacion implements Serializable {
 
     private static final long serialVersionUID = 1L;

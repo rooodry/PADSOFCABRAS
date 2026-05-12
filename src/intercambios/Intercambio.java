@@ -5,7 +5,9 @@ import java.util.Date;
 import java.io.Serializable;
 import utilidades.EstadoOferta;
 
-
+/**
+ * Proceso de intercambio asociado a una oferta entre dos clientes.
+ */
 public class Intercambio implements Serializable {
 
     private static final long serialVersionUID = 1L;

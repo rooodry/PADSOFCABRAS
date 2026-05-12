@@ -9,7 +9,13 @@ import usuarios.Empleado;
 import utilidades.EstadoPedido;
 import descuentos.*;
 
-
+/**
+ * Representa una compra realizada por un cliente registrado.
+ *
+ * <p>El pedido conserva sus productos, valoraciones, fechas de cambio de
+ * estado, descuentos aplicados y empleado responsable de la venta cuando
+ * corresponde.</p>
+ */
 public class Pedido implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -29,7 +35,8 @@ public class Pedido implements Serializable {
     /**
      * Constructor de la clase Pedido.
      * Genera automáticamente un código único y la fecha de realización, estableciendo el estado inicial.
-     * * @param cliente   Cliente registrado que realiza el pedido.
+     *
+     * @param cliente   Cliente registrado que realiza el pedido.
      * @param productos Mapa con los productos adquiridos y sus cantidades.
      */
     public Pedido(ClienteRegistrado cliente, Map<ProductoTienda, Integer> productos) {
@@ -49,7 +56,8 @@ public class Pedido implements Serializable {
     /**
      * Establece el nuevo estado del pedido y actualiza las fechas correspondientes
      * de pago, preparación o recogida según el estado asignado.
-     * * @param estadoPedido Nuevo estado del pedido.
+     *
+     * @param estadoPedido Nuevo estado del pedido.
      */
     public void setEstadoPedido(EstadoPedido estadoPedido) {
         this.estadoPedido = estadoPedido;
@@ -67,7 +75,8 @@ public class Pedido implements Serializable {
 
     /**
      * Establece manualmente la fecha en la que el pedido fue recogido.
-     * * @param fecha Fecha de recogida.
+     *
+     * @param fecha Fecha de recogida.
      */
     public void setFechaRecogida(Date fecha) {
         if (fecha != null) {
@@ -77,7 +86,8 @@ public class Pedido implements Serializable {
 
     /**
      * Asigna las valoraciones realizadas por el cliente a los productos de este pedido.
-     * * @param valoraciones Mapa que relaciona cada producto con su valoración numérica.
+     *
+     * @param valoraciones Mapa que relaciona cada producto con su valoración numérica.
      */
     public void setValoracionesProductos(Map<ProductoTienda, Integer> valoraciones) {
         this.valoraciones = new HashMap<ProductoTienda, Integer>(valoraciones);
@@ -85,7 +95,8 @@ public class Pedido implements Serializable {
 
     /**
      * Aplica un descuento general al pedido.
-     * * @param d Objeto Descuento a aplicar.
+     *
+     * @param d Objeto Descuento a aplicar.
      */
     public void setDescuento(Descuento d) {
         this.descuento = d;
@@ -93,7 +104,8 @@ public class Pedido implements Serializable {
 
     /**
      * Asigna un producto adicional como regalo dentro del pedido.
-     * * @param regalo Objeto ProductoTienda entregado como regalo.
+     *
+     * @param regalo Objeto ProductoTienda entregado como regalo.
      */
     public void setRegalo(ProductoTienda regalo) {
         this.regalo = regalo;
@@ -101,7 +113,8 @@ public class Pedido implements Serializable {
 
     /**
      * Registra el empleado que ha entregado la venta.
-     * * @param empleado empleado responsable de la entrega
+     *
+     * @param empleado empleado responsable de la entrega
      */
     public void setEmpleadoVenta(Empleado empleado) {
         this.empleadoVenta = empleado;
@@ -109,67 +122,78 @@ public class Pedido implements Serializable {
 
     /**
      * Obtiene el código identificador único del pedido.
-     * * @return Objeto Codigo asociado.
+     *
+     * @return Objeto Codigo asociado.
      */
     public Codigo getCodigo() {return this.codigo;}
 
     /**
      * Obtiene la fecha en la que se generó el pedido.
-     * * @return Copia de la fecha de realización.
+     *
+     * @return Copia de la fecha de realización.
      */
     public Date getFechaRealizacion() {return new Date(this.fechaRealizacion.getTime());}
 
     /**
      * Obtiene la fecha en la que se abonó el pedido.
-     * * @return Copia de la fecha de pago, o null si aún no se ha pagado.
+     *
+     * @return Copia de la fecha de pago, o null si aún no se ha pagado.
      */
     public Date getFechaPago() {return this.fechaPago != null ? new Date(this.fechaPago.getTime()) : null;}
 
     /**
      * Obtiene la fecha en la que el pedido fue preparado.
-     * * @return Copia de la fecha de preparación, o null si no está preparado.
+     *
+     * @return Copia de la fecha de preparación, o null si no está preparado.
      */
     public Date getFechaPreparacion() {return this.fechaPreparacion != null ? new Date(this.fechaPreparacion.getTime()) : null;}
 
     /**
      * Obtiene la fecha en la que el cliente recogió el pedido.
-     * * @return Copia de la fecha de recogida, o null si no ha sido recogido.
+     *
+     * @return Copia de la fecha de recogida, o null si no ha sido recogido.
      */
     public Date getFechaRecogida() {return this.fechaRecogida != null ? new Date(this.fechaRecogida.getTime()) : null;}
 
     /**
      * Obtiene el estado actual en el flujo del pedido.
-     * * @return Enum EstadoPedido.
+     *
+     * @return Enum EstadoPedido.
      */
     public EstadoPedido getEstadoPedido() {return this.estadoPedido;}
 
     /**
      * Obtiene el cliente que realizó la compra.
-     * * @return Objeto ClienteRegistrado.
+     *
+     * @return Objeto ClienteRegistrado.
      */
     public ClienteRegistrado getCliente() {return this.cliente;}
 
     /**
      * Obtiene los productos y sus cantidades asociados al pedido.
-     * * @return Copia del mapa de productos.
+     *
+     * @return Copia del mapa de productos.
      */
     public Map<ProductoTienda, Integer> getProductos() {return new HashMap<ProductoTienda, Integer>(this.productos);}
 
     /**
      * Obtiene las valoraciones realizadas a los productos del pedido.
-     * * @return Copia del mapa de valoraciones.
+     *
+     * @return Copia del mapa de valoraciones.
      */
     public Map<ProductoTienda, Integer> getValoracionesProductos() {return new HashMap<ProductoTienda, Integer>(this.valoraciones);}
 
     /**
      * Obtiene el producto asignado como regalo, si lo hubiera.
-     * * @return Objeto ProductoTienda o null.
+     *
+     * @return Objeto ProductoTienda o null.
      */
     public ProductoTienda getRegalo() { return this.regalo; }
 
     /**
      * Obtiene el empleado que entregó la venta.
-     * * @return empleado responsable, o null si no está asignado
+     *
+     * @return empleado responsable, o null si no está asignado
      */
     public Empleado getEmpleadoVenta() { return this.empleadoVenta; }
 
@@ -183,7 +207,8 @@ public class Pedido implements Serializable {
     /**
      * Calcula el importe total del pedido teniendo en cuenta los precios base,
      * las rebajas individuales de los productos y el descuento global aplicado.
-     * * @return Valor double con el precio total a pagar.
+     *
+     * @return Valor double con el precio total a pagar.
      */
     public double calcularPrecioTotal() {
         double subtotal = 0;

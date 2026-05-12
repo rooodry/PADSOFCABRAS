@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import productos.ProductoSegundaMano;
 
-
+/**
+ * Cartera personal de productos de segunda mano de un cliente.
+ */
 public class Cartera implements Serializable {
 
     private static final long serialVersionUID = 1L;

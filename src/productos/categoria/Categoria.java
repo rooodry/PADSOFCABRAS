@@ -5,7 +5,9 @@ package productos.categoria;
 
 import java.io.Serializable;
 
-
+/**
+ * Categoria base jerarquica para clasificar productos del catalogo.
+ */
 public abstract class Categoria implements Serializable {
 
     private static final long serialVersionUID = 1L;

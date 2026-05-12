@@ -3,7 +3,9 @@ package descuentos;
 import java.util.Date;
 import compras.Pedido;
 
-
+/**
+ * Descuento porcentual condicionado a que el pedido alcance un gasto minimo.
+ */
 public class DescuentoCantidadGastada extends Descuento {
 
 

@@ -5,7 +5,9 @@ import java.util.*;
 import usuarios.ClienteRegistrado;
 import utilidades.*;
 
-
+/**
+ * Producto aportado por un cliente para valoracion, venta o intercambio.
+ */
 public class ProductoSegundaMano extends Producto {
     private boolean disponibilidad;
     private final ClienteRegistrado propietario;

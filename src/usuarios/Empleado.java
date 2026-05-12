@@ -5,7 +5,9 @@ import utilidades.TiposEmpleado;
 import intercambios.Intercambio;
 import productos.ProductoSegundaMano;
 
-
+/**
+ * Usuario interno encargado de pedidos, productos o intercambios segun sus permisos.
+ */
 public class Empleado extends Usuario {
 
 

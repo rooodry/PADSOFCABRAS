@@ -1,6 +1,8 @@
 package usuarios;
 
-
+/**
+ * Tipo base para los usuarios que navegan o compran como clientes.
+ */
 public abstract class Cliente extends Usuario {
 
     /**

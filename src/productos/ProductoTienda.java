@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
+/**
+ * Producto vendido directamente por la tienda, con precio, rebajas y comentarios.
+ */
 public class ProductoTienda extends Producto {
 
 

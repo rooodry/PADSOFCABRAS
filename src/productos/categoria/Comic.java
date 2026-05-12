@@ -1,6 +1,8 @@
 package productos.categoria;
 
-
+/**
+ * Categoria especializada para comics, con datos editoriales y de genero.
+ */
 public class Comic extends Categoria {
 
 

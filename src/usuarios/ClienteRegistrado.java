@@ -7,7 +7,9 @@ import intercambios.*;
 import utilidades.*;
 import notificaciones.Notificacion;
 
-
+/**
+ * Cliente con cuenta registrada, cesta, pedidos, ofertas e intercambios.
+ */
 public class ClienteRegistrado extends Cliente {
     private final String DNI;
     private Cartera cartera;

@@ -28,6 +28,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+/**
+ * Fachada de negocio que coordina usuarios, productos, pedidos, descuentos e intercambios.
+ */
 public class Sistema {
 
     private List<Producto> productos;

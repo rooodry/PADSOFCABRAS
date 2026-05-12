@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.UUID;
 import productos.categoria.Categoria;
 
-
+/**
+ * Producto base compartido por articulos de tienda y de segunda mano.
+ */
 public abstract class Producto implements Serializable {
 
     private static final long serialVersionUID = 1L;

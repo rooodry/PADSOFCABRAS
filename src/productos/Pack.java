@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Conjunto comercial de productos de tienda con precio y categoria propios.
+ */
 public class Pack implements Serializable {
 
     private static final long serialVersionUID = 1L;

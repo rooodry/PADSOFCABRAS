@@ -1,6 +1,8 @@
 package usuarios;
 
-
+/**
+ * Cliente invitado o visitante sin cuenta registrada completa.
+ */
 public class ClienteNoRegistrado extends Cliente {
 
     /**

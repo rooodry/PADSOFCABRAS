@@ -3,7 +3,9 @@ package descuentos;
 import java.util.Date;
 import compras.Pedido;
 
-
+/**
+ * Promocion de tipo dos por uno aplicable a pedidos durante un periodo dado.
+ */
 public class DescuentoDosPorUno extends Descuento {
 
     /**

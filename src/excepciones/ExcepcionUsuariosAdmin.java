@@ -1,11 +1,14 @@
 package excepciones;
 
-
+/**
+ * Excepcion lanzada cuando un usuario intenta realizar una accion reservada a administradores.
+ */
 public class ExcepcionUsuariosAdmin extends ExcepcionUsuarios {
 
     /**
      * Constructor de la excepción.
-     * * @param nombre Nombre del usuario que provocó la excepción.
+     *
+     * @param nombre Nombre del usuario que provocó la excepción.
      */
     public ExcepcionUsuariosAdmin(String nombre) {
         super(nombre);
@@ -13,7 +16,8 @@ public class ExcepcionUsuariosAdmin extends ExcepcionUsuarios {
 
     /**
      * Sobrescribe el método toString para especificar la causa del fallo de permisos.
-     * * @return Cadena formateada indicando que el usuario no tiene rol de administrador.
+     *
+     * @return Cadena formateada indicando que el usuario no tiene rol de administrador.
      */
     @Override
     public String toString() {

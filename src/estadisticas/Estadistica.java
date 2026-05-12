@@ -11,7 +11,12 @@ import usuarios.*;
 import utilidades.EstadoPedido;
 import intercambios.*;
 
-
+/**
+ * Generador de informes estadisticos sobre ventas, usuarios e intercambios.
+ *
+ * <p>Cada metodo escribe el resultado en el fichero asociado a la instancia,
+ * sustituyendo el contenido anterior.</p>
+ */
 public class Estadistica implements Serializable {
 
     private static final long serialVersionUID = 1L;

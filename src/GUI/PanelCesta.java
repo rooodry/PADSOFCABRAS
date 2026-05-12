@@ -26,7 +26,6 @@ import javax.swing.border.EmptyBorder;
 
 import productos.*;
 
-
 /**
  * Representa el componente PanelCesta de la interfaz grafica.
  */
@@ -34,11 +33,11 @@ public class PanelCesta extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /**      * Estado interno de mainFrame.      */
+    /** * Estado interno de mainFrame. */
     private final Main mainFrame;
-    /**      * Estado interno de listaProductos.      */
+    /** * Estado interno de listaProductos. */
     private final JPanel listaProductos;
-    /**      * Estado interno de lblTotal.      */
+    /** * Estado interno de lblTotal. */
     private final JLabel lblTotal;
 
     /**
@@ -83,80 +82,76 @@ public class PanelCesta extends JPanel {
      * Actualiza la lista de productos y el total de la cesta.
      */
     public void refrescar() {
-    listaProductos.removeAll();
-    listaProductos.setBackground(UiStyle.COLOR_FONDO);
-    listaProductos.setBorder(new EmptyBorder(12, 12, 12, 12));
+        listaProductos.removeAll();
+        listaProductos.setBackground(UiStyle.COLOR_FONDO);
+        listaProductos.setBorder(new EmptyBorder(12, 12, 12, 12));
 
-    Map<ProductoTienda, Integer> productos =
-            mainFrame.getClienteActual().getCesta().getProductos();
+        Map<ProductoTienda, Integer> productos = mainFrame.getClienteActual().getCesta().getProductos();
 
-    Map<Pack, Integer> packs =
-            mainFrame.getClienteActual().getCesta().getPacks();
+        Map<Pack, Integer> packs = mainFrame.getClienteActual().getCesta().getPacks();
 
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.weightx = 0;
-    gbc.anchor = GridBagConstraints.NORTHWEST;
-    gbc.fill = GridBagConstraints.NONE;
-    gbc.insets = new Insets(0, 0, 12, 0);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.insets = new Insets(0, 0, 12, 0);
 
-    double total = 0.0;
+        double total = 0.0;
 
-    if (productos.isEmpty() && packs.isEmpty()) {
-        JLabel vacia = new JLabel("La cesta está vacía.", SwingConstants.CENTER);
-        vacia.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        vacia.setForeground(UiStyle.COLOR_TEXTO);
-        listaProductos.add(vacia, gbc);
-    } else {
-        for (Map.Entry<ProductoTienda, Integer> entrada : productos.entrySet()) {
-            ProductoTienda producto = entrada.getKey();
-            int cantidad = entrada.getValue();
+        if (productos.isEmpty() && packs.isEmpty()) {
+            JLabel vacia = new JLabel("La cesta está vacía.", SwingConstants.CENTER);
+            vacia.setFont(new Font("SansSerif", Font.PLAIN, 16));
+            vacia.setForeground(UiStyle.COLOR_TEXTO);
+            listaProductos.add(vacia, gbc);
+        } else {
+            for (Map.Entry<ProductoTienda, Integer> entrada : productos.entrySet()) {
+                ProductoTienda producto = entrada.getKey();
+                int cantidad = entrada.getValue();
 
-            double precioTotal =
-                    precioUnitarioFinal(producto) * unidadesAPagar(producto, cantidad);
+                double precioTotal = precioUnitarioFinal(producto) * unidadesAPagar(producto, cantidad);
 
-            total += precioTotal;
+                total += precioTotal;
 
-            Pack packAsociado = mainFrame.getPackAsociadoEnCesta(producto);
-            JPanel tarjeta = packAsociado == null
-                    ? crearTarjetaProducto(producto, cantidad, precioTotal)
-                    : crearTarjetaPack(packAsociado, cantidad, precioTotal, producto);
+                Pack packAsociado = mainFrame.getPackAsociadoEnCesta(producto);
+                JPanel tarjeta = packAsociado == null
+                        ? crearTarjetaProducto(producto, cantidad, precioTotal)
+                        : crearTarjetaPack(packAsociado, cantidad, precioTotal, producto);
 
-            listaProductos.add(tarjeta, gbc);
-            gbc.gridy++;
+                listaProductos.add(tarjeta, gbc);
+                gbc.gridy++;
+            }
+
+            for (Map.Entry<Pack, Integer> entrada : packs.entrySet()) {
+                Pack pack = entrada.getKey();
+                int cantidad = entrada.getValue();
+
+                double precioTotal = pack.getPrecio() * cantidad;
+                total += precioTotal;
+
+                listaProductos.add(
+                        crearTarjetaPack(pack, cantidad, precioTotal, null),
+                        gbc);
+                gbc.gridy++;
+            }
         }
 
-        for (Map.Entry<Pack, Integer> entrada : packs.entrySet()) {
-            Pack pack = entrada.getKey();
-            int cantidad = entrada.getValue();
+        GridBagConstraints relleno = new GridBagConstraints();
+        relleno.gridx = 0;
+        relleno.gridy = gbc.gridy;
+        relleno.weightx = 1;
+        relleno.weighty = 1;
+        relleno.fill = GridBagConstraints.BOTH;
+        JPanel espacio = new JPanel();
+        espacio.setBackground(UiStyle.COLOR_FONDO);
+        listaProductos.add(espacio, relleno);
 
-            double precioTotal = pack.getPrecio() * cantidad;
-            total += precioTotal;
+        lblTotal.setText(String.format("Total  %.2f€", total));
 
-            listaProductos.add(
-                    crearTarjetaPack(pack, cantidad, precioTotal, null),
-                    gbc
-            );
-            gbc.gridy++;
-        }
+        listaProductos.revalidate();
+        listaProductos.repaint();
     }
-
-    GridBagConstraints relleno = new GridBagConstraints();
-    relleno.gridx = 0;
-    relleno.gridy = gbc.gridy;
-    relleno.weightx = 1;
-    relleno.weighty = 1;
-    relleno.fill = GridBagConstraints.BOTH;
-    JPanel espacio = new JPanel();
-    espacio.setBackground(UiStyle.COLOR_FONDO);
-    listaProductos.add(espacio, relleno);
-
-    lblTotal.setText(String.format("Total  %.2f€", total));
-
-    listaProductos.revalidate();
-    listaProductos.repaint();
-}
 
     private JPanel crearTarjetaProducto(ProductoTienda producto, int cantidad, double precioTotal) {
         JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 12);
@@ -164,14 +159,12 @@ public class PanelCesta extends JPanel {
         tarjeta.setBorder(new EmptyBorder(10, 10, 10, 10));
         tarjeta.setPreferredSize(new Dimension(300, 100));
 
-
         JLabel imagenLabel = new JLabel();
         imagenLabel.setPreferredSize(new Dimension(80, 80));
         imagenLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imagenLabel.setVerticalAlignment(SwingConstants.CENTER);
         cargarImagenMiniatura(imagenLabel, producto.getImagen());
         tarjeta.add(imagenLabel, BorderLayout.WEST);
-
 
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BorderLayout(0, 4));
@@ -312,8 +305,7 @@ public class PanelCesta extends JPanel {
                 this,
                 scroll,
                 pack.getNombre(),
-                JOptionPane.PLAIN_MESSAGE
-        );
+                JOptionPane.PLAIN_MESSAGE);
     }
 
     private int agregarLineasPack(Pack pack, JPanel panelPack, GridBagConstraints gbc, int fila) {
@@ -333,40 +325,40 @@ public class PanelCesta extends JPanel {
         return fila;
     }
 
-private JPanel crearLineaProductoPack(ProductoTienda producto, int cantidad) {
-    JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 12);
-    tarjeta.setLayout(new BorderLayout(12, 0));
-    tarjeta.setBorder(new EmptyBorder(10, 10, 10, 10));
-    tarjeta.setPreferredSize(new Dimension(320, 90));
+    private JPanel crearLineaProductoPack(ProductoTienda producto, int cantidad) {
+        JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 12);
+        tarjeta.setLayout(new BorderLayout(12, 0));
+        tarjeta.setBorder(new EmptyBorder(10, 10, 10, 10));
+        tarjeta.setPreferredSize(new Dimension(320, 90));
 
-    JLabel imagenLabel = new JLabel();
-    imagenLabel.setPreferredSize(new Dimension(70, 70));
-    imagenLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    imagenLabel.setVerticalAlignment(SwingConstants.CENTER);
-    cargarImagenMiniatura(imagenLabel, producto.getImagen());
-    tarjeta.add(imagenLabel, BorderLayout.WEST);
+        JLabel imagenLabel = new JLabel();
+        imagenLabel.setPreferredSize(new Dimension(70, 70));
+        imagenLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        imagenLabel.setVerticalAlignment(SwingConstants.CENTER);
+        cargarImagenMiniatura(imagenLabel, producto.getImagen());
+        tarjeta.add(imagenLabel, BorderLayout.WEST);
 
-    JPanel infoPanel = new JPanel(new BorderLayout(0, 4));
-    infoPanel.setOpaque(false);
+        JPanel infoPanel = new JPanel(new BorderLayout(0, 4));
+        infoPanel.setOpaque(false);
 
-    JLabel nombre = new JLabel(cantidad > 1 ? producto.getNombre() + " x" + cantidad : producto.getNombre());
-    nombre.setFont(new Font("SansSerif", Font.BOLD, 13));
-    nombre.setForeground(UiStyle.COLOR_TEXTO);
-    infoPanel.add(nombre, BorderLayout.NORTH);
+        JLabel nombre = new JLabel(cantidad > 1 ? producto.getNombre() + " x" + cantidad : producto.getNombre());
+        nombre.setFont(new Font("SansSerif", Font.BOLD, 13));
+        nombre.setForeground(UiStyle.COLOR_TEXTO);
+        infoPanel.add(nombre, BorderLayout.NORTH);
 
-    JLabel precio = new JLabel(String.format("%.2f€", precioUnitarioFinal(producto)));
-    precio.setFont(new Font("SansSerif", Font.BOLD, 14));
-    precio.setForeground(UiStyle.COLOR_MARRON_MEDIO);
-    JLabel categoria = new JLabel("Categoría: " + categoriaProducto(producto));
-    categoria.setFont(new Font("SansSerif", Font.PLAIN, 12));
-    categoria.setForeground(new Color(100, 100, 100));
-    infoPanel.add(categoria, BorderLayout.CENTER);
-    infoPanel.add(precio, BorderLayout.SOUTH);
+        JLabel precio = new JLabel(String.format("%.2f€", precioUnitarioFinal(producto)));
+        precio.setFont(new Font("SansSerif", Font.BOLD, 14));
+        precio.setForeground(UiStyle.COLOR_MARRON_MEDIO);
+        JLabel categoria = new JLabel("Categoría: " + categoriaProducto(producto));
+        categoria.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        categoria.setForeground(new Color(100, 100, 100));
+        infoPanel.add(categoria, BorderLayout.CENTER);
+        infoPanel.add(precio, BorderLayout.SOUTH);
 
-    tarjeta.add(infoPanel, BorderLayout.CENTER);
+        tarjeta.add(infoPanel, BorderLayout.CENTER);
 
-    return tarjeta;
-}
+        return tarjeta;
+    }
 
     private String categoriaProducto(ProductoTienda producto) {
         List<String> categorias = producto.getCategoriasTexto();

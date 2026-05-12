@@ -6,7 +6,9 @@ import java.util.List;
 import compras.Pedido;
 import productos.ProductoTienda;
 
-
+/**
+ * Promocion que entrega un producto de regalo cuando se supera un gasto minimo.
+ */
 public class DescuentoRegalo extends Descuento {
 
 

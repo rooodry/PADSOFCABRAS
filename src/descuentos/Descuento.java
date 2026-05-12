@@ -4,7 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 import compras.Pedido;
 
-
+/**
+ * Clase base para las promociones y descuentos aplicables a pedidos.
+ *
+ * <p>Cada descuento define un periodo de vigencia y delega en sus subclases
+ * las reglas concretas de aplicabilidad y calculo del precio final.</p>
+ */
 public abstract class Descuento implements Serializable {
 
     private static final long serialVersionUID = 1L;

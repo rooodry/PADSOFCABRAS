@@ -6,7 +6,13 @@ import java.util.Map;
 import productos.ProductoTienda;
 import productos.Pack;
 
-
+/**
+ * Representa la cesta temporal de compra de un cliente.
+ *
+ * <p>Almacena productos individuales y packs junto con sus cantidades. Los
+ * metodos que exponen el contenido devuelven copias defensivas para evitar
+ * modificaciones externas directas.</p>
+ */
 public class Cesta implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,7 +31,8 @@ public class Cesta implements Serializable {
     /**
      * Añade un producto a la cesta incrementando su cantidad.
      * Si el producto ya existe, suma la nueva cantidad a la actual.
-     * * @param producto Objeto ProductoTienda a añadir.
+     *
+     * @param producto Objeto ProductoTienda a añadir.
      * @param cantidad Número de unidades a añadir (debe ser mayor que 0).
      */
     public void añadirProducto(ProductoTienda producto, int cantidad) {
@@ -35,6 +42,11 @@ public class Cesta implements Serializable {
         }
     }
 
+    /**
+     * Añade una unidad del pack indicado a la cesta.
+     *
+     * @param pack pack que se incorpora a la cesta
+     */
     public void añadirPack(Pack pack) {
         asegurarMapasInicializados();
         this.packs.merge(pack, 1, Integer::sum);
@@ -42,13 +54,19 @@ public class Cesta implements Serializable {
 
     /**
      * Obtiene el mapa completo de productos contenidos en la cesta y sus cantidades.
-     * * @return Una copia del mapa de productos de la cesta.
+     *
+     * @return Una copia del mapa de productos de la cesta.
      */
     public Map<ProductoTienda, Integer> getProductos() {
         asegurarMapasInicializados();
         return new HashMap<>(this.productos);
     }
 
+    /**
+     * Obtiene los packs incluidos en la cesta y sus cantidades.
+     *
+     * @return copia del mapa de packs de la cesta
+     */
     public Map<Pack, Integer> getPacks() {
         asegurarMapasInicializados();
         return new HashMap<>(this.packs);
@@ -57,7 +75,8 @@ public class Cesta implements Serializable {
 
     /**
      * Comprueba si la cesta se encuentra vacía.
-     * * @return true si no hay productos en la cesta, false en caso contrario.
+     *
+     * @return true si no hay productos ni packs en la cesta, false en caso contrario.
      */
     public boolean estaVacia() {
         asegurarMapasInicializados();
@@ -75,7 +94,8 @@ public class Cesta implements Serializable {
 
     /**
      * Elimina por completo un producto de la cesta, independientemente de su cantidad.
-     * * @param producto Objeto ProductoTienda a eliminar.
+     *
+     * @param producto Objeto ProductoTienda a eliminar.
      */
     public void eliminarProducto(ProductoTienda producto) {
         asegurarMapasInicializados();
@@ -91,6 +111,13 @@ public class Cesta implements Serializable {
         }
     }
 
+    /**
+     * Retira una unidad del pack indicado de la cesta.
+     *
+     * <p>Si solo queda una unidad, elimina el pack por completo.</p>
+     *
+     * @param pack pack que se desea retirar
+     */
     public void retirarPack(Pack pack) {
     if (!packs.containsKey(pack)) {
         return;

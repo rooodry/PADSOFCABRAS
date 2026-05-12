@@ -1,6 +1,8 @@
 package productos.categoria;
 
-
+/**
+ * Categoria especializada para juegos y sus requisitos basicos.
+ */
 public class Juego extends Categoria {
 
 

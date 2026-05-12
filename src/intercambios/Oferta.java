@@ -5,7 +5,9 @@ import productos.ProductoSegundaMano;
 import usuarios.ClienteRegistrado;
 import utilidades.EstadoOferta;
 
-
+/**
+ * Propuesta de intercambio que relaciona producto ofertado, producto deseado y usuarios.
+ */
 public class Oferta implements Serializable {
 
     private static final long serialVersionUID = 1L;

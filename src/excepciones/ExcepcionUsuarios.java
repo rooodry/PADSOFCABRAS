@@ -1,13 +1,16 @@
 package excepciones;
 
-
+/**
+ * Excepcion base para errores relacionados con usuarios.
+ */
 public class ExcepcionUsuarios extends Exception {
 
     private String nombre;
 
     /**
      * Constructor de la excepción.
-     * * @param nombre Nombre o identificador del usuario que provocó la excepción.
+     *
+     * @param nombre Nombre o identificador del usuario que provocó la excepción.
      */
     public ExcepcionUsuarios(String nombre) {
         super("Excepcion en Usuario " + nombre);
@@ -16,7 +19,8 @@ public class ExcepcionUsuarios extends Exception {
 
     /**
      * Sobrescribe el método toString para proporcionar un formato detallado del error.
-     * * @return Cadena formateada con el nombre del usuario.
+     *
+     * @return Cadena formateada con el nombre del usuario.
      */
     @Override
     public String toString() {
