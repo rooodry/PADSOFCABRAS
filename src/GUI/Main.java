@@ -234,11 +234,13 @@ public class Main extends JFrame {
         this.persistenciaActiva = false;
         this.estadoPersistenteMigrado = false;
 
-        inicializarDatos();
-        cargarEstadoPersistente();
+        boolean estadoCargado = cargarEstadoPersistente();
+        if (!estadoCargado) {
+            inicializarDatos();
+        }
         construirPantallas();
         this.persistenciaActiva = true;
-        if (estadoPersistenteMigrado) {
+        if (!estadoCargado || estadoPersistenteMigrado) {
             guardarEstadoPersistente();
         }
         addWindowListener(new WindowAdapter() {
@@ -2063,20 +2065,22 @@ public class Main extends JFrame {
         }
     }
 
-    private void cargarEstadoPersistente() {
+    private boolean cargarEstadoPersistente() {
         File fichero = new File(FICHERO_DATOS);
         if (!fichero.exists()) {
-            return;
+            return false;
         }
 
         try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))) {
             Object objeto = entrada.readObject();
             if (objeto instanceof EstadoAplicacion) {
                 aplicarEstadoPersistente((EstadoAplicacion) objeto);
+                return true;
             }
         } catch (IOException | ClassNotFoundException | ClassCastException e) {
             archivarEstadoPersistenteInvalido(fichero, e);
         }
+        return false;
     }
 
     private void archivarEstadoPersistenteInvalido(File fichero, Exception causa) {
@@ -2641,42 +2645,6 @@ public class Main extends JFrame {
             resultado.add(producto);
         }
         return resultado;
-    }
-
-    private ProductoTienda crearComic(String nombre, String descripcion, double precio, int valoracion, Genero genero) {
-        ProductoTienda producto = new ProductoTienda(nombre, descripcion,
-                crearPortada(nombre, new Color(191, 55, 42), new Color(34, 64, 116)));
-        producto.setPrecio(precio);
-        producto.setValoracion(valoracion);
-        producto.setCategoria(new Comic(nombre, 192, "Autor", "Editorial", genero, 2024));
-        producto.addComentario("marta", "Muy buena edición para colección.");
-        producto.addComentario("juan15", "Me ha sorprendido el nivel de detalle y lo bien que queda expuesto.");
-        producto.addComentario("laura67", "Una compra recomendable si buscas algo vistoso y con buena presentación.");
-        return producto;
-    }
-
-    private ProductoTienda crearJuego(String nombre, String descripcion, double precio, int valoracion, TipoJuego tipo) {
-        ProductoTienda producto = new ProductoTienda(nombre, descripcion,
-                crearPortada(nombre, new Color(49, 92, 80), new Color(222, 156, 62)));
-        producto.setPrecio(precio);
-        producto.setValoracion(valoracion);
-        producto.setCategoria(new Juego(nombre, 4, 8, tipo));
-        producto.addComentario("alex53", "Perfecto para partidas largas.");
-        producto.addComentario("lucia16", "Las reglas entran rapido y tiene suficiente profundidad para repetir.");
-        producto.addComentario("diego", "Buen ritmo en mesa y componentes resistentes.");
-        return producto;
-    }
-
-    private ProductoTienda crearFigura(String nombre, String descripcion, double precio, int valoracion) {
-        ProductoTienda producto = new ProductoTienda(nombre, descripcion,
-                crearPortada(nombre, new Color(112, 88, 140), new Color(44, 42, 54)));
-        producto.setPrecio(precio);
-        producto.setValoracion(valoracion);
-        producto.setCategoria(new Figura(nombre, 15.0, "GOAT", "PVC"));
-        producto.addComentario("laura67", "Llego en buen estado y bien protegida.");
-        producto.addComentario("mario", "La figura tiene presencia y se sostiene bastante bien.");
-        producto.addComentario("nerea", "El color se ve mejor en persona que en la ficha.");
-        return producto;
     }
 
     private String crearPortada(String titulo, Color colorPrincipal, Color colorSecundario) {
