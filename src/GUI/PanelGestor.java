@@ -40,7 +40,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -53,7 +52,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import compras.Pedido;
 import intercambios.Intercambio;
 import productos.Pack;
-import productos.Producto;
 import productos.ProductoSegundaMano;
 import productos.ProductoTienda;
 import productos.categoria.Genero;
@@ -415,27 +413,6 @@ public class PanelGestor extends JPanel {
         refrescar();
     }
 
-    private JLabel crearImagenProducto(ProductoTienda producto, int ancho, int alto) {
-        JLabel label = new JLabel();
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setPreferredSize(new Dimension(ancho, alto));
-        label.setMinimumSize(new Dimension(ancho, alto));
-        label.setMaximumSize(new Dimension(ancho, alto));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
-        String ruta = producto.getImagen();
-        if (ruta != null && !ruta.isBlank()) {
-            ImageIcon icono = new ImageIcon(ruta);
-            Image imagen = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
-            label.setIcon(new ImageIcon(imagen));
-        } else {
-            label.setText("<html><center>SIN<br>IMAGEN</center></html>");
-            label.setOpaque(true);
-            label.setBackground(UiStyle.COLOR_MARRON_MEDIO);
-            label.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        }
-        return label;
-    }
 
     private void pintarDetalleProducto() {
         if (productoSeleccionado == null) {
@@ -513,87 +490,7 @@ public class PanelGestor extends JPanel {
         refrescar();
     }
 
-    private JPanel crearDetalleIzquierdo(ProductoTienda producto) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setOpaque(false);
-        panel.setPreferredSize(new Dimension(300, 0));
-        panel.add(crearImagenProducto(producto, 184, 250));
-        panel.add(Box.createVerticalStrut(12));
-        JLabel nombre = new JLabel("<html><center>" + producto.getNombre() + "</center></html>", SwingConstants.CENTER);
-        nombre.setFont(new Font("SansSerif", Font.BOLD, 20));
-        nombre.setForeground(Color.BLACK);
-        nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
-        nombre.setMaximumSize(new Dimension(290, 52));
-        panel.add(nombre);
-        JLabel precio = new JLabel(String.format("%.2f\u20ac", producto.getPrecio()).replace('.', ','));
-        precio.setFont(new Font("SansSerif", Font.BOLD, 38));
-        precio.setForeground(Color.BLACK);
-        precio.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(precio);
-        JButton editar = new UiStyle.RoundedButton("Editar", new Color(94, 75, 57),
-                UiStyle.COLOR_MARRON_MEDIO, 12);
-        editar.setFont(new Font("SansSerif", Font.PLAIN, 22));
-        editar.setPreferredSize(new Dimension(270, 38));
-        editar.setMaximumSize(new Dimension(270, 38));
-        editar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        editar.addActionListener(e -> editarProducto(producto));
-        panel.add(editar);
-        return panel;
-    }
-
-    private JPanel crearDetalleDerecho(ProductoTienda producto) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setOpaque(false);
-        panel.add(crearTituloDetalle("Descripción"));
-        JTextArea descripcion = new JTextArea(producto.getDescripcion());
-        descripcion.setFont(new Font("SansSerif", Font.PLAIN, 17));
-        descripcion.setForeground(Color.BLACK);
-        descripcion.setOpaque(false);
-        descripcion.setEditable(false);
-        descripcion.setLineWrap(true);
-        descripcion.setWrapStyleWord(true);
-        descripcion.setBorder(null);
-        panel.add(descripcion);
-        panel.add(Box.createVerticalStrut(14));
-        panel.add(crearTituloDetalle("Comentarios"));
-        for (String[] comentario : producto.getComentarios()) {
-            panel.add(crearComentarioGestor(comentario[0], comentario[1]));
-            panel.add(Box.createVerticalStrut(6));
-        }
-        return panel;
-    }
-
-    private JLabel crearTituloDetalle(String texto) {
-        JLabel label = new JLabel(texto);
-        label.setFont(new Font("SansSerif", Font.BOLD, 22));
-        label.setForeground(Color.BLACK);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return label;
-    }
-
-    private JPanel crearComentarioGestor(String usuario, String texto) {
-        JPanel tarjeta = new UiStyle.RoundedPanel(new Color(145, 124, 101), 12);
-        tarjeta.setLayout(new BorderLayout(6, 2));
-        tarjeta.setBorder(new EmptyBorder(6, 10, 7, 10));
-        tarjeta.setAlignmentX(Component.LEFT_ALIGNMENT);
-        tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, 72));
-        JLabel nombre = new JLabel("@" + usuario);
-        nombre.setFont(new Font("SansSerif", Font.BOLD, 14));
-        nombre.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        JTextArea cuerpo = new JTextArea(texto);
-        cuerpo.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        cuerpo.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        cuerpo.setOpaque(false);
-        cuerpo.setEditable(false);
-        cuerpo.setLineWrap(true);
-        cuerpo.setWrapStyleWord(true);
-        cuerpo.setBorder(null);
-        tarjeta.add(nombre, BorderLayout.NORTH);
-        tarjeta.add(cuerpo, BorderLayout.CENTER);
-        return tarjeta;
-    }
+    
 
     private void pintarDescuentos() {
         contenido.add(crearTitulo("Descuentos"));
@@ -1280,37 +1177,7 @@ public class PanelGestor extends JPanel {
         return campo.getText() == null || campo.getText().isBlank() ? "No indicado" : campo.getText().trim();
     }
 
-    private void editarProducto(ProductoTienda producto) {
-        JTextField precio = new JTextField(String.format("%.2f", producto.getPrecio()).replace(',', '.'));
-        JSpinner stock = new JSpinner(new SpinnerNumberModel(mainFrame.getStock().getNumProductos(producto), 0, 9999, 1));
-        JTextArea descripcion = new JTextArea(producto.getDescripcion(), 5, 28);
-        JTextField imagen = new JTextField(producto.getImagen() == null ? "" : producto.getImagen());
-        JTextField categorias = new JTextField(String.join(", ", producto.getCategoriasTexto()));
-
-        JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
-        panel.add(new JLabel("Precio"));
-        panel.add(precio);
-        panel.add(new JLabel("Unidades de stock"));
-        panel.add(stock);
-        panel.add(new JLabel("Descripción"));
-        panel.add(new JScrollPane(descripcion));
-        panel.add(new JLabel("Imagen"));
-        panel.add(imagen);
-        panel.add(new JLabel("Categorías separadas por coma"));
-        panel.add(categorias);
-
-        int respuesta = JOptionPane.showConfirmDialog(this, panel,
-                "Editar " + producto.getNombre(), JOptionPane.OK_CANCEL_OPTION);
-        if (respuesta == JOptionPane.OK_OPTION) {
-            mainFrame.editarProductoTienda(producto,
-                    parseDouble(precio.getText(), producto.getPrecio()),
-                    ((Integer) stock.getValue()).intValue(),
-                    descripcion.getText(),
-                    imagen.getText(),
-                    parseCategorías(categorias.getText()));
-        }
-    }
-
+   
     private void editarPack(Pack pack) {
         JTextField nombre = new JTextField(pack == null ? "" : pack.getNombre());
         nombre.setEnabled(pack == null);

@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 /**
  * Fachada de negocio que coordina usuarios, productos, pedidos, descuentos e intercambios.
  */
-public class Sistema {
+public class sistema {
 
     private List<Producto> productos;
     private List<Descuento> descuentos;
@@ -41,7 +41,10 @@ public class Sistema {
     private Stock stock;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public Sistema() {
+    /**
+     * Constructor por defecto. Inicializa las listas del sistema y establece el stock a nulo.
+     */
+    public sistema() {
         this.productos = new ArrayList<>();
         this.descuentos = new ArrayList<>();
         this.usuarios = new ArrayList<>();
@@ -50,26 +53,85 @@ public class Sistema {
         this.stock = null;
     }
 
+    /**
+     * Añade un producto a la lista de productos del sistema.
+     *
+     * @param p el producto a añadir
+     */
     public void addProducto(Producto p) { this.productos.add(p); }
 
+    /**
+     * Añade un descuento a la lista de descuentos disponibles en el sistema.
+     *
+     * @param d el descuento a añadir
+     */
     public void addDescuento(Descuento d) { this.descuentos.add(d); }
 
+    /**
+     * Registra un nuevo usuario en el sistema.
+     *
+     * @param u el usuario a registrar
+     */
     public void addUsuario(Usuario u) { this.usuarios.add(u); }
 
+    /**
+     * Elimina un usuario del sistema.
+     *
+     * @param u el usuario a eliminar
+     */
     public void removeUsuario(Usuario u) { this.usuarios.remove(u); }
 
+    /**
+     * Añade una notificación al registro global de notificaciones.
+     *
+     * @param n la notificación a añadir
+     */
     public void addNotificacion(Notificacion n) { this.notificaciones.add(n); }
 
+    /**
+     * Registra un nuevo pedido en la lista de pedidos del sistema.
+     *
+     * @param p el pedido a añadir
+     */
     public void addPedido(Pedido p) { this.pedidos.add(p); }
 
+    /**
+     * Establece el inventario (stock) principal del sistema.
+     *
+     * @param s el stock a asignar
+     */
     public void setStock(Stock s) { this.stock = s; }
 
+    /**
+     * Obtiene una copia de la lista de usuarios registrados en el sistema.
+     *
+     * @return lista de usuarios
+     */
     public List<Usuario> getUsuarios() { return new ArrayList<>(this.usuarios); }
 
+    /**
+     * Obtiene una copia de la lista de pedidos realizados.
+     *
+     * @return lista de pedidos
+     */
     public List<Pedido> getPedidos() { return new ArrayList<>(this.pedidos); }
 
+    /**
+     * Obtiene una copia de la lista de descuentos configurados en el sistema.
+     *
+     * @return lista de descuentos
+     */
     public List<Descuento> getDescuentos() { return new ArrayList<>(this.descuentos); }
 
+    /**
+     * Reemplaza el estado actual del sistema con las listas y stock proporcionados.
+     *
+     * @param productos nueva lista de productos
+     * @param usuarios  nueva lista de usuarios
+     * @param pedidos   nueva lista de pedidos
+     * @param descuentos nueva lista de descuentos
+     * @param stock     nuevo stock
+     */
     public void reemplazarEstado(List<Producto> productos, List<Usuario> usuarios,
             List<Pedido> pedidos, List<Descuento> descuentos, Stock stock) {
         this.productos.clear();
@@ -106,6 +168,15 @@ public class Sistema {
      */
     public Stock getStock() { return this.stock; }
 
+    /**
+     * Da de alta a un nuevo empleado en el sistema. Solo puede ser ejecutado por un Gestor.
+     *
+     * @param admin          usuario administrador que realiza la acción
+     * @param nombreEmpleado nombre del nuevo empleado
+     * @param contraseña     contraseña del nuevo empleado
+     * @param tipo           tipo de permisos iniciales del empleado
+     * @throws ExcepcionUsuariosAdmin si el usuario que intenta dar de alta no es un Gestor
+     */
     public void darAltaEmpleado(Usuario admin, String nombreEmpleado, String contraseña, TiposEmpleado tipo)
             throws ExcepcionUsuariosAdmin {
         if (!(admin instanceof Gestor)) {
@@ -116,6 +187,13 @@ public class Sistema {
         this.usuarios.add(e);
     }
 
+    /**
+     * Da de baja a un empleado existente en el sistema. Solo puede ser ejecutado por un Gestor.
+     *
+     * @param admin usuario administrador que realiza la acción
+     * @param e     empleado a dar de baja
+     * @throws ExcepcionUsuariosAdmin si el usuario que intenta dar de baja no es un Gestor
+     */
     public void darBajaEmpleado(Usuario admin, Empleado e) throws ExcepcionUsuariosAdmin {
         if (!(admin instanceof Gestor)) {
             throw new ExcepcionUsuariosAdmin(admin.getNombre());
@@ -123,6 +201,14 @@ public class Sistema {
         this.usuarios.remove(e);
     }
 
+    /**
+     * Modifica los permisos de un empleado. Solo puede ser ejecutado por un Gestor.
+     *
+     * @param admin          usuario administrador que realiza la acción
+     * @param e              empleado cuyos permisos se van a modificar
+     * @param nuevosPermisos conjunto de nuevos permisos a asignar
+     * @throws ExcepcionUsuariosAdmin si el usuario que intenta modificar no es un Gestor
+     */
     public void modificarPermisos(Usuario admin, Empleado e, Set<TiposEmpleado> nuevosPermisos)
             throws ExcepcionUsuariosAdmin {
         if (!(admin instanceof Gestor)) {
@@ -131,6 +217,16 @@ public class Sistema {
         ((Gestor) admin).configurarPermisos(e, nuevosPermisos);
     }
 
+    /**
+     * Crea un pack de productos de tienda. Solo puede ser ejecutado por un Gestor.
+     *
+     * @param admin     usuario administrador que realiza la acción
+     * @param nombre    nombre del pack
+     * @param precio    precio total del pack
+     * @param productos lista de productos que componen el pack
+     * @return el pack de productos creado
+     * @throws ExcepcionUsuariosAdmin si el usuario que intenta crear el pack no es un Gestor
+     */
     public Pack crearPack(Usuario admin, String nombre, double precio, List<ProductoTienda> productos)
             throws ExcepcionUsuariosAdmin {
         if (!(admin instanceof Gestor)) {
@@ -139,10 +235,23 @@ public class Sistema {
         return new Pack(nombre, precio, productos);
     }
 
+    /**
+     * Genera un nuevo código promocional o de descuento.
+     *
+     * @return el código generado
+     */
     public Codigo generarCodigo() {
         return new Codigo();
     }
 
+    /**
+     * Actualiza el inventario de un producto específico. Solo puede ser ejecutado por un Gestor.
+     *
+     * @param admin    usuario administrador que realiza la acción
+     * @param p        producto cuyo stock se va a actualizar
+     * @param cantidad cantidad a sumar (positivo), restar (negativo) o retirar por completo (cero)
+     * @throws ExcepcionUsuariosAdmin si el usuario que intenta actualizar no es un Gestor
+     */
     public void actualizarStock(Usuario admin, ProductoTienda p, int cantidad)
             throws ExcepcionUsuariosAdmin {
         if (!(admin instanceof Gestor)) {
@@ -157,6 +266,12 @@ public class Sistema {
         }
     }
 
+    /**
+     * Calcula el precio final de un pedido aplicando el descuento más antiguo válido si lo hubiere.
+     *
+     * @param pedido el pedido sobre el cual calcular el precio
+     * @return el precio final tras aplicar descuentos
+     */
     public double calcularPrecioFinalPedido(Pedido pedido) {
         double precioBase = pedido.calcularPrecioTotal();
         Descuento descuentoMasAntiguo = null;
@@ -178,6 +293,12 @@ public class Sistema {
         return precioBase;
     }
 
+    /**
+     * Registra un pedido y aplica la lógica de regalos si supera los 200 euros.
+     * Además, programa la cancelación automática si el pedido se queda en el carrito más de 3 segundos.
+     *
+     * @param p el pedido a registrar
+     */
     public void registrarPedido(Pedido p) {
         double total = calcularPrecioFinalPedido(p);
 
@@ -197,6 +318,11 @@ public class Sistema {
         }, 3, TimeUnit.SECONDS);
     }
 
+    /**
+     * Busca un producto en el stock cuyo precio sea menor o igual a 15.0 para darlo como regalo.
+     *
+     * @return el producto de regalo encontrado, o null si no hay ninguno disponible
+     */
     private ProductoTienda buscarProductoRegalo() {
         return this.stock.getProductos().keySet().stream()
                 .filter(prod -> prod.getPrecio() <= 15.0)
@@ -204,6 +330,11 @@ public class Sistema {
                 .orElse(null);
     }
 
+    /**
+     * Cancela un pedido devolviendo sus productos al stock y actualizando su estado.
+     *
+     * @param p el pedido a cancelar
+     */
     public void cancelarPedido(Pedido p) {
         for (Map.Entry<ProductoTienda, Integer> entry : p.getProductos().entrySet()) {
             ProductoTienda producto = entry.getKey();
@@ -213,38 +344,87 @@ public class Sistema {
         p.cancelar();
     }
 
+    /**
+     * Envía un código promocional o de descuento a un cliente registrado.
+     *
+     * @param c   el cliente receptor
+     * @param cod el código a enviar
+     */
     public void enviarCodigo(ClienteRegistrado c, Codigo cod) {
         c.addCodigo(cod);
     }
 
+    /**
+     * Cambia el estado de un pedido.
+     *
+     * @param p el pedido a actualizar
+     * @param e el nuevo estado del pedido
+     */
     public void setEstadoPedido(Pedido p, EstadoPedido e) {
         p.setEstadoPedido(e);
     }
 
+    /**
+     * Envía una notificación a un usuario en particular.
+     *
+     * @param u el usuario receptor
+     * @param n la notificación a enviar
+     */
     public void notificarUsuario(Usuario u, Notificacion n) {
         u.addNotificacion(n);
     }
 
+    /**
+     * Asigna un producto de segunda mano a un empleado para que realice su valoración,
+     * comprobando primero si tiene los permisos adecuados.
+     *
+     * @param p el producto de segunda mano a valorar
+     * @param e el empleado encargado de la valoración
+     */
     public void asignarValoracion(ProductoSegundaMano p, Empleado e) {
         if (e.tienePermiso(TiposEmpleado.EMPLEADOS_INTERCAMBIO)) {
             e.addProductoParaValorar(p);
         }
     }
 
+    /**
+     * Asigna una propuesta de intercambio a un empleado para su gestión.
+     *
+     * @param i el intercambio a asignar
+     * @param e el empleado encargado
+     */
     public void asignarIntercambio(Intercambio i, Empleado e) {
         if (e.tienePermiso(TiposEmpleado.EMPLEADOS_INTERCAMBIO)) {
             e.addIntercambio(i);
         }
     }
 
+    /**
+     * Añade un producto de segunda mano a la cartera virtual de un cliente registrado.
+     *
+     * @param p el producto de segunda mano
+     * @param c el cliente registrado
+     */
     public void añadirProductoCartera(ProductoSegundaMano p, ClienteRegistrado c) {
         c.getCartera().añadirProducto(p);
     }
 
+    /**
+     * Bloquea un producto ofertado estableciendo su disponibilidad a falso.
+     *
+     * @param p el producto a bloquear
+     */
     public void bloquearProductoOfertante(ProductoSegundaMano p) {
         p.setDisponibilidad(false);
     }
 
+    /**
+     * Lee un archivo de estadísticas de compras de un cliente y obtiene un mapa con
+     * las categorías recomendadas y su nivel de interés basado en valoraciones previas.
+     *
+     * @param c el cliente registrado del que se calcularán las recomendaciones
+     * @return un mapa ordenado descendentemente con las categorías y su nivel de interés
+     */
     public Map<String, Integer> obtenerCategoriasRecomendadas(ClienteRegistrado c) {
         int cont = 0;
         double[] interesComic = {0};
@@ -318,6 +498,13 @@ public class Sistema {
         return categoriasOrdenadas;
     }
 
+    /**
+     * Recomienda una lista de productos en base a un mapa de interés por categorías.
+     *
+     * @param categorias mapa con las categorías y sus valores de interés
+     * @param productos  lista de productos disponibles en tienda para filtrar
+     * @return lista de productos ordenada por el interés calculado según las categorías
+     */
     public List<ProductoTienda> recomendarProductos(Map<String, Integer> categorias, List<ProductoTienda> productos) {
         Map<ProductoTienda, Integer> productosValor = new HashMap<>();
 
@@ -355,6 +542,12 @@ public class Sistema {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Calcula y devuelve el vector normalizado de preferencias por categorías de un cliente.
+     *
+     * @param c el cliente registrado
+     * @return un arreglo de tipo double que representa el vector normalizado de intereses
+     */
     public double[] obtenerVectores(ClienteRegistrado c) {
         int i = 0;
         Map<String, Integer> categoriasRecomendadas = obtenerCategoriasRecomendadas(c);
@@ -381,6 +574,13 @@ public class Sistema {
         return vectorNormalizado;
     }
 
+    /**
+     * Devuelve una lista con aquellos productos de tienda que el cliente aún no ha comprado.
+     *
+     * @param cliente   el cliente a analizar
+     * @param productos la lista global de productos de tienda
+     * @return lista de productos no adquiridos por el cliente
+     */
     public List<ProductoTienda> productosNoComprados(ClienteRegistrado cliente,
                                                       List<ProductoTienda> productos) {
         List<ProductoTienda> productosNoComprados = new ArrayList<>();
@@ -396,6 +596,15 @@ public class Sistema {
         return productosNoComprados;
     }
 
+    /**
+     * Genera una recomendación de productos para un cliente mediante filtrado colaborativo,
+     * buscando a los 3 clientes con intereses más similares.
+     *
+     * @param cliente   el cliente que recibe la recomendación
+     * @param clientes  lista de todos los clientes del sistema para calcular similitud
+     * @param productos lista global de productos disponibles
+     * @return lista de productos recomendados ordenados por su relevancia
+     */
     public List<ProductoTienda> recomendarProductosPorUsuarios(ClienteRegistrado cliente,
                                                                 List<ClienteRegistrado> clientes,
                                                                 List<ProductoTienda> productos) {
@@ -452,6 +661,12 @@ public class Sistema {
                 .toList();
     }
 
+    /**
+     * Carga productos en el sistema a partir de un archivo de texto con un formato específico
+     * separado por punto y coma (;).
+     *
+     * @param archivo la ruta del archivo a leer
+     */
     public void cargaProductos(String archivo) {
 
         String tipo, id, nombre, descripcion, autor, editorial, año,
@@ -583,13 +798,20 @@ public class Sistema {
                 }
 
                 this.productos.add(producto);
-                this.stock.a\u00f1adirProducto(producto, unidades);
+                this.stock.añadirProducto(producto, unidades);
             }
         } catch (IOException e) {
             System.err.println("Error abriendo archivo " + e.getMessage());
         }
     }
 
+    /**
+     * Analiza un valor de texto en formato CSV para intentar extraer un entero.
+     *
+     * @param valor   cadena con el posible valor numérico
+     * @param defecto valor a retornar en caso de error
+     * @return el número entero extraído o el valor por defecto
+     */
     private int parseIntCsv(String valor, int defecto) {
         if (valor == null || valor.isBlank()) return defecto;
         try {
@@ -600,6 +822,13 @@ public class Sistema {
         }
     }
 
+    /**
+     * Analiza un valor de texto en formato CSV para intentar extraer un decimal (double).
+     *
+     * @param valor   cadena con el posible valor decimal
+     * @param defecto valor a retornar en caso de error
+     * @return el número decimal extraído o el valor por defecto
+     */
     private double parseDoubleCsv(String valor, double defecto) {
         if (valor == null || valor.isBlank()) return defecto;
         try {
@@ -610,6 +839,12 @@ public class Sistema {
         }
     }
 
+    /**
+     * Traduce una cadena leída desde CSV al género de cómic correspondiente.
+     *
+     * @param categorias el texto extraído del CSV
+     * @return el género identificado
+     */
     private Genero resolverGeneroCsv(String categorias) {
         if (categorias.contains("romance")) return Genero.ROMANCE;
         if (categorias.contains("comedia") || categorias.contains("costumbrismo")
@@ -617,12 +852,23 @@ public class Sistema {
         return Genero.AVENTURA;
     }
 
+    /**
+     * Traduce una cadena leída desde CSV al tipo de juego correspondiente.
+     *
+     * @param estilo el texto extraído del CSV
+     * @return el tipo de juego identificado
+     */
     private TipoJuego resolverTipoJuegoCsv(String estilo) {
         if (estilo.contains("carta")) return TipoJuego.CARTAS;
         if (estilo.contains("dado")) return TipoJuego.DADOS;
         return TipoJuego.JUEGO_MESA;
     }
 
+    /**
+     * Exporta la lista actual de productos a un archivo de texto en formato CSV.
+     *
+     * @param archivo la ruta del archivo de destino
+     */
     public void descargarProductos(String archivo) {
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
@@ -679,6 +925,11 @@ public class Sistema {
         }
     }
 
+    /**
+     * Carga usuarios en el sistema a partir de un archivo de texto separado por punto y coma (;).
+     *
+     * @param fichero la ruta del archivo a leer
+     */
     public void cargaUsuarios(String fichero) {
         try(BufferedReader br = new BufferedReader(new FileReader(fichero))) {
             String linea;
@@ -714,6 +965,11 @@ public class Sistema {
         }
     }
 
+    /**
+     * Exporta la lista actual de usuarios del sistema a un archivo de texto en formato CSV.
+     *
+     * @param fichero la ruta del archivo de destino
+     */
     public void descargaUsuarios(String fichero) {
 
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(fichero))) {
@@ -753,6 +1009,13 @@ public class Sistema {
 
     }
 
+    /**
+     * Filtra una lista de productos devolviendo únicamente aquellos que pertenecen a la categoría indicada.
+     *
+     * @param productos la lista original de productos a filtrar
+     * @param categoria la categoría objetivo ("COMIC", "FIGURA", "JUEGO")
+     * @return una nueva lista con los productos filtrados
+     */
     public List<Producto> filtrarPorCategoria(List<Producto> productos, String categoria) {
         List<Producto> productosFiltrados = new ArrayList<>();
 
@@ -779,6 +1042,13 @@ public class Sistema {
         return productosFiltrados;
     }
 
+    /**
+     * Filtra una lista de productos devolviendo únicamente aquellos con una valoración mayor o igual a la indicada.
+     *
+     * @param productos  la lista original de productos a filtrar
+     * @param valoracion la valoración mínima requerida
+     * @return una nueva lista con los productos filtrados
+     */
     public List<Producto> filtrarPorValoracion(List<Producto> productos, int valoracion) {
         List<Producto> productosFiltrados = new ArrayList<>();
 
@@ -791,6 +1061,13 @@ public class Sistema {
         return productosFiltrados;
     }
 
+    /**
+     * Filtra una lista de productos de tienda devolviendo únicamente aquellos con un precio mayor o igual al indicado.
+     *
+     * @param productos la lista original de productos a filtrar
+     * @param precio    el precio mínimo requerido
+     * @return una nueva lista con los productos filtrados
+     */
     public List<ProductoTienda> filtrarPorPrecio(List<ProductoTienda> productos, double precio) {
         List<ProductoTienda> productosFiltrados = new ArrayList<>();
 
@@ -803,6 +1080,13 @@ public class Sistema {
         return productosFiltrados;
     }
 
+    /**
+     * Ordena una lista de productos alfabéticamente por su nombre.
+     *
+     * @param productos la lista de productos a ordenar
+     * @param flag      true para orden ascendente, false para orden descendente
+     * @return la misma lista de productos ordenada
+     */
     public List<Producto> ordenarPorOrdenAlfabetico(List<Producto> productos, boolean flag) {
         if (flag) {
             productos.sort(Comparator.comparing(Producto::getNombre));
@@ -812,6 +1096,13 @@ public class Sistema {
         return productos;
     }
 
+    /**
+     * Ordena una lista de productos en base a su fecha de publicación.
+     *
+     * @param productos la lista de productos a ordenar
+     * @param flag      true para orden cronológico (más antiguos primero), false para orden inverso
+     * @return la misma lista de productos ordenada
+     */
     public List<Producto> ordenarPorFecha(List<Producto> productos, boolean flag) {
         if (flag) {
             productos.sort(Comparator.comparing(Producto::getFechaPublicacion));
@@ -821,6 +1112,13 @@ public class Sistema {
         return productos;
     }
 
+    /**
+     * Ordena una lista de productos de tienda en base a su precio.
+     *
+     * @param productos la lista de productos de tienda a ordenar
+     * @param flag      true para orden ascendente (más baratos primero), false para descendente
+     * @return la misma lista de productos ordenada
+     */
     public List<ProductoTienda> ordenarPorPrecio(List<ProductoTienda> productos, boolean flag) {
         if (flag) {
             productos.sort(Comparator.comparing(ProductoTienda::getPrecio));
@@ -830,6 +1128,13 @@ public class Sistema {
         return productos;
     }
 
+    /**
+     * Ordena una lista de productos en base a su valoración.
+     *
+     * @param productos la lista de productos a ordenar
+     * @param flag      true para orden ascendente (menor valoración primero), false para descendente
+     * @return la misma lista de productos ordenada
+     */
     public List<Producto> ordenarPorValoracion(List<Producto> productos, boolean flag) {
         if (flag) {
             productos.sort(Comparator.comparing(Producto::getValoracion));

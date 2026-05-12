@@ -1817,16 +1817,7 @@ public class Main extends JFrame {
         return false;
     }
 
-    private String resumenPack(Pack pack) {
-        StringBuilder texto = new StringBuilder("Pack: ");
-        for (ProductoTienda producto : contarProductosPack(pack).keySet()) {
-            if (texto.length() > "Pack: ".length()) {
-                texto.append(" + ");
-            }
-            texto.append(producto.getNombre());
-        }
-        return texto.toString();
-    }
+
 
     private Map<ProductoTienda, Integer> contarProductosPack(Pack pack) {
         Map<ProductoTienda, Integer> productos = new HashMap<>();

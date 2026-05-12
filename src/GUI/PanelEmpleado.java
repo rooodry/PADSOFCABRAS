@@ -17,7 +17,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.ImageIcon;
@@ -37,7 +36,6 @@ import javax.swing.border.EmptyBorder;
 import compras.Pedido;
 import intercambios.Intercambio;
 import productos.Pack;
-import productos.Producto;
 import productos.ProductoSegundaMano;
 import productos.ProductoTienda;
 import usuarios.Empleado;
@@ -251,41 +249,6 @@ public class PanelEmpleado extends JPanel {
         }
         seccionActiva = "DETALLE_PRODUCTO";
         refrescar();
-    }
-
-    private JLabel crearImagenProducto(ProductoTienda producto) {
-        JLabel label = new JLabel();
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setPreferredSize(new Dimension(126, 154));
-        label.setMinimumSize(new Dimension(126, 154));
-        label.setMaximumSize(new Dimension(126, 154));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
-
-        String ruta = producto.getImagen();
-        if (ruta != null && !ruta.isBlank()) {
-            ImageIcon icono = new ImageIcon(ruta);
-            Image imagen = icono.getImage().getScaledInstance(126, 154, Image.SCALE_SMOOTH);
-            label.setIcon(new ImageIcon(imagen));
-        } else {
-            label.setText("<html><center>SIN<br>IMAGEN</center></html>");
-            label.setOpaque(true);
-            label.setBackground(UiStyle.COLOR_MARRON_MEDIO);
-            label.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        }
-        return label;
-    }
-
-    private JLabel crearNombreProducto(String nombre) {
-        String texto = nombre.length() > 26 ? nombre.substring(0, 23) + "..." : nombre;
-        JLabel label = new JLabel(texto, SwingConstants.CENTER);
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setFont(new Font("SansSerif", Font.PLAIN, 18));
-        label.setForeground(UiStyle.COLOR_TEXTO_CLARO);
-        label.setPreferredSize(new Dimension(190, 38));
-        label.setMinimumSize(new Dimension(190, 38));
-        label.setMaximumSize(new Dimension(190, 38));
-        return label;
     }
 
     private void pintarPerfilEmpleado(Empleado empleado) {
@@ -562,10 +525,6 @@ public class PanelEmpleado extends JPanel {
             contenido.add(fila);
             contenido.add(Box.createVerticalStrut(18));
         }
-    }
-
-    private void editarProducto(ProductoTienda producto) {
-        abrirDetalleProducto(producto, true);
     }
 
     private void pintarDetalleProducto() {
@@ -983,10 +942,6 @@ public class PanelEmpleado extends JPanel {
         return producto.getCategoria() == null ? "sin categoría" : producto.getCategoria().getNombre();
     }
 
-    private String textoCategorías(ProductoTienda producto) {
-        List<String> categorias = producto.getCategoriasTexto();
-        return categorias.isEmpty() ? "sin categorías" : String.join(", ", categorias);
-    }
 
     private List<String> parseCategorías(String texto) {
         List<String> categorias = new ArrayList<>();

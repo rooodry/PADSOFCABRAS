@@ -1,7 +1,6 @@
 package GUI;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -42,10 +41,6 @@ import intercambios.Intercambio;
 import intercambios.Oferta;
 import productos.ProductoSegundaMano;
 import productos.ProductoTienda;
-import utilidades.EstadoPedido;
-import utilidades.EstadoOferta;
-
-
 /**
  * Representa el componente PanelPerfil de la interfaz grafica.
  */
