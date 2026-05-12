@@ -19,23 +19,29 @@ import compras.Pedido;
 import productos.ProductoTienda;
 import utilidades.EstadoPedido;
 
-
 /**
- * Componente Swing de la interfaz grafica correspondiente a PanelGestion.
+ * Representa el componente PanelGestion de la interfaz grafica.
+ * Gestiona la vista y las interacciones correspondientes a la 
+ * administración de stock, pedidos y estadísticas rápidas.
  */
 public class PanelGestion extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /** Dato interno asociado a mainFrame. */
+    /** 
+     * Referencia a la ventana principal de la aplicación. 
+     */
     private final Main mainFrame;
-    /** Dato interno asociado a contenido. */
+    
+    /** 
+     * Contenedor principal donde se cargan dinámicamente las distintas secciones de gestión. 
+     */
     private final JPanel contenido;
 
     /**
-     * Builds the management panel.
+     * Construye una instancia del panel de gestión.
      *
-     * @param mainFrame main GUI controller
+     * @param mainFrame Instancia principal de la aplicación que contiene el estado global y controlador de la interfaz.
      */
     public PanelGestion(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -49,7 +55,8 @@ public class PanelGestion extends JPanel {
     }
 
     /**
-     * Refreshes stock, order and statistics widgets.
+     * Refresca el contenido del panel, actualizando visualmente la lista de stock, 
+     * los pedidos del cliente activo y las estadísticas rápidas.
      */
     public void refrescar() {
         contenido.removeAll();
@@ -82,6 +89,11 @@ public class PanelGestion extends JPanel {
         contenido.repaint();
     }
 
+    /**
+     * Crea un componente de scroll que envuelve el panel principal de contenido.
+     * 
+     * @return JScrollPane configurado para desplazar el contenido de la gestión.
+     */
     private JScrollPane crearScroll() {
         JScrollPane scroll = new JScrollPane(contenido);
         scroll.setBorder(null);
@@ -90,6 +102,12 @@ public class PanelGestion extends JPanel {
         return scroll;
     }
 
+    /**
+     * Crea una etiqueta con los estilos visuales para representar un título de sección.
+     * 
+     * @param texto El texto del título a mostrar.
+     * @return JLabel formateado con la fuente y márgenes de título.
+     */
     private JLabel crearTitulo(String texto) {
         JLabel titulo = new JLabel(texto, SwingConstants.LEFT);
         titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
@@ -98,6 +116,13 @@ public class PanelGestion extends JPanel {
         return titulo;
     }
 
+    /**
+     * Crea un panel representativo de una fila de stock para un producto específico,
+     * mostrando su información y permitiendo incrementar su cantidad disponible.
+     * 
+     * @param producto El producto del cual se mostrará y gestionará el stock.
+     * @return JPanel con la información del producto y el botón para sumar stock.
+     */
     private JPanel crearFilaStock(ProductoTienda producto) {
         JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
         fila.setLayout(new BorderLayout(10, 0));
@@ -114,6 +139,13 @@ public class PanelGestion extends JPanel {
         return fila;
     }
 
+    /**
+     * Crea un panel que representa visualmente un pedido del cliente, detallando los
+     * productos que incluye y proporcionando una acción para prepararlo si es posible.
+     * 
+     * @param pedido El pedido a representar en la fila.
+     * @return JPanel con el resumen del pedido y botón para cambiar su estado.
+     */
     private JPanel crearFilaPedido(Pedido pedido) {
         JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
         fila.setLayout(new BorderLayout(10, 0));
@@ -135,6 +167,12 @@ public class PanelGestion extends JPanel {
         return fila;
     }
 
+    /**
+     * Crea una etiqueta de texto genérica compatible con renderizado en HTML básico.
+     * 
+     * @param texto El texto a incluir dentro de la etiqueta.
+     * @return JLabel formateado con la fuente y color estándar de la aplicación.
+     */
     private JLabel crearEtiqueta(String texto) {
         JLabel label = new JLabel("<html>" + texto + "</html>");
         label.setFont(new Font("SansSerif", Font.PLAIN, 14));
@@ -142,6 +180,12 @@ public class PanelGestion extends JPanel {
         return label;
     }
 
+    /**
+     * Construye un botón estilizado con esquinas redondeadas para las acciones del panel.
+     * 
+     * @param texto El texto a mostrar en el interior del botón.
+     * @return JButton configurado con dimensiones, colores y cursor adecuados.
+     */
     private JButton crearBoton(String texto) {
         JButton boton = new UiStyle.RoundedButton(texto, UiStyle.COLOR_TEXTO, UiStyle.COLOR_MARRON_MEDIO, 18);
         boton.setPreferredSize(new Dimension(108, 32));

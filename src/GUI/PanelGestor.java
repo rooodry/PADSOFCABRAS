@@ -63,49 +63,96 @@ import utilidades.EstadoOferta;
 import utilidades.EstadoPedido;
 import utilidades.TiposEmpleado;
 
-
 /**
- * Componente Swing de la interfaz grafica correspondiente a PanelGestor.
+ * Representa el componente PanelGestor de la interfaz grafica.
+ * Proporciona el panel de control y administración para los usuarios
+ * con rol de gestor de la tienda, permitiendo gestionar empleados,
+ * inventario, métricas, descuentos y pedidos.
  */
 public class PanelGestor extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /** Dato interno asociado a DASHBOARD. */
+    /**
+     * Identificador para la sección principal de resumen de gestión (Dashboard).
+     */
     private static final String DASHBOARD = "DASHBOARD";
-    /** Dato interno asociado a EMPLEADOS. */
+    
+    /**
+     * Identificador para la sección de administración de empleados.
+     */
     private static final String EMPLEADOS = "EMPLEADOS";
-    /** Dato interno asociado a INVENTARIO. */
+    
+    /**
+     * Identificador para la sección de gestión del inventario y catálogo de productos.
+     */
     private static final String INVENTARIO = "INVENTARIO";
-    /** Dato interno asociado a DESCUENTOS. */
+    
+    /**
+     * Identificador para la sección de configuración de rebajas y promociones.
+     */
     private static final String DESCUENTOS = "DESCUENTOS";
-    /** Dato interno asociado a SEGUNDA_MANO. */
+    
+    /**
+     * Identificador para la sección de tasación y revisión de productos de segunda mano.
+     */
     private static final String SEGUNDA_MANO = "SEGUNDA_MANO";
-    /** Dato interno asociado a PACKS. */
+    
+    /**
+     * Identificador para la sección de creación y edición de packs de productos.
+     */
     private static final String PACKS = "PACKS";
-    /** Dato interno asociado a OPERATIVA. */
+    
+    /**
+     * Identificador para la sección de supervisión de pedidos e intercambios en curso.
+     */
     private static final String OPERATIVA = "OPERATIVA";
-    /** Dato interno asociado a ESTADISTICAS. */
+    
+    /**
+     * Identificador para la sección de análisis de datos y estadísticas de la tienda.
+     */
     private static final String ESTADISTICAS = "ESTADISTICAS";
-    /** Dato interno asociado a DETALLE_PRODUCTO. */
+    
+    /**
+     * Identificador para la subsección de visualización o edición de un producto específico.
+     */
     private static final String DETALLE_PRODUCTO = "DETALLE_PRODUCTO";
 
-    /** Dato interno asociado a mainFrame. */
+    /**
+     * Referencia a la ventana y controlador principal de la aplicación.
+     */
     private final Main mainFrame;
-    /** Dato interno asociado a contenido. */
+    
+    /**
+     * Panel contenedor dinámico donde se pinta la sección actualmente activa.
+     */
     private final JPanel contenido;
-    /** Formatea fechas de pedidos, ventas e intercambios. */
+    
+    /** 
+     * Formateador estándar para mostrar las fechas de los pedidos, ventas e intercambios de forma legible. 
+     */
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
-    /** Dato interno asociado a seccionActiva. */
+    
+    /**
+     * Identificador en formato de cadena de la sección que se está visualizando actualmente.
+     */
     private String seccionActiva;
-    /** Dato interno asociado a productoSeleccionado. */
+    
+    /**
+     * Almacena el producto del inventario que ha sido seleccionado para ver sus detalles o ser editado.
+     */
     private ProductoTienda productoSeleccionado;
-    /** Dato interno asociado a editandoProducto. */
+    
+    /**
+     * Bandera que indica si el producto seleccionado está en modo de edición o solo lectura.
+     */
     private boolean editandoProducto;
 
     /**
-     * Construye una instancia de PanelGestor.
-     * @param mainFrame valor recibido por el metodo
+     * Construye una instancia de PanelGestor, inicializando los componentes
+     * y estableciendo el Dashboard como pantalla por defecto.
+     * 
+     * @param mainFrame Instancia principal de la aplicación que proporciona el contexto y los datos.
      */
     public PanelGestor(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -120,7 +167,8 @@ public class PanelGestor extends JPanel {
     }
 
     /**
-     * Gestiona la accion de refrescar.
+     * Limpia y vuelve a pintar el contenido del panel dinámico basándose en
+     * la variable de estado `seccionActiva`.
      */
     public void refrescar() {
         contenido.removeAll();
@@ -152,6 +200,12 @@ public class PanelGestor extends JPanel {
         contenido.repaint();
     }
 
+    /**
+     * Crea la barra superior de la interfaz, que incluye el botón de menú lateral
+     * y el título principal de la aplicación.
+     * 
+     * @return JPanel configurado como la cabecera de la ventana.
+     */
     private JPanel crearCabecera() {
         JPanel cabecera = new JPanel(new BorderLayout());
         cabecera.setBackground(UiStyle.COLOR_CABECERA);
@@ -173,6 +227,15 @@ public class PanelGestor extends JPanel {
         return cabecera;
     }
 
+    /**
+     * Crea un botón que contiene un símbolo o icono en texto.
+     * 
+     * @param texto El símbolo o carácter que servirá como icono del botón.
+     * @param tooltip El texto explicativo que aparece al pasar el ratón.
+     * @param fontSize El tamaño de la fuente para el icono.
+     * @param ancho El ancho preferido del botón.
+     * @return JButton con los estilos visuales de botón icono aplicados.
+     */
     private JButton crearBotonIcono(String texto, String tooltip, int fontSize, int ancho) {
         JButton boton = new JButton(texto);
         boton.setFont(new Font("Dialog", Font.BOLD, fontSize));
@@ -188,6 +251,12 @@ public class PanelGestor extends JPanel {
         return boton;
     }
 
+    /**
+     * Muestra el menú lateral desplegable que permite navegar entre las diferentes
+     * secciones de gestión disponibles para el gestor.
+     * 
+     * @param origen El componente (botón) sobre el cual se anclará y desplegará el menú emergente.
+     */
     private void mostrarMenu(JButton origen) {
         JPopupMenu menu = new JPopupMenu();
         menu.setBackground(UiStyle.COLOR_CABECERA);
@@ -207,6 +276,13 @@ public class PanelGestor extends JPanel {
         menu.show(origen, 0, origen.getHeight() + 6);
     }
 
+    /**
+     * Crea una opción individual para el menú de navegación lateral.
+     * 
+     * @param texto El texto que se mostrará en el menú.
+     * @param seccion La constante identificadora de la sección a la que navega esta opción.
+     * @return JMenuItem configurado visual y funcionalmente.
+     */
     private JMenuItem crearItemMenu(String texto, String seccion) {
         JMenuItem item = new JMenuItem(texto);
         item.setOpaque(true);
@@ -221,6 +297,12 @@ public class PanelGestor extends JPanel {
         return item;
     }
 
+    /**
+     * Construye un componente con barras de desplazamiento para contener la sección dinámica,
+     * adaptándose al tamaño de la pantalla y el contenido.
+     * 
+     * @return JScrollPane que engloba el contenido principal.
+     */
     private JScrollPane crearScroll() {
         JScrollPane scroll = new JScrollPane(contenido);
         scroll.setBorder(null);
@@ -229,6 +311,10 @@ public class PanelGestor extends JPanel {
         return scroll;
     }
 
+    /**
+     * Pinta la sección principal de inicio (Dashboard), mostrando tarjetas
+     * con resúmenes rápidos, accesos directos y un listado de actividad pendiente.
+     */
     private void pintarDashboard() {
         contenido.add(crearTitulo("Resumen de gestión"));
         JPanel grid = new JPanel(new GridLayout(0, 4, 14, 14));
@@ -256,6 +342,14 @@ public class PanelGestor extends JPanel {
         contenido.add(crearEtiqueta("Intercambios pendientes: " + contarIntercambiosPendientes()));
     }
 
+    /**
+     * Construye un botón estilizado diseñado específicamente como acceso directo
+     * hacia otra pantalla de la interfaz gestora.
+     * 
+     * @param texto Etiqueta del botón.
+     * @param seccion Constante de sección que se activará al pulsar.
+     * @return JButton funcional que navega a la sección indicada.
+     */
     private JButton crearAcceso(String texto, String seccion) {
         JButton boton = crearBoton(texto, 170);
         boton.addActionListener(e -> {
@@ -265,6 +359,15 @@ public class PanelGestor extends JPanel {
         return boton;
     }
 
+    /**
+     * Crea un panel en forma de tarjeta diseñado para mostrar una estadística clave
+     * o métrica rápida en el Dashboard.
+     * 
+     * @param titulo Título de la métrica (ej. "Stock").
+     * @param valor Valor numérico representativo.
+     * @param detalle Subtítulo explicativo o sufijo (ej. "unidades").
+     * @return JPanel configurado visualmente como tarjeta de métrica.
+     */
     private JPanel crearMetrica(String titulo, String valor, String detalle) {
         JPanel tarjeta = crearTarjeta();
         JLabel t = crearEtiqueta("<b>" + titulo + "</b>");
@@ -278,6 +381,10 @@ public class PanelGestor extends JPanel {
         return tarjeta;
     }
 
+    /**
+     * Pinta la sección de gestión de empleados, mostrando la lista de empleados
+     * creados, con botones para ver o editar sus detalles, ver sus ventas y darlos de baja.
+     */
     private void pintarEmpleados() {
         contenido.add(crearTitulo("Gestión de empleados"));
         contenido.add(crearSubtitulo("El gestor da de alta empleados, asigna permisos y puede darlos de baja."));
@@ -292,6 +399,13 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Crea un panel horizontal que representa la información de un único empleado
+     * junto con los controles para gestionar dicho empleado.
+     * 
+     * @param empleado El empleado cuyos datos se mostrarán en la fila.
+     * @return JPanel visual que representa al empleado.
+     */
     private JPanel crearFilaEmpleado(Empleado empleado) {
         JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
         fila.setLayout(new BorderLayout(12, 0));
@@ -318,6 +432,10 @@ public class PanelGestor extends JPanel {
         return fila;
     }
 
+    /**
+     * Pinta la sección del inventario, organizando los productos de la tienda
+     * en una cuadrícula y proporcionando utilidades de creación manual o carga por CSV.
+     */
     private void pintarInventario() {
         contenido.setBorder(new EmptyBorder(12, 60, 24, 60));
         JLabel titulo = new JLabel("HOME", SwingConstants.CENTER);
@@ -349,6 +467,13 @@ public class PanelGestor extends JPanel {
         contenido.add(grid);
     }
 
+    /**
+     * Crea un panel en forma de tarjeta vertical para visualizar un producto del catálogo,
+     * añadiendo opciones exclusivas del gestor para editarlo o eliminarlo permanentemente.
+     * 
+     * @param producto El producto a renderizar visualmente.
+     * @return JPanel con la representación visual y botones de control del producto.
+     */
     private JPanel crearTarjetaProductoHome(ProductoTienda producto) {
         JPanel tarjeta = new JPanel(new BorderLayout(0, 8));
         tarjeta.setOpaque(false);
@@ -357,8 +482,9 @@ public class PanelGestor extends JPanel {
         vistaCliente.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             /**
-             * Gestiona la accion de mouseClicked.
-             * @param e valor recibido por el metodo
+             * Responde al evento de clic abriendo el detalle completo del producto en modo lectura.
+             * 
+             * @param e El evento de ratón interceptado.
              */
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 abrirDetalleProducto(producto, false);
@@ -386,6 +512,12 @@ public class PanelGestor extends JPanel {
         return tarjeta;
     }
 
+    /**
+     * Muestra un cuadro de confirmación antes de eliminar permanentemente un producto.
+     * Si el gestor acepta, realiza el borrado de sistema y refresca la interfaz.
+     * 
+     * @param producto El producto objetivo para eliminar.
+     */
     private void confirmarEliminacionProducto(ProductoTienda producto) {
         if (producto == null) {
             return;
@@ -406,6 +538,12 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Cambia la sección activa a la pantalla de detalle para el producto indicado.
+     * 
+     * @param producto El producto a examinar.
+     * @param editar Si es verdadero, el detalle se abrirá en estado editable de formulario.
+     */
     private void abrirDetalleProducto(ProductoTienda producto, boolean editar) {
         productoSeleccionado = producto;
         editandoProducto = editar;
@@ -413,7 +551,10 @@ public class PanelGestor extends JPanel {
         refrescar();
     }
 
-
+    /**
+     * Pinta la sección de vista en detalle de un producto específico, integrando el
+     * componente `PanelDeProducto` y sus callbacks para confirmar cambios.
+     */
     private void pintarDetalleProducto() {
         if (productoSeleccionado == null) {
             seccionActiva = INVENTARIO;
@@ -432,8 +573,9 @@ public class PanelGestor extends JPanel {
         detalle.setListenerEdicion(new PanelDeProducto.ListenerEdicion() {
             @Override
             /**
-             * Gestiona la accion de confirmar.
-             * @param datos valor recibido por el metodo
+             * Aplica los cambios ingresados por el gestor a los datos del producto seleccionado.
+             * 
+             * @param datos Objeto con la información estructurada que introdujo el gestor.
              */
             public void confirmar(PanelDeProducto.DatosEdicion datos) {
                 mainFrame.editarProductoTienda(productoSeleccionado,
@@ -449,7 +591,7 @@ public class PanelGestor extends JPanel {
 
             @Override
             /**
-             * Gestiona la accion de cancelar.
+             * Cancela el modo edición del producto retornando a su visualización normal.
              */
             public void cancelar() {
                 editandoProducto = false;
@@ -459,6 +601,12 @@ public class PanelGestor extends JPanel {
         contenido.add(detalle);
     }
 
+    /**
+     * Crea un panel superior muy simple que provee la acción de volver
+     * a la vista general de catálogo.
+     * 
+     * @return JPanel con el botón hacia atrás.
+     */
     private JPanel crearBarraVolverInventario() {
         JPanel barra = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         barra.setOpaque(false);
@@ -469,6 +617,11 @@ public class PanelGestor extends JPanel {
         return barra;
     }
 
+    /**
+     * Construye un botón visualmente minimalista en forma de flecha apuntando a la izquierda.
+     * 
+     * @return JButton configurado como flecha de retorno.
+     */
     private JButton crearBotonFlechaVolver() {
         JButton boton = new JButton("\u2190");
         boton.setFont(new Font("SansSerif", Font.BOLD, 30));
@@ -483,6 +636,10 @@ public class PanelGestor extends JPanel {
         return boton;
     }
 
+    /**
+     * Regresa la vista principal al inventario, limpiando la selección activa
+     * de cualquier producto específico.
+     */
     private void volverAInventario() {
         editandoProducto = false;
         productoSeleccionado = null;
@@ -490,8 +647,10 @@ public class PanelGestor extends JPanel {
         refrescar();
     }
 
-    
-
+    /**
+     * Pinta la sección de gestión de descuentos, posibilitando aplicar o remover
+     * porcentajes, ofertas de precio fijo o "2x1" sobre productos y categorías enteras.
+     */
     private void pintarDescuentos() {
         contenido.add(crearTitulo("Descuentos"));
         contenido.add(crearSubtitulo("Configura rebajas por producto o por categoría."));
@@ -506,6 +665,12 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Crea un formulario encapsulado para asignar un tipo de descuento a un solo
+     * producto de manera específica.
+     * 
+     * @return JPanel estructurado como una tarjeta que envuelve el formulario.
+     */
     private JPanel crearPanelDescuentoProducto() {
         JPanel panel = crearTarjeta();
         panel.add(crearEtiqueta("<b>Aplicar a producto</b>"));
@@ -538,6 +703,12 @@ public class PanelGestor extends JPanel {
         return panel;
     }
 
+    /**
+     * Crea un formulario encapsulado para aplicar de manera masiva un descuento
+     * a todos los productos que concuerden con un texto de categoría.
+     * 
+     * @return JPanel estructurado para la edición del descuento masivo.
+     */
     private JPanel crearPanelDescuentoCategoria() {
         JPanel panel = crearTarjeta();
         panel.add(crearEtiqueta("<b>Aplicar a categoría</b>"));
@@ -562,6 +733,15 @@ public class PanelGestor extends JPanel {
         return panel;
     }
 
+    /**
+     * Genera la fila de la interfaz gráfica donde conviven el combo del tipo
+     * de promoción y sus campos numéricos pertinentes (porcentaje o valor fijo).
+     * 
+     * @param tipo Selector del tipo de promoción.
+     * @param porcentaje Control numérico para promociones porcentuales.
+     * @param fija Control numérico para promociones de valor absoluto.
+     * @return JPanel configurado horizontalmente.
+     */
     private JPanel crearPanelSeleccionDescuento(JComboBox<String> tipo, JSpinner porcentaje, JSpinner fija) {
         JPanel linea = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         linea.setOpaque(false);
@@ -574,12 +754,29 @@ public class PanelGestor extends JPanel {
         return linea;
     }
 
+    /**
+     * Habilita o deshabilita la escritura en los campos numéricos de descuento
+     * dependiendo de qué opción se haya elegido en el comboBox principal.
+     * 
+     * @param tipo Selector en el que se basa la decisión ("Porcentaje", "Rebaja fija", etc.).
+     * @param porcentaje El componente que representa un porcentaje.
+     * @param fija El componente que representa una rebaja fija en divisa.
+     */
     private void actualizarCamposDescuento(JComboBox<String> tipo, JSpinner porcentaje, JSpinner fija) {
         String seleccion = (String) tipo.getSelectedItem();
         porcentaje.setEnabled("Porcentaje".equals(seleccion));
         fija.setEnabled("Rebaja fija".equals(seleccion));
     }
 
+    /**
+     * Sincroniza los controles del formulario de descuentos con el estado
+     * real actual de un producto, mostrando el descuento que actualmente posee.
+     * 
+     * @param producto Producto objetivo cuyas promociones se examinarán.
+     * @param tipo El comboBox que se debe ajustar al tipo de oferta existente.
+     * @param porcentaje Control que alojará el porcentaje (si aplica).
+     * @param fija Control que alojará la cantidad fija (si aplica).
+     */
     private void seleccionarTipoDescuentoActual(ProductoTienda producto,
             JComboBox<String> tipo, JSpinner porcentaje, JSpinner fija) {
         String activo = mainFrame.getTipoDescuentoProducto(producto);
@@ -599,6 +796,13 @@ public class PanelGestor extends JPanel {
         actualizarCamposDescuento(tipo, porcentaje, fija);
     }
 
+    /**
+     * Mapea un String visible en la interfaz para el usuario, a la constante de sistema
+     * representativa del tipo de descuento (por ejemplo, "Rebaja fija" -> "FIJO").
+     * 
+     * @param tipo El JComboBox de donde extraer el valor.
+     * @return Constante string reconocida por el backend como tipo de descuento.
+     */
     private String tipoDescuentoSeleccionado(JComboBox<String> tipo) {
         String seleccion = (String) tipo.getSelectedItem();
         if ("Rebaja fija".equals(seleccion)) {
@@ -610,6 +814,15 @@ public class PanelGestor extends JPanel {
         return "PORCENTAJE";
     }
 
+    /**
+     * Extrae de los JSpinners el valor real numérico que se debe aplicar
+     * según el tipo de oferta marcada en el combo principal.
+     * 
+     * @param tipo Selector de tipo para saber qué spinner inspeccionar.
+     * @param porcentaje Control JSpinner correspondiente a porcentajes.
+     * @param fija Control JSpinner correspondiente a valores absolutos fijos.
+     * @return El número extraído. 0.0 si es "2x1".
+     */
     private double valorDescuentoSeleccionado(JComboBox<String> tipo, JSpinner porcentaje, JSpinner fija) {
         String seleccion = (String) tipo.getSelectedItem();
         if ("Rebaja fija".equals(seleccion)) {
@@ -621,6 +834,10 @@ public class PanelGestor extends JPanel {
         return ((Double) porcentaje.getValue()).doubleValue();
     }
 
+    /**
+     * Pinta la vista donde el gestor puede ver los productos subidos por usuarios
+     * y proporcionar una valoración monetaria inicial, así como constatar el estado.
+     */
     private void pintarSegundaMano() {
         contenido.add(crearTitulo("Productos de segunda mano"));
         contenido.add(crearSubtitulo("Valora los productos subidos por clientes: precio estimado y estado de conservación."));
@@ -635,6 +852,13 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Compone la fila que muestra un producto de segunda mano al gestor,
+     * habilitando un botón para valorarlo en caso de que aún no lo esté.
+     * 
+     * @param producto Producto a mostrar en la fila.
+     * @return Componente de interfaz de la fila.
+     */
     private JPanel crearFilaProductoSegundaMano(ProductoSegundaMano producto) {
         JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
         fila.setLayout(new BorderLayout(12, 0));
@@ -650,6 +874,10 @@ public class PanelGestor extends JPanel {
         return fila;
     }
 
+    /**
+     * Pinta la pantalla de administración de packs de productos. Lista los
+     * agrupamientos de la tienda creados por el gestor.
+     */
     private void pintarPacks() {
         contenido.add(crearTitulo("Packs de productos"));
         contenido.add(crearSubtitulo("Crea y modifica paquetes configurados por el gestor."));
@@ -676,6 +904,11 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Pinta la sección general operativa del gestor. Permite ver todos los
+     * pedidos, cambiar el tiempo límite que tienen las ofertas de intercambio
+     * y modificar los estados del flujo de la venta.
+     */
     private void pintarOperativa() {
         contenido.add(crearTitulo("Pedidos e intercambios"));
         contenido.add(crearSubtitulo("Supervision de pedidos preparados, entregas e intercambios."));
@@ -693,6 +926,12 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Elabora el panel responsable de gestionar la variable global "PlazoOfertasHoras",
+     * que define el tiempo límite antes de que un intercambio expire sin acción.
+     * 
+     * @return JPanel con el formulario para configurar el plazo.
+     */
     private JPanel crearPanelPlazoOfertas() {
         JPanel panel = crearTarjeta();
         panel.add(crearEtiqueta("<b>Plazo de ofertas</b>"));
@@ -712,6 +951,13 @@ public class PanelGestor extends JPanel {
         return panel;
     }
 
+    /**
+     * Crea un elemento de lista en la vista de gestor para interactuar con un pedido
+     * particular, ver su estado y avanzarlo si procede.
+     * 
+     * @param pedido El pedido a reflejar gráficamente.
+     * @return JPanel correspondiente al pedido.
+     */
     private JPanel crearFilaPedido(Pedido pedido) {
         JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
         fila.setLayout(new BorderLayout(12, 0));
@@ -734,6 +980,13 @@ public class PanelGestor extends JPanel {
         return fila;
     }
 
+    /**
+     * Crea un componente en forma de barra para reflejar un proceso de intercambio,
+     * permitiendo validarlo como completado (Realizado) si fue aceptado por los clientes.
+     * 
+     * @param intercambio El intercambio a mostrar en la interfaz.
+     * @return JPanel correspondiente al intercambio de productos.
+     */
     private JPanel crearFilaIntercambio(Intercambio intercambio) {
         JPanel fila = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
         fila.setLayout(new BorderLayout(12, 0));
@@ -753,6 +1006,10 @@ public class PanelGestor extends JPanel {
         return fila;
     }
 
+    /**
+     * Pinta el menú de análisis y estadísticas. Carga componentes gráficos
+     * elaborados como barras de rendimiento y resúmenes monetarios para medir la salud de la tienda.
+     */
     private void pintarEstadisticas() {
         contenido.add(crearTitulo("Estadísticas"));
         JPanel grid = new JPanel(new GridLayout(0, 4, 14, 14));
@@ -783,6 +1040,12 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Muestra una ventana de diálogo (Modal) que contiene un formulario para crear
+     * un nuevo empleado en el sistema o alterar los permisos y contraseña de uno ya existente.
+     * 
+     * @param empleado Referencia al empleado a editar, si es `null` se interpreta como "nuevo empleado".
+     */
     private void mostrarDialogoEmpleado(Empleado empleado) {
         JTextField nombre = new JTextField(empleado == null ? "" : empleado.getNombre());
         nombre.setEnabled(empleado == null);
@@ -839,12 +1102,25 @@ public class PanelGestor extends JPanel {
         refrescar();
     }
 
+    /**
+     * Construye una cadena breve con el resumen sobre las ventas vinculadas
+     * o procesadas por un empleado concreto.
+     * 
+     * @param empleado Empleado a consultar.
+     * @return Cadena que muestra el conteo de ventas y el total económico ingresado.
+     */
     private String resumenVentasEmpleado(Empleado empleado) {
         List<Pedido> ventas = mainFrame.getVentasEmpleado(empleado);
         return "Ventas realizadas: " + ventas.size()
                 + " | " + String.format("%.2f EUR", mainFrame.getTotalVentasEmpleado(empleado));
     }
 
+    /**
+     * Dispara un cuadro de diálogo detallado que desglosa en formato texto
+     * todos los pedidos específicos que han sido manejados o asignados al empleado indicado.
+     * 
+     * @param empleado Empleado para analizar sus registros de venta.
+     */
     private void mostrarVentasEmpleado(Empleado empleado) {
         List<Pedido> ventas = mainFrame.getVentasEmpleado(empleado);
         JTextArea detalle = new JTextArea(12, 46);
@@ -871,6 +1147,12 @@ public class PanelGestor extends JPanel {
                 "Ventas de " + empleado.getNombre(), JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Advierte al usuario gestor e inicia el proceso para la eliminación permanente
+     * de un perfil de empleado del sistema de la tienda.
+     * 
+     * @param empleado Instancia del empleado a eliminar.
+     */
     private void confirmarBajaEmpleado(Empleado empleado) {
         int respuesta = JOptionPane.showConfirmDialog(this,
                 "Dar de baja a " + empleado.getNombre() + "?",
@@ -881,6 +1163,10 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Despliega un explorador de archivos nativo que permite elegir un fichero .csv
+     * para re-popular el inventario de la aplicación en bloque.
+     */
     private void cargarProductosDeFichero() {
         JFileChooser chooser = new JFileChooser(".");
         int respuesta = chooser.showOpenDialog(this);
@@ -890,6 +1176,10 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Construye un extenso formulario compuesto de pestañas para crear manualmente un producto
+     * categorizado como "Cómic", "Juego de Mesa" o "Figura", integrando toda su información en el sistema.
+     */
     private void mostrarDialogoNuevoProducto() {
         JTextField nombre = new JTextField();
         JTextField precio = new JTextField("0.00");
@@ -1029,6 +1319,19 @@ public class PanelGestor extends JPanel {
         refrescar();
     }
 
+    /**
+     * Construye un subformulario específico para rellenar campos característicos de cómics.
+     * 
+     * @param paginas Campo de páginas del cómic.
+     * @param autor Campo de autor del cómic.
+     * @param editorial Campo de la editorial publicadora.
+     * @param genero Combobox que aloja el género de la historia.
+     * @param anio Año de lanzamiento.
+     * @param idioma Idioma de edición.
+     * @param formato Formato de publicación (tapa blanda, dura, etc.).
+     * @param isbn Identificador numérico ISBN.
+     * @return JPanel organizado para su introducción en las pestañas (Tabs).
+     */
     private JPanel crearPanelComic(JSpinner paginas, JTextField autor, JTextField editorial,
             JComboBox<Genero> genero, JSpinner anio, JTextField idioma,
             JTextField formato, JTextField isbn) {
@@ -1046,6 +1349,19 @@ public class PanelGestor extends JPanel {
         return panel;
     }
 
+    /**
+     * Construye un subformulario específico para rellenar campos característicos de juegos de mesa.
+     * 
+     * @param jugadoresMin Mínimo de jugadores simultáneos.
+     * @param jugadoresMax Máximo de jugadores.
+     * @param edad Edad sugerida para el juego.
+     * @param tipoJuego Tipo de mecánicas o categoría general del juego.
+     * @param duracion Tiempo aproximado por partida en minutos.
+     * @param editorial Empresa distribuidora.
+     * @param idioma Lenguaje principal en el que se encuentra.
+     * @param componentes Descripción de los elementos que incluye la caja.
+     * @return JPanel organizado para las pestañas de creación.
+     */
     private JPanel crearPanelJuego(JSpinner jugadoresMin, JSpinner jugadoresMax,
             JSpinner edad, JComboBox<TipoJuego> tipoJuego, JSpinner duracion,
             JTextField editorial, JTextField idioma, JTextArea componentes) {
@@ -1066,6 +1382,18 @@ public class PanelGestor extends JPanel {
         return panel;
     }
 
+    /**
+     * Construye un subformulario específico para rellenar campos característicos de figuras de coleccionismo.
+     * 
+     * @param altura Control del alto del objeto en centímetros.
+     * @param marca Fabricante original de la figura.
+     * @param material Tipo de plástico, resina, etc.
+     * @param escala Proporción respecto al sujeto original (1/6, 1/12, etc.).
+     * @param personaje Nombre del personaje emulado.
+     * @param franquicia Universo o licencia al que pertenece el personaje.
+     * @param articulada Check para validar si dispone de uniones móviles.
+     * @return JPanel organizado adecuadamente.
+     */
     private JPanel crearPanelFigura(JSpinner altura, JTextField marca, JTextField material,
             JTextField escala, JTextField personaje, JTextField franquicia, JCheckBox articulada) {
         JPanel panel = crearPanelFormulario();
@@ -1081,6 +1409,11 @@ public class PanelGestor extends JPanel {
         return panel;
     }
 
+    /**
+     * Devuelve una plantilla de JPanel básica, pre-configurada verticalmente, para alojar un formulario.
+     * 
+     * @return Panel listo para hospedar entradas de texto y controles.
+     */
     private JPanel crearPanelFormulario() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -1088,6 +1421,13 @@ public class PanelGestor extends JPanel {
         return panel;
     }
 
+    /**
+     * Crea un título tipográfico orientado para dividir los grupos de componentes
+     * dentro de una ventana de inserción de datos grande.
+     * 
+     * @param texto La cadena visible del título divisorio.
+     * @return JLabel formateado en negrita y alineado a la izquierda.
+     */
     private JLabel crearTituloFormulario(String texto) {
         JLabel label = new JLabel(texto);
         label.setFont(new Font("SansSerif", Font.BOLD, 15));
@@ -1097,6 +1437,13 @@ public class PanelGestor extends JPanel {
         return label;
     }
 
+    /**
+     * Acomoda de manera uniforme un componente de formulario con su nombre o etiqueta asociada.
+     * 
+     * @param etiqueta El título descriptivo del campo para los usuarios.
+     * @param campo El componente interactivo (input, spinner, combo).
+     * @return JPanel envuelto que dispone la etiqueta a la izquierda y el input a la derecha.
+     */
     private JPanel crearFilaFormulario(String etiqueta, Component campo) {
         JPanel fila = new JPanel(new BorderLayout(8, 0));
         fila.setBorder(new EmptyBorder(4, 0, 4, 0));
@@ -1109,6 +1456,14 @@ public class PanelGestor extends JPanel {
         return fila;
     }
 
+    /**
+     * Abre un JFileChooser filtrado sólo para extensiones de imagen habituales.
+     * Si el usuario selecciona un fichero válido, actualiza el String de la ruta
+     * y repinta el objeto visual de 'preview' con su contenido escalado.
+     * 
+     * @param campoImagen El JTextField donde se inyectará la ruta del fichero.
+     * @param preview Etiqueta visual donde volcar miniatura del archivo cargado.
+     */
     private void seleccionarImagenProducto(JTextField campoImagen, JLabel preview) {
         JFileChooser chooser = new JFileChooser(".");
         chooser.setFileFilter(new FileNameExtensionFilter("Imágenes", "png", "jpg", "jpeg", "gif"));
@@ -1124,6 +1479,37 @@ public class PanelGestor extends JPanel {
         preview.setIcon(new ImageIcon(escalada));
     }
 
+    /**
+     * Extrae y compila las cadenas de múltiples componentes de texto en un
+     * párrafo enorme amalgamado. Utilizado para convertir en string las métricas detalladas del producto.
+     * 
+     * @param tipo El tipo base sobre el que discriminar qué tab está activo (CÓMIC, JUEGO, FIGURA).
+     * @param descripcion La descripción base del objeto.
+     * @param comicPaginas Campo referenciado de cómic.
+     * @param comicAutor Campo referenciado de cómic.
+     * @param comicEditorial Campo referenciado de cómic.
+     * @param comicGenero Campo referenciado de cómic.
+     * @param comicAnio Campo referenciado de cómic.
+     * @param comicIdioma Campo referenciado de cómic.
+     * @param comicFormato Campo referenciado de cómic.
+     * @param comicIsbn Campo referenciado de cómic.
+     * @param juegoJugadoresMin Campo referenciado de juego.
+     * @param juegoJugadoresMax Campo referenciado de juego.
+     * @param juegoEdad Campo referenciado de juego.
+     * @param tipoJuego Campo referenciado de juego.
+     * @param juegoDuración Campo referenciado de juego.
+     * @param juegoEditorial Campo referenciado de juego.
+     * @param juegoIdioma Campo referenciado de juego.
+     * @param juegoComponentes Campo referenciado de juego.
+     * @param figuraAltura Campo referenciado de figura.
+     * @param figuraMarca Campo referenciado de figura.
+     * @param figuraMaterial Campo referenciado de figura.
+     * @param figuraEscala Campo referenciado de figura.
+     * @param figuraPersonaje Campo referenciado de figura.
+     * @param figuraFranquicia Campo referenciado de figura.
+     * @param figuraArticulada Campo referenciado de figura.
+     * @return Una representación en texto extendido que funde la descripción con atributos concretos.
+     */
     private String descripcionConDetalles(String tipo, String descripcion,
             JSpinner comicPaginas, JTextField comicAutor, JTextField comicEditorial,
             JComboBox<Genero> comicGenero, JSpinner comicAnio, JTextField comicIdioma,
@@ -1169,15 +1555,33 @@ public class PanelGestor extends JPanel {
         return texto.toString();
     }
 
+    /**
+     * Recupera y formatea con seguridad el texto introducido en una caja genérica de texto.
+     * 
+     * @param campo Control visual del que recuperar la cadena.
+     * @return El contenido limpio, o "No indicado" si no contenía datos viables.
+     */
     private String textoCampo(JTextField campo) {
         return campo.getText() == null || campo.getText().isBlank() ? "No indicado" : campo.getText().trim();
     }
 
+    /**
+     * Recupera y formatea con seguridad el texto introducido en un área multilínea.
+     * 
+     * @param campo Control visual del que recuperar el texto ampliado.
+     * @return El contenido textual limpio, o "No indicado" si carece de longitud o texto real.
+     */
     private String textoArea(JTextArea campo) {
         return campo.getText() == null || campo.getText().isBlank() ? "No indicado" : campo.getText().trim();
     }
 
-   
+    /**
+     * Modal principal encargado de la gestión de packs. Permite la introducción
+     * de su nombre general, la categoría, el costo unitario del paquete
+     * y modificar qué productos o en qué cantidad los contiene.
+     * 
+     * @param pack El objeto `Pack` que se modificará, si es nulo se considera un proceso de creación.
+     */
     private void editarPack(Pack pack) {
         JTextField nombre = new JTextField(pack == null ? "" : pack.getNombre());
         nombre.setEnabled(pack == null);
@@ -1238,6 +1642,14 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Control de interfaz que actúa como un buscador, recorriendo el array paralelo
+     * de los elementos gráficos de un paquete ocultando/mostrando aquellos que coincidan con su texto.
+     * 
+     * @param filtro El string de búsqueda contra el cual comparar.
+     * @param productos El componente general que contiene las filas.
+     * @param cantidades La lista enlazada a spinners que contienen el metadato del producto de forma individual.
+     */
     private void filtrarCantidadesProducto(String filtro, JPanel productos, List<JSpinner> cantidades) {
         String normalizado = filtro == null ? "" : filtro.trim().toLowerCase();
         productos.removeAll();
@@ -1252,6 +1664,14 @@ public class PanelGestor extends JPanel {
         productos.repaint();
     }
 
+    /**
+     * Extrae cuántas veces está referenciado un único producto individualmente dentro
+     * del array agrupador de un pack en concreto.
+     * 
+     * @param pack Objeto paquete que engloba a los demás (Si nulo retorna 0 directamente).
+     * @param producto Referencia del producto original sobre el que se hace la búsqueda.
+     * @return Conteo absoluto de ocurrencias.
+     */
     private int cantidadProductoPack(Pack pack, ProductoTienda producto) {
         if (pack == null) {
             return 0;
@@ -1265,6 +1685,12 @@ public class PanelGestor extends JPanel {
         return cantidad;
     }
 
+    /**
+     * Muestra un cuadro de diálogo confirmando la evaluación y valor estimado
+     * de un bien insertado al mercado por parte de un consumidor/vendedor externo.
+     * 
+     * @param producto Componente a puntuar en estado y fijar precio monetario.
+     */
     private void valorarProductoSegundaMano(ProductoSegundaMano producto) {
         if (producto.getEstaValorado()) {
             JOptionPane.showMessageDialog(this,
@@ -1295,6 +1721,12 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Control del flujo principal logístico. Transiciona el estado temporal de
+     * un pedido al siguiente si se dan las condiciones viables en el sistema.
+     * 
+     * @param pedido La compra física sujeta de este traslado o avance operativo.
+     */
     private void avanzarPedido(Pedido pedido) {
         if (pedido.getEstadoPedido() == EstadoPedido.EN_PREPARACION) {
             mainFrame.prepararPedido(pedido);
@@ -1303,6 +1735,12 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Lanza una ventana modal informativa volcando íntegramente los campos
+     * del resumen textual vinculados a un identificador de un pedido.
+     * 
+     * @param pedido Objeto de compra completada, pagada, o en espera de entrega.
+     */
     private void mostrarInfoPedido(Pedido pedido) {
         JOptionPane.showMessageDialog(this,
                 "Cliente: " + pedido.getCliente().getNombre()
@@ -1315,6 +1753,12 @@ public class PanelGestor extends JPanel {
                 "Pedido", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Calcula la cantidad física total de artículos albergados en los inventarios.
+     * Iterativo y lento con grandes catálogos.
+     * 
+     * @return El entero que refleja todas las unidades dispuestas.
+     */
     private int totalUnidadesStock() {
         int total = 0;
         for (ProductoTienda producto : mainFrame.getProductosTienda()) {
@@ -1323,6 +1767,13 @@ public class PanelGestor extends JPanel {
         return total;
     }
 
+    /**
+     * Busca qué volumen de pedidos en el estado operativo solicitado existe
+     * actualmente en el arreglo gestionado de pedidos.
+     * 
+     * @param estado Estado objetivo que actúa de discriminador en la búsqueda.
+     * @return Conteo total válido devuelto en tipo entero.
+     */
     private int contarPedidos(EstadoPedido estado) {
         int total = 0;
         for (Pedido pedido : mainFrame.getPedidosGestion()) {
@@ -1333,6 +1784,12 @@ public class PanelGestor extends JPanel {
         return total;
     }
 
+    /**
+     * Realiza un filtrado entre todas las propuestas originadas de forma mutua entre clientes,
+     * determinando aquellas sobre las cuales aún existe posibilidad de decisión.
+     * 
+     * @return Representación en valor entero de los intercambios activos.
+     */
     private int contarIntercambiosPendientes() {
         int total = 0;
         for (Intercambio intercambio : mainFrame.getIntercambios()) {
@@ -1343,6 +1800,12 @@ public class PanelGestor extends JPanel {
         return total;
     }
 
+    /**
+     * Sume la contribución neta total en divisas de todo aquel pedido
+     * validado por el sistema como oficialmente entregado a las manos del cliente.
+     * 
+     * @return Volumen económico de la cuenta con doble precisión decimal.
+     */
     private double totalVentasEntregadas() {
         double total = 0.0;
         for (Pedido pedido : mainFrame.getPedidosGestion()) {
@@ -1353,6 +1816,12 @@ public class PanelGestor extends JPanel {
         return total;
     }
 
+    /**
+     * Realiza un histórico retroactivo agrupando el influjo neto mensual derivado
+     * por las compras resueltas favorablemente durante los últimos once meses más el corriente.
+     * 
+     * @return Mapa ligando el nombre corto mes-año frente al montante recabado.
+     */
     private Map<String, Double> ventasEntregadasPorMes() {
         Map<String, Double> ventas = new LinkedHashMap<>();
         SimpleDateFormat formatoMes = new SimpleDateFormat("MMM yy");
@@ -1383,6 +1852,13 @@ public class PanelGestor extends JPanel {
         return ventas;
     }
 
+    /**
+     * Resuelve qué punto temporal exacto tomar a la hora de ubicar
+     * el pedido estadísticamente según su propia evolución orgánica.
+     * 
+     * @param pedido Muestra u objeto de compra inspeccionado.
+     * @return Timestamp del cobro, envío o inicio originario.
+     */
     private Date fechaEstadisticaPedido(Pedido pedido) {
         if (pedido.getFechaRecogida() != null) {
             return pedido.getFechaRecogida();
@@ -1393,6 +1869,12 @@ public class PanelGestor extends JPanel {
         return pedido.getFechaRealizacion();
     }
 
+    /**
+     * Construye un conglomerado visual que contiene las barras de progreso estáticas
+     * correspondientes de todos los estados válidos programables de un pedido en la tienda.
+     * 
+     * @return Panel listo para incorporarse bajo el área de analíticas.
+     */
     private JPanel crearPanelPedidosPorEstado() {
         JPanel panel = crearTarjeta();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -1407,6 +1889,15 @@ public class PanelGestor extends JPanel {
         return panel;
     }
 
+    /**
+     * Forma de forma individual una de las barras representativas para
+     * ilustrar volumen numérico correlacionado con el estado del pedido, dotando de nombre y color.
+     * 
+     * @param estado Etiqueta a situar a su extremo inicial.
+     * @param valor Magnitud neta.
+     * @param max Tope superior limitante y que se equiparará con el ancho de banda del 100%.
+     * @return Hilera gráfica final con el ratio pintado con el widget interno de la clase "BarraProgreso".
+     */
     private JPanel crearBarraEstado(EstadoPedido estado, int valor, int max) {
         JPanel fila = new JPanel(new BorderLayout(12, 0));
         fila.setOpaque(false);
@@ -1424,6 +1915,14 @@ public class PanelGestor extends JPanel {
         return fila;
     }
 
+    /**
+     * Construye la barra de progreso particular vinculada al número de
+     * adquisiciones totales resueltas por un individuo del modelo.
+     * 
+     * @param cliente Instancia del cliente en la cual basar la métrica de éxito.
+     * @param maxCompras Ratio superpuesto por el cliente con mayor volumen para trazar el límite 100%.
+     * @return JPanel del cliente individual asimilado en la clasificación líder.
+     */
     private JPanel crearBarraCliente(ClienteRegistrado cliente, int maxCompras) {
         JPanel fila = crearTarjeta();
         fila.setLayout(new BorderLayout(12, 0));
@@ -1443,6 +1942,13 @@ public class PanelGestor extends JPanel {
         return fila;
     }
 
+    /**
+     * Recupera un color estandarizado pre-mapeado en función de en
+     * qué ciclo se encuentra varada la transacción analizada.
+     * 
+     * @param estado Estado lógico a inquirir.
+     * @return Un objeto de la clase Color con componentes RGB pre-ajustadas.
+     */
     private Color colorEstadoPedido(EstadoPedido estado) {
         switch (estado) {
         case EN_CARRITO:
@@ -1460,6 +1966,12 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Acumula de manera unitaria la suma íntegra de valoraciones estipuladas
+     * de lo que el sistema contabiliza en objetos de segunda mano pendientes.
+     * 
+     * @return Sumatorio devuelto como punto flotante de 64 bits.
+     */
     private double totalValoraciones() {
         double total = 0.0;
         for (ProductoSegundaMano producto : mainFrame.getProductosSegundaManoGestion()) {
@@ -1468,12 +1980,26 @@ public class PanelGestor extends JPanel {
         return total;
     }
 
+    /**
+     * Comprueba flag y/o magnitudes absolutas si algún atributo está
+     * forzando al producto a presentar una tarificación no original.
+     * 
+     * @param producto Ente bajo escrutinio.
+     * @return Boolean indicativo de la existencia del descuento.
+     */
     private boolean tieneDescuento(ProductoTienda producto) {
         return producto.getRebajaPorcentaje() > 0
                 || producto.getRebajaFija() > 0
                 || producto.isTiene2x1();
     }
 
+    /**
+     * Crea un glosario resumido con todos aquellos aspectos que
+     * reduzcan explícitamente el montante a abonar para una unidad del objeto.
+     * 
+     * @param producto Componente a formatear.
+     * @return Texto resultante delimitado por comas.
+     */
     private String textoDescuento(ProductoTienda producto) {
         List<String> partes = new ArrayList<>();
         if (producto.getRebajaPorcentaje() > 0) {
@@ -1488,6 +2014,13 @@ public class PanelGestor extends JPanel {
         return partes.isEmpty() ? "sin descuento" : String.join(", ", partes);
     }
 
+    /**
+     * Facilita el volcado rápido en cadena alfabética de la estructura
+     * lógica categorizada referenciada.
+     * 
+     * @param producto Producto a extraer su categorización.
+     * @return String de agrupamiento con las clasificaciones adyacentes si hay más de una.
+     */
     private String textoCategorías(ProductoTienda producto) {
         List<String> categorias = producto.getCategoriasTexto();
         if (!categorias.isEmpty()) {
@@ -1496,15 +2029,35 @@ public class PanelGestor extends JPanel {
         return producto.getCategoria() == null ? "sin categorías" : producto.getCategoria().getNombre();
     }
 
+    /**
+     * Devuelve una lectura en lenguaje explícito del set o enumeración de
+     * autoridades delegadas hacia el empleado que accede a estos directorios.
+     * 
+     * @param empleado Instancia de rol subordinado a gestor.
+     * @return Conversión alfabética de los flags permitidos.
+     */
     private String textoPermisos(Empleado empleado) {
         return empleado.getPermisos().isEmpty() ? "sin permisos" : empleado.getPermisos().toString();
     }
 
+    /**
+     * Formateador compacto enfocado para una visualización muy reducida de la identidad de venta.
+     * 
+     * @param pedido Cesta o canasto a sintetizar.
+     * @return Línea de texto breve de HTML interpretativo.
+     */
     private String resumenPedido(Pedido pedido) {
         return "<b>" + pedido.getEstadoPedido() + "</b> | " + pedido.getCliente().getNombre()
                 + " | " + resumenProductosPedido(pedido);
     }
 
+    /**
+     * Formatea un texto explicativo del estatus económico y del ofertante
+     * de algo sometido como bien de reventa de un individuo para con el sistema o tienda física.
+     * 
+     * @param producto Cúmulo de datos referenciado a segunda mano.
+     * @return Cadena que incluye el propietario y una mención de tasación o espera de esta.
+     */
     private String textoProductoSegundaMano(ProductoSegundaMano producto) {
         String valor = producto.getEstaValorado()
                 ? String.format("%.2f EUR | %s", producto.getValorEstimado(), producto.getEstadoConservacion())
@@ -1513,6 +2066,13 @@ public class PanelGestor extends JPanel {
                 + producto.getPropietario().getNombre() + " | " + valor;
     }
 
+    /**
+     * Ejecuta una recolección pormenorizada del listado adjunto del HashMap y recuenta
+     * iterativamente su cantidad anexándola al nominativo de este en una String corrida.
+     * 
+     * @param pedido Identificador de venta del que descifrar su carrito.
+     * @return Frase gramatical indicando los elementos insertados.
+     */
     private String resumenProductosPedido(Pedido pedido) {
         StringBuilder productos = new StringBuilder();
         for (Map.Entry<ProductoTienda, Integer> entry : pedido.getProductos().entrySet()) {
@@ -1524,6 +2084,13 @@ public class PanelGestor extends JPanel {
         return productos.toString();
     }
 
+    /**
+     * Acopla la información desordenada dentro del agregado pre-armado
+     * mediante su contabilización y sumatoria local a nivel de vista del gestor.
+     * 
+     * @param pack Envolvente a computar.
+     * @return Frase de la lista que lo engloba uniendo sus designaciones y categorías.
+     */
     private String resumenPack(Pack pack) {
         StringBuilder texto = new StringBuilder();
         Map<ProductoTienda, Integer> cantidades = new LinkedHashMap<>();
@@ -1543,15 +2110,35 @@ public class PanelGestor extends JPanel {
         return texto.length() == 0 ? "sin productos" : texto.toString();
     }
 
+    /**
+     * Obtiene el texto representativo o nombre de la categoría asignada directamente
+     * hacia un lote predispuesto.
+     * 
+     * @param pack Paquete al cual referenciar su clasificación matriz.
+     * @return El nombre recuperado, o "sin categoría" si por fallos de diseño carece de este.
+     */
     private String categoriaPack(Pack pack) {
         String categoria = pack.getCategoria();
         return categoria == null || categoria.isBlank() ? "sin categoría" : categoria;
     }
 
+    /**
+     * Puente auxiliar para invocar el texto de jerarquías sobre un bien general.
+     * 
+     * @param producto Elemento de consulta.
+     * @return String de agrupamiento de la entidad.
+     */
     private String categoriaProducto(ProductoTienda producto) {
         return textoCategorías(producto);
     }
 
+    /**
+     * Divide a partir de comas simples una palabra extendida transformándola de
+     * forma automatizada al entorno genérico coleccionable de Java (List).
+     * 
+     * @param texto Input crudo del gestor introducido en un JTextField.
+     * @return Un vector enlazado listado como ArrayList conteniendo todas ellas limpias de espacios blancos.
+     */
     private List<String> parseCategorías(String texto) {
         List<String> categorias = new ArrayList<>();
         if (texto == null || texto.isBlank()) {
@@ -1565,6 +2152,14 @@ public class PanelGestor extends JPanel {
         return categorias;
     }
 
+    /**
+     * Interpreta de manera blindada el cambio desde texto libre a decimal doble,
+     * reemplazando convenciones europeas en coma para evitar saltos de línea (crashes).
+     * 
+     * @param texto Fuente originaria o input del usuario que requiere el traspaso.
+     * @param defecto Número comodín por el que decantarse de saltar el "NumberFormatException".
+     * @return El doble válido.
+     */
     private double parseDouble(String texto, double defecto) {
         if (texto == null || texto.isBlank()) {
             return defecto;
@@ -1576,6 +2171,12 @@ public class PanelGestor extends JPanel {
         }
     }
 
+    /**
+     * Devuelve una lámina vacía provista de bordes redondeados orientada hacia
+     * organizar bloques independientes dentro de un gran contenedor como las estadísticas.
+     * 
+     * @return Módulo de tarjeta JPanel.
+     */
     private JPanel crearTarjeta() {
         JPanel tarjeta = new UiStyle.RoundedPanel(UiStyle.COLOR_TARJETA, 18);
         tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
@@ -1584,6 +2185,13 @@ public class PanelGestor extends JPanel {
         return tarjeta;
     }
 
+    /**
+     * Fabrica dinámicamente un JLabel en función paramétrica portando formato
+     * grueso como rotulación primaria en cabezas de bloque.
+     * 
+     * @param texto Inscripción base requerida.
+     * @return JLabel formalizado y dotado de grandes márgenes.
+     */
     private JLabel crearTitulo(String texto) {
         JLabel titulo = new JLabel(texto, SwingConstants.LEFT);
         titulo.setFont(new Font("SansSerif", Font.BOLD, 24));
@@ -1592,6 +2200,13 @@ public class PanelGestor extends JPanel {
         return titulo;
     }
 
+    /**
+     * Fabrica un componente auxiliar como un subtítulo para dotar
+     * de explicación en contextos donde la cabecera queda insuficiente.
+     * 
+     * @param texto Explicación requerida para el componente de vista contiguo.
+     * @return Título formatado de grado 2 ó menor.
+     */
     private JLabel crearSubtitulo(String texto) {
         JLabel label = new JLabel(texto, SwingConstants.LEFT);
         label.setFont(new Font("SansSerif", Font.PLAIN, 14));
@@ -1600,6 +2215,13 @@ public class PanelGestor extends JPanel {
         return label;
     }
 
+    /**
+     * Agiliza la composición de strings de interfaz envueltos por la etiqueta `<html>`,
+     * soportando saltos o tipografías especiales.
+     * 
+     * @param texto Información raw.
+     * @return Equivalente JLabel instanciado con colores estandarizados.
+     */
     private JLabel crearEtiqueta(String texto) {
         JLabel label = new JLabel("<html>" + texto + "</html>");
         label.setFont(new Font("SansSerif", Font.PLAIN, 14));
@@ -1607,6 +2229,14 @@ public class PanelGestor extends JPanel {
         return label;
     }
 
+    /**
+     * Diseña y provee de estructura los botones más recurrentes de interacciones de control
+     * acotados hacia las dimensiones facilitadas por los márgenes de ventana en gestor.
+     * 
+     * @param texto Enunciado interior del control interaccionable.
+     * @param ancho Escala predefinida como preferente, evitando que se colapse la rejilla.
+     * @return Botón plenamente customizado asilando las clases `UiStyle`.
+     */
     private JButton crearBoton(String texto, int ancho) {
         JButton boton = new UiStyle.RoundedButton(texto, UiStyle.COLOR_TEXTO,
                 UiStyle.COLOR_MARRON_MEDIO, 18);
@@ -1617,14 +2247,25 @@ public class PanelGestor extends JPanel {
         return boton;
     }
 
-    /** Dato interno asociado a campo. */
+    /**
+     * Clase interna encargada de proveer de representación gráfica personalizada 
+     * en 2D de las ventas mensuales históricas computadas a través de barras de dibujo.
+     */
     private static class GraficaVentasMensuales extends JPanel {
 
         private static final long serialVersionUID = 1L;
 
-        /** Dato interno asociado a ventas. */
+        /** 
+         * Referencia constante al mapa que asocia el mes (en texto) frente
+         * a su respectivo sumatorio en ventas entregadas durante el ciclo. 
+         */
         private final Map<String, Double> ventas;
 
+        /**
+         * Constructor de la gráfica dinámica interna de ventas.
+         * 
+         * @param ventas Origen de datos para proyectar las barras numéricas proporcionalmente.
+         */
         GraficaVentasMensuales(Map<String, Double> ventas) {
             this.ventas = ventas;
             setOpaque(false);
@@ -1693,18 +2334,36 @@ public class PanelGestor extends JPanel {
         }
     }
 
-    /** Dato interno asociado a campo. */
+    /**
+     * Componente UI personalizado en un dibujo en 2D dedicado 
+     * a mostrar una barra gráfica horizontal ilustrando el relleno en proporción a un máximo.
+     */
     private static class BarraProgreso extends JPanel {
 
         private static final long serialVersionUID = 1L;
 
-        /** Dato interno asociado a valor. */
+        /** 
+         * Magnitud real lograda y completada de la barra que el usuario tiene sobre sí. 
+         */
         private final int valor;
-        /** Dato interno asociado a max. */
+        
+        /** 
+         * Tope artificial al 100% que representará gráficamente el fin del renderizado de la barra. 
+         */
         private final int max;
-        /** Dato interno asociado a color. */
+        
+        /** 
+         * Color corporativo o dependiente del estado que teñirá el tramo completado de dicha barra. 
+         */
         private final Color color;
 
+        /**
+         * Inicializa una barra de progreso genérica para su pintado en vista de estadísticas.
+         * 
+         * @param valor Unidades netas cubiertas o consolidadas.
+         * @param max Límite base o mejor resultado pre-existente.
+         * @param color Tono de pintado.
+         */
         BarraProgreso(int valor, int max, Color color) {
             this.valor = valor;
             this.max = Math.max(1, max);
