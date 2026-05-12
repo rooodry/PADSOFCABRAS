@@ -43,45 +43,45 @@ import productos.ProductoTienda;
 
 
 /**
- * Representa el componente PanelDeProducto de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a PanelDeProducto.
  */
 public class PanelDeProducto extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /**      * Estado interno de MAX_ESTRELLAS.      */
+    /** Dato interno asociado a MAX_ESTRELLAS. */
     private static final int MAX_ESTRELLAS = 5;
-    /**      * Estado interno de ANCHO_IZQUIERDA.      */
+    /** Dato interno asociado a ANCHO_IZQUIERDA. */
     private static final int ANCHO_IZQUIERDA = 270;
     private static final Color COLOR_COMENTARIO = new Color(145, 124, 101);
 
-    /**      * Estado interno de producto.      */
+    /** Dato interno asociado a producto. */
     private final ProductoTienda producto;
-    /**      * Estado interno de mainFrame.      */
+    /** Dato interno asociado a mainFrame. */
     private final Main mainFrame;
     /** Lista de acciones registradas para añadir productos a la cesta. */
     private final List<ActionListener> listenersCesta = new ArrayList<>();
-    /**      * Estado interno de editable.      */
+    /** Dato interno asociado a editable. */
     private final boolean editable;
-    /**      * Estado interno de botonCesta.      */
+    /** Dato interno asociado a botonCesta. */
     private JButton botonCesta;
-    /**      * Estado interno de campoNombre.      */
+    /** Dato interno asociado a campoNombre. */
     private JTextField campoNombre;
-    /**      * Estado interno de campoPrecio.      */
+    /** Dato interno asociado a campoPrecio. */
     private JTextField campoPrecio;
-    /**      * Estado interno de campoStock.      */
+    /** Dato interno asociado a campoStock. */
     private JSpinner campoStock;
-    /**      * Estado interno de campoCantidadCesta.      */
+    /** Dato interno asociado a campoCantidadCesta. */
     private JSpinner campoCantidadCesta;
-    /**      * Estado interno de campoImagen.      */
+    /** Dato interno asociado a campoImagen. */
     private JTextField campoImagen;
-    /**      * Estado interno de campoCategorias.      */
+    /** Dato interno asociado a campoCategorias. */
     private JTextField campoCategorias;
-    /**      * Estado interno de campoDescripcion.      */
+    /** Dato interno asociado a campoDescripcion. */
     private JTextArea campoDescripcion;
-    /**      * Estado interno de scrollComentarios.      */
+    /** Dato interno asociado a scrollComentarios. */
     private JScrollPane scrollComentarios;
-    /**      * Estado interno de listenerEdicion.      */
+    /** Dato interno asociado a listenerEdicion. */
     private ListenerEdicion listenerEdicion;
 
     /**
@@ -155,8 +155,8 @@ public class PanelDeProducto extends JPanel {
     }
 
     /**
-     * Ejecuta la operacion publica setListenerEdicion.
-     * @param listenerEdicion parametro utilizado por la operacion
+     * Gestiona la accion de setListenerEdicion.
+     * @param listenerEdicion valor recibido por el metodo
      */
     public void setListenerEdicion(ListenerEdicion listenerEdicion) {
         this.listenerEdicion = listenerEdicion;

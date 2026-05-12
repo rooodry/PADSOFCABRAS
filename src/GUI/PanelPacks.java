@@ -21,15 +21,15 @@ import productos.Producto;
 
 
 /**
- * Representa el componente PanelPacks de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a PanelPacks.
  */
 public class PanelPacks extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /**      * Estado interno de mainFrame.      */
+    /** Dato interno asociado a mainFrame. */
     private final Main mainFrame;
-    /**      * Estado interno de grid.      */
+    /** Dato interno asociado a grid. */
     private final JPanel grid;
 
     /**

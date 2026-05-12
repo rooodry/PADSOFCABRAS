@@ -65,47 +65,47 @@ import utilidades.TiposEmpleado;
 
 
 /**
- * Representa el componente PanelGestor de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a PanelGestor.
  */
 public class PanelGestor extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /**      * Estado interno de DASHBOARD.      */
+    /** Dato interno asociado a DASHBOARD. */
     private static final String DASHBOARD = "DASHBOARD";
-    /**      * Estado interno de EMPLEADOS.      */
+    /** Dato interno asociado a EMPLEADOS. */
     private static final String EMPLEADOS = "EMPLEADOS";
-    /**      * Estado interno de INVENTARIO.      */
+    /** Dato interno asociado a INVENTARIO. */
     private static final String INVENTARIO = "INVENTARIO";
-    /**      * Estado interno de DESCUENTOS.      */
+    /** Dato interno asociado a DESCUENTOS. */
     private static final String DESCUENTOS = "DESCUENTOS";
-    /**      * Estado interno de SEGUNDA_MANO.      */
+    /** Dato interno asociado a SEGUNDA_MANO. */
     private static final String SEGUNDA_MANO = "SEGUNDA_MANO";
-    /**      * Estado interno de PACKS.      */
+    /** Dato interno asociado a PACKS. */
     private static final String PACKS = "PACKS";
-    /**      * Estado interno de OPERATIVA.      */
+    /** Dato interno asociado a OPERATIVA. */
     private static final String OPERATIVA = "OPERATIVA";
-    /**      * Estado interno de ESTADISTICAS.      */
+    /** Dato interno asociado a ESTADISTICAS. */
     private static final String ESTADISTICAS = "ESTADISTICAS";
-    /**      * Estado interno de DETALLE_PRODUCTO.      */
+    /** Dato interno asociado a DETALLE_PRODUCTO. */
     private static final String DETALLE_PRODUCTO = "DETALLE_PRODUCTO";
 
-    /**      * Estado interno de mainFrame.      */
+    /** Dato interno asociado a mainFrame. */
     private final Main mainFrame;
-    /**      * Estado interno de contenido.      */
+    /** Dato interno asociado a contenido. */
     private final JPanel contenido;
     /** Formatea fechas de pedidos, ventas e intercambios. */
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
-    /**      * Estado interno de seccionActiva.      */
+    /** Dato interno asociado a seccionActiva. */
     private String seccionActiva;
-    /**      * Estado interno de productoSeleccionado.      */
+    /** Dato interno asociado a productoSeleccionado. */
     private ProductoTienda productoSeleccionado;
-    /**      * Estado interno de editandoProducto.      */
+    /** Dato interno asociado a editandoProducto. */
     private boolean editandoProducto;
 
     /**
      * Construye una instancia de PanelGestor.
-     * @param mainFrame parametro utilizado por la operacion
+     * @param mainFrame valor recibido por el metodo
      */
     public PanelGestor(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -120,7 +120,7 @@ public class PanelGestor extends JPanel {
     }
 
     /**
-     * Ejecuta la operacion publica refrescar.
+     * Gestiona la accion de refrescar.
      */
     public void refrescar() {
         contenido.removeAll();
@@ -357,8 +357,8 @@ public class PanelGestor extends JPanel {
         vistaCliente.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             /**
-             * Ejecuta la operacion publica mouseClicked.
-             * @param e parametro utilizado por la operacion
+             * Gestiona la accion de mouseClicked.
+             * @param e valor recibido por el metodo
              */
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 abrirDetalleProducto(producto, false);
@@ -432,8 +432,8 @@ public class PanelGestor extends JPanel {
         detalle.setListenerEdicion(new PanelDeProducto.ListenerEdicion() {
             @Override
             /**
-             * Ejecuta la operacion publica confirmar.
-             * @param datos parametro utilizado por la operacion
+             * Gestiona la accion de confirmar.
+             * @param datos valor recibido por el metodo
              */
             public void confirmar(PanelDeProducto.DatosEdicion datos) {
                 mainFrame.editarProductoTienda(productoSeleccionado,
@@ -449,7 +449,7 @@ public class PanelGestor extends JPanel {
 
             @Override
             /**
-             * Ejecuta la operacion publica cancelar.
+             * Gestiona la accion de cancelar.
              */
             public void cancelar() {
                 editandoProducto = false;
@@ -1617,12 +1617,12 @@ public class PanelGestor extends JPanel {
         return boton;
     }
 
-    /**      * Estado interno de campo.      */
+    /** Dato interno asociado a campo. */
     private static class GraficaVentasMensuales extends JPanel {
 
         private static final long serialVersionUID = 1L;
 
-        /**          * Estado interno de ventas.          */
+        /** Dato interno asociado a ventas. */
         private final Map<String, Double> ventas;
 
         GraficaVentasMensuales(Map<String, Double> ventas) {
@@ -1693,16 +1693,16 @@ public class PanelGestor extends JPanel {
         }
     }
 
-    /**      * Estado interno de campo.      */
+    /** Dato interno asociado a campo. */
     private static class BarraProgreso extends JPanel {
 
         private static final long serialVersionUID = 1L;
 
-        /**          * Estado interno de valor.          */
+        /** Dato interno asociado a valor. */
         private final int valor;
-        /**          * Estado interno de max.          */
+        /** Dato interno asociado a max. */
         private final int max;
-        /**          * Estado interno de color.          */
+        /** Dato interno asociado a color. */
         private final Color color;
 
         BarraProgreso(int valor, int max, Color color) {

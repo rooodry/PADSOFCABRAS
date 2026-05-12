@@ -40,43 +40,43 @@ import utilidades.EstadoProducto;
 
 
 /**
- * Representa el componente PanelIntercambios de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a PanelIntercambios.
  */
 public class PanelIntercambios extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    /**      * Estado interno de TAB_LANZAR.      */
+    /** Dato interno asociado a TAB_LANZAR. */
     private static final String TAB_LANZAR = "LANZAR OFERTA";
-    /**      * Estado interno de TAB_OFERTAS.      */
+    /** Dato interno asociado a TAB_OFERTAS. */
     private static final String TAB_OFERTAS = "OFERTAS";
 
-    /**      * Estado interno de mainFrame.      */
+    /** Dato interno asociado a mainFrame. */
     private final Main mainFrame;
-    /**      * Estado interno de panelContenido.      */
+    /** Dato interno asociado a panelContenido. */
     private final JPanel panelContenido;
-    /**      * Estado interno de btnLanzarOferta.      */
+    /** Dato interno asociado a btnLanzarOferta. */
     private final JButton btnLanzarOferta;
-    /**      * Estado interno de btnOfertas.      */
+    /** Dato interno asociado a btnOfertas. */
     private final JButton btnOfertas;
-    /**      * Estado interno de txtBuscar.      */
+    /** Dato interno asociado a txtBuscar. */
     private final JTextField txtBuscar;
     /** Formatea las fechas mostradas en los intercambios. */
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
 
-    /**      * Estado interno de tabActivo.      */
+    /** Dato interno asociado a tabActivo. */
     private String tabActivo = TAB_LANZAR;
-    /**      * Estado interno de terminoBusqueda.      */
+    /** Dato interno asociado a terminoBusqueda. */
     private String terminoBusqueda = "";
-    /**      * Estado interno de mercado.      */
+    /** Dato interno asociado a mercado. */
     private List<ProductoSegundaMano> mercado;
-    /**      * Estado interno de productoSeleccionado.      */
+    /** Dato interno asociado a productoSeleccionado. */
     private ProductoSegundaMano productoSeleccionado;
-    /**      * Estado interno de eligiendoProductoPropio.      */
+    /** Dato interno asociado a eligiendoProductoPropio. */
     private boolean eligiendoProductoPropio = false;
 
     /**
      * Construye una instancia de PanelIntercambios.
-     * @param mainFrame parametro utilizado por la operacion
+     * @param mainFrame valor recibido por el metodo
      */
     public PanelIntercambios(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -87,8 +87,8 @@ public class PanelIntercambios extends JPanel {
         this.txtBuscar.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             /**
-             * Ejecuta la operacion publica insertUpdate.
-             * @param e parametro utilizado por la operacion
+             * Gestiona la accion de insertUpdate.
+             * @param e valor recibido por el metodo
              */
             public void insertUpdate(DocumentEvent e) {
                 actualizarBusqueda();
@@ -96,8 +96,8 @@ public class PanelIntercambios extends JPanel {
 
             @Override
             /**
-             * Ejecuta la operacion publica removeUpdate.
-             * @param e parametro utilizado por la operacion
+             * Gestiona la accion de removeUpdate.
+             * @param e valor recibido por el metodo
              */
             public void removeUpdate(DocumentEvent e) {
                 actualizarBusqueda();
@@ -105,8 +105,8 @@ public class PanelIntercambios extends JPanel {
 
             @Override
             /**
-             * Ejecuta la operacion publica changedUpdate.
-             * @param e parametro utilizado por la operacion
+             * Gestiona la accion de changedUpdate.
+             * @param e valor recibido por el metodo
              */
             public void changedUpdate(DocumentEvent e) {
                 actualizarBusqueda();
@@ -121,7 +121,7 @@ public class PanelIntercambios extends JPanel {
     }
 
     /**
-     * Ejecuta la operacion publica refrescar.
+     * Gestiona la accion de refrescar.
      */
     public void refrescar() {
         mainFrame.actualizarIntercambiosCaducados();

@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 /**
  * Fachada de negocio que coordina usuarios, productos, pedidos, descuentos e intercambios.
  */
-public class sistema {
+public class Sistema {
 
     private List<Producto> productos;
     private List<Descuento> descuentos;
@@ -44,7 +44,7 @@ public class sistema {
     /**
      * Constructor por defecto. Inicializa las listas del sistema y establece el stock a nulo.
      */
-    public sistema() {
+    public Sistema() {
         this.productos = new ArrayList<>();
         this.descuentos = new ArrayList<>();
         this.usuarios = new ArrayList<>();

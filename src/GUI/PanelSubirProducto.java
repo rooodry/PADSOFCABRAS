@@ -6,21 +6,26 @@ import java.awt.*;
 import java.io.File;
 
 /**
- * Representa el componente PanelSubirProducto de la interfaz grafica.
+ * Formulario de alta de productos de segunda mano del cliente.
+ *
+ * <p>Permite introducir nombre, descripcion e imagen del producto antes de
+ * incorporarlo a la cartera del usuario registrado.</p>
  */
 public class PanelSubirProducto extends JPanel {
-    /**      * Estado interno de mainFrame.      */
+    /** Controlador principal usado para guardar el producto y navegar entre pantallas. */
     private Main mainFrame;
-    /**      * Estado interno de txtNombre.      */
+    /** Campo donde el usuario escribe el nombre del producto. */
     private JTextField txtNombre;
-    /**      * Estado interno de txtDescripcion.      */
+    /** Area de texto donde se describe el estado y detalles del producto. */
     private JTextArea txtDescripcion;
-    /**      * Estado interno de txtImagen.      */
+    /** Campo con la ruta de la imagen seleccionada para el producto. */
     private JTextField txtImagen;
 
     /**
-     * Construye una instancia de PanelSubirProducto.
-     * @param mainFrame parametro utilizado por la operacion
+     * Construye el formulario de subida y enlaza las acciones de guardar,
+     * cancelar y seleccionar imagen.
+     *
+     * @param mainFrame controlador principal de la aplicacion
      */
     public PanelSubirProducto(Main mainFrame) {
         this.mainFrame = mainFrame;

@@ -6,16 +6,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Representa el componente LogIn de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a LogIn.
  */
 public class LogIn {
 
 
-    /**      * Estado interno de ventana.      */
+    /** Dato interno asociado a ventana. */
     private JFrame ventana;
-    /**      * Estado interno de panelContenedor.      */
+    /** Dato interno asociado a panelContenedor. */
     private JPanel panelContenedor;
-    /**      * Estado interno de cardLayout.      */
+    /** Dato interno asociado a cardLayout. */
     private CardLayout cardLayout;
 
     /**
@@ -122,8 +122,8 @@ public class LogIn {
         btnCrearCuenta.addActionListener(new ActionListener() {
             @Override
             /**
-             * Ejecuta la operacion publica actionPerformed.
-             * @param e parametro utilizado por la operacion
+             * Gestiona la accion de actionPerformed.
+             * @param e valor recibido por el metodo
              */
             public void actionPerformed(ActionEvent e) {
 
@@ -190,8 +190,8 @@ public class LogIn {
         btnCancelar.addActionListener(new ActionListener() {
             @Override
             /**
-             * Ejecuta la operacion publica actionPerformed.
-             * @param e parametro utilizado por la operacion
+             * Gestiona la accion de actionPerformed.
+             * @param e valor recibido por el metodo
              */
             public void actionPerformed(ActionEvent e) {
 
@@ -213,13 +213,13 @@ public class LogIn {
 
     /**
      * Punto de entrada de la aplicacion.
-     * @param args parametro utilizado por la operacion
+     * @param args valor recibido por el metodo
      */
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(new Runnable() {
             /**
-             * Ejecuta la operacion publica run.
+             * Gestiona la accion de run.
              */
             public void run() {
                 new LogIn();

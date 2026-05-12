@@ -9,17 +9,23 @@ import productos.ProductoTienda;
 
 
 /**
- * Representa el componente PanelProductos de la interfaz grafica.
+ * Panel de catalogo reutilizable para presentar productos de tienda.
+ *
+ * <p>Construye una cabecera simple, una cuadricula de tarjetas y el dialogo de
+ * detalle asociado al producto seleccionado.</p>
  */
 public class PanelProductos extends JPanel {
 
 
+    /** Color de fondo principal del catalogo. */
     private static final Color COLOR_FONDO  = new Color(0xC4, 0xA8, 0x82);
 
 
+    /** Color oscuro usado en la cabecera y botones iconicos. */
     private static final Color COLOR_OSCURO = new Color(0x2B, 0x1F, 0x0E);
 
 
+    /** Color claro usado para texto e iconos sobre fondos oscuros. */
     private static final Color COLOR_CLARO  = new Color(0xE8, 0xD5, 0xB0);
 
 
@@ -108,11 +114,12 @@ public class PanelProductos extends JPanel {
         for (ProductoTienda p : productos) {
             TarjetaProducto tarjeta = new TarjetaProducto(p);
             tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
                 /**
-                 * Ejecuta la operacion publica mouseClicked.
-                 * @param e parametro utilizado por la operacion
+                 * Abre el detalle del producto al pulsar sobre su tarjeta.
+                 *
+                 * @param e evento de raton generado por la tarjeta
                  */
+                @Override
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     abrirDetalle(p);
                 }

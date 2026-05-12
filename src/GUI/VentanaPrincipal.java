@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Representa el componente VentanaPrincipal de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a VentanaPrincipal.
  */
 public class VentanaPrincipal {
 
@@ -16,7 +16,7 @@ public class VentanaPrincipal {
 
     /**
      * Punto de entrada de la aplicacion.
-     * @param args parametro utilizado por la operacion
+     * @param args valor recibido por el metodo
      */
     public static void main(String[] args) {
 
@@ -24,7 +24,7 @@ public class VentanaPrincipal {
     }
 
     /**
-     * Ejecuta la operacion publica iniciar.
+     * Gestiona la accion de iniciar.
      */
     public void iniciar() {
         JFrame ventana = new JFrame("GOAT & GET");

@@ -24,12 +24,12 @@ import productos.ProductoTienda;
 
 
 /**
- * Representa el componente TarjetaProducto de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a TarjetaProducto.
  */
 public class TarjetaProducto extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    /**      * Estado interno de MAX_ESTRELLAS.      */
+    /** Dato interno asociado a MAX_ESTRELLAS. */
     private static final int MAX_ESTRELLAS = 5;
 
     /**

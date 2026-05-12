@@ -41,63 +41,68 @@ import intercambios.Intercambio;
 import intercambios.Oferta;
 import productos.ProductoSegundaMano;
 import productos.ProductoTienda;
+
 /**
- * Representa el componente PanelPerfil de la interfaz grafica.
+ * Panel de perfil del cliente registrado.
+ *
+ * <p>Centraliza la informacion personal del usuario, sus productos
+ * recomendados, el historial de pedidos, el historial de intercambios y las
+ * acciones de configuracion de cuenta.</p>
  */
 public class PanelPerfil extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    /**      * Estado interno de TAB_RECOMENDADOS.      */
+    /** Nombre de la pestana que muestra productos recomendados para el cliente. */
     private static final String TAB_RECOMENDADOS = "Productos recomendados";
-    /**      * Estado interno de TAB_PEDIDOS.      */
+    /** Nombre de la pestana que muestra el historial de pedidos. */
     private static final String TAB_PEDIDOS = "Historial de pedidos";
-    /**      * Estado interno de TAB_INTERCAMBIOS.      */
+    /** Nombre de la pestana que muestra el historial de intercambios. */
     private static final String TAB_INTERCAMBIOS = "Historial de intercambios";
-    /**      * Estado interno de TAB_CONFIG.      */
+    /** Nombre de la pestana de configuracion de cuenta. */
     private static final String TAB_CONFIG = "Configuración";
-    /**      * Estado interno de AVATAR_SIZE.      */
+    /** Tamano en pixeles usado para presentar el avatar del perfil. */
     private static final int AVATAR_SIZE = 150;
 
-    /**      * Estado interno de mainFrame.      */
+    /** Ventana principal que proporciona acceso al estado de sesion y navegacion. */
     private final Main mainFrame;
-    /**      * Estado interno de contenidoCentral.      */
+    /** Contenedor donde se renderiza el contenido de la pestana seleccionada. */
     private final JPanel contenidoCentral;
-    /**      * Estado interno de btnRecomendados.      */
+    /** Boton de navegacion lateral para recomendaciones. */
     private final JButton btnRecomendados;
-    /**      * Estado interno de btnPedidos.      */
+    /** Boton de navegacion lateral para pedidos. */
     private final JButton btnPedidos;
-    /**      * Estado interno de btnIntercambios.      */
+    /** Boton de navegacion lateral para intercambios. */
     private final JButton btnIntercambios;
-    /**      * Estado interno de btnConfig.      */
+    /** Boton de navegacion lateral para configuracion. */
     private final JButton btnConfig;
     /** Formatea las fechas mostradas en el perfil del cliente. */
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
-    /**      * Estado interno de txtNuevoNombre.      */
+    /** Campo de texto usado para editar el nombre visible del cliente. */
     private final JTextField txtNuevoNombre;
-    /**      * Estado interno de lblUsuario.      */
+    /** Etiqueta que muestra el nombre del cliente activo. */
     private final JLabel lblUsuario;
-    /**      * Estado interno de lblDni.      */
+    /** Etiqueta que muestra el DNI del cliente activo. */
     private final JLabel lblDni;
-    /**      * Estado interno de lblAvatar.      */
+    /** Etiqueta que contiene la imagen o texto del avatar del cliente. */
     private final JLabel lblAvatar;
-    /**      * Estado interno de btnGuardarCambios.      */
+    /** Boton que confirma los cambios pendientes de configuracion. */
     private JButton btnGuardarCambios;
-    /**      * Estado interno de nuevoNombrePendiente.      */
+    /** Nuevo nombre preparado antes de guardarse definitivamente. */
     private String nuevoNombrePendiente = null;
-    /**      * Estado interno de contrasenaActualPendiente.      */
+    /** Contrasena actual introducida para validar el cambio de clave. */
     private String contrasenaActualPendiente = null;
-    /**      * Estado interno de nuevaContrasenaPendiente.      */
+    /** Nueva contrasena preparada antes de guardarse definitivamente. */
     private String nuevaContrasenaPendiente = null;
-    /**      * Estado interno de nuevaFotoPendiente.      */
+    /** Ruta de la nueva foto preparada antes de guardarse definitivamente. */
     private String nuevaFotoPendiente = null;
 
-    /**      * Estado interno de tabActivo.      */
+    /** Pestana que se esta mostrando actualmente en el area central. */
     private String tabActivo = TAB_RECOMENDADOS;
 
     /**
-     * Builds the profile panel with tabbed navigation.
+     * Construye el panel de perfil con navegacion lateral por secciones.
      *
-     * @param mainFrame main GUI controller
+     * @param mainFrame controlador principal de la interfaz
      */
     public PanelPerfil(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -209,7 +214,7 @@ public class PanelPerfil extends JPanel {
     }
 
     /**
-     * Refreshes the displayed customer data.
+     * Actualiza los datos visibles del cliente y reconstruye la pestana activa.
      */
     public void refrescar() {
         lblUsuario.setText("@" + mainFrame.getClienteActual().getNombre());
@@ -502,8 +507,8 @@ public class PanelPerfil extends JPanel {
         tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             /**
-             * Ejecuta la operacion publica mouseClicked.
-             * @param e parametro utilizado por la operacion
+             * Gestiona la accion de mouseClicked.
+             * @param e valor recibido por el metodo
              */
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 mostrarDetalleIntercambio(intercambio);

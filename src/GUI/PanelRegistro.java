@@ -9,17 +9,21 @@ import javax.swing.SwingConstants;
 
 
 /**
- * Representa el componente PanelRegistro de la interfaz grafica.
+ * Panel de compatibilidad para el flujo antiguo de registro.
+ *
+ * <p>La pantalla real de registro se gestiona desde {@link Main}; esta clase se
+ * mantiene para no romper codigo que todavia cree el panel por nombre.</p>
  */
 public class PanelRegistro extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Builds a small compatibility placeholder.
+     * Construye un marcador visual que redirige conceptualmente al registro de
+     * {@link Main}.
      *
-     * @param contenedorPrincipal original card container
-     * @param baraja original card layout
+     * @param contenedorPrincipal contenedor de tarjetas original
+     * @param baraja layout de tarjetas original
      */
     public PanelRegistro(JPanel contenedorPrincipal, CardLayout baraja) {
         setLayout(new BorderLayout());

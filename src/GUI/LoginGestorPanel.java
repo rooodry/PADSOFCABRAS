@@ -6,17 +6,17 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
- * Representa el componente LoginGestorPanel de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a LoginGestorPanel.
  */
 public class LoginGestorPanel extends JPanel {
 
-    /**      * Estado interno de mainFrame.      */
+    /** Dato interno asociado a mainFrame. */
     private Main mainFrame;
 
 
     /**
      * Construye una instancia de LoginGestorPanel.
-     * @param mainFrame parametro utilizado por la operacion
+     * @param mainFrame valor recibido por el metodo
      */
     public LoginGestorPanel(Main mainFrame) {
         this.mainFrame = mainFrame;

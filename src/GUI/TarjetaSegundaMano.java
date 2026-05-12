@@ -27,15 +27,15 @@ import utilidades.EstadoProducto;
 
 
 /**
- * Representa el componente TarjetaSegundaMano de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a TarjetaSegundaMano.
  */
 public class TarjetaSegundaMano extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /**      * Estado interno de ANCHO.      */
+    /** Dato interno asociado a ANCHO. */
     private static final int ANCHO = 200;
-    /**      * Estado interno de ALTO.      */
+    /** Dato interno asociado a ALTO. */
     private static final int ALTO = 330;
 
     /**
@@ -50,9 +50,9 @@ public class TarjetaSegundaMano extends JPanel {
 
     /**
      * Construye una instancia de TarjetaSegundaMano.
-     * @param producto parametro utilizado por la operacion
-     * @param listener parametro utilizado por la operacion
-     * @param listenerEliminar parametro utilizado por la operacion
+     * @param producto valor recibido por el metodo
+     * @param listener valor recibido por el metodo
+     * @param listenerEliminar valor recibido por el metodo
      */
     public TarjetaSegundaMano(ProductoSegundaMano producto, ActionListener listener, ActionListener listenerEliminar) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

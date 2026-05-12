@@ -21,15 +21,15 @@ import utilidades.EstadoPedido;
 
 
 /**
- * Representa el componente PanelGestion de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a PanelGestion.
  */
 public class PanelGestion extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /**      * Estado interno de mainFrame.      */
+    /** Dato interno asociado a mainFrame. */
     private final Main mainFrame;
-    /**      * Estado interno de contenido.      */
+    /** Dato interno asociado a contenido. */
     private final JPanel contenido;
 
     /**

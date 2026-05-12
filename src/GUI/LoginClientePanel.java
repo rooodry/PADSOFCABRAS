@@ -30,7 +30,7 @@ import javax.swing.border.EmptyBorder;
 
 
 /**
- * Representa el componente LoginClientePanel de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a LoginClientePanel.
  */
 public class LoginClientePanel extends JPanel {
 
@@ -230,7 +230,7 @@ public class LoginClientePanel extends JPanel {
         add(panelCentral, BorderLayout.CENTER);
     }
 
-    /**      * Estado interno de rbGroup.      */
+    /** Dato interno asociado a rbGroup. */
     private ButtonGroup rbGroup;
 
     private JButton crearBoton(String texto, int ancho) {

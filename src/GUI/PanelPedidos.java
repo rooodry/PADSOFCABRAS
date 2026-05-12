@@ -25,23 +25,27 @@ import utilidades.EstadoPedido;
 
 
 /**
- * Representa el componente PanelPedidos de la interfaz grafica.
+ * Panel de historial de pedidos del cliente actual.
+ *
+ * <p>Muestra cada pedido con su estado, fecha, productos, total y las acciones
+ * disponibles segun el estado del pedido.</p>
  */
 public class PanelPedidos extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /**      * Estado interno de mainFrame.      */
+    /** Controlador principal que aporta el cliente activo y las operaciones de pedidos. */
     private final Main mainFrame;
-    /**      * Estado interno de lista.      */
+    /** Contenedor vertical donde se insertan las tarjetas de pedido. */
     private final JPanel lista;
     /** Formatea las fechas mostradas en el historial de pedidos. */
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     /**
-     * Builds the order-history panel.
+     * Construye el panel de historial de pedidos con cabecera de navegacion y
+     * area desplazable.
      *
-     * @param mainFrame main GUI controller
+     * @param mainFrame controlador principal de la interfaz
      */
     public PanelPedidos(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -55,7 +59,8 @@ public class PanelPedidos extends JPanel {
     }
 
     /**
-     * Rebuilds the list of orders from the active customer.
+     * Reconstruye la lista de pedidos a partir del cliente que tiene la sesion
+     * activa.
      */
     public void refrescar() {
         lista.removeAll();

@@ -39,30 +39,30 @@ import utilidades.TipoNotificacion;
 
 
 /**
- * Representa el componente PanelNotificaciones de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a PanelNotificaciones.
  */
 public class PanelNotificaciones extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /**      * Estado interno de campo.      */
+    /** Dato interno asociado a campo. */
     private enum Filtro {
         TODAS, PENDIENTES, VISTAS
     }
 
     private static final Color COLOR_PAPELERA = new Color(154, 76, 60);
-    /**      * Estado interno de AVATAR_SIZE.      */
+    /** Dato interno asociado a AVATAR_SIZE. */
     private static final int AVATAR_SIZE = 150;
 
-    /**      * Estado interno de mainFrame.      */
+    /** Dato interno asociado a mainFrame. */
     private final Main mainFrame;
-    /**      * Estado interno de lista.      */
+    /** Dato interno asociado a lista. */
     private final JPanel lista;
-    /**      * Estado interno de JButton.      */
+    /** Dato interno asociado a JButton. */
     private final JButton[] botonesFiltro;
     /** Formatea las fechas mostradas en las notificaciones. */
     private final SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-    /**      * Estado interno de filtroActivo.      */
+    /** Dato interno asociado a filtroActivo. */
     private Filtro filtroActivo = Filtro.TODAS;
 
     /**
@@ -244,8 +244,8 @@ public class PanelNotificaciones extends JPanel {
         fila.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             /**
-             * Ejecuta la operacion publica mouseClicked.
-             * @param e parametro utilizado por la operacion
+             * Gestiona la accion de mouseClicked.
+             * @param e valor recibido por el metodo
              */
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 mostrarDetalleNotificacion(notificacion);
@@ -414,11 +414,11 @@ public class PanelNotificaciones extends JPanel {
         return boton;
     }
 
-    /**      * Estado interno de campo.      */
+    /** Dato interno asociado a campo. */
     private static final class IconoTic implements Icon {
-        /**          * Estado interno de SIZE.          */
+        /** Dato interno asociado a SIZE. */
         private static final int SIZE = 24;
-        /**          * Estado interno de color.          */
+        /** Dato interno asociado a color. */
         private final Color color;
 
         private IconoTic(Color color) {
@@ -427,7 +427,7 @@ public class PanelNotificaciones extends JPanel {
 
         @Override
         /**
-         * Ejecuta la operacion publica getIconWidth.
+         * Gestiona la accion de getIconWidth.
          * @return resultado de la operacion
          */
         public int getIconWidth() {
@@ -436,7 +436,7 @@ public class PanelNotificaciones extends JPanel {
 
         @Override
         /**
-         * Ejecuta la operacion publica getIconHeight.
+         * Gestiona la accion de getIconHeight.
          * @return resultado de la operacion
          */
         public int getIconHeight() {
@@ -445,11 +445,11 @@ public class PanelNotificaciones extends JPanel {
 
         @Override
         /**
-         * Ejecuta la operacion publica paintIcon.
-         * @param c parametro utilizado por la operacion
-         * @param g parametro utilizado por la operacion
-         * @param x parametro utilizado por la operacion
-         * @param y parametro utilizado por la operacion
+         * Gestiona la accion de paintIcon.
+         * @param c valor recibido por el metodo
+         * @param g valor recibido por el metodo
+         * @param x valor recibido por el metodo
+         * @param y valor recibido por el metodo
          */
         public void paintIcon(Component c, Graphics g, int x, int y) {
             Graphics2D g2 = (Graphics2D) g.create();
@@ -462,11 +462,11 @@ public class PanelNotificaciones extends JPanel {
         }
     }
 
-    /**      * Estado interno de campo.      */
+    /** Dato interno asociado a campo. */
     private static final class IconoPapelera implements Icon {
-        /**          * Estado interno de SIZE.          */
+        /** Dato interno asociado a SIZE. */
         private static final int SIZE = 24;
-        /**          * Estado interno de color.          */
+        /** Dato interno asociado a color. */
         private final Color color;
 
         private IconoPapelera(Color color) {
@@ -475,7 +475,7 @@ public class PanelNotificaciones extends JPanel {
 
         @Override
         /**
-         * Ejecuta la operacion publica getIconWidth.
+         * Gestiona la accion de getIconWidth.
          * @return resultado de la operacion
          */
         public int getIconWidth() {
@@ -484,7 +484,7 @@ public class PanelNotificaciones extends JPanel {
 
         @Override
         /**
-         * Ejecuta la operacion publica getIconHeight.
+         * Gestiona la accion de getIconHeight.
          * @return resultado de la operacion
          */
         public int getIconHeight() {
@@ -493,11 +493,11 @@ public class PanelNotificaciones extends JPanel {
 
         @Override
         /**
-         * Ejecuta la operacion publica paintIcon.
-         * @param c parametro utilizado por la operacion
-         * @param g parametro utilizado por la operacion
-         * @param x parametro utilizado por la operacion
-         * @param y parametro utilizado por la operacion
+         * Gestiona la accion de paintIcon.
+         * @param c valor recibido por el metodo
+         * @param g valor recibido por el metodo
+         * @param x valor recibido por el metodo
+         * @param y valor recibido por el metodo
          */
         public void paintIcon(Component c, Graphics g, int x, int y) {
             Graphics2D g2 = (Graphics2D) g.create();

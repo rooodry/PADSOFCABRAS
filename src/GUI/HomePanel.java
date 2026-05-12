@@ -32,35 +32,44 @@ import productos.categoria.Figura;
 import productos.categoria.Juego;
 import productos.ProductoTienda;
 
-
 /**
- * Representa el componente HomePanel de la interfaz grafica.
+ * Panel principal del catalogo de cliente, con recomendaciones y filtros de busqueda.
+ * Muestra el catálogo de productos disponibles, una sección de recomendaciones
+ * y un panel de filtros para facilitar la búsqueda al usuario.
  */
 public class HomePanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /**      * Estado interno de mainFrame.      */
+    /** Referencia a la ventana principal de la aplicación. */
     private final Main mainFrame;
-    /**      * Estado interno de gridProductos.      */
+
+    /** Panel que contiene la cuadrícula donde se muestran los productos. */
     private final JPanel gridProductos;
-    /**      * Estado interno de panelRecomendados.      */
+
+    /** Panel dedicado a mostrar los productos recomendados para el usuario. */
     private final JPanel panelRecomendados;
-    /**      * Estado interno de campoBusqueda.      */
+
+    /** Campo de texto utilizado para buscar productos por nombre o descripción. */
     private final JTextField campoBusqueda;
-    /**      * Estado interno de campoPrecioMaximo.      */
+
+    /** Campo de texto utilizado para establecer un filtro de precio máximo. */
     private final JTextField campoPrecioMaximo;
-    /**      * Estado interno de comboCategoria.      */
+
+    /** Desplegable para filtrar los productos por su categoría (Cómics, Juegos, Figuras). */
     private final JComboBox<String> comboCategoria;
-    /**      * Estado interno de comboValoracion.      */
+
+    /** Desplegable para filtrar los productos según su valoración mínima. */
     private final JComboBox<String> comboValoracion;
-    /**      * Estado interno de comboOrden.      */
+
+    /** Desplegable para establecer el criterio de ordenación del catálogo mostrado. */
     private final JComboBox<String> comboOrden;
 
     /**
-     * Crea el panel de catálogo para el controlador indicado.
+     * Construye el panel de catálogo para el controlador principal indicado.
+     * Inicializa los componentes, establece el layout y aplica los filtros por defecto.
      *
-     * @param mainFrame ventana principal de la aplicacion
+     * @param mainFrame Ventana principal de la aplicación que gestiona el estado y la navegación.
      */
     public HomePanel(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -81,7 +90,9 @@ public class HomePanel extends JPanel {
     }
 
     /**
-     * Reconstruye la cuadricula con los datos actuales de producto y stock.
+     * Reconstruye la cuadrícula de la interfaz con los datos actuales de productos y stock.
+     * Aplica los filtros de búsqueda, categoría, valoración y precio máximo,
+     * y ordena los resultados según la selección del usuario antes de repintar.
      */
     public void refrescar() {
         List<ProductoTienda> productos = filtrarYOrdenarProductos();
@@ -100,11 +111,13 @@ public class HomePanel extends JPanel {
             TarjetaProducto tarjeta = new TarjetaProducto(producto, mainFrame.getStock().getNumProductos(producto));
             tarjeta.setToolTipText("Ver detalle");
             tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
                 /**
-                 * Ejecuta la operacion publica mouseClicked.
-                 * @param e parametro utilizado por la operacion
+                 * Evento ejecutado al hacer clic sobre la tarjeta de un producto.
+                 * Abre la ventana de detalles del producto correspondiente.
+                 *
+                 * @param e El evento de ratón generado.
                  */
+                @Override
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     abrirDetalle(producto);
                 }
@@ -121,8 +134,14 @@ public class HomePanel extends JPanel {
         }
 
         gridProductos.revalidate();
-      }
+    }
 
+    /**
+     * Crea y estructura el panel principal de contenido, incluyendo la cabecera,
+     * los filtros, las recomendaciones y el área de scroll para el catálogo.
+     *
+     * @return El panel contenedor estructurado con todos sus elementos visuales.
+     */
     private JPanel crearContenido() {
         JPanel contenido = new JPanel(new BorderLayout());
         contenido.setBackground(UiStyle.COLOR_FONDO);
@@ -150,6 +169,10 @@ public class HomePanel extends JPanel {
         return contenido;
     }
 
+    /**
+     * Actualiza el panel de productos recomendados obteniéndolos del controlador principal.
+     * Si no hay recomendaciones, el panel se oculta o se muestra vacío.
+     */
     private void actualizarRecomendados() {
         panelRecomendados.removeAll();
         panelRecomendados.setBackground(UiStyle.COLOR_FONDO);
@@ -184,6 +207,12 @@ public class HomePanel extends JPanel {
         panelRecomendados.repaint();
     }
 
+    /**
+     * Crea el panel que agrupa todos los filtros de búsqueda y ordenación.
+     * Asocia además los listeners pertinentes para que la vista se actualice automáticamente.
+     *
+     * @return El panel configurado con los componentes de filtrado.
+     */
     private JPanel crearPanelFiltros() {
         JPanel filtros = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 6));
         filtros.setBackground(UiStyle.COLOR_FONDO);
@@ -206,33 +235,34 @@ public class HomePanel extends JPanel {
         filtros.add(comboOrden);
 
         DocumentListener listenerTexto = new DocumentListener() {
-            @Override
             /**
-             * Ejecuta la operacion publica insertUpdate.
-             * @param e parametro utilizado por la operacion
+             * Se ejecuta al insertar texto en un campo monitoreado.
+             * @param e El evento de documento.
              */
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 refrescar();
             }
 
-            @Override
             /**
-             * Ejecuta la operacion publica removeUpdate.
-             * @param e parametro utilizado por la operacion
+             * Se ejecuta al eliminar texto de un campo monitoreado.
+             * @param e El evento de documento.
              */
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 refrescar();
             }
 
-            @Override
             /**
-             * Ejecuta la operacion publica changedUpdate.
-             * @param e parametro utilizado por la operacion
+             * Se ejecuta al cambiar los atributos del texto en un campo monitoreado.
+             * @param e El evento de documento.
              */
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 refrescar();
             }
         };
+
         campoBusqueda.getDocument().addDocumentListener(listenerTexto);
         campoPrecioMaximo.getDocument().addDocumentListener(listenerTexto);
         comboCategoria.addActionListener(e -> refrescar());
@@ -242,6 +272,12 @@ public class HomePanel extends JPanel {
         return filtros;
     }
 
+    /**
+     * Crea una etiqueta (JLabel) con el estilo visual estándar para los filtros.
+     *
+     * @param texto El texto que mostrará la etiqueta.
+     * @return La etiqueta configurada.
+     */
     private JLabel crearEtiquetaFiltro(String texto) {
         JLabel etiqueta = new JLabel(texto);
         etiqueta.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -249,6 +285,12 @@ public class HomePanel extends JPanel {
         return etiqueta;
     }
 
+    /**
+     * Aplica los filtros actuales (texto, categoría, valoración, precio) a la lista global
+     * de productos de la tienda y ordena el resultado final.
+     *
+     * @return Una lista de productos que cumplen todos los criterios de filtrado seleccionados.
+     */
     private List<ProductoTienda> filtrarYOrdenarProductos() {
         List<ProductoTienda> productos = new ArrayList<>();
         String busqueda = normalizar(campoBusqueda.getText());
@@ -277,6 +319,13 @@ public class HomePanel extends JPanel {
         return productos;
     }
 
+    /**
+     * Comprueba si un producto pertenece a la categoría especificada.
+     *
+     * @param producto  El producto a evaluar.
+     * @param categoria El nombre de la categoría (ej. "Cómics", "Juegos", "Figuras").
+     * @return {@code true} si el producto pertenece a la categoría, o si la categoría es "Todas"; {@code false} en caso contrario.
+     */
     private boolean coincideCategoria(ProductoTienda producto, String categoria) {
         if ("Cómics".equals(categoria)) {
             return producto.getCategoria() instanceof Comic;
@@ -290,6 +339,11 @@ public class HomePanel extends JPanel {
         return true;
     }
 
+    /**
+     * Extrae el valor numérico de la valoración mínima seleccionada en el combo de valoraciones.
+     *
+     * @return Un entero representando la valoración mínima (0 si es "Cualquiera").
+     */
     private int extraerValoracionMinima() {
         String seleccion = (String) comboValoracion.getSelectedItem();
         if (seleccion == null || "Cualquiera".equals(seleccion)) {
@@ -298,6 +352,11 @@ public class HomePanel extends JPanel {
         return Character.getNumericValue(seleccion.charAt(0));
     }
 
+    /**
+     * Extrae y formatea el valor numérico del precio máximo introducido por el usuario.
+     *
+     * @return El valor del precio máximo como {@code double}, o -1 si el campo está vacío o es inválido.
+     */
     private double extraerPrecioMaximo() {
         String texto = campoPrecioMaximo.getText().trim().replace(',', '.');
         if (texto.isBlank()) {
@@ -310,6 +369,11 @@ public class HomePanel extends JPanel {
         }
     }
 
+    /**
+     * Determina el comparador adecuado para ordenar los productos según la opción seleccionada.
+     *
+     * @return Un objeto {@link Comparator} configurado para la ordenación elegida.
+     */
     private Comparator<ProductoTienda> comparadorSeleccionado() {
         String orden = (String) comboOrden.getSelectedItem();
         if ("Nombre Z-A".equals(orden)) {
@@ -330,6 +394,13 @@ public class HomePanel extends JPanel {
         return Comparator.comparing(ProductoTienda::getNombre, String.CASE_INSENSITIVE_ORDER);
     }
 
+    /**
+     * Normaliza una cadena de texto eliminando tildes y marcas diacríticas,
+     * convirtiéndola a minúsculas para facilitar búsquedas insensibles a mayúsculas o acentos.
+     *
+     * @param texto El texto a normalizar.
+     * @return La cadena de texto normalizada y en minúsculas.
+     */
     private String normalizar(String texto) {
         if (texto == null) {
             return "";
@@ -339,6 +410,12 @@ public class HomePanel extends JPanel {
         return sinAcentos.toLowerCase().trim();
     }
 
+    /**
+     * Abre un cuadro de diálogo modal que muestra los detalles completos de un producto seleccionado.
+     * Configura además el comportamiento del botón de compra dependiendo de si hay stock y sesión iniciada.
+     *
+     * @param producto El producto cuyos detalles se desean visualizar.
+     */
     private void abrirDetalle(ProductoTienda producto) {
         JDialog dialogo = new JDialog(SwingUtilities.getWindowAncestor(this), producto.getNombre(),
                 java.awt.Dialog.ModalityType.APPLICATION_MODAL);
@@ -362,10 +439,20 @@ public class HomePanel extends JPanel {
     }
 
 
+    /**
+     * Componente que representa la barra de navegación superior (Navbar)
+     * mostrada en las vistas de cliente.
+     */
     static class PanelNavegacionCliente extends JPanel {
 
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Crea el panel de navegación para el cliente.
+         *
+         * @param mainFrame Ventana principal de la aplicación.
+         * @param activo    Identificador de la pantalla actual activa para resaltarla en el menú.
+         */
         PanelNavegacionCliente(Main mainFrame, String activo) {
             setLayout(new BorderLayout());
             setBackground(UiStyle.COLOR_CABECERA);
@@ -396,6 +483,15 @@ public class HomePanel extends JPanel {
             add(derecha, BorderLayout.EAST);
         }
 
+        /**
+         * Método auxiliar para crear botones que muestran un carácter/icono de texto.
+         *
+         * @param texto    El carácter Unicode a mostrar.
+         * @param tooltip  El texto descriptivo para el tooltip.
+         * @param fontSize El tamaño de fuente del icono.
+         * @param ancho    La anchura preferida del botón.
+         * @return El botón icono creado.
+         */
         private JButton crearBotonIcono(String texto, String tooltip, int fontSize, int ancho) {
             JButton boton = new JButton(texto);
             boton.setFont(new Font("Dialog", Font.BOLD, fontSize));
@@ -411,6 +507,12 @@ public class HomePanel extends JPanel {
             return boton;
         }
 
+        /**
+         * Cuenta el número de notificaciones no leídas y no borradas del cliente actual.
+         *
+         * @param mainFrame Ventana principal para acceder a los datos del cliente.
+         * @return Un String con la cantidad de notificaciones, o una cadena vacía si no hay ninguna.
+         */
         private String contarNoLeidas(Main mainFrame) {
             int contador = 0;
             for (Notificacion notificacion : mainFrame.getClienteActual().getNotificaciones()) {
@@ -421,6 +523,13 @@ public class HomePanel extends JPanel {
             return contador > 0 ? String.valueOf(contador) : "";
         }
 
+        /**
+         * Despliega un menú emergente (JPopupMenu) de navegación.
+         *
+         * @param origen    El componente botón desde donde se despliega el menú.
+         * @param mainFrame La ventana principal encargada del cambio de pantallas.
+         * @param activo    El identificador de la pantalla actual.
+         */
         private void mostrarMenu(JButton origen, Main mainFrame, String activo) {
             JPopupMenu menu = new JPopupMenu();
             menu.setBackground(UiStyle.COLOR_CABECERA);
@@ -443,6 +552,16 @@ public class HomePanel extends JPanel {
             menu.show(origen, 0, origen.getHeight() + 6);
         }
 
+        /**
+         * Crea un elemento de menú de navegación para una vista específica.
+         *
+         * @param texto       Texto a mostrar en la opción del menú.
+         * @param claveActiva Identificador que marca si este ítem es la pantalla activa.
+         * @param pantalla    Constante de la pantalla destino (definida en Main).
+         * @param activo      Identificador de la pantalla en la que se encuentra el usuario.
+         * @param mainFrame   Ventana principal de la aplicación.
+         * @return El {@link JMenuItem} configurado.
+         */
         private JMenuItem crearItemMenu(String texto, String claveActiva, String pantalla, String activo, Main mainFrame) {
             JMenuItem item = new JMenuItem(texto);
             item.setOpaque(true);
@@ -454,6 +573,12 @@ public class HomePanel extends JPanel {
             return item;
         }
 
+        /**
+         * Crea el elemento de menú encargado de cerrar la sesión actual del usuario.
+         *
+         * @param mainFrame Ventana principal de la aplicación.
+         * @return El {@link JMenuItem} configurado para cerrar sesión.
+         */
         private JMenuItem crearItemCerrarSesion(Main mainFrame) {
             JMenuItem item = new JMenuItem("CERRAR SESIÓN");
             item.setOpaque(true);
@@ -465,6 +590,13 @@ public class HomePanel extends JPanel {
             return item;
         }
 
+        /**
+         * Método obsoleto para crear una botonera antigua (no usado actualmente).
+         *
+         * @param mainFrame Ventana principal.
+         * @param activo    Identificador de la pantalla actual.
+         * @return Un panel con la estructura de botones obsoleta.
+         */
         @SuppressWarnings("unused")
         private JPanel crearBotoneraAntigua(Main mainFrame, String activo) {
             JPanel centro = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 6));

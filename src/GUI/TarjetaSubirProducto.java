@@ -6,18 +6,18 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 /**
- * Representa el componente TarjetaSubirProducto de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a TarjetaSubirProducto.
  */
 public class TarjetaSubirProducto extends JPanel {
 
-    /**      * Estado interno de ANCHO.      */
+    /** Dato interno asociado a ANCHO. */
     private static final int ANCHO = 200;
-    /**      * Estado interno de ALTO.      */
+    /** Dato interno asociado a ALTO. */
     private static final int ALTO  = 280;
 
     /**
      * Construye una instancia de TarjetaSubirProducto.
-     * @param listener parametro utilizado por la operacion
+     * @param listener valor recibido por el metodo
      */
     public TarjetaSubirProducto(ActionListener listener) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -44,8 +44,8 @@ public class TarjetaSubirProducto extends JPanel {
             this.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 /**
-                 * Ejecuta la operacion publica mouseClicked.
-                 * @param e parametro utilizado por la operacion
+                 * Gestiona la accion de mouseClicked.
+                 * @param e valor recibido por el metodo
                  */
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     listener.actionPerformed(null);

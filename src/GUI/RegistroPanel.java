@@ -19,7 +19,7 @@ import javax.swing.border.EmptyBorder;
 
 
 /**
- * Representa el componente RegistroPanel de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a RegistroPanel.
  */
 public class RegistroPanel extends JPanel {
 

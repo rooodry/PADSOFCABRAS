@@ -28,37 +28,37 @@ import utilidades.EstadoProducto;
 
 
 /**
- * Representa el componente PanelMisProductos de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a PanelMisProductos.
  */
 public class PanelMisProductos extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /**      * Estado interno de TAB_SUBIDOS.      */
+    /** Dato interno asociado a TAB_SUBIDOS. */
     private static final int TAB_SUBIDOS = 0;
-    /**      * Estado interno de TAB_VALORADOS.      */
+    /** Dato interno asociado a TAB_VALORADOS. */
     private static final int TAB_VALORADOS = 1;
-    /**      * Estado interno de TAB_PUBLICADOS.      */
+    /** Dato interno asociado a TAB_PUBLICADOS. */
     private static final int TAB_PUBLICADOS = 2;
 
-    /**      * Estado interno de mainFrame.      */
+    /** Dato interno asociado a mainFrame. */
     private final Main mainFrame;
-    /**      * Estado interno de cliente.      */
+    /** Dato interno asociado a cliente. */
     private ClienteRegistrado cliente;
-    /**      * Estado interno de panelGrid.      */
+    /** Dato interno asociado a panelGrid. */
     private final JPanel panelGrid;
-    /**      * Estado interno de JButton.      */
+    /** Dato interno asociado a JButton. */
     private final JButton[] botonesTab;
 
-    /**      * Estado interno de tabActivo.      */
+    /** Dato interno asociado a tabActivo. */
     private int tabActivo = TAB_SUBIDOS;
-    /**      * Estado interno de listenerSubir.      */
+    /** Dato interno asociado a listenerSubir. */
     private ActionListener listenerSubir;
-    /**      * Estado interno de listenerPedirValoracion.      */
+    /** Dato interno asociado a listenerPedirValoracion. */
     private ActionListener listenerPedirValoracion;
-    /**      * Estado interno de listenerPublicar.      */
+    /** Dato interno asociado a listenerPublicar. */
     private ActionListener listenerPublicar;
-    /**      * Estado interno de listenerEliminar.      */
+    /** Dato interno asociado a listenerEliminar. */
     private ActionListener listenerEliminar;
 
     /**
@@ -116,8 +116,8 @@ public class PanelMisProductos extends JPanel {
     }
 
     /**
-     * Ejecuta la operacion publica addListenerEliminarProducto.
-     * @param listener parametro utilizado por la operacion
+     * Gestiona la accion de addListenerEliminarProducto.
+     * @param listener valor recibido por el metodo
      */
     public void addListenerEliminarProducto(ActionListener listener) {
         this.listenerEliminar = listener;
@@ -244,8 +244,8 @@ public class PanelMisProductos extends JPanel {
             tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 /**
-                 * Ejecuta la operacion publica mouseClicked.
-                 * @param e parametro utilizado por la operacion
+                 * Gestiona la accion de mouseClicked.
+                 * @param e valor recibido por el metodo
                  */
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     mostrarDetalleProducto(producto);

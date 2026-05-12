@@ -64,12 +64,12 @@ import utilidades.TiposEmpleado;
 
 
 /**
- * Representa el componente Main de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a Main.
  */
 public class Main extends JFrame {
 
     private static final long serialVersionUID = 1L;
-    /**      * Estado interno de FICHERO_DATOS.      */
+    /** Dato interno asociado a FICHERO_DATOS. */
     private static final String FICHERO_DATOS = "goatget-data.dat";
     private static final String NOMBRE_CLIENTE_DEMO = "alex53";
 
@@ -151,64 +151,64 @@ public class Main extends JFrame {
      */
     public static final String PANTALLA_GESTOR = "PANTALLA_GESTOR";
 
-    /**      * Estado interno de sistema.      */
+    /** Dato interno asociado a sistema. */
     private final Sistema sistema;
-    /**      * Estado interno de stock.      */
+    /** Dato interno asociado a stock. */
     private final Stock stock;
-    /**      * Estado interno de productosTienda.      */
+    /** Dato interno asociado a productosTienda. */
     private final List<ProductoTienda> productosTienda;
-    /**      * Estado interno de packs.      */
+    /** Dato interno asociado a packs. */
     private final List<Pack> packs;
-    /**      * Estado interno de intercambios.      */
+    /** Dato interno asociado a intercambios. */
     private final List<Intercambio> intercambios;
-    /**      * Estado interno de productosSegundaMano.      */
+    /** Dato interno asociado a productosSegundaMano. */
     private final List<ProductoSegundaMano> productosSegundaMano;
-    /**      * Estado interno de packsEnCesta.      */
+    /** Dato interno asociado a packsEnCesta. */
     private final Map<ProductoTienda, Pack> packsEnCesta;
-    /**      * Estado interno de cardLayout.      */
+    /** Dato interno asociado a cardLayout. */
     private final CardLayout cardLayout;
-    /**      * Estado interno de panelContenedor.      */
+    /** Dato interno asociado a panelContenedor. */
     private final JPanel panelContenedor;
 
-    /**      * Estado interno de clienteActual.      */
+    /** Dato interno asociado a clienteActual. */
     private ClienteRegistrado clienteActual;
-    /**      * Estado interno de homePanel.      */
+    /** Dato interno asociado a homePanel. */
     private HomePanel homePanel;
-    /**      * Estado interno de panelCesta.      */
+    /** Dato interno asociado a panelCesta. */
     private PanelCesta panelCesta;
-    /**      * Estado interno de panelMisProductos.      */
+    /** Dato interno asociado a panelMisProductos. */
     private PanelMisProductos panelMisProductos;
-    /**      * Estado interno de panelPerfil.      */
+    /** Dato interno asociado a panelPerfil. */
     private PanelPerfil panelPerfil;
-    /**      * Estado interno de panelPacks.      */
+    /** Dato interno asociado a panelPacks. */
     private PanelPacks panelPacks;
-    /**      * Estado interno de panelIntercambios.      */
+    /** Dato interno asociado a panelIntercambios. */
     private PanelIntercambios panelIntercambios;
-    /**      * Estado interno de panelNotificaciones.      */
+    /** Dato interno asociado a panelNotificaciones. */
     private PanelNotificaciones panelNotificaciones;
-    /**      * Estado interno de panelGestion.      */
+    /** Dato interno asociado a panelGestion. */
     private PanelGestion panelGestion;
-    /**      * Estado interno de panelEmpleado.      */
+    /** Dato interno asociado a panelEmpleado. */
     private PanelEmpleado panelEmpleado;
-    /**      * Estado interno de panelGestor.      */
+    /** Dato interno asociado a panelGestor. */
     private PanelGestor panelGestor;
-    /**      * Estado interno de clienteInvitado.      */
+    /** Dato interno asociado a clienteInvitado. */
     private ClienteNoRegistrado clienteInvitado;
-    /**      * Estado interno de empleadoActual.      */
+    /** Dato interno asociado a empleadoActual. */
     private Empleado empleadoActual;
-    /**      * Estado interno de gestorPrincipal.      */
+    /** Dato interno asociado a gestorPrincipal. */
     private Gestor gestorPrincipal;
-    /**      * Estado interno de sesionRegistrada.      */
+    /** Dato interno asociado a sesionRegistrada. */
     private boolean sesionRegistrada;
-    /**      * Estado interno de sesionEmpleado.      */
+    /** Dato interno asociado a sesionEmpleado. */
     private boolean sesionEmpleado;
-    /**      * Estado interno de sesionGestor.      */
+    /** Dato interno asociado a sesionGestor. */
     private boolean sesionGestor;
-    /**      * Estado interno de persistenciaActiva.      */
+    /** Dato interno asociado a persistenciaActiva. */
     private boolean persistenciaActiva;
     /**      * Indica si se ha actualizado un .dat antiguo durante la carga.      */
     private boolean estadoPersistenteMigrado;
-    /**      * Estado interno de plazoOfertasHoras.      */
+    /** Dato interno asociado a plazoOfertasHoras. */
     private int plazoOfertasHoras;
 
     /**
@@ -246,8 +246,8 @@ public class Main extends JFrame {
         addWindowListener(new WindowAdapter() {
         @Override
         /**
-         * Ejecuta la operacion publica windowClosing.
-         * @param e parametro utilizado por la operacion
+         * Gestiona la accion de windowClosing.
+         * @param e valor recibido por el metodo
          */
         public void windowClosing(WindowEvent e) {
             try {
@@ -307,7 +307,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica isSesionEmpleado.
+     * Gestiona la accion de isSesionEmpleado.
      * @return resultado de la operacion
      */
     public boolean isSesionEmpleado() {
@@ -315,7 +315,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica isSesionGestor.
+     * Gestiona la accion de isSesionGestor.
      * @return resultado de la operacion
      */
     public boolean isSesionGestor() {
@@ -332,7 +332,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getEmpleadoActual.
+     * Gestiona la accion de getEmpleadoActual.
      * @return resultado de la operacion
      */
     public Empleado getEmpleadoActual() {
@@ -340,7 +340,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getGestorPrincipal.
+     * Gestiona la accion de getGestorPrincipal.
      * @return resultado de la operacion
      */
     public Gestor getGestorPrincipal() {
@@ -348,7 +348,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getEmpleados.
+     * Gestiona la accion de getEmpleados.
      * @return resultado de la operacion
      */
     public List<Empleado> getEmpleados() {
@@ -362,8 +362,8 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getVentasEmpleado.
-     * @param empleado parametro utilizado por la operacion
+     * Gestiona la accion de getVentasEmpleado.
+     * @param empleado valor recibido por el metodo
      * @return resultado de la operacion
      */
     public List<Pedido> getVentasEmpleado(Empleado empleado) {
@@ -381,8 +381,8 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getTotalVentasEmpleado.
-     * @param empleado parametro utilizado por la operacion
+     * Gestiona la accion de getTotalVentasEmpleado.
+     * @param empleado valor recibido por el metodo
      * @return resultado de la operacion
      */
     public double getTotalVentasEmpleado(Empleado empleado) {
@@ -421,8 +421,8 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getPackAsociadoEnCesta.
-     * @param producto parametro utilizado por la operacion
+     * Gestiona la accion de getPackAsociadoEnCesta.
+     * @param producto valor recibido por el metodo
      * @return resultado de la operacion
      */
     public Pack getPackAsociadoEnCesta(ProductoTienda producto) {
@@ -448,7 +448,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getIntercambiosClienteActual.
+     * Gestiona la accion de getIntercambiosClienteActual.
      * @return resultado de la operacion
      */
     public List<Intercambio> getIntercambiosClienteActual() {
@@ -466,7 +466,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getPedidosGestion.
+     * Gestiona la accion de getPedidosGestion.
      * @return resultado de la operacion
      */
     public List<Pedido> getPedidosGestion() {
@@ -474,7 +474,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getDescuentosGestion.
+     * Gestiona la accion de getDescuentosGestion.
      * @return resultado de la operacion
      */
     public List<Descuento> getDescuentosGestion() {
@@ -482,7 +482,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getClientesRegistrados.
+     * Gestiona la accion de getClientesRegistrados.
      * @return resultado de la operacion
      */
     public List<ClienteRegistrado> getClientesRegistrados() {
@@ -496,7 +496,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getProductosSegundaManoGestion.
+     * Gestiona la accion de getProductosSegundaManoGestion.
      * @return resultado de la operacion
      */
     public List<ProductoSegundaMano> getProductosSegundaManoGestion() {
@@ -504,7 +504,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getProductosPendientesValoracion.
+     * Gestiona la accion de getProductosPendientesValoracion.
      * @return resultado de la operacion
      */
     public List<ProductoSegundaMano> getProductosPendientesValoracion() {
@@ -925,7 +925,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica actualizarIntercambiosCaducados.
+     * Gestiona la accion de actualizarIntercambiosCaducados.
      */
     public void actualizarIntercambiosCaducados() {
         enviarRecordatorioOfertasCaducidad();
@@ -1045,9 +1045,9 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica proponerIntercambio.
-     * @param deseado parametro utilizado por la operacion
-     * @param ofertado parametro utilizado por la operacion
+     * Gestiona la accion de proponerIntercambio.
+     * @param deseado valor recibido por el metodo
+     * @param ofertado valor recibido por el metodo
      */
     public void proponerIntercambio(ProductoSegundaMano deseado, ProductoSegundaMano ofertado) {
         if (deseado == null || ofertado == null) {
@@ -1178,10 +1178,10 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica anadirProductoALaCartera.
-     * @param nombre parametro utilizado por la operacion
-     * @param descripcion parametro utilizado por la operacion
-     * @param imagen parametro utilizado por la operacion
+     * Gestiona la accion de anadirProductoALaCartera.
+     * @param nombre valor recibido por el metodo
+     * @param descripcion valor recibido por el metodo
+     * @param imagen valor recibido por el metodo
      */
     public void anadirProductoALaCartera(String nombre, String descripcion, String imagen) {
         anadirProductoALaCartera(nombre, descripcion, imagen, null);
@@ -1217,8 +1217,8 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica eliminarProductoDeCartera.
-     * @param producto parametro utilizado por la operacion
+     * Gestiona la accion de eliminarProductoDeCartera.
+     * @param producto valor recibido por el metodo
      */
     public void eliminarProductoDeCartera(ProductoSegundaMano producto) {
         if (clienteActual == null || producto == null
@@ -1245,9 +1245,9 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica cambiarContrasenaCliente.
-     * @param contrasenaActual parametro utilizado por la operacion
-     * @param nuevaContrasena parametro utilizado por la operacion
+     * Gestiona la accion de cambiarContrasenaCliente.
+     * @param contrasenaActual valor recibido por el metodo
+     * @param nuevaContrasena valor recibido por el metodo
      * @return resultado de la operacion
      */
     public boolean cambiarContrasenaCliente(String contrasenaActual, String nuevaContrasena) {
@@ -1278,9 +1278,9 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica fijarStockProducto.
-     * @param producto parametro utilizado por la operacion
-     * @param unidades parametro utilizado por la operacion
+     * Gestiona la accion de fijarStockProducto.
+     * @param producto valor recibido por el metodo
+     * @param unidades valor recibido por el metodo
      */
     public void fijarStockProducto(ProductoTienda producto, int unidades) {
         if (producto == null || unidades < 0) {
@@ -1296,13 +1296,13 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica editarProductoTienda.
-     * @param producto parametro utilizado por la operacion
-     * @param precio parametro utilizado por la operacion
-     * @param unidades parametro utilizado por la operacion
-     * @param descripcion parametro utilizado por la operacion
-     * @param imagen parametro utilizado por la operacion
-     * @param categorias parametro utilizado por la operacion
+     * Gestiona la accion de editarProductoTienda.
+     * @param producto valor recibido por el metodo
+     * @param precio valor recibido por el metodo
+     * @param unidades valor recibido por el metodo
+     * @param descripcion valor recibido por el metodo
+     * @param imagen valor recibido por el metodo
+     * @param categorias valor recibido por el metodo
      */
     public void editarProductoTienda(ProductoTienda producto, double precio, int unidades,
             String descripcion, String imagen, List<String> categorias) {
@@ -1317,14 +1317,14 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica editarProductoTienda.
-     * @param producto parametro utilizado por la operacion
-     * @param nombre parametro utilizado por la operacion
-     * @param precio parametro utilizado por la operacion
-     * @param unidades parametro utilizado por la operacion
-     * @param descripcion parametro utilizado por la operacion
-     * @param imagen parametro utilizado por la operacion
-     * @param categorias parametro utilizado por la operacion
+     * Gestiona la accion de editarProductoTienda.
+     * @param producto valor recibido por el metodo
+     * @param nombre valor recibido por el metodo
+     * @param precio valor recibido por el metodo
+     * @param unidades valor recibido por el metodo
+     * @param descripcion valor recibido por el metodo
+     * @param imagen valor recibido por el metodo
+     * @param categorias valor recibido por el metodo
      */
     public void editarProductoTienda(ProductoTienda producto, String nombre, double precio, int unidades,
             String descripcion, String imagen, List<String> categorias) {
@@ -1338,8 +1338,8 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica eliminarProductoTiendaGestion.
-     * @param producto parametro utilizado por la operacion
+     * Gestiona la accion de eliminarProductoTiendaGestion.
+     * @param producto valor recibido por el metodo
      */
     public void eliminarProductoTiendaGestion(ProductoTienda producto) {
         if (!sesionGestor || producto == null) {
@@ -1372,29 +1372,29 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica crearProductoTiendaGestion.
-     * @param tipo parametro utilizado por la operacion
-     * @param nombre parametro utilizado por la operacion
-     * @param precio parametro utilizado por la operacion
-     * @param unidades parametro utilizado por la operacion
-     * @param valoracion parametro utilizado por la operacion
-     * @param descripcion parametro utilizado por la operacion
-     * @param imagen parametro utilizado por la operacion
-     * @param categorias parametro utilizado por la operacion
-     * @param tiene2x1 parametro utilizado por la operacion
-     * @param rebajaPorcentaje parametro utilizado por la operacion
-     * @param rebajaFija parametro utilizado por la operacion
-     * @param comicPaginas parametro utilizado por la operacion
-     * @param comicAutor parametro utilizado por la operacion
-     * @param comicEditorial parametro utilizado por la operacion
-     * @param comicGenero parametro utilizado por la operacion
-     * @param comicAnio parametro utilizado por la operacion
-     * @param juegoJugadores parametro utilizado por la operacion
-     * @param juegoEdadMinima parametro utilizado por la operacion
-     * @param tipoJuego parametro utilizado por la operacion
-     * @param figuraAltura parametro utilizado por la operacion
-     * @param figuraMarca parametro utilizado por la operacion
-     * @param figuraMaterial parametro utilizado por la operacion
+     * Gestiona la accion de crearProductoTiendaGestion.
+     * @param tipo valor recibido por el metodo
+     * @param nombre valor recibido por el metodo
+     * @param precio valor recibido por el metodo
+     * @param unidades valor recibido por el metodo
+     * @param valoracion valor recibido por el metodo
+     * @param descripcion valor recibido por el metodo
+     * @param imagen valor recibido por el metodo
+     * @param categorias valor recibido por el metodo
+     * @param tiene2x1 valor recibido por el metodo
+     * @param rebajaPorcentaje valor recibido por el metodo
+     * @param rebajaFija valor recibido por el metodo
+     * @param comicPaginas valor recibido por el metodo
+     * @param comicAutor valor recibido por el metodo
+     * @param comicEditorial valor recibido por el metodo
+     * @param comicGenero valor recibido por el metodo
+     * @param comicAnio valor recibido por el metodo
+     * @param juegoJugadores valor recibido por el metodo
+     * @param juegoEdadMinima valor recibido por el metodo
+     * @param tipoJuego valor recibido por el metodo
+     * @param figuraAltura valor recibido por el metodo
+     * @param figuraMarca valor recibido por el metodo
+     * @param figuraMaterial valor recibido por el metodo
      */
     public void crearProductoTiendaGestion(String tipo, String nombre, double precio, int unidades,
             int valoracion, String descripcion, String imagen, List<String> categorias,
@@ -1450,8 +1450,8 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica recargarCatalogoDesdeFichero.
-     * @param ruta parametro utilizado por la operacion
+     * Gestiona la accion de recargarCatalogoDesdeFichero.
+     * @param ruta valor recibido por el metodo
      */
     public void recargarCatalogoDesdeFichero(String ruta) {
         if (ruta == null || ruta.isBlank()) {
@@ -1464,21 +1464,21 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica crearPackGestion.
-     * @param nombre parametro utilizado por la operacion
-     * @param precio parametro utilizado por la operacion
-     * @param productos parametro utilizado por la operacion
+     * Gestiona la accion de crearPackGestion.
+     * @param nombre valor recibido por el metodo
+     * @param precio valor recibido por el metodo
+     * @param productos valor recibido por el metodo
      */
     public void crearPackGestion(String nombre, double precio, List<ProductoTienda> productos) {
         crearPackGestion(nombre, "", precio, productos);
     }
 
     /**
-     * Ejecuta la operacion publica crearPackGestion.
-     * @param nombre parametro utilizado por la operacion
-     * @param categoria parametro utilizado por la operacion
-     * @param precio parametro utilizado por la operacion
-     * @param productos parametro utilizado por la operacion
+     * Gestiona la accion de crearPackGestion.
+     * @param nombre valor recibido por el metodo
+     * @param categoria valor recibido por el metodo
+     * @param precio valor recibido por el metodo
+     * @param productos valor recibido por el metodo
      */
     public void crearPackGestion(String nombre, String categoria, double precio, List<ProductoTienda> productos) {
         if (nombre == null || nombre.isBlank()) {
@@ -1491,21 +1491,21 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica modificarPackGestion.
-     * @param pack parametro utilizado por la operacion
-     * @param precio parametro utilizado por la operacion
-     * @param productos parametro utilizado por la operacion
+     * Gestiona la accion de modificarPackGestion.
+     * @param pack valor recibido por el metodo
+     * @param precio valor recibido por el metodo
+     * @param productos valor recibido por el metodo
      */
     public void modificarPackGestion(Pack pack, double precio, List<ProductoTienda> productos) {
         modificarPackGestion(pack, pack == null ? "" : pack.getCategoria(), precio, productos);
     }
 
     /**
-     * Ejecuta la operacion publica modificarPackGestion.
-     * @param pack parametro utilizado por la operacion
-     * @param categoria parametro utilizado por la operacion
-     * @param precio parametro utilizado por la operacion
-     * @param productos parametro utilizado por la operacion
+     * Gestiona la accion de modificarPackGestion.
+     * @param pack valor recibido por el metodo
+     * @param categoria valor recibido por el metodo
+     * @param precio valor recibido por el metodo
+     * @param productos valor recibido por el metodo
      */
     public void modificarPackGestion(Pack pack, String categoria, double precio, List<ProductoTienda> productos) {
         if (pack == null) {
@@ -1525,11 +1525,11 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica valorarProductoSegundaMano.
-     * @param producto parametro utilizado por la operacion
-     * @param valoracion parametro utilizado por la operacion
-     * @param valorEstimado parametro utilizado por la operacion
-     * @param conservacion parametro utilizado por la operacion
+     * Gestiona la accion de valorarProductoSegundaMano.
+     * @param producto valor recibido por el metodo
+     * @param valoracion valor recibido por el metodo
+     * @param valorEstimado valor recibido por el metodo
+     * @param conservacion valor recibido por el metodo
      */
     public void valorarProductoSegundaMano(ProductoSegundaMano producto, int valoracion,
             double valorEstimado, EstadoConservacion conservacion) {
@@ -1550,10 +1550,10 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica valorarProductoSegundaMano.
-     * @param producto parametro utilizado por la operacion
-     * @param valorEstimado parametro utilizado por la operacion
-     * @param conservacion parametro utilizado por la operacion
+     * Gestiona la accion de valorarProductoSegundaMano.
+     * @param producto valor recibido por el metodo
+     * @param valorEstimado valor recibido por el metodo
+     * @param conservacion valor recibido por el metodo
      */
     public void valorarProductoSegundaMano(ProductoSegundaMano producto,
             double valorEstimado, EstadoConservacion conservacion) {
@@ -1574,8 +1574,8 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica marcarIntercambioRealizado.
-     * @param intercambio parametro utilizado por la operacion
+     * Gestiona la accion de marcarIntercambioRealizado.
+     * @param intercambio valor recibido por el metodo
      */
     public void marcarIntercambioRealizado(Intercambio intercambio) {
         if (intercambio == null) {
@@ -1599,7 +1599,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getPlazoOfertasHoras.
+     * Gestiona la accion de getPlazoOfertasHoras.
      * @return resultado de la operacion
      */
     public int getPlazoOfertasHoras() {
@@ -1607,8 +1607,8 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica setPlazoOfertasHoras.
-     * @param plazoOfertasHoras parametro utilizado por la operacion
+     * Gestiona la accion de setPlazoOfertasHoras.
+     * @param plazoOfertasHoras valor recibido por el metodo
      */
     public void setPlazoOfertasHoras(int plazoOfertasHoras) {
         if (!sesionGestor) {
@@ -1619,10 +1619,10 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica crearEmpleadoDesdeGestor.
-     * @param nombre parametro utilizado por la operacion
-     * @param contrasena parametro utilizado por la operacion
-     * @param permisos parametro utilizado por la operacion
+     * Gestiona la accion de crearEmpleadoDesdeGestor.
+     * @param nombre valor recibido por el metodo
+     * @param contrasena valor recibido por el metodo
+     * @param permisos valor recibido por el metodo
      */
     public void crearEmpleadoDesdeGestor(String nombre, String contrasena, Set<TiposEmpleado> permisos) {
         if (!sesionGestor || nombre == null || nombre.isBlank() || contrasena == null || contrasena.isBlank()) {
@@ -1648,8 +1648,8 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica eliminarEmpleadoDesdeGestor.
-     * @param empleado parametro utilizado por la operacion
+     * Gestiona la accion de eliminarEmpleadoDesdeGestor.
+     * @param empleado valor recibido por el metodo
      */
     public void eliminarEmpleadoDesdeGestor(Empleado empleado) {
         if (!sesionGestor || empleado == null) {
@@ -1664,9 +1664,9 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica configurarPermisosEmpleado.
-     * @param empleado parametro utilizado por la operacion
-     * @param permisos parametro utilizado por la operacion
+     * Gestiona la accion de configurarPermisosEmpleado.
+     * @param empleado valor recibido por el metodo
+     * @param permisos valor recibido por el metodo
      */
     public void configurarPermisosEmpleado(Empleado empleado, Set<TiposEmpleado> permisos) {
         if (!sesionGestor || empleado == null || permisos == null) {
@@ -1678,10 +1678,10 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica aplicarDescuentoProducto.
-     * @param producto parametro utilizado por la operacion
-     * @param tipoDescuento parametro utilizado por la operacion
-     * @param valor parametro utilizado por la operacion
+     * Gestiona la accion de aplicarDescuentoProducto.
+     * @param producto valor recibido por el metodo
+     * @param tipoDescuento valor recibido por el metodo
+     * @param valor valor recibido por el metodo
      */
     public void aplicarDescuentoProducto(ProductoTienda producto, String tipoDescuento, double valor) {
         if (!sesionGestor || producto == null) {
@@ -1701,10 +1701,10 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica aplicarDescuentoCategoria.
-     * @param categoria parametro utilizado por la operacion
-     * @param tipoDescuento parametro utilizado por la operacion
-     * @param valor parametro utilizado por la operacion
+     * Gestiona la accion de aplicarDescuentoCategoria.
+     * @param categoria valor recibido por el metodo
+     * @param tipoDescuento valor recibido por el metodo
+     * @param valor valor recibido por el metodo
      * @return resultado de la operacion
      */
     public int aplicarDescuentoCategoria(String categoria, String tipoDescuento, double valor) {
@@ -1728,8 +1728,8 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica limpiarDescuentoProducto.
-     * @param producto parametro utilizado por la operacion
+     * Gestiona la accion de limpiarDescuentoProducto.
+     * @param producto valor recibido por el metodo
      */
     public void limpiarDescuentoProducto(ProductoTienda producto) {
         if (!sesionGestor || producto == null) {
@@ -1742,8 +1742,8 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica getTipoDescuentoProducto.
-     * @param producto parametro utilizado por la operacion
+     * Gestiona la accion de getTipoDescuentoProducto.
+     * @param producto valor recibido por el metodo
      * @return resultado de la operacion
      */
     public String getTipoDescuentoProducto(ProductoTienda producto) {
@@ -1835,7 +1835,7 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica cerrarSesion.
+     * Gestiona la accion de cerrarSesion.
      */
     public void cerrarSesion() {
         guardarEstadoPersistente();
@@ -2232,30 +2232,30 @@ public class Main extends JFrame {
         return null;
     }
 
-    /**      * Estado interno de campo.      */
+    /** Dato interno asociado a campo. */
     private static class EstadoAplicacion implements Serializable {
         private static final long serialVersionUID = 1L;
-        /**          * Estado interno de usuarios.          */
+        /** Dato interno asociado a usuarios. */
         private List<Usuario> usuarios;
-        /**          * Estado interno de pedidos.          */
+        /** Dato interno asociado a pedidos. */
         private List<Pedido> pedidos;
-        /**          * Estado interno de descuentos.          */
+        /** Dato interno asociado a descuentos. */
         private List<Descuento> descuentos;
-        /**          * Estado interno de productosTienda.          */
+        /** Dato interno asociado a productosTienda. */
         private List<ProductoTienda> productosTienda;
-        /**          * Estado interno de packs.          */
+        /** Dato interno asociado a packs. */
         private List<Pack> packs;
-        /**          * Estado interno de intercambios.          */
+        /** Dato interno asociado a intercambios. */
         private List<Intercambio> intercambios;
-        /**          * Estado interno de productosSegundaMano.          */
+        /** Dato interno asociado a productosSegundaMano. */
         private List<ProductoSegundaMano> productosSegundaMano;
-        /**          * Estado interno de stock.          */
+        /** Dato interno asociado a stock. */
         private Map<ProductoTienda, Integer> stock;
-        /**          * Estado interno de nombreClienteActual.          */
+        /** Dato interno asociado a nombreClienteActual. */
         private String nombreClienteActual;
-        /**          * Estado interno de nombreGestorPrincipal.          */
+        /** Dato interno asociado a nombreGestorPrincipal. */
         private String nombreGestorPrincipal;
-        /**          * Estado interno de plazoOfertasHoras.          */
+        /** Dato interno asociado a plazoOfertasHoras. */
         private int plazoOfertasHoras;
     }
 
@@ -2704,8 +2704,8 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica cambiarFotoPerfilCliente.
-     * @param nuevaRutaFoto parametro utilizado por la operacion
+     * Gestiona la accion de cambiarFotoPerfilCliente.
+     * @param nuevaRutaFoto valor recibido por el metodo
      */
     public void cambiarFotoPerfilCliente(String nuevaRutaFoto) {
         if (nuevaRutaFoto == null || nuevaRutaFoto.isBlank()) {
@@ -2718,8 +2718,8 @@ public class Main extends JFrame {
     }
 
     /**
-     * Ejecuta la operacion publica retirarPackDeCesta.
-     * @param pack parametro utilizado por la operacion
+     * Gestiona la accion de retirarPackDeCesta.
+     * @param pack valor recibido por el metodo
      */
     public void retirarPackDeCesta(Pack pack) {
         if (!clienteActual.getCesta().getPacks().containsKey(pack)) {

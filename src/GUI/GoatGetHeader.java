@@ -11,7 +11,7 @@ import javax.swing.border.EmptyBorder;
 
 
 /**
- * Representa el componente GoatGetHeader de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a GoatGetHeader.
  */
 public class GoatGetHeader extends JPanel {
 

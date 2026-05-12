@@ -71,11 +71,11 @@ final class UiStyle {
 
         private static final long serialVersionUID = 1L;
 
-        /**          * Estado interno de arc.          */
+        /** Dato interno asociado a arc. */
         private final int arc;
-        /**          * Estado interno de normalColor.          */
+        /** Dato interno asociado a normalColor. */
         private Color normalColor;
-        /**          * Estado interno de hoverColor.          */
+        /** Dato interno asociado a hoverColor. */
         private Color hoverColor;
 
         RoundedButton(String text, Color normalColor, Color hoverColor, int arc) {
@@ -93,8 +93,8 @@ final class UiStyle {
             addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 /**
-                 * Ejecuta la operacion publica mouseEntered.
-                 * @param e parametro utilizado por la operacion
+                 * Gestiona la accion de mouseEntered.
+                 * @param e valor recibido por el metodo
                  */
                 public void mouseEntered(java.awt.event.MouseEvent e) {
                     setBackground(UiStyle.RoundedButton.this.hoverColor);
@@ -102,8 +102,8 @@ final class UiStyle {
 
                 @Override
                 /**
-                 * Ejecuta la operacion publica mouseExited.
-                 * @param e parametro utilizado por la operacion
+                 * Gestiona la accion de mouseExited.
+                 * @param e valor recibido por el metodo
                  */
                 public void mouseExited(java.awt.event.MouseEvent e) {
                     setBackground(UiStyle.RoundedButton.this.normalColor);
@@ -134,9 +134,9 @@ final class UiStyle {
 
         private static final long serialVersionUID = 1L;
 
-        /**          * Estado interno de arc.          */
+        /** Dato interno asociado a arc. */
         private final int arc;
-        /**          * Estado interno de fillColor.          */
+        /** Dato interno asociado a fillColor. */
         private Color fillColor;
 
         RoundedPanel(Color fillColor, int arc) {

@@ -46,28 +46,28 @@ import utilidades.TiposEmpleado;
 
 
 /**
- * Representa el componente PanelEmpleado de la interfaz grafica.
+ * Componente Swing de la interfaz grafica correspondiente a PanelEmpleado.
  */
 public class PanelEmpleado extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /**      * Estado interno de mainFrame.      */
+    /** Dato interno asociado a mainFrame. */
     private final Main mainFrame;
-    /**      * Estado interno de contenido.      */
+    /** Dato interno asociado a contenido. */
     private final JPanel contenido;
-    /**      * Estado interno de seccionActiva.      */
+    /** Dato interno asociado a seccionActiva. */
     private String seccionActiva;
-    /**      * Estado interno de productoSeleccionado.      */
+    /** Dato interno asociado a productoSeleccionado. */
     private ProductoTienda productoSeleccionado;
-    /**      * Estado interno de editandoProducto.      */
+    /** Dato interno asociado a editandoProducto. */
     private boolean editandoProducto;
-    /**      * Estado interno de seccionAnteriorProductos.      */
+    /** Dato interno asociado a seccionAnteriorProductos. */
     private String seccionAnteriorProductos;
 
     /**
      * Construye una instancia de PanelEmpleado.
-     * @param mainFrame parametro utilizado por la operacion
+     * @param mainFrame valor recibido por el metodo
      */
     public PanelEmpleado(Main mainFrame) {
         this.mainFrame = mainFrame;
@@ -83,7 +83,7 @@ public class PanelEmpleado extends JPanel {
     }
 
     /**
-     * Ejecuta la operacion publica refrescar.
+     * Gestiona la accion de refrescar.
      */
     public void refrescar() {
         contenido.removeAll();
@@ -226,8 +226,8 @@ public class PanelEmpleado extends JPanel {
         vistaCliente.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             /**
-             * Ejecuta la operacion publica mouseClicked.
-             * @param e parametro utilizado por la operacion
+             * Gestiona la accion de mouseClicked.
+             * @param e valor recibido por el metodo
              */
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 abrirDetalleProducto(producto, false);
@@ -390,8 +390,8 @@ public class PanelEmpleado extends JPanel {
             vistaCliente.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 /**
-                 * Ejecuta la operacion publica mouseClicked.
-                 * @param e parametro utilizado por la operacion
+                 * Gestiona la accion de mouseClicked.
+                 * @param e valor recibido por el metodo
                  */
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     abrirDetalleProducto(producto, false);
@@ -540,8 +540,8 @@ public class PanelEmpleado extends JPanel {
         detalle.setListenerEdicion(new PanelDeProducto.ListenerEdicion() {
             @Override
             /**
-             * Ejecuta la operacion publica confirmar.
-             * @param datos parametro utilizado por la operacion
+             * Gestiona la accion de confirmar.
+             * @param datos valor recibido por el metodo
              */
             public void confirmar(PanelDeProducto.DatosEdicion datos) {
                 mainFrame.editarProductoTienda(productoSeleccionado,
@@ -557,7 +557,7 @@ public class PanelEmpleado extends JPanel {
 
             @Override
             /**
-             * Ejecuta la operacion publica cancelar.
+             * Gestiona la accion de cancelar.
              */
             public void cancelar() {
                 editandoProducto = false;
